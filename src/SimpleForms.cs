@@ -8,6 +8,15 @@ using Microsoft.Win32;
 
 namespace MapleOverlay
 {
+    internal sealed class TaskDictionaryRow
+    {
+        public string English;
+        public string Chinese;
+        public string Category;
+        public string IconHash;
+        public string TaskId;
+    }
+
     internal sealed class HotkeyForm : Form
     {
         private readonly OverlayForm overlay;
@@ -86,6 +95,9 @@ namespace MapleOverlay
         private readonly DataGridView grid = new DataGridView();
         private readonly TextBox search = new TextBox();
         private readonly Label status = new Label();
+        private readonly DataGridView taskGrid = new DataGridView();
+        private readonly TextBox taskSearch = new TextBox();
+        private readonly List<TaskDictionaryRow> taskRows = new List<TaskDictionaryRow>();
 
         public DictionaryOnlyForm(OverlayForm owner, string baseDir)
         {
@@ -107,7 +119,13 @@ namespace MapleOverlay
             root.RowStyles.Add(new RowStyle(SizeType.Absolute, 45));
             root.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
             root.RowStyles.Add(new RowStyle(SizeType.Absolute, 58));
-            Controls.Add(root);
+            TabControl tabs = new TabControl { Dock = DockStyle.Fill };
+            TabPage normalTab = new TabPage("常规词库");
+            TabPage taskTab = new TabPage("任务词库");
+            normalTab.Controls.Add(root);
+            tabs.TabPages.Add(normalTab);
+            tabs.TabPages.Add(taskTab);
+            Controls.Add(tabs);
 
             FlowLayoutPanel top = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = false };
             top.Controls.Add(new Label { Text = "搜索：", AutoSize = true, Padding = new Padding(0, 8, 0, 0) });
@@ -145,19 +163,106 @@ namespace MapleOverlay
             share.Controls.Add(import); share.Controls.Add(export);
             share.Controls.Add(new Label { Text = "导入后先检查，点击上方“保存并载入内存”才会生效。", AutoSize = true, Padding = new Padding(12, 7, 0, 0), ForeColor = Color.DimGray });
             qq.Controls.Add(share); root.Controls.Add(qq, 0, 2);
+
+            taskGrid.Dock = DockStyle.Fill;
+            taskGrid.AllowUserToAddRows = false;
+            taskGrid.AllowUserToDeleteRows = false;
+            taskGrid.ReadOnly = true;
+            taskGrid.RowHeadersVisible = false;
+            taskGrid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            taskGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            taskGrid.Columns.Add("TaskId", "任务代码");
+            taskGrid.Columns.Add("English", "英文任务名");
+            taskGrid.Columns.Add("Chinese", "中文任务名");
+            taskGrid.Columns.Add("TextCount", "说明/对白数量");
+            taskGrid.Columns[0].FillWeight = 15;
+            taskGrid.Columns[1].FillWeight = 34;
+            taskGrid.Columns[2].FillWeight = 34;
+            taskGrid.Columns[3].FillWeight = 17;
+            taskGrid.CellDoubleClick += delegate(object sender, DataGridViewCellEventArgs e) {
+                if (e.RowIndex < 0) return;
+                string taskId = Convert.ToString(taskGrid.Rows[e.RowIndex].Cells[0].Value);
+                using (TaskEditorForm editor = new TaskEditorForm(taskId, taskRows)) editor.ShowDialog(this);
+                RefreshTaskGrid();
+            };
+            Panel taskPanel = new Panel { Dock = DockStyle.Fill, Padding = new Padding(10) };
+            FlowLayoutPanel taskTop = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 42, WrapContents = false };
+            taskTop.Controls.Add(new Label { Text = "搜索任务代码或名称：", AutoSize = true, Padding = new Padding(0, 8, 0, 0) });
+            taskSearch.Width = 280;
+            taskSearch.TextChanged += delegate { FilterTaskRows(); };
+            taskTop.Controls.Add(taskSearch);
+            Button taskSave = new Button { Text = "保存全部并载入内存", AutoSize = true };
+            taskSave.Click += delegate { SaveRows(); };
+            taskTop.Controls.Add(taskSave);
+            Label taskHint = new Label { Dock = DockStyle.Bottom, Height = 32,
+                Text = "按任务名和任务代码查找。双击一项，单独编辑该任务名称、说明、短语和完整对白。",
+                ForeColor = Color.DimGray };
+            taskPanel.Controls.Add(taskGrid);
+            taskPanel.Controls.Add(taskHint);
+            taskPanel.Controls.Add(taskTop);
+            taskTab.Controls.Add(taskPanel);
         }
 
         private void LoadRows()
         {
             grid.Rows.Clear();
+            taskRows.Clear();
             foreach (string raw in File.ReadAllLines(path, Encoding.UTF8))
             {
                 if (String.IsNullOrWhiteSpace(raw) || raw.TrimStart().StartsWith("#")) continue;
                 string[] p = raw.Split('\t');
-                if (p.Length >= 2) grid.Rows.Add(p[0].Trim(), p[1].Trim(),
-                    p.Length > 2 ? p[2].Trim() : "", p.Length > 3 ? p[3].Trim() : "");
+                if (p.Length >= 2)
+                {
+                    string category = p.Length > 2 ? p[2].Trim() : "";
+                    if (category.StartsWith("怀旧服-任务", StringComparison.Ordinal) && category.LastIndexOf('#') >= 0)
+                    {
+                        taskRows.Add(new TaskDictionaryRow { English = p[0].Trim(), Chinese = p[1].Trim(),
+                            Category = category, IconHash = p.Length > 3 ? p[3].Trim() : "",
+                            TaskId = category.Substring(category.LastIndexOf('#') + 1) });
+                    }
+                    else grid.Rows.Add(p[0].Trim(), p[1].Trim(), category, p.Length > 3 ? p[3].Trim() : "");
+                }
             }
-            status.Text = (grid.Rows.Count - 1) + " 条";
+            RefreshTaskGrid();
+            status.Text = (grid.Rows.Count - 1) + " 条常规，" + taskRows.Count + " 条任务";
+        }
+
+        private void RefreshTaskGrid()
+        {
+            taskGrid.Rows.Clear();
+            Dictionary<string, string[]> tasks = new Dictionary<string, string[]>();
+            Dictionary<string, int> counts = new Dictionary<string, int>();
+            foreach (TaskDictionaryRow row in taskRows)
+            {
+                string[] value;
+                if (!tasks.TryGetValue(row.TaskId, out value))
+                {
+                    value = new string[] { "", "" };
+                    tasks[row.TaskId] = value;
+                    counts[row.TaskId] = 0;
+                }
+                if (row.Category.StartsWith("怀旧服-任务#", StringComparison.Ordinal))
+                {
+                    value[0] = row.English; value[1] = row.Chinese;
+                }
+                else counts[row.TaskId] = counts[row.TaskId] + 1;
+            }
+            foreach (KeyValuePair<string, string[]> task in tasks)
+                taskGrid.Rows.Add(task.Key, task.Value[0], task.Value[1], counts[task.Key]);
+            FilterTaskRows();
+        }
+
+        private void FilterTaskRows()
+        {
+            string query = taskSearch.Text.Trim();
+            taskGrid.CurrentCell = null;
+            foreach (DataGridViewRow row in taskGrid.Rows)
+            {
+                bool visible = query.Length == 0;
+                for (int i = 0; !visible && i < 3; i++)
+                    visible = Convert.ToString(row.Cells[i].Value).IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0;
+                row.Visible = visible;
+            }
         }
 
         private void FilterRows()
@@ -190,6 +295,14 @@ namespace MapleOverlay
                 if (en.Length == 0 || zh.Length == 0 || !seen.Add(en)) continue;
                 b.Append(en).Append('\t').Append(zh).Append('\t').Append(cat);
                 if (iconHash.Length > 0) b.Append('\t').Append(iconHash);
+                b.AppendLine();
+            }
+            foreach (TaskDictionaryRow row in taskRows)
+            {
+                string en = Clean(row.English), zh = Clean(row.Chinese), category = Clean(row.Category);
+                if (en.Length == 0 || zh.Length == 0 || category.Length == 0) continue;
+                b.Append(en).Append('\t').Append(zh).Append('\t').Append(category);
+                if (!String.IsNullOrWhiteSpace(row.IconHash)) b.Append('\t').Append(Clean(row.IconHash));
                 b.AppendLine();
             }
             return b.ToString();
@@ -227,12 +340,31 @@ namespace MapleOverlay
                 string[] p = raw.Split('\t');
                 if (p.Length < 2 || Clean(p[0]).Length == 0 || Clean(p[1]).Length == 0) continue;
                 string key = Clean(p[0]);
+                string category = p.Length > 2 ? Clean(p[2]) : "QQ群";
+                if (category.StartsWith("怀旧服-任务", StringComparison.Ordinal) && category.LastIndexOf('#') >= 0)
+                {
+                    string taskId = category.Substring(category.LastIndexOf('#') + 1);
+                    TaskDictionaryRow existing = taskRows.Find(delegate(TaskDictionaryRow row) {
+                        return row.TaskId == taskId && String.Equals(row.English, key, StringComparison.OrdinalIgnoreCase);
+                    });
+                    if (existing == null)
+                        taskRows.Add(new TaskDictionaryRow { TaskId = taskId, English = key,
+                            Chinese = Clean(p[1]), Category = category, IconHash = p.Length > 3 ? Clean(p[3]) : "" });
+                    else
+                    {
+                        existing.Chinese = Clean(p[1]); existing.Category = category;
+                        if (p.Length > 3 && Clean(p[3]).Length > 0) existing.IconHash = Clean(p[3]);
+                    }
+                    count++;
+                    continue;
+                }
                 string preservedHash = all.ContainsKey(key) && all[key].Length > 2 ? all[key][2] : "";
-                all[key] = new string[] { Clean(p[1]), p.Length > 2 ? Clean(p[2]) : "QQ群",
+                all[key] = new string[] { Clean(p[1]), category,
                     p.Length > 3 ? Clean(p[3]) : preservedHash }; count++;
             }
             grid.Rows.Clear(); foreach (KeyValuePair<string, string[]> p in all)
                 grid.Rows.Add(p.Key, p.Value[0], p.Value[1], p.Value.Length > 2 ? p.Value[2] : "");
+            RefreshTaskGrid();
             status.Text = "已合并 " + count + " 条，尚未保存";
         }
 
@@ -244,6 +376,90 @@ namespace MapleOverlay
                 dialog.FileName = "枫语幕词库_" + DateTime.Now.ToString("yyyyMMdd") + ".tsv";
                 if (Directory.Exists(@"D:\GTP\文件")) dialog.InitialDirectory = @"D:\GTP\文件";
                 if (dialog.ShowDialog(this) == DialogResult.OK) File.WriteAllText(dialog.FileName, SerializeRows(), new UTF8Encoding(true));
+            }
+        }
+    }
+
+    internal sealed class TaskEditorForm : Form
+    {
+        private readonly string taskId;
+        private readonly List<TaskDictionaryRow> source;
+        private readonly DataGridView grid = new DataGridView();
+
+        public TaskEditorForm(string id, List<TaskDictionaryRow> rows)
+        {
+            taskId = id;
+            source = rows;
+            Text = "任务词库编辑｜任务代码 " + id;
+            StartPosition = FormStartPosition.CenterParent;
+            MinimumSize = new Size(760, 480);
+            Size = new Size(980, 650);
+            Font = new Font("Microsoft YaHei UI", 9.0f);
+
+            ToolStrip tools = new ToolStrip { GripStyle = ToolStripGripStyle.Hidden, Dock = DockStyle.Top };
+            ToolStripButton addDialogue = new ToolStripButton("新增对白");
+            ToolStripButton addDescription = new ToolStripButton("新增任务说明");
+            ToolStripButton delete = new ToolStripButton("删除选中");
+            ToolStripButton save = new ToolStripButton("保存本页并关闭");
+            addDialogue.Click += delegate { AddRow("怀旧服-任务对白#" + taskId); };
+            addDescription.Click += delegate { AddRow("怀旧服-任务说明#" + taskId); };
+            delete.Click += delegate {
+                foreach (DataGridViewRow row in grid.SelectedRows) if (!row.IsNewRow) grid.Rows.Remove(row);
+            };
+            save.Click += delegate { SaveBack(); DialogResult = DialogResult.OK; Close(); };
+            tools.Items.Add(addDialogue); tools.Items.Add(addDescription); tools.Items.Add(delete);
+            tools.Items.Add(new ToolStripSeparator()); tools.Items.Add(save);
+
+            grid.Dock = DockStyle.Fill;
+            grid.AllowUserToAddRows = false;
+            grid.AllowUserToDeleteRows = true;
+            grid.RowHeadersVisible = false;
+            grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            grid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            grid.Columns.Add("Type", "内容类型");
+            grid.Columns.Add("English", "英文原文/完整句子");
+            grid.Columns.Add("Chinese", "中文翻译");
+            grid.Columns[0].Width = 150;
+            grid.Columns[0].ReadOnly = true;
+            grid.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            grid.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            grid.Columns[1].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            grid.Columns[2].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+
+            Controls.Add(grid);
+            Controls.Add(tools);
+            LoadRows();
+        }
+
+        private void LoadRows()
+        {
+            foreach (TaskDictionaryRow row in source)
+                if (row.TaskId == taskId) grid.Rows.Add(row.Category, row.English, row.Chinese);
+        }
+
+        private void AddRow(string category)
+        {
+            int index = grid.Rows.Add(category, "", "");
+            grid.CurrentCell = grid.Rows[index].Cells[1];
+            grid.BeginEdit(true);
+        }
+
+        private static string CleanValue(object value)
+        {
+            return Convert.ToString(value).Replace('\t', ' ').Replace('\r', ' ').Replace('\n', ' ').Trim();
+        }
+
+        private void SaveBack()
+        {
+            source.RemoveAll(delegate(TaskDictionaryRow row) { return row.TaskId == taskId; });
+            foreach (DataGridViewRow row in grid.Rows)
+            {
+                string category = CleanValue(row.Cells[0].Value);
+                string english = CleanValue(row.Cells[1].Value);
+                string chinese = CleanValue(row.Cells[2].Value);
+                if (category.Length == 0 || english.Length == 0 || chinese.Length == 0) continue;
+                source.Add(new TaskDictionaryRow { TaskId = taskId, Category = category,
+                    English = english, Chinese = chinese, IconHash = "" });
             }
         }
     }
