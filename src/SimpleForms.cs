@@ -191,6 +191,9 @@ namespace MapleOverlay
             taskSearch.Width = 280;
             taskSearch.TextChanged += delegate { FilterTaskRows(); };
             taskTop.Controls.Add(taskSearch);
+            Button addTask = new Button { Text = "新增任务", AutoSize = true };
+            addTask.Click += delegate { AddTask(); };
+            taskTop.Controls.Add(addTask);
             Button taskSave = new Button { Text = "保存全部并载入内存", AutoSize = true };
             taskSave.Click += delegate { SaveRows(); };
             taskTop.Controls.Add(taskSave);
@@ -201,6 +204,26 @@ namespace MapleOverlay
             taskPanel.Controls.Add(taskHint);
             taskPanel.Controls.Add(taskTop);
             taskTab.Controls.Add(taskPanel);
+        }
+
+        private void AddTask()
+        {
+            using (NewTaskForm dialog = new NewTaskForm())
+            {
+                if (dialog.ShowDialog(this) != DialogResult.OK) return;
+                if (taskRows.Exists(delegate(TaskDictionaryRow row) { return row.TaskId == dialog.TaskId; }))
+                {
+                    MessageBox.Show("任务代码 " + dialog.TaskId + " 已经存在，可在列表中双击编辑。", "新增任务");
+                    return;
+                }
+                taskRows.Add(new TaskDictionaryRow { TaskId = dialog.TaskId,
+                    English = dialog.EnglishName, Chinese = dialog.ChineseName,
+                    Category = "怀旧服-任务#" + dialog.TaskId, IconHash = "" });
+                RefreshTaskGrid();
+                using (TaskEditorForm editor = new TaskEditorForm(dialog.TaskId, taskRows)) editor.ShowDialog(this);
+                RefreshTaskGrid();
+                status.Text = "已新增任务 " + dialog.TaskId + "，请点击保存全部并载入内存";
+            }
         }
 
         private void LoadRows()
@@ -380,6 +403,57 @@ namespace MapleOverlay
         }
     }
 
+    internal sealed class NewTaskForm : Form
+    {
+        private readonly TextBox id = new TextBox();
+        private readonly TextBox english = new TextBox();
+        private readonly TextBox chinese = new TextBox();
+        public string TaskId { get; private set; }
+        public string EnglishName { get; private set; }
+        public string ChineseName { get; private set; }
+
+        public NewTaskForm()
+        {
+            Text = "新增任务";
+            StartPosition = FormStartPosition.CenterParent;
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            MaximizeBox = false; MinimizeBox = false;
+            ClientSize = new Size(520, 205);
+            Font = new Font("Microsoft YaHei UI", 9.0f);
+            AddField("任务代码：", id, 24);
+            AddField("英文任务名：", english, 68);
+            AddField("中文任务名：", chinese, 112);
+            Button save = new Button { Text = "创建并编辑内容", Location = new Point(342, 158), Size = new Size(145, 31) };
+            save.Click += delegate { AcceptTask(); };
+            Controls.Add(save);
+            AcceptButton = save;
+        }
+
+        private void AddField(string label, TextBox box, int y)
+        {
+            Controls.Add(new Label { Text = label, Location = new Point(22, y + 4), AutoSize = true });
+            box.Location = new Point(126, y); box.Width = 360;
+            Controls.Add(box);
+        }
+
+        private static string Clean(string value)
+        {
+            return (value ?? "").Replace('\t', ' ').Replace('\r', ' ').Replace('\n', ' ').Trim();
+        }
+
+        private void AcceptTask()
+        {
+            TaskId = Clean(id.Text); EnglishName = Clean(english.Text); ChineseName = Clean(chinese.Text);
+            if (TaskId.Length == 0 || EnglishName.Length == 0 || ChineseName.Length == 0)
+            {
+                MessageBox.Show("任务代码、英文任务名和中文任务名都必须填写。", "新增任务");
+                return;
+            }
+            DialogResult = DialogResult.OK;
+            Close();
+        }
+    }
+
     internal sealed class TaskEditorForm : Form
     {
         private readonly string taskId;
@@ -419,10 +493,13 @@ namespace MapleOverlay
             grid.Columns.Add("Type", "内容类型");
             grid.Columns.Add("English", "英文原文/完整句子");
             grid.Columns.Add("Chinese", "中文翻译");
+            grid.Columns.Add("Source", "来源/翻译方式");
             grid.Columns[0].Width = 150;
             grid.Columns[0].ReadOnly = true;
             grid.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             grid.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            grid.Columns[3].Width = 170;
+            grid.Columns[3].ReadOnly = true;
             grid.Columns[1].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             grid.Columns[2].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
 
@@ -434,12 +511,12 @@ namespace MapleOverlay
         private void LoadRows()
         {
             foreach (TaskDictionaryRow row in source)
-                if (row.TaskId == taskId) grid.Rows.Add(row.Category, row.English, row.Chinese);
+                if (row.TaskId == taskId) grid.Rows.Add(row.Category, row.English, row.Chinese, row.IconHash);
         }
 
         private void AddRow(string category)
         {
-            int index = grid.Rows.Add(category, "", "");
+            int index = grid.Rows.Add(category, "", "", "玩家新增/修改");
             grid.CurrentCell = grid.Rows[index].Cells[1];
             grid.BeginEdit(true);
         }
@@ -457,9 +534,10 @@ namespace MapleOverlay
                 string category = CleanValue(row.Cells[0].Value);
                 string english = CleanValue(row.Cells[1].Value);
                 string chinese = CleanValue(row.Cells[2].Value);
+                string sourceNote = CleanValue(row.Cells[3].Value);
                 if (category.Length == 0 || english.Length == 0 || chinese.Length == 0) continue;
                 source.Add(new TaskDictionaryRow { TaskId = taskId, Category = category,
-                    English = english, Chinese = chinese, IconHash = "" });
+                    English = english, Chinese = chinese, IconHash = sourceNote });
             }
         }
     }
