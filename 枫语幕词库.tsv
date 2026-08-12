@@ -1,8 +1,9 @@
-﻿# 枫语幕词库 1.1 - 冒险岛国际怀旧服专用（文字＋真实图标指纹）
+﻿# 枫语幕词库 1.2 - 冒险岛国际怀旧服专用（常规＋任务独立索引）
 # 生成日期：2026-08-12
 # 主数据：https://mxdgcw.dvg.cn/（当前GCW资料ID与中英文名）
 # NPC补全：https://meowdb.com/msclassic/（按同一NPC ID对齐）
 # 技能中文：https://mxd079.dvg.cn/（仅对GCW当前技能ID进行中文名匹配）
+# 任务文本：按任务代码隔离；只收录可可靠对应项，其余由玩家在任务编辑页补充
 # 格式：英文原文<Tab>中文翻译<Tab>分类#资料ID<Tab>可选的真实图标64位指纹
 MapleStory Classic World	冒险岛怀旧世界	怀旧服-界面
 MapleStory	冒险岛	怀旧服-界面
@@ -3383,3 +3384,18 @@ Maple Point 85000	枫叶点数 85000	怀旧服-道具#980085000	0f1deaca8aba8684
 Maple Point 90000	枫叶点数 90000	怀旧服-道具#980090000	0f1deaca8aaa8e84
 Maple Point 95000	枫叶点数 95000	怀旧服-道具#980095000	0f1deaca8aba8684
 Maple Point 100000	枫叶点数 100000	怀旧服-道具#980100000	0f1deaca8ea68c84
+Finding the Instructor	寻找教官	怀旧服-任务#20101
+Test of Qualification	资格测试	怀旧服-任务#20102
+Proof of Qualification	资格证明	怀旧服-任务#20103
+Finding the Instructor	寻找教官	怀旧服-任务#20201
+Test of Qualification	资格测试	怀旧服-任务#20202
+Proof of Qualification	资格证明	怀旧服-任务#20203
+Finding the Instructor	寻找教官	怀旧服-任务#20301
+Test of Qualification	资格测试	怀旧服-任务#20302
+Proof of Qualification	资格证明	怀旧服-任务#20303
+Time for Rain's thirds question.	瑞恩的第三个问题。现在该回答瑞恩的第三题了。在装备栏里，可以查看自己穿着的装备，也可以双击装备把它脱下来。	怀旧服-任务说明#1015
+What's the fifth question?	瑞恩的第五个问题。不知道会问什么呢？第五题问的是转职。战士、飞侠、弓箭手和魔法师都需要至少 10 级才能转职。	怀旧服-任务说明#1017
+Finally, the sixth question.	该回答瑞恩的问题了。终于到第六题了。你学到升级时会获得 AP。如果把 AP 加到想要提升的能力值上，就能增强这些属性，一定要记住。	怀旧服-任务说明#1018
+Finally the last question. After this, you'll no longer be a beginner.	这是瑞恩的最后一个问题。是不是有点激动？终于到最后一题了。答完之后，你就不再是新手了。瑞恩建议你该离开冒险岛了。在维多利亚岛，你可以选择职业，开始更多新的冒险。前往南港，去维多利亚岛吧！	怀旧服-任务说明#1019
+70? Well, that shouldn't be too hard...	70 个？嗯，应该不会太难……你在魔法密林附近的森林里消灭了许多僵尸猴，为罗雯收集齐了 70 个诅咒娃娃。作为回报，她给了你 10 个矿石。希望森林能恢复正常……	怀旧服-任务说明#10202
+There is a gift prepared for those setting off on a new adventure in #bClassic World#k...	经典世界为即将踏上新冒险的人准备了一份礼物……你获得了新旅程礼物。它应该会在今后的冒险中派上用场。	怀旧服-任务说明#500006
