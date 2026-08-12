@@ -68,6 +68,7 @@ namespace MapleOverlay
         private readonly Dictionary<char, List<TranslationEntry>> taskBuckets =
             new Dictionary<char, List<TranslationEntry>>();
         private readonly List<TranslationEntry> taskNames = new List<TranslationEntry>();
+        private readonly List<TranslationEntry> taskEntries = new List<TranslationEntry>();
         private readonly List<TranslationEntry> iconEntries = new List<TranslationEntry>();
         public int Count { get; private set; }
         public int IconCount { get { return iconEntries.Count; } }
@@ -86,6 +87,7 @@ namespace MapleOverlay
             buckets.Clear();
             taskBuckets.Clear();
             taskNames.Clear();
+            taskEntries.Clear();
             iconEntries.Clear();
             TaskTextCount = 0;
             foreach (TranslationEntry entry in entries)
@@ -94,6 +96,7 @@ namespace MapleOverlay
                 if (entry.IsTaskName || entry.IsTaskText)
                 {
                     AddToBucket(taskBuckets, entry);
+                    taskEntries.Add(entry);
                     if (entry.IsTaskName) taskNames.Add(entry);
                     if (entry.IsTaskText) TaskTextCount++;
                 }
@@ -141,15 +144,26 @@ namespace MapleOverlay
         public string DetectTaskId(string text)
         {
             string normalized = Normalize(text);
-            TranslationEntry best = null;
-            foreach (TranslationEntry entry in taskNames)
+            Dictionary<string, int> scores = new Dictionary<string, int>();
+            foreach (TranslationEntry entry in taskEntries)
             {
                 int position = normalized.IndexOf(entry.Normalized, StringComparison.Ordinal);
                 if (position < 0) continue;
                 if (!IsBoundary(normalized, position - 1) || !IsBoundary(normalized, position + entry.Normalized.Length)) continue;
-                if (best == null || entry.Normalized.Length > best.Normalized.Length) best = entry;
+                int score = entry.Normalized.Length * (entry.IsTaskText ? 4 : 1);
+                int current;
+                scores.TryGetValue(entry.TaskId, out current);
+                scores[entry.TaskId] = current + score;
             }
-            return best == null ? "" : best.TaskId;
+            string bestId = "";
+            int bestScore = 0;
+            bool tied = false;
+            foreach (KeyValuePair<string, int> pair in scores)
+            {
+                if (pair.Value > bestScore) { bestId = pair.Key; bestScore = pair.Value; tied = false; }
+                else if (pair.Value == bestScore) tied = true;
+            }
+            return tied ? "" : bestId;
         }
 
         public bool LooksLikeQuestInterface(string text)
