@@ -672,11 +672,39 @@ namespace MapleOverlay
                         else g.CopyFromScreen(screen.Left, screen.Top, 0, 0, screen.Size, CopyPixelOperation.SourceCopy);
                     }
                     float ocrScale;
-                    using (Bitmap prepared = PrepareForOcr(bitmap, out ocrScale))
+                    using (Bitmap prepared = PrepareForOcr(bitmap, out ocrScale, false))
                     {
                         OcrResult result = await RecognizeAsync(prepared);
-                        if (Program.Benchmark) benchmarkOcrText = result.Text;
                         List<OverlayLabel> next = BuildLabels(result, ocrScale, prepared);
+                        benchmarkOcrText = result.Text;
+
+                        // Use the spare time budget for a second, grayscale/high-contrast OCR pass.
+                        // Exact dictionary hits unique to either pass are merged; overlapping results
+                        // keep the colour pass. Slow machines skip the second pass before one second.
+                        if (stopwatch.ElapsedMilliseconds < 450)
+                        {
+                            float secondScale;
+                            using (Bitmap contrastPrepared = PrepareForOcr(bitmap, out secondScale, true))
+                            {
+                                OcrResult secondResult = await RecognizeAsync(contrastPrepared);
+                                List<OverlayLabel> second = BuildLabels(secondResult, secondScale, prepared);
+                                MergeLabels(next, second);
+                                if (Program.Benchmark)
+                                    benchmarkOcrText += " || 二次=" + secondResult.Text;
+                            }
+                        }
+                        // A higher-resolution colour pass improves very small item and quest text.
+                        if (stopwatch.ElapsedMilliseconds < 650)
+                        {
+                            float thirdScale;
+                            using (Bitmap largePrepared = PrepareForOcr(bitmap, out thirdScale, false, 3000.0f))
+                            {
+                                OcrResult thirdResult = await RecognizeAsync(largePrepared);
+                                MergeLabels(next, BuildLabels(thirdResult, thirdScale, largePrepared));
+                                if (Program.Benchmark)
+                                    benchmarkOcrText += " || 三次=" + thirdResult.Text;
+                            }
+                        }
                         labels.Clear(); labels.AddRange(next);
                     }
                 }
@@ -730,9 +758,9 @@ namespace MapleOverlay
             return Screen.PrimaryScreen.Bounds;
         }
 
-        private static Bitmap PrepareForOcr(Bitmap source, out float scale)
+        private static Bitmap PrepareForOcr(Bitmap source, out float scale, bool grayscale,
+            float targetLongEdge = 2400.0f)
         {
-            const float targetLongEdge = 2400.0f;
             int longEdge = Math.Max(source.Width, source.Height);
             scale = Math.Min(2.5f, Math.Max(1.0f, targetLongEdge / Math.Max(1, longEdge)));
             int width = Math.Max(1, (int)Math.Round(source.Width * scale));
@@ -751,12 +779,15 @@ namespace MapleOverlay
                 g.SmoothingMode = SmoothingMode.HighQuality;
 
                 // Slight contrast boost helps outlined game text while preserving coloured item names.
-                float contrast = 1.18f;
+                float contrast = grayscale ? 1.38f : 1.18f;
                 float offset = (1.0f - contrast) / 2.0f;
+                float red = grayscale ? 0.299f * contrast : contrast;
+                float green = grayscale ? 0.587f * contrast : contrast;
+                float blue = grayscale ? 0.114f * contrast : contrast;
                 ColorMatrix matrix = new ColorMatrix(new float[][] {
-                    new float[] { contrast, 0, 0, 0, 0 },
-                    new float[] { 0, contrast, 0, 0, 0 },
-                    new float[] { 0, 0, contrast, 0, 0 },
+                    new float[] { red, grayscale ? red : 0, grayscale ? red : 0, 0, 0 },
+                    new float[] { grayscale ? green : 0, green, grayscale ? green : 0, 0, 0 },
+                    new float[] { grayscale ? blue : 0, grayscale ? blue : 0, blue, 0, 0 },
                     new float[] { 0, 0, 0, 1, 0 },
                     new float[] { offset, offset, offset, 0, 1 }
                 });
@@ -765,6 +796,27 @@ namespace MapleOverlay
                     0, 0, source.Width, source.Height, GraphicsUnit.Pixel, attributes);
             }
             return result;
+        }
+
+        private static void MergeLabels(List<OverlayLabel> primary, List<OverlayLabel> secondary)
+        {
+            foreach (OverlayLabel candidate in secondary)
+            {
+                bool duplicate = false;
+                foreach (OverlayLabel existing in primary)
+                {
+                    RectangleF intersection = RectangleF.Intersect(existing.Bounds, candidate.Bounds);
+                    float smallerArea = Math.Min(existing.Bounds.Width * existing.Bounds.Height,
+                        candidate.Bounds.Width * candidate.Bounds.Height);
+                    if ((smallerArea > 0 && intersection.Width * intersection.Height / smallerArea >= 0.45f) ||
+                        (existing.Text == candidate.Text && Math.Abs(existing.Bounds.Y - candidate.Bounds.Y) < 20))
+                    {
+                        duplicate = true;
+                        break;
+                    }
+                }
+                if (!duplicate) primary.Add(candidate);
+            }
         }
 
         private async Task<OcrResult> RecognizeAsync(Bitmap bitmap)
