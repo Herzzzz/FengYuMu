@@ -1,0 +1,3385 @@
+﻿# 枫语幕词库 1.0 - 冒险岛国际怀旧服专用
+# 生成日期：2026-08-12
+# 主数据：https://mxdgcw.dvg.cn/（当前GCW资料ID与中英文名）
+# NPC补全：https://meowdb.com/msclassic/（按同一NPC ID对齐）
+# 技能中文：https://mxd079.dvg.cn/（仅对GCW当前技能ID进行中文名匹配）
+# 格式：英文原文<Tab>中文翻译<Tab>分类#资料ID
+MapleStory Classic World	冒险岛怀旧世界	怀旧服-界面
+MapleStory	冒险岛	怀旧服-界面
+Level	等级	怀旧服-界面
+Experience	经验值	怀旧服-界面
+EXP	经验	怀旧服-界面
+HP	生命值	怀旧服-界面
+MP	魔法值	怀旧服-界面
+Strength	力量	怀旧服-界面
+Dexterity	敏捷	怀旧服-界面
+Intelligence	智力	怀旧服-界面
+Luck	运气	怀旧服-界面
+Attack	攻击力	怀旧服-界面
+Magic Attack	魔法攻击力	怀旧服-界面
+Defense	防御力	怀旧服-界面
+Accuracy	命中率	怀旧服-界面
+Avoidability	回避率	怀旧服-界面
+Inventory	背包	怀旧服-界面
+Equipment	装备	怀旧服-界面
+Use	消耗	怀旧服-界面
+Setup	设置	怀旧服-界面
+Etc.	其他	怀旧服-界面
+Cash	现金	怀旧服-界面
+Quest	任务	怀旧服-界面
+Skill	技能	怀旧服-界面
+Party	组队	怀旧服-界面
+Guild	家族	怀旧服-界面
+Friend	好友	怀旧服-界面
+Channel	频道	怀旧服-界面
+Trade	交易	怀旧服-界面
+Shop	商店	怀旧服-界面
+Buy	购买	怀旧服-界面
+Sell	出售	怀旧服-界面
+Confirm	确定	怀旧服-界面
+Cancel	取消	怀旧服-界面
+Accept	接受	怀旧服-界面
+Decline	拒绝	怀旧服-界面
+Next	下一步	怀旧服-界面
+Back	返回	怀旧服-界面
+Exit	退出	怀旧服-界面
+Options	选项	怀旧服-界面
+World Map	世界地图	怀旧服-界面
+Mini Map	小地图	怀旧服-界面
+Monster	怪物	怀旧服-界面
+Item	道具	怀旧服-界面
+Reward	奖励	怀旧服-界面
+Required Level	需要等级	怀旧服-界面
+Available	可接取	怀旧服-界面
+Complete	完成	怀旧服-界面
+In Progress	进行中	怀旧服-界面
+Quest Complete	任务完成	怀旧服-界面
+Quest Started	任务已开始	怀旧服-界面
+Party Quest	组队任务	怀旧服-界面
+Character Info	角色信息	怀旧服-界面
+Ability Points	能力值点数	怀旧服-界面
+Skill Points	技能点数	怀旧服-界面
+Mesos	金币	怀旧服-界面
+Meso	金币	怀旧服-界面
+Cash Shop	商城	怀旧服-界面
+Beginner	新手	怀旧服-职业#0
+Warrior	战士	怀旧服-职业#100
+Fighter	剑客	怀旧服-职业#110
+Page	准骑士	怀旧服-职业#120
+Spearman	枪战士	怀旧服-职业#130
+Magician	魔法师	怀旧服-职业#200
+Fire/Poison Wizard	火毒法师	怀旧服-职业#210
+Ice/Lightning Wizard	冰雷法师	怀旧服-职业#220
+Cleric	牧师	怀旧服-职业#230
+Bowman	弓箭手	怀旧服-职业#300
+Hunter	猎人	怀旧服-职业#310
+Crossbowman	弩弓手	怀旧服-职业#320
+Thief	飞侠	怀旧服-职业#400
+Assassin	刺客	怀旧服-职业#410
+Bandit	侠客	怀旧服-职业#420
+Three Snails	蜗牛投掷术	怀旧服-技能#1000
+Recovery	恢复	怀旧服-技能#1001
+Nimble Feet	轻盈脚步	怀旧服-技能#1002
+Improved HP Recovery	生命恢复	怀旧服-技能#1000000
+Max HP Increase	生命强化	怀旧服-技能#1000001
+Precise Strikes	精准打击	怀旧服-技能#1000002
+Iron Body	铁甲术	怀旧服-技能#1001000
+Power Strike	强力攻击	怀旧服-技能#1001001
+Slash Blast	群体攻击	怀旧服-技能#1001002
+Sword Mastery	精准剑	怀旧服-技能#1100000
+Axe Mastery	精准斧	怀旧服-技能#1100001
+Final Attack: Sword	终极剑	怀旧服-技能#1101000
+Final Attack: Axe	终极斧	怀旧服-技能#1101001
+Sword Booster	快速剑	怀旧服-技能#1101002
+Axe Booster	快速斧	怀旧服-技能#1101003
+Rage	愤怒之火	怀旧服-技能#1101004
+Power Guard	伤害反击	怀旧服-技能#1101005
+Blunt Weapon Mastery	精准钝器	怀旧服-技能#1200001
+Final Attack: Blunt Weapon	终极钝器	怀旧服-技能#1201001
+Blunt Weapon Booster	快速钝器	怀旧服-技能#1201003
+Threaten	威胁	怀旧服-技能#1201004
+Spear Mastery	精准枪	怀旧服-技能#1300000
+Polearm Mastery	精准矛	怀旧服-技能#1300001
+Final Attack: Spear	终极枪	怀旧服-技能#1301000
+Final Attack: Polearm	终极矛	怀旧服-技能#1301001
+Spear Booster	快速枪	怀旧服-技能#1301002
+Polearm Booster	快速矛	怀旧服-技能#1301003
+Iron Will	钢铁意志	怀旧服-技能#1301004
+Hyper Body	神圣之火	怀旧服-技能#1301005
+Improved MP Recovery	魔力恢复	怀旧服-技能#2000000
+Max MP Increase	魔力强化	怀旧服-技能#2000001
+Magic Guard	魔法盾	怀旧服-技能#2001000
+Magic Armor	魔法铠甲	怀旧服-技能#2001001
+Energy Bolt	魔法弹	怀旧服-技能#2001002
+Magic Claw	魔法双击	怀旧服-技能#2001003
+MP Eater	魔力吸收	怀旧服-技能#2100000
+Meditation	精神力	怀旧服-技能#2101000
+Teleport	瞬间移动	怀旧服-技能#2101001
+Slow	缓速术	怀旧服-技能#2101002
+Fire Arrow	火焰箭	怀旧服-技能#2101003
+Poison Breath	毒雾术	怀旧服-技能#2101004
+Cold Beam	冰冻术	怀旧服-技能#2201003
+Thunder Bolt	雷电术	怀旧服-技能#2201004
+Heal	群体治愈	怀旧服-技能#2301001
+Invincible	神之保护	怀旧服-技能#2301002
+Bless	祝福	怀旧服-技能#2301003
+Holy Arrow	圣箭术	怀旧服-技能#2301004
+Critical Shot	强力箭	怀旧服-技能#3000000
+Amazon's Judgement	亚马逊的祝福	怀旧服-技能#3000001
+The Eye of Amazon	亚马逊之眼	怀旧服-技能#3000002
+Focus	集中术	怀旧服-技能#3001000
+Arrow Blow	断魂箭	怀旧服-技能#3001001
+Double Shot	二连射	怀旧服-技能#3001002
+Bow Mastery	精准弓	怀旧服-技能#3100000
+Final Attack: Bow	终极弓	怀旧服-技能#3101000
+Bow Booster	快速弓	怀旧服-技能#3101001
+Power Knockback	强弓	怀旧服-技能#3101002
+Soul Arrow: Bow	无形箭：弓	怀旧服-技能#3101003
+Arrow Bomb: Bow	爆炸箭：弓	怀旧服-技能#3101004
+Crossbow Mastery	精准弩	怀旧服-技能#3200000
+Final Attack: Crossbow	终极弩	怀旧服-技能#3201000
+Crossbow Booster	快速弩	怀旧服-技能#3201001
+Soul Arrow: Crossbow	无形箭：弩	怀旧服-技能#3201003
+Iron Arrow: Crossbow	穿透箭：弩	怀旧服-技能#3201004
+Nimble Body	集中术	怀旧服-技能#4000000
+Keen Eyes	远程暗器	怀旧服-技能#4000001
+Disorder	诅咒术	怀旧服-技能#4001000
+Dark Sight	隐身术	怀旧服-技能#4001001
+Double Stab	二连击	怀旧服-技能#4001002
+Lucky Seven	双飞斩	怀旧服-技能#4001003
+Claw Mastery	精准暗器	怀旧服-技能#4100000
+Critical Throw	强力投掷	怀旧服-技能#4100001
+Critical Recovery	恢复术	怀旧服-技能#4100002
+Claw Booster	快速暗器	怀旧服-技能#4101000
+Haste	轻功	怀旧服-技能#4101001
+Drain	吸血术	怀旧服-技能#4101002
+Dagger Mastery	精准短刀	怀旧服-技能#4200000
+Nimble Recovery	恢复术	怀旧服-技能#4200001
+Dagger Booster	快速短刀	怀旧服-技能#4201000
+Steal	偷窃术	怀旧服-技能#4201002
+Savage Blow	六连斩	怀旧服-技能#4201003
+Borrowing Sera's Mirror	借来莎丽的镜子	怀旧服-任务#1000
+Bringing a Mirror to Heena	给希娜弄来镜子	怀旧服-任务#1001
+Roger's Apple	罗杰和苹果	怀旧服-任务#1002
+What Sen wants to eat	珊想吃的是什么？	怀旧服-任务#1003
+Returning to Nina	回到妮娜的住所	怀旧服-任务#1004
+Todd's How-to-Hunt	透德的打猎方法	怀旧服-任务#1005
+Sam's Suggestion	叁的建议	怀旧服-任务#1006
+Letter for Lucas	传递信件	怀旧服-任务#1007
+Lucas' Reply	长老的回信	怀旧服-任务#1008
+Mai's Training	麦加的锻炼	怀旧服-任务#1009
+Mai's Final Training	麦加的最后锻炼	怀旧服-任务#1010
+Biggs's Collection of Items	瑞恩的冒险岛问答3	怀旧服-任务#1011
+Pio's Collecting Recycled Goods	皮奥的垃圾回收	怀旧服-任务#1012
+Rain's Maple Quiz 1	瑞恩的冒险岛问答1	怀旧服-任务#1013
+Rain's Maple Quiz 2	瑞恩的冒险岛问答2	怀旧服-任务#1014
+Rain's Maple Quiz 3	瑞恩的冒险岛问答3	怀旧服-任务#1015
+Rain's Maple Quiz 4	瑞恩的冒险岛问答4	怀旧服-任务#1016
+Rain's Maple Quiz 5	瑞恩的冒险岛问答5	怀旧服-任务#1017
+Rain's Maple Quiz 6	瑞恩的冒险岛问答6	怀旧服-任务#1018
+Rain's Maple Quiz 7	瑞恩的冒险岛问答7	怀旧服-任务#1019
+Olaf's First Training	奥拉夫的训练	怀旧服-任务#10000
+Phil’s Call	菲尔的召唤	怀旧服-任务#10001
+Jane and the Mushroom	珍和蘑菇	怀旧服-任务#10002
+Jane's First Challenge	简的第一次挑战	怀旧服-任务#10003
+Jane's Second Challenge	简的第二次挑战	怀旧服-任务#10004
+Jane's Final Challenge	简的最后挑战	怀旧服-任务#10005
+[Deep Forest of Patience] John's Pink Flower Basket	【忍耐之林】约翰的粉色花篮	怀旧服-任务#10006
+[Deep Forest of Patience] John's Present	【忍耐之林】约翰的礼物	怀旧服-任务#10007
+[Deep Forest of Patience] John's Last Present	【忍耐之林】约翰最后的礼物	怀旧服-任务#10008
+Olaf's Second Training	奥拉夫的第二次训练	怀旧服-任务#10009
+Teo's Weird Hobby	特奥奇怪的爱好	怀旧服-任务#10010
+Teo's Even Weirder Hobby	特奥更奇怪的爱好	怀旧服-任务#10011
+Mrs. Ming Ming's First Worry	明明女士的第一个担心	怀旧服-任务#10100
+Mrs. Ming Ming's Second Worry	明明女士的第二个担心	怀旧服-任务#10101
+Estelle's Request	胡小姐的拜托	怀旧服-任务#10102
+Estelle's Special Sauce	胡小姐的特制酱油	怀旧服-任务#10103
+Pia and the Blue Mushroom	皮亚和蓝蘑菇	怀旧服-任务#10104
+Camila's Gem	卡米拉的玻璃珠	怀旧服-任务#10105
+Maya of Henesys	射手村的玛雅	怀旧服-任务#10106
+Finding Sophia	找素菲亚	怀旧服-任务#10107
+Making a Sparkling Rock	闪耀石头的材料	怀旧服-任务#10108
+Arcon's Blood?	变异蘑菇的血1	怀旧服-任务#10109
+Getting Arcon's Blood	变异蘑菇的血2	怀旧服-任务#10110
+Making Sparkling Rock	制作闪耀的石头	怀旧服-任务#10111
+Delivering the Weird Medicine	送奇怪的药	怀旧服-任务#10112
+Luke the Security Guy	迷宫入口的守卫兵，鲁克	怀旧服-任务#10113
+Luke the Security Guy's Wish to Travel	警卫卢克想去旅行	怀旧服-任务#10114
+Maya's First Collection	玛雅的第一次收集	怀旧服-任务#10115
+Maya's Second Collection	玛雅的第二次收集	怀旧服-任务#10116
+Maya's Third Collection	玛雅的第三次收集	怀旧服-任务#10117
+Maya's Last Collection	玛雅最后的收集	怀旧服-任务#10118
+Pia's Present For a Friend	为朋友的礼物	怀旧服-任务#10119
+Looking for the Red Cape	找回红色披风	怀旧服-任务#10120
+What Pia has Borrowed	皮亚借的物品	怀旧服-任务#10121
+Pia’s Gift	皮亚的礼物	怀旧服-任务#10122
+The Reason Behind the Mushroom Studies	研究蘑菇怪物的理由	怀旧服-任务#10123
+I Need to Find My Daughter 1	寻找女儿1	怀旧服-任务#10124
+I Need to Find My Daughter 2	寻找女儿2	怀旧服-任务#10125
+Arwen and the Glass Shoe	艾温的玻璃鞋	怀旧服-任务#10200
+Collecting 50 Cursed Dolls	收集50个诅咒娃娃	怀旧服-任务#10201
+Collecting 70 Cursed Dolls	收集70个诅咒娃娃	怀旧服-任务#10202
+Collecting 100 Cursed Dolls	收集100个诅咒娃娃	怀旧服-任务#10203
+Collecting 150 Cursed Dolls	收集150个诅咒娃娃	怀旧服-任务#10204
+Collecting 200 Cursed Dolls	收集200个诅咒娃娃	怀旧服-任务#10205
+First Material for Building a New House	为盖房子需要的材料1	怀旧服-任务#10206
+Second Material for Building a New House	为盖房子需要的材料2	怀旧服-任务#10207
+Third Material for Building a New House	为盖房子需要的材料3	怀旧服-任务#10208
+Last Material for Building a New House	为盖房子需要的最后材料	怀旧服-任务#10209
+I Need Help on My Homework!	帮忙写作业	怀旧服-任务#10210
+How to Enjoy Mushrooms	蘑菇的美味吃法	怀旧服-任务#10211
+How to Enjoy Mushrooms Even More	蘑菇更美味的吃法	怀旧服-任务#10212
+Alex's Request	阿勒斯的拜托	怀旧服-任务#10300
+Talking to Stan	说服长老斯坦	怀旧服-任务#10301
+Mother's Gold Watch	母亲的金表	怀旧服-任务#10302
+Don Hwang's Request	防具店老板的拜托	怀旧服-任务#10303
+Shumi's Request	休咪的拜托	怀旧服-任务#10304
+Andre's Request	安德里亚的拜托	怀旧服-任务#10305
+Dr. Faymus's Request	药店老板的拜托	怀旧服-任务#10306
+Chris's Request	克利思	怀旧服-任务#10307
+Cutthroat Manny's Request	曼斯塔的拜托	怀旧服-任务#10308
+Stranger's Request	陌生女人的拜托	怀旧服-任务#10309
+Stranger's Identity	陌生女人的真相	怀旧服-任务#10310
+Proof of Companionship	同伴的证明	怀旧服-任务#10311
+[Construction Site B1] Shumi's Lost Coin	【工地B1】休咪丢失的硬币	怀旧服-任务#10312
+[Construction Site B2] Shumi's Lost Roll of Cash	【工地B2】休咪丢失的一卷现金	怀旧服-任务#10313
+[Construction Site B3] Shumi's Lost Sack of Cash	【工地B3】休咪丢失的钱袋	怀旧服-任务#10314
+I'm Bored 1	好无聊1	怀旧服-任务#10315
+I'm Bored 2	好无聊2	怀旧服-任务#10316
+Icarus's Hang Glider	伊卡路斯的滑翔翼	怀旧服-任务#10317
+Icarus and the Balloon	伊卡路斯的热气球	怀旧服-任务#10318
+In search of Wing the Fairy	寻找妖精维英…	怀旧服-任务#10319
+The Ingredients for the Flying Pill	飞天药水的材料	怀旧服-任务#10320
+Delivering the Flying Pill	传达飞天药水	怀旧服-任务#10321
+Fixing Blackbull's House	酋长的家修理	怀旧服-任务#10400
+Building a New House For Blackbull	酋长盖房子	怀旧服-任务#10401
+Old Gladius	旧军刀	怀旧服-任务#10402
+Reawakening the Gladius	军刀的重新觉醒	怀旧服-任务#10403
+Hero's Gladius	英雄的战剑	怀旧服-任务#10404
+Searching for Fossils	要找化石。。。	怀旧服-任务#10405
+Delivering a Box of Fossils	运送一箱化石	怀旧服-任务#10406
+Research on Plant Fossils	植物化石研究	怀旧服-任务#10407
+Research on Animal Fossils	动物化石研究	怀旧服-任务#10408
+Transporting Drake's Skull	运送龙之头骨	怀旧服-任务#10409
+Progress on Fossil Research	化石研究成果	怀旧服-任务#10410
+The Stump Horror Story	木妖好可怕	怀旧服-任务#10411
+Taking Out the Alligators 1	消灭鳄鱼1	怀旧服-任务#10412
+Taking Out the Alligators 2	消灭鳄鱼2	怀旧服-任务#10413
+A Clue to the Secret Book	秘密之书	怀旧服-任务#10500
+Hungry Ronnie	肚子饿得洛尼	怀旧服-任务#10501
+Still Hungry Ronnie	还是很饿的罗尼	怀旧服-任务#10502
+Secret to Unagi Special	特制烤鳗鱼的秘密	怀旧服-任务#10503
+Rina’s Unagi Special	丽娜的鳗鱼特餐	怀旧服-任务#10504
+Thirsty Ronnie	口渴的罗尼	怀旧服-任务#10505
+Cold Milk	牛奶	怀旧服-任务#10506
+Satisfied Ronnie	心满意足的罗尼	怀旧服-任务#10507
+Returned Secret Book	秘密之书回收	怀旧服-任务#10508
+[Forest of Patience] Sabitrama and the Diet Medicine	【忍耐之林】萨比特拉玛和减肥药	怀旧服-任务#10509
+[Forest of Patience] Sabitrama's Anti-Aging Medicine	【忍耐之林】萨比特拉玛的不老药	怀旧服-任务#10510
+Zelya's Map	泽莉娅的地图	怀旧服-任务#10600
+Natural Adhesive	天然黏合剂	怀旧服-任务#10601
+The Road Back Home	回家的路	怀旧服-任务#10602
+Old Friends	旧日朋友	怀旧服-任务#10603
+Myra’s Old Friend	米拉的老朋友	怀旧服-任务#10604
+Special Taste of Florina Beach I	黄金海岸的特别味道 I	怀旧服-任务#10700
+Special Taste of Florina Beach II	黄金海滩的特色菜Ⅱ	怀旧服-任务#10701
+Special Taste of Florina Beach III	黄金海滩的特色菜Ⅲ	怀旧服-任务#10702
+Special Taste of Florina Beach IV	黄金海岸的特别味道 IV	怀旧服-任务#10703
+The Warrior's Next Journey	战士的下一段旅程	怀旧服-任务#20000
+Finding the Instructor	寻找教官	怀旧服-任务#20001
+Test of Qualification	资格测试	怀旧服-任务#20002
+Proof of Qualification	资格证明	怀旧服-任务#20003
+The Magician's Next Journey	魔法师的下一段旅程	怀旧服-任务#20100
+The Bowman's Next Journey	弓箭手的下一段旅程	怀旧服-任务#20200
+The Thief's Next Journey	飞侠的下一段旅程	怀旧服-任务#20300
+"Mar" the Fairy and the Water of Life	妖精“玛尔”和生命之水	怀旧服-任务#80000
+Make a Match Cards Set	制作记忆卡套组	怀旧服-任务#80001
+Make a Slime & Mushroom Omok Set	制作绿水灵与蘑菇五子棋套组	怀旧服-任务#80002
+Make a Slime & Pig Omok Set	制作绿水灵与猪五子棋套组	怀旧服-任务#80003
+Make a Slime & Octopus Omok Set	制作绿水灵与章鱼五子棋套组	怀旧服-任务#80004
+Make a Pig & Mushroom Omok Set	制作猪与蘑菇五子棋套组	怀旧服-任务#80005
+Make a Octopus & Mushroom Omok Set	制作章鱼与蘑菇五子棋套组	怀旧服-任务#80006
+Make a Pig & Octopus Omok Set	制作猪与章鱼五子棋套组	怀旧服-任务#80007
+Silas Irons in Need of an Apprentice	西拉斯·艾恩斯需要学徒	怀旧服-任务#80008
+A Blacksmith in My Own Right!	我也是独当一面的铁匠了！	怀旧服-任务#80009
+Silas Irons in Need of Help	西拉斯·艾恩斯需要帮助	怀旧服-任务#80010
+Mr. Thunder in Need of an Apprentice	雷先生需要学徒	怀旧服-任务#80011
+A Weaponcrafter in My Own Right!	我也是独当一面的武器匠了！	怀旧服-任务#80012
+Mr. Thunder in Need of Help	雷先生需要帮助	怀旧服-任务#80013
+Francois in Need of an Apprentice	弗朗索瓦需要学徒	怀旧服-任务#80014
+A Tailor in My Own Right!	我也是独当一面的裁缝了！	怀旧服-任务#80015
+Francois in Need of Help	弗朗索瓦需要帮助	怀旧服-任务#80016
+Vicious in Need of an Apprentice	维西需要学徒	怀旧服-任务#80017
+A Carpenter in My Own Right!	我也是独当一面的木匠了！	怀旧服-任务#80018
+Vicious in Need of Help	维西需要帮助	怀旧服-任务#80019
+JM From tha Streetz Looking for a Partner	街头的JM正在寻找伙伴	怀旧服-任务#80020
+A Leatherworker in My Own Right!	我也是独当一面的皮革工匠了！	怀旧服-任务#80021
+JM From tha Streetz in Need of Help	街头的JM需要帮助	怀旧服-任务#80022
+Chrishrama in Need of an Apprentice	克里斯拉玛需要学徒	怀旧服-任务#80023
+An Arcforger in My Own Right!	我也是独当一面的秘法锻造师了！	怀旧服-任务#80024
+Chrishrama in Need of Help	克里斯拉玛需要帮助	怀旧服-任务#80025
+[Event] A Strange and Familiar Wood	【活动】陌生又熟悉的树林	怀旧服-任务#500000
+[Event] Beyond the Unknown	【活动】未知的彼端	怀旧服-任务#500001
+[Event] The One Who Sealed the Darkness	【活动】封印黑暗之人	怀旧服-任务#500002
+[Event] Gathering Leaves	【活动】收集枫叶	怀旧服-任务#500005
+[Event] Gift for the New Journey	【活动】新旅程的礼物	怀旧服-任务#500006
+Mushroom Town - West Entrance	蘑菇镇 - 西入口	怀旧服-地图#1
+Maple Road	冒险岛之路	怀旧服-地区#1
+Mushroom Town	蘑菇镇	怀旧服-地图#10
+Mushroom Town Townstreet	蘑菇镇街道	怀旧服-地图#21
+East Entrance to Mushroom Town	蘑菇镇东入口	怀旧服-地图#30
+Snail Hunting Ground I	蜗牛狩猎场 I	怀旧服-地图#40
+Snail Hunting Ground II	蜗牛狩猎场 II	怀旧服-地图#41
+Snail Hunting Ground III	蜗牛狩猎场 III	怀旧服-地图#42
+A Split Road	岔路	怀旧服-地图#50
+Southperry	南港	怀旧服-地图#60
+Southperry Armor Store	南港防具店	怀旧服-地图#61
+The Field West of Amherst	彩虹村西边草原	怀旧服-地图#1000
+Rainbow Street	彩虹街	怀旧服-地区#1000
+In a Small Forest	小森林	怀旧服-地图#1001
+Dangerous Forest	危险森林	怀旧服-地图#1002
+Mushroom Garden	蘑菇花园	怀旧服-地图#1003
+Snail Garden	蜗牛花园	怀旧服-地图#1004
+Hunting Ground Middle of the Forest I	森林中央狩猎场 I	怀旧服-地图#1005
+Hunting Ground Middle of the Forest II	森林中央狩猎场 II	怀旧服-地图#1006
+Amherst	彩虹村	怀旧服-地图#1010
+Amherst Weapon Store	彩虹村武器店	怀旧服-地图#1011
+Amherst Townstreet	彩虹村街道	怀旧服-地图#1012
+Amherst Department Store	彩虹村百货商店	怀旧服-地图#1013
+Snail Field of Flowers	蜗牛花田	怀旧服-地图#1014
+The Field East of Amherst	彩虹村东边草原	怀旧服-地图#1020
+Tomato Field	番茄田	怀旧服-地图#1021
+Lith Harbor	明珠港	怀旧服-地图#10000000
+Victoria Road	维多利亚路	怀旧服-地区#10000000
+Lith Harbor Armor Shop	明珠港防具店	怀旧服-地图#10000001
+Lith Harbor Department Store	明珠港百货商店	怀旧服-地图#10000002
+Lith Harbor Weapon Shop	明珠港武器店	怀旧服-地图#10000003
+Right Around Lith Harbor	明珠港周边	怀旧服-地图#10000010
+Thicket Around the Beach I	海滩边的灌木丛 I	怀旧服-地图#10000011
+Thicket Around the Beach II	海滩边的灌木丛 II	怀旧服-地图#10000012
+Thicket Around the Beach III	海滩边的灌木丛 III	怀旧服-地图#10000013
+3-Way Road-Split	三岔路口	怀旧服-地图#10000020
+The Pig Beach	猪的海岸	怀旧服-地图#10000021
+Hidden Street	隐藏地图	怀旧服-地区#10000021
+Beach Hunting Ground	海滩狩猎场	怀旧服-地图#10000022
+Henesys	射手村	怀旧服-地图#10001000
+Henesys Townstreet	射手村街道	怀旧服-地图#10001001
+An Empty House	空屋	怀旧服-地图#10001002
+Pig Park	猪猪公园	怀旧服-地图#10001003
+Pig Park II	猪猪公园 II	怀旧服-地图#10001004
+Someone Else's House	别人的家	怀旧服-地图#10001005
+The Resting Spot, Pig Park	猪猪公园休息处	怀旧服-地图#10001006
+Henesys Hunting Ground I	射手村狩猎场 I	怀旧服-地图#10001010
+Henesys Hunting Ground II	射手村狩猎场 II	怀旧服-地图#10001011
+Henesys Hunting Ground III	射手村狩猎场 III	怀旧服-地图#10001012
+A Hill West of Henesys	射手村西边小山	怀旧服-地图#10001020
+Forest West of Henesys	射手村西边森林	怀旧服-地图#10001030
+Henesys Market	射手村市场	怀旧服-地图#10001040
+Henesys Weapon Store	射手村武器店	怀旧服-地图#10001041
+Henesys Department Store	射手村百货商店	怀旧服-地图#10001042
+Henesys Plastic Surgery	射手村整形院	怀旧服-地图#10001043
+Henesys Hair Salon	射手村美发店	怀旧服-地图#10001044
+Henesys Skin-Care	射手村护肤中心	怀旧服-地图#10001045
+Henesys Park	射手村公园	怀旧服-地图#10001050
+Bowman Instructional School	弓箭手培训中心	怀旧服-地图#10001051
+Pet-Walking Road	宠物散步路	怀旧服-地图#10001052
+The Hill East of Henesys	射手村东边小山	怀旧服-地图#10001060
+The Rain-Forest East of Henesys	射手村东边雨林	怀旧服-地图#10001070
+The Forest East of Henesys	射手村东边森林	怀旧服-地图#10001080
+The Blue Mushroom Forest	蓝蘑菇森林	怀旧服-地图#10001081
+Utah's Pig Farm	犹他的猪农场	怀旧服-地图#10001082
+The Road to the Dungeon	通往地牢的路	怀旧服-地图#10001090
+Warning Street	危险地区	怀旧服-地区#10001090
+Henesys Dungeon Entrance	射手村迷宫入口	怀旧服-地图#10001100
+The Breathing Rock	会呼吸的岩石	怀旧服-地图#10001101
+The Entrance of Golem's Temple	石巨人寺院入口	怀旧服-地图#10001102
+Golem's Temple I	石巨人寺院 I	怀旧服-地图#10001103
+Golem's Temple II	石巨人寺院 II	怀旧服-地图#10001104
+Golem's Temple III	石巨人寺院 III	怀旧服-地图#10001105
+Golem's Temple IV	石巨人寺院 IV	怀旧服-地图#10001106
+Ellinia	魔法密林	怀旧服-地图#10002000
+Ellinia Weapon Store	魔法密林武器店	怀旧服-地图#10002001
+Ellinia Department Store	魔法密林百货商店	怀旧服-地图#10002002
+Magic Library	魔法图书馆	怀旧服-地图#10002003
+Marr's Forest	玛尔的森林	怀旧服-地图#10002004
+The Field South of Ellinia	魔法密林南部草原	怀旧服-地图#10002010
+The Forest of Wisdom	智慧森林	怀旧服-地图#10002020
+Monkey Forest I	猴子森林 I	怀旧服-地图#10002021
+Tree Dungeon, Monkey Forest I	树洞迷宫：猴子森林 I	怀旧服-地图#10002022
+Monkey Forest II	猴子森林 II	怀旧服-地图#10002023
+Tree Dungeon, Monkey Forest II	树洞迷宫：猴子森林 II	怀旧服-地图#10002024
+The Forest of Evil I	邪恶森林 I	怀旧服-地图#10002025
+The Forest of Evil II	邪恶森林 II	怀旧服-地图#10002026
+Downstairs at the Forest	森林下层	怀旧服-地图#10002027
+The Forest South of Ellinia	魔法密林南部森林	怀旧服-地图#10002030
+Dungeon, Southern Forest I	迷宫：南部森林 I	怀旧服-地图#10002031
+Dungeon, Southern Forest II	迷宫：南部森林 II	怀旧服-地图#10002032
+Dungeon, Southern Forest III	迷宫：南部森林 III	怀旧服-地图#10002033
+Dungeon, Southern Forest IV	迷宫：南部森林 IV	怀旧服-地图#10002034
+The Forest of Patience <Step 1>	忍耐森林 <阶段 1>	怀旧服-地图#10002040
+The Forest of Patience <Step 2>	忍耐森林 <阶段 2>	怀旧服-地图#10002041
+The Forest of Patience <Step 3>	忍耐森林 <阶段 3>	怀旧服-地图#10002042
+The Forest of Patience <Step 4>	忍耐森林 <阶段 4>	怀旧服-地图#10002043
+The Forest of Patience <Step 5>	忍耐森林 <阶段 5>	怀旧服-地图#10002044
+The Field Up North of Ellinia	魔法密林北部草原	怀旧服-地图#10002050
+The Tree That Grew I	成长之树 I	怀旧服-地图#10002060
+The Tree That Grew II	成长之树 II	怀旧服-地图#10002061
+The Tree That Grew III	成长之树 III	怀旧服-地图#10002062
+The Forest North of Ellinia	魔法密林北部森林	怀旧服-地图#10002070
+The Tree Tunnel At the Forest Up North	北部森林树洞	怀旧服-地图#10002071
+Tree Dungeon, Forest Up North I	树洞迷宫：北部森林 I	怀旧服-地图#10002072
+Tree Dungeon, Forest Up North II	树洞迷宫：北部森林 II	怀旧服-地图#10002073
+Tree Dungeon, Forest Up North III	树洞迷宫：北部森林 III	怀旧服-地图#10002074
+Tree Dungeon, Forest Up North IV	树洞迷宫：北部森林 IV	怀旧服-地图#10002075
+Tree Dungeon, Forest Up North V	树洞迷宫：北部森林 V	怀旧服-地图#10002076
+Tree Dungeon, Forest Up North VI	树洞迷宫：北部森林 VI	怀旧服-地图#10002080
+Tree Dungeon, Forest Up North VII	树洞迷宫：北部森林 VII	怀旧服-地图#10002081
+Tree Dungeon, Forest Up North VIII	树洞迷宫：北部森林 VIII	怀旧服-地图#10002082
+Tree Dungeon, Forest Up North IX	树洞迷宫：北部森林 IX	怀旧服-地图#10002083
+Kerning City	废弃都市	怀旧服-地图#10003000
+Kerning City Self-Defence Item Store	废弃都市防身用品店	怀旧服-地图#10003001
+Kerning City Pharmacy	废弃都市药店	怀旧服-地图#10003002
+Thieves' Hideout	盗贼藏身处	怀旧服-地图#10003003
+Niora Hospital	尼奥拉医院	怀旧服-地图#10003004
+Kerning City Hair Salon	废弃都市美发店	怀旧服-地图#10003005
+Kerning City Repair Shop	废弃都市修理店	怀旧服-地图#10003006
+Kerning City Construction Site	废弃都市施工现场	怀旧服-地图#10003010
+Caution Falling Down	小心坠落	怀旧服-地图#10003011
+L Forest I	L森林 I	怀旧服-地图#10003020
+L Forest II	L森林 II	怀旧服-地图#10003030
+L Forest III	L森林 III	怀旧服-地图#10003040
+Kerning City Middle Forest I	废弃都市中央森林 I	怀旧服-地图#10003050
+Kerning City Middle Forest II	废弃都市中央森林 II	怀旧服-地图#10003051
+Kerning City Middle Forest III	废弃都市中央森林 III	怀旧服-地图#10003052
+Subway Ticketing Booth	地铁售票处	怀旧服-地图#10003060
+Line 1 <Area 1>	1号线 <区域 1>	怀旧服-地图#10003061
+Kerning City Subway	废弃都市地铁	怀旧服-地区#10003061
+Transfer Area	换乘区域	怀旧服-地图#10003062
+Line 1 <Area 2>	1号线 <区域 2>	怀旧服-地图#10003063
+Line 1 <Area 3>	1号线 <区域 3>	怀旧服-地图#10003064
+Line 1 <Area 4>	1号线 <区域 4>	怀旧服-地图#10003065
+Line 2 <Area 1>	2号线 <区域 1>	怀旧服-地图#10003066
+Line 2 <Area 2>	2号线 <区域 2>	怀旧服-地图#10003067
+Line 2 <Area 3>	2号线 <区域 3>	怀旧服-地图#10003068
+Sunset Sky	夕阳天空	怀旧服-地图#10003070
+Construction Site North of Kerning City	废弃都市北部施工现场	怀旧服-地图#10003080
+Northern Top of Construction Site	施工现场北部顶层	怀旧服-地图#10003081
+The Swamp of Despair I	绝望沼泽 I	怀旧服-地图#10003090
+The Swamp of Despair II	绝望沼泽 II	怀旧服-地图#10003091
+The Swamp of Despair III	绝望沼泽 III	怀旧服-地图#10003092
+Dangerous Croko I	危险的鳄鱼 I	怀旧服-地图#10003093
+Dangerous Croko II	危险的鳄鱼 II	怀旧服-地图#10003094
+Monkey Swamp I	猴子沼泽 I	怀旧服-地图#10003095
+Monkey Swamp II	猴子沼泽 II	怀旧服-地图#10003096
+Monkey Swamp III	猴子沼泽 III	怀旧服-地图#10003097
+B1 <Area 1>	B1 <区域 1>	怀旧服-地图#10003100
+Line 3 Construction Site	3号线施工现场	怀旧服-地区#10003100
+B1 <Area 2>	B1 <区域 2>	怀旧服-地图#10003101
+B1 <Subway Depot>	B1 <地铁车库>	怀旧服-地图#10003102
+B2 <Area 1>	B2 <区域 1>	怀旧服-地图#10003103
+B2 <Area 2>	B2 <区域 2>	怀旧服-地图#10003104
+B2 <Subway Depot>	B2 <地铁车库>	怀旧服-地图#10003105
+B3 <Area 1>	B3 <区域 1>	怀旧服-地图#10003106
+B3 <Area 2>	B3 <区域 2>	怀旧服-地图#10003107
+B3 <Area 3>	B3 <区域 3>	怀旧服-地图#10003108
+B3 <Subway Depot>	B3 <地铁车库>	怀旧服-地图#10003109
+Perion	勇士部落	怀旧服-地图#10004000
+Perion Weapon Store	勇士部落武器店	怀旧服-地图#10004001
+Perion Department Store	勇士部落百货商店	怀旧服-地图#10004002
+Warriors' Sanctuary	战士圣殿	怀旧服-地图#10004003
+West Street Corner of Perion	勇士部落西边街角	怀旧服-地图#10004010
+West Rocky Mountain I	西部岩山 I	怀旧服-地图#10004020
+West Rocky Mountain II	西部岩山 II	怀旧服-地图#10004021
+West Rocky Mountain III	西部岩山 III	怀旧服-地图#10004022
+West Rocky Mountain IV	西部岩山 IV	怀旧服-地图#10004023
+West Domain of Perion	勇士部落西部领地	怀旧服-地图#10004030
+Perion Street Corner	勇士部落街角	怀旧服-地图#10004040
+Land of Wild Boar	野猪的领土	怀旧服-地图#10004041
+Over the Wall	墙的另一边	怀旧服-地图#10004042
+East Rocky Mountain I	东部岩山 I	怀旧服-地图#10004050
+East Rocky Mountain II	东部岩山 II	怀旧服-地图#10004051
+East Rocky Mountain III	东部岩山 III	怀旧服-地图#10004052
+East Rocky Mountain IV	东部岩山 IV	怀旧服-地图#10004053
+East Rocky Mountain V	东部岩山 V	怀旧服-地图#10004054
+East Rocky Mountain VI	东部岩山 VI	怀旧服-地图#10004055
+East Rocky Mountain VII	东部岩山 VII	怀旧服-地图#10004056
+Rocky Road I	岩石路 I	怀旧服-地图#10004060
+Rocky Road II	岩石路 II	怀旧服-地图#10004070
+Rocky Road III	岩石路 III	怀旧服-地图#10004080
+East Domain of Perion	勇士部落东部领地	怀旧服-地图#10004090
+The Land of Wild Boar II	野猪的领土 II	怀旧服-地图#10004091
+Deep Valley I	深谷 I	怀旧服-地图#10004100
+Dangerous Valley	危险峡谷	怀旧服-地图#10004101
+Dangerous Valley II	危险峡谷 II	怀旧服-地图#10004102
+Deep Valley II	深谷 II	怀旧服-地图#10004110
+The Burnt Land I	燃烧之地 I	怀旧服-地图#10004111
+The Burnt Land II	燃烧之地 II	怀旧服-地图#10004112
+The Burnt Land III	燃烧之地 III	怀旧服-地图#10004113
+The Burnt Land IV	燃烧之地 IV	怀旧服-地图#10004114
+The Burnt Land V	燃烧之地 V	怀旧服-地图#10004115
+Deep Valley III	深谷 III	怀旧服-地图#10004120
+Perion Dungeon Entrance	勇士部落迷宫入口	怀旧服-地图#10004121
+Sleepywood	林中之城	怀旧服-地图#10005000
+Dungeon	地下城	怀旧服-地区#10005000
+Sleepywood Hotel	林中之城旅馆	怀旧服-地图#10005001
+Regular Sauna	普通桑拿房	怀旧服-地图#10005002
+VIP Sauna	VIP桑拿房	怀旧服-地图#10005003
+Swampy Land in a Deep Forest	深林沼泽地	怀旧服-地图#10005010
+Hunting Ground in the Deep Forest I	深林狩猎场 I	怀旧服-地图#10005011
+Hunting Ground in the Deep Forest II	深林狩猎场 II	怀旧服-地图#10005012
+Deep Forest	深林	怀旧服-地图#10005020
+Damp Tree-Forest	潮湿树林	怀旧服-地图#10005030
+Damp Forest	潮湿森林	怀旧服-地图#10005031
+The Deep Forest of Patience <Step 1>	深林忍耐森林 <阶段 1>	怀旧服-地图#10005040
+The Deep Forest of Patience <Step 2>	深林忍耐森林 <阶段 2>	怀旧服-地图#10005041
+The Deep Forest of Patience <Step 3>	深林忍耐森林 <阶段 3>	怀旧服-地图#10005042
+The Deep Forest of Patience <Step 4>	深林忍耐森林 <阶段 4>	怀旧服-地图#10005043
+The Deep Forest of Patience <Step 5>	深林忍耐森林 <阶段 5>	怀旧服-地图#10005044
+The Deep Forest of Patience <Step 6>	深林忍耐森林 <阶段 6>	怀旧服-地图#10005045
+The Deep Forest of Patience <Step 7>	深林忍耐森林 <阶段 7>	怀旧服-地图#10005046
+Sleepy Dungeon I	林中迷宫 I	怀旧服-地图#10005050
+Sleepy Dungeon II	林中迷宫 II	怀旧服-地图#10005051
+Sleepy Dungeon III	林中迷宫 III	怀旧服-地图#10005052
+Sleepy Dungeon IV	林中迷宫 IV	怀旧服-地图#10005053
+Sleepy Dungeon V	林中迷宫 V	怀旧服-地图#10005054
+Ant Tunnel I	蚂蚁洞 I	怀旧服-地图#10005060
+Ant Tunnel II	蚂蚁洞 II	怀旧服-地图#10005061
+Ant Tunnel III	蚂蚁洞 III	怀旧服-地图#10005062
+Ant Tunnel IV	蚂蚁洞 IV	怀旧服-地图#10005063
+Dark Cave	黑暗洞穴	怀旧服-地图#10005064
+Dangerous Steam	危险蒸汽	怀旧服-地图#10005065
+Deep Ant Tunnel I	蚂蚁洞深处 I	怀旧服-地图#10005066
+Deep Ant Tunnel II	蚂蚁洞深处 II	怀旧服-地图#10005067
+Ant Tunnel Park	蚂蚁洞广场	怀旧服-地图#10005070
+The Cave of Evil Eye I	刺眼怪洞穴 I	怀旧服-地图#10005071
+The Cave of Evil Eye II	刺眼怪洞穴 II	怀旧服-地图#10005072
+The Cave of Evil Eye III	刺眼怪洞穴 III	怀旧服-地图#10005073
+The Cave of Evil Eye IV	刺眼怪洞穴 IV	怀旧服-地图#10005074
+Drake Hunting Ground	龙族狩猎场	怀旧服-地图#10005075
+The Tunnel That Lost Light I	失去光芒的隧道 I	怀旧服-地图#10005076
+The Tunnel That Lost Light II	失去光芒的隧道 II	怀旧服-地图#10005077
+The Grave of Mushmom	蘑菇王之墓	怀旧服-地图#10005078
+Another Entrance	另一个入口	怀旧服-地图#10005080
+Drake's Meal Table	龙的饭桌	怀旧服-地图#10005090
+Wild Kargo's Area	野生卡古的地盘	怀旧服-地图#10005091
+Another Path	另一条路	怀旧服-地图#10005100
+Sanctuary Entrance I	圣域入口 I	怀旧服-地图#10005101
+Sanctuary Entrance II	圣域入口 II	怀旧服-地图#10005102
+Sanctuary Entrance III	圣域入口 III	怀旧服-地图#10005103
+Sanctuary Entrance IV	圣域入口 IV	怀旧服-地图#10005104
+The Cursed Sanctuary	被诅咒的圣域	怀旧服-地图#10005105
+Forgotten Hollow	遗忘空洞	怀旧服-地图#10006000
+Shallow Passage	浅层通道	怀旧服-地区#10006000
+Cave Fairy Sanctuary	洞穴精灵圣域	怀旧服-地图#10006001
+Cave Fairy Department Store	洞穴精灵百货商店	怀旧服-地图#10006002
+Primeval Forest I	原始森林 I	怀旧服-地图#10006010
+Primeval Forest II	原始森林 II	怀旧服-地图#10006020
+Primeval Forest III	原始森林 III	怀旧服-地图#10006030
+The Valley of Death	死亡峡谷	怀旧服-地图#10006031
+Forgotten Entrance I	遗忘入口 I	怀旧服-地图#10006040
+Forgotten Entrance II	遗忘入口 II	怀旧服-地图#10006050
+Forgotten Entrance III	遗忘入口 III	怀旧服-地图#10006060
+The End of Fleeting Light	流光尽头	怀旧服-地图#10006070
+Forgotten Dungeon Tunnel	遗忘地牢隧道	怀旧服-地图#10006071
+Forbidden Entrance	禁忌入口	怀旧服-地图#10006080
+Perilous Descent I	险峻下坡 I	怀旧服-地图#10006090
+Deep Passage	深层通道	怀旧服-地区#10006090
+Perilous Descent II	险峻下坡 II	怀旧服-地图#10006100
+Perilous Descent III	险峻下坡 III	怀旧服-地图#10006110
+Decayed Tunnel I	腐朽隧道 I	怀旧服-地图#10006120
+Someone Else's Grave	别人的坟墓	怀旧服-地图#10006121
+Bygone Days	逝去的日子	怀旧服-地图#10006152
+Florina Beach	黄金海滩	怀旧服-地图#10007000
+Florina Road	黄金海岸之路	怀旧服-地区#10007000
+A Look-Out Shed Around the Beach	海滩边的瞭望小屋	怀旧服-地图#10007010
+Lorang Lorang	洛朗洛朗	怀旧服-地图#10007020
+Lorang Lorang Lorang	洛朗洛朗洛朗	怀旧服-地图#10007021
+Lorang and Clang	洛朗和克朗	怀旧服-地图#10007030
+Clang and Lorang	克朗和洛朗	怀旧服-地图#10007031
+Hot Sand	炎热沙滩	怀旧服-地图#10007040
+1st Accompaniment <1st Stage>	第一次同行 <第1阶段>	怀旧服-地图#80000000
+1st Accompaniment <2nd Stage>	第一次同行 <第2阶段>	怀旧服-地图#80000100
+1st Accompaniment <3rd Stage>	第一次同行 <第3阶段>	怀旧服-地图#80000200
+1st Accompaniment <4th stage>	第一次同行 <第4阶段>	怀旧服-地图#80000300
+1st Accompaniment <Last Stage>	第一次同行 <最后阶段>	怀旧服-地图#80000400
+1st Accompaniment <Bonus>	第一次同行 <奖励>	怀旧服-地图#80000500
+1st Accompaniment <Exit>	第一次同行 <出口>	怀旧服-地图#80000600
+Ant Tunnel For Bowman	弓箭手的蚂蚁洞	怀旧服-地图#80001000
+Magician's Tree Dungeon	魔法师树洞迷宫	怀旧服-地图#80001100
+Thief's Construction Site	飞侠施工现场	怀旧服-地图#80001200
+Warrior's Rocky Mountain	战士岩山	怀旧服-地图#80001300
+Free Market Entrance	自由市场入口	怀旧服-地图#80002000
+Free Market<1>	自由市场<1>	怀旧服-地图#80002001
+Free Market<2>	自由市场<2>	怀旧服-地图#80002002
+Free Market<3>	自由市场<3>	怀旧服-地图#80002003
+Free Market<4>	自由市场<4>	怀旧服-地图#80002004
+Free Market<5>	自由市场<5>	怀旧服-地图#80002005
+Free Market<6>	自由市场<6>	怀旧服-地图#80002006
+Free Market<7>	自由市场<7>	怀旧服-地图#80002007
+Free Market<8>	自由市场<8>	怀旧服-地图#80002008
+Free Market<9>	自由市场<9>	怀旧服-地图#80002009
+Free Market<10>	自由市场<10>	怀旧服-地图#80002010
+Free Market<11>	自由市场<11>	怀旧服-地图#80002011
+Truth Booth	真相小屋	怀旧服-地图#89000000
+Maple Hill	冒险岛山丘	怀旧服-地图#90000000
+White Map	白色地图	怀旧服-地图#90000001
+Black Map	黑色地图	怀旧服-地图#90000002
+MapleStory Physical Fitness Test <Waiting Room>	冒险岛体能测试 <等候室>	怀旧服-地图#90040000
+MapleStory Physical Fitness Challenge <Level 1>	冒险岛体能挑战 <等级 1>	怀旧服-地图#90040001
+MapleStory Physical Fitness Challenge <Level 2>	冒险岛体能挑战 <等级 2>	怀旧服-地图#90040002
+MapleStory Physical Fitness Challenge <Level 3>	冒险岛体能挑战 <等级 3>	怀旧服-地图#90040003
+MapleStory Physical Fitness Challenge <Level 4>	冒险岛体能挑战 <等级 4>	怀旧服-地图#90040004
+MapleStory Physical Fitness Test <Easy Waiting Room>	冒险岛体能测试 <简单等候室>	怀旧服-地图#90040010
+MapleStory Physical Fitness Challenge <Easy Level 1>	冒险岛体能挑战 <简单等级 1>	怀旧服-地图#90040011
+MapleStory Physical Fitness Challenge <Easy Level 2>	冒险岛体能挑战 <简单等级 2>	怀旧服-地图#90040012
+MapleStory Physical Fitness Challenge <Easy Level 3>	冒险岛体能挑战 <简单等级 3>	怀旧服-地图#90040013
+Leaving the Event	离开活动	怀旧服-地图#90050000
+Receiving the Reward For the Event	领取活动奖励	怀旧服-地图#90050001
+Test	测试	怀旧服-地图#900000000
+Tutorial Jr. Sentinel	教程小石球	怀旧服-怪物#1
+Snail	蜗牛	怀旧服-怪物#2
+Blue Snail	蓝蜗牛	怀旧服-怪物#3
+Shroom	蘑菇仔	怀旧服-怪物#4
+Red Snail	红蜗牛	怀旧服-怪物#5
+Stump	木妖	怀旧服-怪物#6
+Slime	绿水灵	怀旧服-怪物#7
+Pig	猪猪	怀旧服-怪物#8
+Orange Mushroom	花蘑菇	怀旧服-怪物#9
+Ribbon Pig	漂漂猪	怀旧服-怪物#10
+Dark Stump	黑木妖	怀旧服-怪物#11
+Octopus	三眼章鱼	怀旧服-怪物#12
+Green Mushroom	绿蘑菇	怀旧服-怪物#13
+Bubbling	蓝水灵	怀旧服-怪物#14
+Axe Stump	斧木妖	怀旧服-怪物#15
+Blue Mushroom	蓝蘑菇	怀旧服-怪物#16
+Stirge	蝙蝠	怀旧服-怪物#17
+Jr. Necki	小青蛇	怀旧服-怪物#18
+Horny Mushroom	刺蘑菇	怀旧服-怪物#19
+Dark Axe Stump	黑斧木妖	怀旧服-怪物#20
+Zombie Mushroom	僵尸蘑菇	怀旧服-怪物#21
+Wild Boar	野猪	怀旧服-怪物#22
+Evil Eye	火独眼兽	怀旧服-怪物#23
+Iron Hog	铁甲猪	怀旧服-怪物#24
+Fairy 1	妖精	怀旧服-怪物#25
+Fairy 2	妖精	怀旧服-怪物#26
+Fairy 3	妖精	怀旧服-怪物#27
+Fairy 4	妖精	怀旧服-怪物#28
+Ligator	鳄鱼	怀旧服-怪物#29
+Fire Boar	火野猪	怀旧服-怪物#30
+Curse Eye	风独眼兽	怀旧服-怪物#31
+Jr. Wraith	小幽灵	怀旧服-怪物#32
+Jr. Boogie 1	幼魔精灵1	怀旧服-怪物#33
+Jr. Boogie 2	幼魔精灵2	怀旧服-怪物#34
+Lupin	猴子	怀旧服-怪物#35
+Lorang	红螃蟹	怀旧服-怪物#36
+Cold Eye	冰独眼兽	怀旧服-怪物#37
+Zombie Lupin	僵尸猴	怀旧服-怪物#38
+Copper Drake	土龙	怀旧服-怪物#40
+Tortie	乌龟	怀旧服-怪物#41
+Wraith	幽灵	怀旧服-怪物#43
+Clang	青螃蟹	怀旧服-怪物#44
+Drake	青龙	怀旧服-怪物#45
+Croco	黑鳄鱼	怀旧服-怪物#46
+Malady	巫婆	怀旧服-怪物#47
+Stone Golem	石巨人	怀旧服-怪物#48
+Dark Stone Golem	黑石巨人	怀旧服-怪物#49
+Red Drake	红龙	怀旧服-怪物#50
+Wild Kargo	怪矛	怀旧服-怪物#51
+Tauromacis	月牙牛魔王	怀旧服-怪物#52
+Taurospear	长枪牛魔王	怀旧服-怪物#53
+Glowshroom	发光蘑菇	怀旧服-怪物#54
+Raffle	莱芙	怀旧服-怪物#55
+Golden Stirge	黄金蝙蝠	怀旧服-怪物#56
+Aqumander	水螈	怀旧服-怪物#57
+Echopus	回音章鱼	怀旧服-怪物#58
+Rafflesia	大王花	怀旧服-怪物#59
+Duskmander	暮色螈	怀旧服-怪物#60
+Myewood	木喵	怀旧服-怪物#61
+Rotten Mushroom	腐烂蘑菇	怀旧服-怪物#62
+Sporewood	孢子木	怀旧服-怪物#63
+Super Jr. Necki	超级小青蛇	怀旧服-怪物#90
+Super Slime	超级绿水灵	怀旧服-怪物#91
+Super Ribbon-Pig	超级漂漂猪	怀旧服-怪物#92
+Super Stirge	超级蝙蝠	怀旧服-怪物#93
+Mushmom	蘑菇王	怀旧服-怪物#700000
+Jr. Balrog	小蝙蝠魔	怀旧服-怪物#700001
+Zombie Mushmom	僵尸蘑菇王	怀旧服-怪物#700002
+Rotten Mushmom	腐烂蘑菇王	怀旧服-怪物#700003
+Mano	蜗牛王	怀旧服-怪物#700004
+King Slime	巨大绿水灵	怀旧服-怪物#800003
+TestMob	测试怪物	怀旧服-怪物#9990000
+Heena	希娜	怀旧服-NPC#1
+Sera	莎丽	怀旧服-NPC#2
+Roger	罗杰	怀旧服-NPC#3
+Nina	妮娜	怀旧服-NPC#4
+Sen	珊	怀旧服-NPC#5
+Peter	彼得	怀旧服-NPC#6
+Todd	托德	怀旧服-NPC#7
+Robin	罗宾	怀旧服-NPC#8
+Sam	山姆	怀旧服-NPC#9
+Maria	玛丽亚	怀旧服-NPC#10
+Mai	麦加	怀旧服-NPC#11
+Biggs	比格斯	怀旧服-NPC#12
+Yoona	尤娜	怀旧服-NPC#13
+Bari	白瑞德	怀旧服-NPC#14
+Shanks	巴希里	怀旧服-NPC#15
+Pan	潘	怀旧服-NPC#16
+Lucas	卢卡斯	怀旧服-NPC#17
+Pio	皮奥	怀旧服-NPC#18
+Rain	瑞恩	怀旧服-NPC#19
+Sid	赛德	怀旧服-NPC#20
+Lucy	露茜	怀旧服-NPC#21
+John	约翰	怀旧服-NPC#100
+Phil	比尔	怀旧服-NPC#101
+Teo	特奥	怀旧服-NPC#102
+Jane	简	怀旧服-NPC#103
+Mr. Kim	金先生	怀旧服-NPC#105
+Chef	吉夫	怀旧服-NPC#106
+Olaf	坤	怀旧服-NPC#107
+Natasha	娜塔莎	怀旧服-NPC#108
+Mina	米娜	怀旧服-NPC#109
+Silver	赛尔文	怀旧服-NPC#110
+Mr. Goldstein	智慧爷爷	怀旧服-NPC#111
+Pason	佩森	怀旧服-NPC#112
+Rina	丽娜	怀旧服-NPC#201
+Chief Stan	长老斯坦	怀旧服-NPC#202
+Mrs. Ming Ming	明明女士	怀旧服-NPC#203
+Camila	卡米拉	怀旧服-NPC#204
+Jay	亚华	怀旧服-NPC#205
+Bruce	布鲁斯	怀旧服-NPC#206
+Maya	玛亚	怀旧服-NPC#207
+Vicious	比休斯	怀旧服-NPC#208
+Doofus	科尔	怀旧服-NPC#209
+Karl	卡尔	怀旧服-NPC#210
+Luna	卢娜	怀旧服-NPC#212
+Denma the Owner	黛玛院长	怀旧服-NPC#213
+Dr. Feeble	差不多医生	怀旧服-NPC#214
+Natalie	娜塔丽	怀旧服-NPC#215
+Brittany	伯丽特	怀旧服-NPC#216
+Ms. Tan	沃美妮	怀旧服-NPC#217
+Pia	皮亚	怀旧服-NPC#218
+Cloy	科洛伊	怀旧服-NPC#219
+Mr. Lee	李先生	怀旧服-NPC#220
+Athena Pierce	雅典娜·皮尔丝	怀旧服-NPC#221
+Trainer Bartos	巴特斯	怀旧服-NPC#222
+Trainer Frod	巴罗德	怀旧服-NPC#223
+Anne	桉	怀旧服-NPC#224
+Utah	尤塔	怀旧服-NPC#225
+Luke	鲁克	怀旧服-NPC#226
+Bowman Job Instructor	弓箭手转职教官	怀旧服-NPC#227
+Casey	凯茜	怀旧服-NPC#228
+Estelle	胡小姐	怀旧服-NPC#300
+Regular Cab	普通计程车	怀旧服-NPC#301
+Francois	易德	怀旧服-NPC#303
+Arwen the Fairy	妖精 艾温	怀旧服-NPC#304
+Rowen the Fairy	妖精 罗雯	怀旧服-NPC#305
+Shane	赛恩	怀旧服-NPC#306
+Mr. Park	朴先生	怀旧服-NPC#307
+Betty	巴缇	怀旧服-NPC#308
+Wing the Fairy	妖精维英	怀旧服-NPC#309
+Flora the Fairy	妖精 佛罗拉	怀旧服-NPC#310
+Serabi the Fairy	妖精 舍拉比	怀旧服-NPC#311
+Len the Fairy	妖精 莲	怀旧服-NPC#312
+Grendel the Really Old	老头子格伦戴尔	怀旧服-NPC#313
+Louis	路易斯	怀旧服-NPC#314
+a pile of flowers	花簇	怀旧服-NPC#315
+a pile of herbs	草药丛	怀旧服-NPC#316
+Mar the Fairy	妖精 玛丽	怀旧服-NPC#317
+El Moth	阿尔莫斯	怀旧服-NPC#318
+Magician Job Instructor	魔法师转职教官	怀旧服-NPC#319
+Ronnie	洛尼	怀旧服-NPC#320
+JM From tha Streetz	后街吉姆	怀旧服-NPC#401
+Alex	阿勒斯	怀旧服-NPC#402
+Shumi	休咪	怀旧服-NPC#403
+Mong from Kong	马龙	怀旧服-NPC#404
+Mr. Hong	洪先生	怀旧服-NPC#405
+Nella	内拉	怀旧服-NPC#406
+Icarus	伊卡路斯	怀旧服-NPC#407
+Cutthroat Manny	曼斯塔	怀旧服-NPC#408
+Don Hwang	玛帕	怀旧服-NPC#409
+Dr. Faymus	铭仁	怀旧服-NPC#410
+Dark Lord	黑暗之神	怀旧服-NPC#411
+Jane Doe	不认识的女人	怀旧服-NPC#412
+Don Giovanni	钱老板	怀旧服-NPC#413
+Andre	安德里亚	怀旧服-NPC#414
+Chris	克利思	怀旧服-NPC#415
+Tulcus	图里卡斯	怀旧服-NPC#416
+Jake	冬青	怀旧服-NPC#417
+The Ticket Gate	检票口	怀旧服-NPC#418
+Thief Job Instructor	飞侠转职教官	怀旧服-NPC#424
+Blackbull	酋长	怀旧服-NPC#501
+Manji	麦吉	怀旧服-NPC#502
+Mr. Thunder	辛德	怀旧服-NPC#503
+Silas Irons	西拉斯·艾恩斯	怀旧服-NPC#504
+Mr. Wang	王先生	怀旧服-NPC#505
+Ayan	伊安	怀旧服-NPC#506
+River	利伯	怀旧服-NPC#507
+Harry	哈里	怀旧服-NPC#508
+Arturo	阿图罗	怀旧服-NPC#509
+Sophia	索非亚	怀旧服-NPC#510
+Dances with Balrog	与巴洛古共舞	怀旧服-NPC#511
+Winston	芳博士	怀旧服-NPC#512
+Mike	麦克	怀旧服-NPC#513
+Warrior Job Instructor	战士转职教官	怀旧服-NPC#514
+VIP Cab	高级出租车	怀旧服-NPC#601
+Chrishrama	克利斯拉玛	怀旧服-NPC#602
+Sabitrama	萨比特拉玛	怀旧服-NPC#603
+Mr. Oh	吴先生	怀旧服-NPC#604
+Eurek the Alchemist	流浪炼金术士	怀旧服-NPC#605
+Hotel Receptionist	宾馆服务员	怀旧服-NPC#606
+Mr. Sweatbottom	豪素夫	怀旧服-NPC#607
+Mr. Wetbottom	泰素夫	怀旧服-NPC#608
+Mysterious Statue	奇怪的石像	怀旧服-NPC#609
+Crumbling Statue	坍塌的石像	怀旧服-NPC#610
+a pile of pink flowers	粉红色花簇	怀旧服-NPC#611
+a pile of blue flowers	蓝花簇	怀旧服-NPC#612
+a pile of white flowers	白花簇	怀旧服-NPC#613
+24 Hr Mobile Store	24小时 排档	怀旧服-NPC#614
+Door of Dimension	次元之门	怀旧服-NPC#615
+Luma	露玛	怀旧服-NPC#700
+Zelya	泽莉亚	怀旧服-NPC#701
+Myen	米恩	怀旧服-NPC#702
+Myra	迈拉	怀旧服-NPC#703
+Nyroth	尼罗斯	怀旧服-NPC#707
+Valen	拜伦	怀旧服-NPC#800
+Pison	派申	怀旧服-NPC#801
+Riel	丽尔	怀旧服-NPC#802
+Roel	露尔	怀旧服-NPC#803
+Rael	拉尔	怀旧服-NPC#804
+Lakelis	拉克里斯	怀旧服-NPC#800000
+Cloto	克鲁特	怀旧服-NPC#800001
+Fredrick	弗兰德里	怀旧服-NPC#800008
+Scrooge	斯克鲁 吉	怀旧服-NPC#800009
+Maple Administrator	冒险岛运营员	怀旧服-NPC#900000
+MapleCon TV	冒险岛展会TV	怀旧服-NPC#900009
+Paul	珀尔	怀旧服-NPC#900010
+Vikoon	贝昆	怀旧服-NPC#900011
+Pietro	比特罗	怀旧服-NPC#900012
+Pietra	比特拉	怀旧服-NPC#900013
+Chun Ji	千吉	怀旧服-NPC#900014
+Mr. Pickall	权达开	怀旧服-NPC#900015
+Light Skin	奶油皮肤	怀旧服-道具#12000
+Tan Skin	日光浴皮肤	怀旧服-道具#12001
+Dark Skin	健身皮肤	怀旧服-道具#12002
+Pale Skin	牛奶皮肤	怀旧服-道具#12003
+Blue Gray Skin	冷清皮肤	怀旧服-道具#12004
+Ghostly Skin	苍白皮肤	怀旧服-道具#12005
+Fair Skin	贵族皮肤	怀旧服-道具#12006
+Confident Face	最初冒险(帅)-男脸	怀旧服-道具#20001
+Dramatic Face	漠不关心-男脸	怀旧服-道具#20003
+Rebel's Fire	别惹我-男脸	怀旧服-道具#20004
+Alert Face	男子气概-男脸	怀旧服-道具#20005
+Sad Innocence	乖萌-男脸	怀旧服-道具#20007
+Worrisome Glare	无所谓-男脸	怀旧服-道具#20008
+Smart Aleck	讨厌-男脸	怀旧服-道具#20009
+Wisdom Glance	滴溜溜-女脸	怀旧服-道具#20010
+Cool Guy Gaze	无所谓-男脸	怀旧服-道具#20011
+Curious Dog	精干大眼-男脸	怀旧服-道具#20012
+Insomniac Daze	不良少年-男脸	怀旧服-道具#20013
+Look of Wonder	柔情大眼-男脸	怀旧服-道具#20014
+Intelligent Face	最初冒险(帅)-女脸	怀旧服-道具#21002
+Strong Stare	小美-女脸	怀旧服-道具#21003
+Angel Glow	炯炯有神-女脸	怀旧服-道具#21004
+Pucker Up Face	嘟嘴大眼-女脸	怀旧服-道具#21006
+Dollface Look	成熟浓妆-女脸	怀旧服-道具#21007
+Hopeless Gaze	无辜-女脸	怀旧服-道具#21008
+Look of Death	干瞪眼-女脸	怀旧服-道具#21009
+Hypnotized Look	水汪汪-女脸	怀旧服-道具#21011
+Soul's Window	睁大眼-女脸	怀旧服-道具#21012
+Wide-eyed Girl	下垂眼-女脸	怀旧服-道具#21013
+Curious Look	弱弱-女脸	怀旧服-道具#21014
+Black Zeta	黑色贝吉塔发型	怀旧服-道具#30010
+Black Rockstar	黑色长中分	怀旧服-道具#30040
+Red Rockstar	红色长中分	怀旧服-道具#30041
+Orange Rockstar	橙色长中分	怀旧服-道具#30042
+Blonde Rockstar	黄色长中分	怀旧服-道具#30043
+Green Rockstar	绿色长中分	怀旧服-道具#30044
+Blue Rockstar	蓝色长中分	怀旧服-道具#30045
+Purple Rockstar	紫色长中分	怀旧服-道具#30046
+Brown Rockstar	褐色长中分	怀旧服-道具#30047
+Black Metro	黑色休闲发型	怀旧服-道具#30050
+Red Metro	红色休闲发型	怀旧服-道具#30051
+Orange Metro	橙色休闲发型	怀旧服-道具#30052
+Blonde Metro	黄色休闲发型	怀旧服-道具#30053
+Green Metro	绿色休闲发型	怀旧服-道具#30054
+Blue Metro	蓝色休闲发型	怀旧服-道具#30055
+Purple Metro	紫色休闲发型	怀旧服-道具#30056
+Brown Metro	褐色休闲发型	怀旧服-道具#30057
+Black Catalyst	黑色长甩发型	怀旧服-道具#30060
+Red Catalyst	橙色长甩发型	怀旧服-道具#30061
+Orange Catalyst	红色长甩发型	怀旧服-道具#30062
+Blonde Catalyst	黄色长甩发型	怀旧服-道具#30063
+Green Catalyst	绿色长甩发型	怀旧服-道具#30064
+Blue Catalyst	蓝色长甩发型	怀旧服-道具#30065
+Purple Catalyst	紫色长甩发型	怀旧服-道具#30066
+Brown Catalyst	褐色长甩发型	怀旧服-道具#30067
+Black All Back	黄色黄鸟发型	怀旧服-道具#30070
+Black Military Buzzcut	黑色罕见发型	怀旧服-道具#30080
+Black Mohawk	黄色喔喔鸡发型	怀旧服-道具#30090
+Black Fantasy	蓝色菜菜发型	怀旧服-道具#30100
+Red Fantasy	紫色菜菜发型	怀旧服-道具#30101
+Orange Fantasy	褐色菜菜发型	怀旧服-道具#30102
+Blonde Fantasy	绿色菜菜发型	怀旧服-道具#30103
+Green Fantasy	绿色菜菜发型	怀旧服-道具#30104
+Blue Fantasy	蓝色菜菜发型	怀旧服-道具#30105
+Purple Fantasy	紫色菜菜发型	怀旧服-道具#30106
+Brown Fantasy	褐色菜菜发型	怀旧服-道具#30107
+Black Fireball	黑色朝天发型	怀旧服-道具#30110
+Red Fireball	红色朝天发型	怀旧服-道具#30111
+Orange Fireball	橙色朝天发型	怀旧服-道具#30112
+Blonde Fireball	黄色朝天发型	怀旧服-道具#30113
+Green Fireball	绿色朝天发型	怀旧服-道具#30114
+Blue Fireball	蓝色朝天发型	怀旧服-道具#30115
+Purple Fireball	紫色朝天发型	怀旧服-道具#30116
+Brown Fireball	褐色朝天发型	怀旧服-道具#30117
+Black Vincent	黑色靓仔发型	怀旧服-道具#30120
+Red Vincent	红色靓仔发型	怀旧服-道具#30121
+Orange Vincent	橙色靓仔发型	怀旧服-道具#30122
+Blonde Vincent	黄色靓仔发型	怀旧服-道具#30123
+Green Vincent	绿色靓仔发型	怀旧服-道具#30124
+Blue Vincent	蓝色靓仔发型	怀旧服-道具#30125
+Purple Vincent	紫色靓仔发型	怀旧服-道具#30126
+Brown Vincent	褐色靓仔发型	怀旧服-道具#30127
+Black Antagonist	黑色半遮脸发型	怀旧服-道具#30130
+Red Antagonist	红色半遮脸发型	怀旧服-道具#30131
+Orange Antagonist	橙色半遮脸发型	怀旧服-道具#30132
+Blonde Antagonist	黄色半遮脸发型	怀旧服-道具#30133
+Green Antagonist	绿色半遮脸发型	怀旧服-道具#30134
+Blue Antagonist	蓝色半遮脸发型	怀旧服-道具#30135
+Purple Antagonist	紫色半遮脸发型	怀旧服-道具#30136
+Brown Antagonist	褐色半遮脸发型	怀旧服-道具#30137
+Black Topknot	黑色武士头	怀旧服-道具#30140
+Red Topknot	红色武士头	怀旧服-道具#30141
+Orange Topknot	橙色武士头	怀旧服-道具#30142
+Blonde Topknot	黄色武士头	怀旧服-道具#30143
+Green Topknot	绿色武士头	怀旧服-道具#30144
+Blue Topknot	蓝色武士头	怀旧服-道具#30145
+Purple Topknot	紫色武士头	怀旧服-道具#30146
+Brown Topknot	褐色武士头	怀旧服-道具#30147
+Black Mane	黑色乱碎	怀旧服-道具#30180
+Red Mane	红色乱碎	怀旧服-道具#30181
+Orange Mane	橙色乱碎	怀旧服-道具#30182
+Blonde Mane	黄色乱碎	怀旧服-道具#30183
+Green Mane	绿色乱碎	怀旧服-道具#30184
+Blue Mane	蓝色乱碎	怀旧服-道具#30185
+Purple Mane	紫色乱碎	怀旧服-道具#30186
+Brown Mane	褐色乱碎	怀旧服-道具#30187
+Black Bowl Cut	黑色蘑菇头	怀旧服-道具#30190
+Red Bowl Cut	红色蘑菇头	怀旧服-道具#30191
+Orange Bowl Cut	橙色蘑菇头	怀旧服-道具#30192
+Blonde Bowl Cut	黄色蘑菇头	怀旧服-道具#30193
+Green Bowl Cut	绿色蘑菇头	怀旧服-道具#30194
+Blue Bowl Cut	蓝色蘑菇头	怀旧服-道具#30195
+Purple Bowl Cut	紫色蘑菇头	怀旧服-道具#30196
+Brown Bowl Cut	褐色蘑菇头	怀旧服-道具#30197
+Black Wind	黑色碎发	怀旧服-道具#30200
+Red Wind	红色碎发	怀旧服-道具#30201
+Orange Wind	橙色碎发	怀旧服-道具#30202
+Blonde Wind	黄色碎发	怀旧服-道具#30203
+Green Wind	绿色碎发	怀旧服-道具#30204
+Blue Wind	蓝色碎发	怀旧服-道具#30205
+Purple Wind	紫色碎发	怀旧服-道具#30206
+Brown Wind	褐色碎发	怀旧服-道具#30207
+Black Shaggy Wax	黑色露耳短发	怀旧服-道具#30210
+Red Shaggy Wax	红色露耳短发	怀旧服-道具#30211
+Orange Shaggy Wax	橙色露耳短发	怀旧服-道具#30212
+Blonde Shaggy Wax	黄色露耳短发	怀旧服-道具#30213
+Green Shaggy Wax	绿色露耳短发	怀旧服-道具#30214
+Blue Shaggy Wax	蓝色露耳短发	怀旧服-道具#30215
+Purple Shaggy Wax	紫色露耳短发	怀旧服-道具#30216
+Brown Shaggy Wax	褐色露耳短发	怀旧服-道具#30217
+Black Grooovy Do	黑色猫王头	怀旧服-道具#30220
+Red Grooovy Do	红色猫王头	怀旧服-道具#30221
+Orange Grooovy Do	橙色猫王头	怀旧服-道具#30222
+Blonde Grooovy Do	黄色猫王头	怀旧服-道具#30223
+Green Grooovy Do	绿色猫王头	怀旧服-道具#30224
+Blue Grooovy Do	蓝色猫王头	怀旧服-道具#30225
+Purple Grooovy Do	紫色猫王头	怀旧服-道具#30226
+Brown Grooovy Do	褐色猫王头	怀旧服-道具#30227
+Black Foil Perm	黑色长刺发	怀旧服-道具#30230
+Red Foil Perm	红色长刺发	怀旧服-道具#30231
+Orange Foil Perm	橙色长刺发	怀旧服-道具#30232
+Blonde Foil Perm	黄色长刺发	怀旧服-道具#30233
+Green Foil Perm	绿色长刺发	怀旧服-道具#30234
+Blue Foil Perm	蓝色长刺发	怀旧服-道具#30235
+Purple Foil Perm	紫色长刺发	怀旧服-道具#30236
+Brown Foil Perm	褐色长刺发	怀旧服-道具#30237
+Black Chestnut	黑色海藻头	怀旧服-道具#30240
+Red Chestnut	红色海藻头	怀旧服-道具#30241
+Orange Chestnut	橙色海藻头	怀旧服-道具#30242
+Blonde Chestnut	黄色海藻头	怀旧服-道具#30243
+Green Chestnut	绿色海藻头	怀旧服-道具#30244
+Blue Chestnut	蓝色海藻头	怀旧服-道具#30245
+Purple Chestnut	紫色海藻头	怀旧服-道具#30246
+Brown Chestnut	褐色海藻头	怀旧服-道具#30247
+Black with Bald Spot	黑色瘌痢头	怀旧服-道具#30270
+Red with Bald Spot	红色瘌痢头	怀旧服-道具#30271
+Orange with Bald Spot	橙色瘌痢头	怀旧服-道具#30272
+Blonde with Bald Spot	黄色瘌痢头	怀旧服-道具#30273
+Green with Bald Spot	绿色瘌痢头	怀旧服-道具#30274
+Blue with Bald Spot	蓝色瘌痢头	怀旧服-道具#30275
+Purple with Bald Spot	紫色瘌痢头	怀旧服-道具#30276
+Brown with Bald Spot	褐色瘌痢头	怀旧服-道具#30277
+Black Mohecan Shaggy Do	黑色莫西干头	怀旧服-道具#30280
+Red Mohecan Shaggy Do	红色莫西干头	怀旧服-道具#30281
+Orange Mohecan Shaggy Do	橙色莫西干头	怀旧服-道具#30282
+Blonde Mohecan Shaggy Do	黄色莫西干头	怀旧服-道具#30283
+Green Mohecan Shaggy Do	绿色莫西干头	怀旧服-道具#30284
+Blue Mohecan Shaggy Do	蓝色莫西干头	怀旧服-道具#30285
+Purple Mohecan Shaggy Do	紫色莫西干头	怀旧服-道具#30286
+Brown Mohecan Shaggy Do	褐色莫西干头	怀旧服-道具#30287
+Black Romance	黑色中垂发	怀旧服-道具#30300
+Red Romance	红色中垂发	怀旧服-道具#30301
+Orange Romance	橙色中垂发	怀旧服-道具#30302
+Blonde Romance	黄色中垂发	怀旧服-道具#30303
+Green Romance	绿色中垂发	怀旧服-道具#30304
+Blue Romance	蓝色中垂发	怀旧服-道具#30305
+Purple Romance	紫色中垂发	怀旧服-道具#30306
+Brown Romance	褐色中垂发	怀旧服-道具#30307
+Black Acorn	黑色瓜皮发型	怀旧服-道具#30310
+Red Acorn	红色瓜皮发型	怀旧服-道具#30311
+Orange Acorn	橙色瓜皮发型	怀旧服-道具#30312
+Blonde Acorn	黄色瓜皮发型	怀旧服-道具#30313
+Green Acorn	绿色瓜皮发型	怀旧服-道具#30314
+Blue Acorn	蓝色瓜皮发型	怀旧服-道具#30315
+Purple Acorn	紫色瓜皮发型	怀旧服-道具#30316
+Brown Acorn	褐色瓜皮发型	怀旧服-道具#30317
+Black Close-Cropped Afro	黑色爆炸头	怀旧服-道具#30320
+Red Close-Cropped Afro	红色爆炸头	怀旧服-道具#30321
+Orange Close-Cropped Afro	橙色爆炸头	怀旧服-道具#30322
+Blonde Close-Cropped Afro	黄色爆炸头	怀旧服-道具#30323
+Green Close-Cropped Afro	绿色爆炸头	怀旧服-道具#30324
+Blue Close-Cropped Afro	蓝色爆炸头	怀旧服-道具#30325
+Purple Close-Cropped Afro	紫色爆炸头	怀旧服-道具#30326
+Brown Close-Cropped Afro	褐色爆炸头	怀旧服-道具#30327
+Black Astro	黑色花刘海发型	怀旧服-道具#30350
+Red Astro	红色花刘海发型	怀旧服-道具#30351
+Orange Astro	橙色花刘海发型	怀旧服-道具#30352
+Blonde Astro	黄色花刘海发型	怀旧服-道具#30353
+Green Astro	绿色花刘海发型	怀旧服-道具#30354
+Blue Astro	蓝色花刘海发型	怀旧服-道具#30355
+Purple Astro	紫色花刘海发型	怀旧服-道具#30356
+Brown Astro	褐色花刘海发型	怀旧服-道具#30357
+Black Shaggy Dragon	黑色派勒发	怀旧服-道具#30370
+Red Shaggy Dragon	红色派勒发	怀旧服-道具#30371
+Orange Shaggy Dragon	橙色派勒发	怀旧服-道具#30372
+Blonde Shaggy Dragon	黄色派勒发	怀旧服-道具#30373
+Green Shaggy Dragon	绿色派勒发	怀旧服-道具#30374
+Blue Shaggy Dragon	蓝色派勒发	怀旧服-道具#30375
+Purple Shaggy Dragon	紫色派勒发	怀旧服-道具#30376
+Brown Shaggy Dragon	褐色派勒发	怀旧服-道具#30377
+Black Tribal Buzz	黑色虫虫头	怀旧服-道具#30400
+Red Tribal Buzz	红色虫虫头	怀旧服-道具#30401
+Orange Tribal Buzz	橙色虫虫头	怀旧服-道具#30402
+Blonde Tribal Buzz	黄色虫虫头	怀旧服-道具#30403
+Green Tribal Buzz	绿色虫虫头	怀旧服-道具#30404
+Blue Tribal Buzz	蓝色虫虫头	怀旧服-道具#30405
+Purple Tribal Buzz	紫色虫虫头	怀旧服-道具#30406
+Brown Tribal Buzz	褐色虫虫头	怀旧服-道具#30407
+Black Veronica	黑色中分翘发	怀旧服-道具#31010
+Red Veronica	红色中分翘发	怀旧服-道具#31011
+Orange Veronica	橙色中分翘发	怀旧服-道具#31012
+Blonde Veronica	黄色中分翘发	怀旧服-道具#31013
+Green Veronica	绿色中分翘发	怀旧服-道具#31014
+Blue Veronica	蓝色中分翘发	怀旧服-道具#31015
+Purple Veronica	紫色中分翘发	怀旧服-道具#31016
+Brown Veronica	褐色中分翘发	怀旧服-道具#31017
+Black Francesca	黑色卷发	怀旧服-道具#31020
+Red Francesca	红色卷发	怀旧服-道具#31021
+Orange Francesca	橙色卷发	怀旧服-道具#31022
+Blonde Francesca	黄色卷发	怀旧服-道具#31023
+Green Francesca	绿色卷发	怀旧服-道具#31024
+Blue Francesca	蓝色卷发	怀旧服-道具#31025
+Purple Francesca	紫色卷发	怀旧服-道具#31026
+Brown Francesca	褐色卷发	怀旧服-道具#31027
+Black Polly	黑色辫子	怀旧服-道具#31030
+Red Polly	红色辫子	怀旧服-道具#31031
+Orange Polly	橙色辫子	怀旧服-道具#31032
+Blonde Polly	黄色辫子	怀旧服-道具#31033
+Green Polly	绿色辫子	怀旧服-道具#31034
+Blue Polly	蓝色辫子	怀旧服-道具#31035
+Purple Polly	紫色辫子	怀旧服-道具#31036
+Brown Polly	褐色辫子	怀旧服-道具#31037
+Black Edgy	黑色边分翘发	怀旧服-道具#31040
+Black Annie	黑色乖乖女	怀旧服-道具#31060
+Red Annie	红色乖乖女	怀旧服-道具#31061
+Orange Annie	橙色乖乖女	怀旧服-道具#31062
+Blonde Annie	黄色乖乖女	怀旧服-道具#31063
+Green Annie	绿色乖乖女	怀旧服-道具#31064
+Blue Annie	蓝色乖乖女	怀旧服-道具#31065
+Purple Annie	紫色乖乖女	怀旧服-道具#31066
+Brown Annie	褐色乖乖女	怀旧服-道具#31067
+Black Stella	黑色浓密卷发	怀旧服-道具#31070
+Red Stella	红色浓密卷发	怀旧服-道具#31071
+Orange Stella	橙色浓密卷发	怀旧服-道具#31072
+Blonde Stella	黄色浓密卷发	怀旧服-道具#31073
+Green Stella	绿色浓密卷发	怀旧服-道具#31074
+Blue Stella	蓝色浓密卷发	怀旧服-道具#31075
+Purple Stella	紫色浓密卷发	怀旧服-道具#31076
+Brown Stella	褐色浓密卷发	怀旧服-道具#31077
+Black Parted Pomp	黑色四六分	怀旧服-道具#31080
+Red Parted Pomp	红色四六分	怀旧服-道具#31081
+Orange Parted Pomp	橙色四六分	怀旧服-道具#31082
+Blonde Parted Pomp	黄色四六分	怀旧服-道具#31083
+Green Parted Pomp	绿色四六分	怀旧服-道具#31084
+Blue Parted Pomp	蓝色四六分	怀旧服-道具#31085
+Purple Parted Pomp	紫色四六分	怀旧服-道具#31086
+Brown Parted Pomp	褐色四六分	怀旧服-道具#31087
+Black Bridget	黑色马尾	怀旧服-道具#31090
+Red Bridget	红色马尾	怀旧服-道具#31091
+Orange Bridget	橙色马尾	怀旧服-道具#31092
+Blonde Bridget	黄色马尾	怀旧服-道具#31093
+Green Bridget	绿色马尾	怀旧服-道具#31094
+Blue Bridget	蓝色马尾	怀旧服-道具#31095
+Purple Bridget	紫色马尾	怀旧服-道具#31096
+Brown Bridget	褐色马尾	怀旧服-道具#31097
+Black Jolie	黑色清纯女发	怀旧服-道具#31130
+Red Jolie	红色清纯女发	怀旧服-道具#31131
+Orange Jolie	橙色清纯女发	怀旧服-道具#31132
+Blonde Jolie	黄色清纯女发	怀旧服-道具#31133
+Green Jolie	绿色清纯女发	怀旧服-道具#31134
+Blue Jolie	蓝色清纯女发	怀旧服-道具#31135
+Purple Jolie	紫色清纯女发	怀旧服-道具#31136
+Brown Jolie	褐色清纯女发	怀旧服-道具#31137
+Black Pei Pei	黑色书童女	怀旧服-道具#31140
+Red Pei Pei	红色书童女	怀旧服-道具#31141
+Orange Pei Pei	橙色书童女	怀旧服-道具#31142
+Blonde Pei Pei	黄色书童女	怀旧服-道具#31143
+Green Pei Pei	绿色书童女	怀旧服-道具#31144
+Blue Pei Pei	蓝色书童女	怀旧服-道具#31145
+Purple Pei Pei	紫色书童女	怀旧服-道具#31146
+Brown Pei Pei	褐色书童女	怀旧服-道具#31147
+Black Lori	黑色小髻	怀旧服-道具#31160
+Red Lori	红色小髻	怀旧服-道具#31161
+Orange Lori	橙色小髻	怀旧服-道具#31162
+Blonde Lori	黄色小髻	怀旧服-道具#31163
+Green Lori	绿色小髻	怀旧服-道具#31164
+Blue Lori	蓝色小髻	怀旧服-道具#31165
+Purple Lori	紫色小髻	怀旧服-道具#31166
+Brown Lori	褐色小髻	怀旧服-道具#31167
+Black Holla' Back Do	黑色小可爱头发	怀旧服-道具#31200
+Red Holla' Back Do	红色小可爱头发	怀旧服-道具#31201
+Orange Holla' Back Do	橙色小可爱头发	怀旧服-道具#31202
+Blonde Holla' Back Do	黄色小可爱头发	怀旧服-道具#31203
+Green Holla' Back Do	绿色小可爱头发	怀旧服-道具#31204
+Blue Holla' Back Do	蓝色小可爱头发	怀旧服-道具#31205
+Purple Holla' Back Do	紫色小可爱头发	怀旧服-道具#31206
+Brown Holla' Back Do	褐色小可爱头发	怀旧服-道具#31207
+Black Perfect Stranger	黑色刘海	怀旧服-道具#31210
+Red Perfect Stranger	红色刘海	怀旧服-道具#31211
+Orange Perfect Stranger	橙色刘海	怀旧服-道具#31212
+Blonde Perfect Stranger	黄色刘海	怀旧服-道具#31213
+Green Perfect Stranger	绿色刘海	怀旧服-道具#31214
+Blue Perfect Stranger	蓝色刘海	怀旧服-道具#31215
+Purple Perfect Stranger	紫色刘海	怀旧服-道具#31216
+Brown Perfect Stranger	褐色刘海	怀旧服-道具#31217
+Black Disheveled	黑色野人头	怀旧服-道具#31240
+Red Disheveled	红色野人头	怀旧服-道具#31241
+Orange Disheveled	橙色野人头	怀旧服-道具#31242
+Blonde Disheveled	黄色野人头	怀旧服-道具#31243
+Green Disheveled	绿色野人头	怀旧服-道具#31244
+Blue Disheveled	蓝色野人头	怀旧服-道具#31245
+Purple Disheveled	紫色野人头	怀旧服-道具#31246
+Brown Disheveled	褐色野人头	怀旧服-道具#31247
+Black Bowlcut	黑色娃娃头	怀旧服-道具#31250
+Red Bowlcut	红色娃娃头	怀旧服-道具#31251
+Orange Bowlcut	橙色娃娃头	怀旧服-道具#31252
+Blonde Bowlcut	黄色娃娃头	怀旧服-道具#31253
+Green Bowlcut	绿色娃娃头	怀旧服-道具#31254
+Blue Bowlcut	蓝色娃娃头	怀旧服-道具#31255
+Purple Bowlcut	紫色娃娃头	怀旧服-道具#31256
+Brown Bowlcut	褐色娃娃头	怀旧服-道具#31257
+Black Pigtails	黑色妞妞头	怀旧服-道具#31270
+Red Pigtails	红色妞妞头	怀旧服-道具#31271
+Orange Pigtails	橙色妞妞头	怀旧服-道具#31272
+Blonde Pigtails	黄色妞妞头	怀旧服-道具#31273
+Green Pigtails	绿色妞妞头	怀旧服-道具#31274
+Blue Pigtails	蓝色妞妞头	怀旧服-道具#31275
+Purple Pigtails	紫色妞妞头	怀旧服-道具#31276
+Brown Pigtails	褐色妞妞头	怀旧服-道具#31277
+Black Ellie	黑色中碎发	怀旧服-道具#31280
+Red Ellie	红色中碎发	怀旧服-道具#31281
+Orange Ellie	橙色中碎发	怀旧服-道具#31282
+Blonde Ellie	黄色中碎发	怀旧服-道具#31283
+Green Ellie	绿色中碎发	怀旧服-道具#31284
+Blue Ellie	蓝色中碎发	怀旧服-道具#31285
+Purple Ellie	紫色中碎发	怀旧服-道具#31286
+Brown Ellie	褐色中碎发	怀旧服-道具#31287
+Black Naomi	黑色短翘发	怀旧服-道具#31290
+Red Naomi	红色短翘发	怀旧服-道具#31291
+Orange Naomi	橙色短翘发	怀旧服-道具#31292
+Blonde Naomi	黄色短翘发	怀旧服-道具#31293
+Green Naomi	绿色短翘发	怀旧服-道具#31294
+Blue Naomi	蓝色短翘发	怀旧服-道具#31295
+Purple Naomi	紫色短翘发	怀旧服-道具#31296
+Brown Naomi	褐色短翘发	怀旧服-道具#31297
+Black Carla	黑色风韵发型	怀旧服-道具#31310
+Red Carla	红色风韵发型	怀旧服-道具#31311
+Orange Carla	橙色风韵发型	怀旧服-道具#31312
+Blonde Carla	黄色风韵发型	怀旧服-道具#31313
+Green Carla	绿色风韵发型	怀旧服-道具#31314
+Blue Carla	蓝色风韵发型	怀旧服-道具#31315
+Purple Carla	紫色风韵发型	怀旧服-道具#31316
+Brown Carla	褐色风韵发型	怀旧服-道具#31317
+Black Roxy	黑色菊花头	怀旧服-道具#31320
+Red Roxy	红色菊花头	怀旧服-道具#31321
+Orange Roxy	橙色菊花头	怀旧服-道具#31322
+Blonde Roxy	黄色菊花头	怀旧服-道具#31323
+Green Roxy	绿色菊花头	怀旧服-道具#31324
+Blue Roxy	蓝色菊花头	怀旧服-道具#31325
+Purple Roxy	紫色菊花头	怀旧服-道具#31326
+Brown Roxy	褐色菊花头	怀旧服-道具#31327
+Black Rae	黑色调皮乖乖头	怀旧服-道具#31340
+Red Rae	红色调皮乖乖头	怀旧服-道具#31341
+Orange Rae	橙色调皮乖乖头	怀旧服-道具#31342
+Blonde Rae	黄色调皮乖乖头	怀旧服-道具#31343
+Green Rae	绿色调皮乖乖头	怀旧服-道具#31344
+Blue Rae	蓝色调皮乖乖头	怀旧服-道具#31345
+Purple Rae	紫色调皮乖乖头	怀旧服-道具#31346
+Brown Rae	褐色调皮乖乖头	怀旧服-道具#31347
+Black Fourtail Braids	黑色手鞠头	怀旧服-道具#31350
+Red Fourtail Braids	红色手鞠头	怀旧服-道具#31351
+Orange Fourtail Braids	橙色手鞠头	怀旧服-道具#31352
+Blonde Fourtail Braids	黄色手鞠头	怀旧服-道具#31353
+Green Fourtail Braids	绿色手鞠头	怀旧服-道具#31354
+Blue Fourtail Braids	蓝色手鞠头	怀旧服-道具#31355
+Purple Fourtail Braids	紫色手鞠头	怀旧服-道具#31356
+Brown Fourtail Braids	褐色手鞠头	怀旧服-道具#31357
+Black Stylish Burst Hair	黑色个性主播发型	怀旧服-道具#31380
+Red Stylish Burst Hair	红色个性主播发型	怀旧服-道具#31381
+Orange Stylish Burst Hair	橙色个性主播发型	怀旧服-道具#31382
+Blonde Stylish Burst Hair	黄色个性主播发型	怀旧服-道具#31383
+Green Stylish Burst Hair	绿色个性主播发型	怀旧服-道具#31384
+Blue Stylish Burst Hair	蓝色个性主播发型	怀旧服-道具#31385
+Purple Stylish Burst Hair	紫色个性主播发型	怀旧服-道具#31386
+Brown Stylish Burst Hair	褐色个性主播发型	怀旧服-道具#31387
+Black Boyish	黑色夏日短发	怀旧服-道具#31400
+Red Boyish	红色夏日短发	怀旧服-道具#31401
+Orange Boyish	橙色夏日短发	怀旧服-道具#31402
+Blonde Boyish	黄色夏日短发	怀旧服-道具#31403
+Green Boyish	绿色夏日短发	怀旧服-道具#31404
+Blue Boyish	蓝色夏日短发	怀旧服-道具#31405
+Purple Boyish	紫色夏日短发	怀旧服-道具#31406
+Brown Boyish	褐色夏日短发	怀旧服-道具#31407
+Brown Skullcap	褐色皮帽	怀旧服-道具#1002000
+Green Skullcap	绿色皮帽	怀旧服-道具#1002001
+Red Skullcap	红色皮帽	怀旧服-道具#1002002
+Red Headband	红色发箍	怀旧服-道具#1002003
+Black Headband	黑发箍	怀旧服-道具#1002004
+Green Headband	淡绿发箍	怀旧服-道具#1002005
+Yellow Headband	黄发箍	怀旧服-道具#1002006
+Blue Headband	蓝发箍	怀旧服-道具#1002007
+Black Swimming Cap	黑游泳帽	怀旧服-道具#1002008
+Blue Swimming Cap	蓝游泳帽	怀旧服-道具#1002009
+Red Swimming Cap	红游泳帽	怀旧服-道具#1002010
+White Bandana	白头巾	怀旧服-道具#1002011
+Red Bandana	红头巾	怀旧服-道具#1002012
+Blue Bandana	青头巾	怀旧服-道具#1002013
+Yellow Bandana	黄头巾	怀旧服-道具#1002014
+Black Bandana	黑头巾	怀旧服-道具#1002015
+Bronze Koif	青铜头盔	怀旧服-道具#1002016
+Metal Koif	金属头盔	怀旧服-道具#1002017
+Mithril Koif	秘银头盔	怀旧服-道具#1002018
+Brown Apprentice Hat	褐色旧魔法帽	怀旧服-道具#1002019
+Blue Apprentice Hat	蓝色旧魔法帽	怀旧服-道具#1002020
+Red Apprentice Hat	红色旧魔法帽	怀旧服-道具#1002021
+Brown Winter Hat	褐色高级皮帽	怀旧服-道具#1002022
+Green Winter Hat	绿色高级皮帽	怀旧服-道具#1002023
+Red Ghetto Beanie	飞侠红帽	怀旧服-道具#1002024
+Blue Ghetto Beanie	飞侠蓝帽	怀旧服-道具#1002025
+Brown Ghetto Beanie	飞侠褐帽	怀旧服-道具#1002026
+Black Ghetto Beanie	飞侠黑帽	怀旧服-道具#1002027
+Green Ghetto Beanie	飞侠绿帽	怀旧服-道具#1002028
+Bronze Helmet	青铜头盔	怀旧服-道具#1002029
+Steel Helmet	钢铁头盔	怀旧服-道具#1002030
+Mithril Helmet	锂矿帽	怀旧服-道具#1002031
+Metal Gear	金属头箍	怀旧服-道具#1002032
+Yellow Metal Gear	黄色金属头箍	怀旧服-道具#1002033
+Blue Metal Gear	蓝色金属头箍	怀旧服-道具#1002034
+Bronze Full Helm	青铜头盔	怀旧服-道具#1002035
+Steel Full Helm	铁制头具	怀旧服-道具#1002036
+Mithril Full Helm	锂矿头盔	怀旧服-道具#1002037
+Blue Moon Conehat	蓝色魔法帽	怀旧服-道具#1002038
+Pink Moon Conehat	粉红魔法帽	怀旧服-道具#1002039
+Green Moon Conehat	绿色魔法帽	怀旧服-道具#1002040
+Dark Moon Conehat	黑色魔法帽	怀旧服-道具#1002041
+Brown Moon Conehat	褐色魔法帽	怀旧服-道具#1002042
+Green Feather Hat	绿羽毛帽	怀旧服-道具#1002043
+Brown Feather Hat	褐羽毛帽	怀旧服-道具#1002044
+Blue Feather Hat	蓝羽毛帽	怀旧服-道具#1002045
+Red Feather Hat	红羽毛帽	怀旧服-道具#1002046
+Black Feather Hat	黑羽毛帽	怀旧服-道具#1002047
+Red Thief Hood	飞侠红头巾	怀旧服-道具#1002048
+Green Thief Hood	飞侠绿头巾	怀旧服-道具#1002049
+Blue Thief Hood	飞侠蓝头巾	怀旧服-道具#1002050
+Yellow Thief Hood	飞侠黄头巾	怀旧服-道具#1002051
+Black Thief Hood	飞侠黑头巾	怀旧服-道具#1002052
+Old Wisconsin	狗皮帽	怀旧服-道具#1002053
+Bronze Football Helmet	青铜橄榄球帽	怀旧服-道具#1002054
+Steel Football Helmet	钢铁橄榄球帽	怀旧服-道具#1002055
+Mithril Football Helmet	锂矿橄榄球帽	怀旧服-道具#1002056
+Bronze Viking Helm	青铜海王头盔	怀旧服-道具#1002057
+Iron Viking Helm	钢制海王帽	怀旧服-道具#1002058
+Mithril Viking Helm	锂矿海王头盔	怀旧服-道具#1002059
+Blue Wizardry Hat	蓝色法师帽	怀旧服-道具#1002060
+Red Wizardry Hat	红色法师帽	怀旧服-道具#1002061
+Green Wizardry Hat	绿色法师帽	怀旧服-道具#1002062
+Green Robin Hat	绿箭翎帽	怀旧服-道具#1002063
+Brown Robin Hat	褐箭翎帽	怀旧服-道具#1002064
+Red Robin Hat	红箭翎帽	怀旧服-道具#1002065
+Blue Robin Hat	蓝箭翎帽	怀旧服-道具#1002066
+Black Robin Hat	黑箭翎帽	怀旧服-道具#1002067
+Red Loosecap	红自由之帽	怀旧服-道具#1002068
+Black Loosecap	黑自由之帽	怀旧服-道具#1002069
+Blue Loosecap	蓝自由之帽	怀旧服-道具#1002070
+Brown Loosecap	褐自由之帽	怀旧服-道具#1002071
+Green Loosecap	绿自由之帽	怀旧服-道具#1002072
+Red Baseball Cap	红色棒球帽	怀旧服-道具#1002073
+Black Baseball Cap	黑色棒球帽	怀旧服-道具#1002074
+Yellow Baseball Cap	黄色棒球帽	怀旧服-道具#1002075
+Brown Baseball Cap	褐色棒球帽	怀旧服-道具#1002076
+Blue Baseball Cap	青色棒球帽	怀旧服-道具#1002077
+Steel Sharp Helm	铁制尖头具	怀旧服-道具#1002078
+Mithril Sharp Helm	锂矿尖头盔	怀旧服-道具#1002079
+Gold Sharp Helm	黄金尖头盔	怀旧服-道具#1002080
+Brown Bamboo Hat	褐色斗笠	怀旧服-道具#1002081
+Green Bamboo Hat	绿色斗笠	怀旧服-道具#1002082
+Blue Bamboo Hat	蓝色斗笠	怀旧服-道具#1002083
+Red Starry Bandana	红星头巾	怀旧服-道具#1002084
+Sky Blue Starry Bandana	蓝星头巾	怀旧服-道具#1002085
+Yellow Starry Bandana	黄星头巾	怀旧服-道具#1002086
+Iron Burgernet Helm	钢制骑士头盔	怀旧服-道具#1002087
+Gold Burgernet Helm	黄金骑士头盔	怀旧服-道具#1002088
+Orihalcon Burgernet Helm	紫矿骑士头盔	怀旧服-道具#1002089
+Green Hunter	绿打猎帽	怀旧服-道具#1002090
+Brown Hunter	褐打猎帽	怀旧服-道具#1002091
+Red Hunter	红打猎帽	怀旧服-道具#1002092
+Blue Hunter	蓝打猎帽	怀旧服-道具#1002093
+Black Hunter	黑打猎帽	怀旧服-道具#1002094
+Red Tiberian	红提贝之帽	怀旧服-道具#1002095
+Dark Tiberian	黑提贝之帽	怀旧服-道具#1002096
+Blue Tiberian	蓝提贝之帽	怀旧服-道具#1002097
+Brown Tiberian	褐提贝之帽	怀旧服-道具#1002098
+Green Tiberian	绿提贝之帽	怀旧服-道具#1002099
+Ribboned Pig Headband	热血头带	怀旧服-道具#1002100
+Bronze Pride	孙悟空青铜头箍	怀旧服-道具#1002101
+Steel Pride	孙悟空钢制头箍	怀旧服-道具#1002102
+Golden Pride	孙悟空头箍	怀旧服-道具#1002103
+Jousting Helmet	枪骑士头盔	怀旧服-道具#1002104
+Blue Jester	蓝色术士帽	怀旧服-道具#1002105
+Brown Jester	褐色术士帽	怀旧服-道具#1002106
+Pink Jester	粉红术士帽	怀旧服-道具#1002107
+Black Jester	黑色术士帽	怀旧服-道具#1002108
+Green Jester	绿色术士帽	怀旧服-道具#1002109
+Green Hawkeye	绿冬羽	怀旧服-道具#1002110
+Brown Hawkeye	褐冬羽	怀旧服-道具#1002111
+Red Hawkeye	红冬羽	怀旧服-道具#1002112
+Blue Hawkeye	蓝冬羽	怀旧服-道具#1002113
+Dark Hawkeye	黑冬羽帽	怀旧服-道具#1002114
+Red Guise	红假面帽	怀旧服-道具#1002115
+Dark Guise	黑假面帽	怀旧服-道具#1002116
+Blue Guise	蓝假面帽	怀旧服-道具#1002117
+Brown Guise	褐假面帽	怀旧服-道具#1002118
+Green Guise	绿假面帽	怀旧服-道具#1002119
+Great Brown Helmet	褐色战斗头盔	怀旧服-道具#1002120
+Great Red Helmet	红色战斗头盔	怀旧服-道具#1002121
+Great Blue Helmet	蓝色战斗头盔	怀旧服-道具#1002122
+Green Pole-Feather Hat	绿箭翎三角帽	怀旧服-道具#1002123
+Brown Pole-Feather Hat	褐箭翎三角帽	怀旧服-道具#1002124
+Red Pole-Feather Hat	红箭翎三角帽	怀旧服-道具#1002125
+Blue Pole-Feather Hat	蓝箭翎三角帽	怀旧服-道具#1002126
+Dark Pole-Feather Hat	黑箭翎三角帽	怀旧服-道具#1002127
+Brown Matty	褐星魔法帽	怀旧服-道具#1002128
+Green Matty	绿星魔法帽	怀旧服-道具#1002129
+Red Matty	红星魔法帽	怀旧服-道具#1002130
+Blue Matty	蓝星魔法帽	怀旧服-道具#1002131
+Dark Matty	黑星魔法帽	怀旧服-道具#1002132
+Green Burgler	绿防风帽	怀旧服-道具#1002133
+Red Burgler	红防风帽	怀旧服-道具#1002134
+Brown Burgler	褐防风帽	怀旧服-道具#1002135
+Blue Burgler	蓝防风帽	怀旧服-道具#1002136
+Dark Burgler	黑防风帽	怀旧服-道具#1002137
+Chief Stan Hat	长老斯坦之帽	怀旧服-道具#1002138
+Steel Nordic Helm	诺曼头盔	怀旧服-道具#1002139
+Mithril Nordic Helm	锂矿诺曼头盔	怀旧服-道具#1002140
+Gold Nordic Helm	黄金诺曼头盔	怀旧服-道具#1002141
+White Guiltian	白魔道之帽	怀旧服-道具#1002142
+Red Guiltian	红魔道之帽	怀旧服-道具#1002143
+Dark Guiltian	黑魔道之帽	怀旧服-道具#1002144
+Blue Guiltian	蓝魔道之帽	怀旧服-道具#1002145
+Brown Guiltian	褐魔道之帽	怀旧服-道具#1002146
+Green Distinction	绿羽丝绒帽	怀旧服-道具#1002147
+Brown Distinction	褐羽丝绒帽	怀旧服-道具#1002148
+Red Distinction	红羽丝绒帽	怀旧服-道具#1002149
+Blue Distinction	蓝羽丝绒帽	怀旧服-道具#1002150
+Dark Distinction	黑羽丝绒帽	怀旧服-道具#1002151
+Red Pilfer	红海盗头巾	怀旧服-道具#1002152
+Blue Pilfer	蓝海盗头巾	怀旧服-道具#1002153
+Green Pilfer	绿海盗头巾	怀旧服-道具#1002154
+Brown Pilfer	褐海盗头巾	怀旧服-道具#1002155
+Dark Pilfer	黑海盗头巾	怀旧服-道具#1002156
+Red Duke	红铁头盔	怀旧服-道具#1002157
+Yellow Duke	黄铁头盔	怀旧服-道具#1002158
+Blue Duke	蓝铁头盔	怀旧服-道具#1002159
+Bone Helm	骷髅头盔	怀旧服-道具#1002160
+Blue Bone Helm	蓝色骷髅头盔	怀旧服-道具#1002161
+Red Bone Helm	红色骷髅头盔	怀旧服-道具#1002162
+Emerald Dome	祖母绿武士头盔	怀旧服-道具#1002163
+Dark Dome	黑青武士头盔	怀旧服-道具#1002164
+Bronze Crusader Helm	青铜十字军帽	怀旧服-道具#1002165
+Silver Crusader Helm	银制十字军帽子	怀旧服-道具#1002166
+Mithril Crusader Helm	锂矿十字军帽	怀旧服-道具#1002167
+Flame Golden Circlet	火黄金法冠	怀旧服-道具#1002168
+Aqua Golden Circlet	水黄金法冠	怀旧服-道具#1002169
+Orange Golden Circlet	土黄金法冠	怀旧服-道具#1002170
+Dark Golden Circlet	黑黄金法冠	怀旧服-道具#1002171
+Green Maro	绿贵族软帽	怀旧服-道具#1002172
+Red Maro	红贵族软帽	怀旧服-道具#1002173
+Blue Maro	蓝贵族软帽	怀旧服-道具#1002174
+Black Maro	黑贵族软帽	怀旧服-道具#1002175
+Red Sonata	红黑太阳帽	怀旧服-道具#1002176
+Blue Sonata	蓝黑太阳帽	怀旧服-道具#1002177
+Green Sonata	绿黑太阳帽	怀旧服-道具#1002178
+Brown Sonata	黄黑太阳帽	怀旧服-道具#1002179
+Zakum Helmet	扎昆头盔	怀旧服-道具#1002180
+MapleStory Invincible Hat	冒险岛无敌帽	怀旧服-道具#1002995
+Dr. Lim Hat	林博士帽	怀旧服-道具#1002996
+Nemi Hat	内米帽	怀旧服-道具#1002997
+Inkwell Hat	彪鲁帽	怀旧服-道具#1002998
+Wizet Invincible Hat	维泽特无敌帽	怀旧服-道具#1002999
+Blue Beanie	青毛线帽	怀旧服-道具#1005000
+Fine Black Hanbok Hat	黑福巾	怀旧服-道具#1005001
+Fine Blue Hanbok Hat	青福巾	怀旧服-道具#1005002
+Scream Mask	尖叫面具	怀旧服-道具#1005003
+Old School Uniform Hat	青年帽	怀旧服-道具#1005004
+Hat of Death	高丽帽	怀旧服-道具#1005005
+Detective Hat	侦探帽	怀旧服-道具#1005006
+Mesoranger Red Helmet	金币战队红色头盔	怀旧服-道具#1005007
+Mesoranger Blue Helmet	金币战队蓝色头盔	怀旧服-道具#1005008
+Mesoranger Green Helmet	金币战队绿色头盔	怀旧服-道具#1005009
+Mesoranger Black Helmet	金币战队黑色头盔	怀旧服-道具#1005010
+Kuniragi Hat	顽童帽	怀旧服-道具#1005011
+Chief Hat	酋长帽	怀旧服-道具#1005012
+Race Ace Cap	红棒球帽	怀旧服-道具#1005013
+Orange Beanie	花毛线帽	怀旧服-道具#1006000
+Hanbok Jobawi	韩服帽子	怀旧服-道具#1006001
+Witch Hat	魔女帽	怀旧服-道具#1006002
+Beret	贝雷帽	怀旧服-道具#1006003
+Mesoranger Pink Helmet	金币战队粉色头盔	怀旧服-道具#1006004
+Mesoranger Yellow Helmet	金币战队黄色头盔	怀旧服-道具#1006005
+Picnic Hat	沙滩帽	怀旧服-道具#1006007
+Red-Feathered Indian Bandana	红羽印第安头巾	怀旧服-道具#1006008
+Blue-Feathered Indian Bandana	蓝羽印第安头巾	怀旧服-道具#1006009
+Yellow Bride's Veil	新娘面纱	怀旧服-道具#1006010
+Brown Flight Headgear	褐色航空帽	怀旧服-道具#1007000
+Red Swimming Goggle	红色潜水镜	怀旧服-道具#1007001
+Green Camping Hat	淡绿礼帽	怀旧服-道具#1007002
+Cat Hat	猫咪帽	怀旧服-道具#1007003
+Puffy Brown Hat	欧洲风情帽	怀旧服-道具#1007004
+Green Swimming Goggle	绿色潜水镜	怀旧服-道具#1007005
+Blue Swimming Goggle	蓝色潜水镜	怀旧服-道具#1007006
+Red Flight Headgear	红色航空帽	怀旧服-道具#1007007
+Blue Flight Headgear	蓝色航空帽	怀旧服-道具#1007008
+Sky Blue Camping Hat	蓝色礼帽	怀旧服-道具#1007009
+Pink Camping Hat	粉红礼帽	怀旧服-道具#1007010
+Blue Pre-School Hat	蓝勋章帽	怀旧服-道具#1007011
+Red Pre-School Hat	红勋章帽	怀旧服-道具#1007012
+The Chinese Undead's Hat (Blue)	中国僵尸帽（蓝）	怀旧服-道具#1007013
+The Chinese Undead's Hat (Maroon)	中国僵尸帽（栗色）	怀旧服-道具#1007014
+Rosy Swimming Cap	玫瑰帽	怀旧服-道具#1007015
+Flowery Swimming Cap	百花帽	怀旧服-道具#1007016
+Blue Baseball Helmet	蓝棒球头盔	怀旧服-道具#1007017
+Red Baseball Helmet	红棒球头盔	怀旧服-道具#1007018
+Indigo Baseball Helmet	黑蓝棒球头盔	怀旧服-道具#1007019
+Black Baseball Helmet	黑棒球头盔	怀旧服-道具#1007020
+Green Visor	郊游帽	怀旧服-道具#1007021
+Sky Blue Visor	网球帽	怀旧服-道具#1007022
+Orange Visor	高尔夫球帽	怀旧服-道具#1007023
+Yellow Rain Cap	黄雨帽	怀旧服-道具#1007024
+Red Rain Cap	红雨帽	怀旧服-道具#1007025
+Sky Blue Rain Cap	蓝雨帽	怀旧服-道具#1007026
+Green Rain Cap	绿雨帽	怀旧服-道具#1007027
+Zorro Hat	佐罗帽	怀旧服-道具#1007028
+Black Slanted Visor	黑色斜戴遮阳帽	怀旧服-道具#1007029
+Purple Slanted Visor	紫色斜戴遮阳帽	怀旧服-道具#1007030
+Red Upside-Down Visor	红时尚帽	怀旧服-道具#1007031
+Blue Upside-Down Visor	蓝时尚帽	怀旧服-道具#1007032
+Tiger Mask	老虎面具	怀旧服-道具#1007033
+Santa Hat	圣诞帽	怀旧服-道具#1007034
+Fashionable Hat	流行帽	怀旧服-道具#1007035
+Blue Fisherman Hat	淡蓝游览帽	怀旧服-道具#1007036
+Cabbie	卡斯帽	怀旧服-道具#1007037
+Goggled Red Cap	红车手帽	怀旧服-道具#1007038
+Goggled Black Cap	黑车手帽	怀旧服-道具#1007039
+Goggled Blue Cap	蓝车手帽	怀旧服-道具#1007040
+Starry Red Beanie	红星绒线帽	怀旧服-道具#1007041
+Starry Pink Beanie	粉星绒线帽	怀旧服-道具#1007042
+Starry Sky Blue Beanie	淡蓝星绒线子	怀旧服-道具#1007043
+Sky Blue Goggled Beanie	淡蓝滑雪帽	怀旧服-道具#1007044
+Khaki Goggled Beanie	软褐滑雪帽	怀旧服-道具#1007045
+Blue Cap	蓝帽	怀旧服-道具#1007046
+The Graduation Hat	毕业帽	怀旧服-道具#1007047
+Yellow Trucker Hat	黄色开心帽	怀旧服-道具#1007048
+Blue Trucker Hat	蓝色开心帽	怀旧服-道具#1007049
+Red Trucker Hat	红色开心帽	怀旧服-道具#1007050
+Green Trucker Hat	绿色开心帽	怀旧服-道具#1007051
+Hardhat	钢盔	怀旧服-道具#1007052
+Bunny Hat	兔兔帽	怀旧服-道具#1007053
+Ducky Hat	鸭子帽	怀旧服-道具#1007054
+Camouflaged Helmet	野战钢盔	怀旧服-道具#1007055
+Starred Hunting Hat	星纹打猎帽	怀旧服-道具#1007056
+Pink Frill Pajama Hat	荷花帽	怀旧服-道具#1007057
+Blue Pajama Hat	蓝色睡帽	怀旧服-道具#1007058
+Red Frill Pajama Hat	红色荷叶边睡帽	怀旧服-道具#1007059
+Brown Bucket Hat	褐色方格帽	怀旧服-道具#1007060
+Blue Bucket Hat	蓝色方格帽	怀旧服-道具#1007061
+Cubic Newsie Hat	摇滚帽	怀旧服-道具#1007062
+Green Picnic Hat	绿色遮阳帽	怀旧服-道具#1007063
+Yellow Picnic Hat	黄色遮阳帽	怀旧服-道具#1007064
+Pink Picnic Hat	粉红遮阳帽	怀旧服-道具#1007065
+Blue Picnic Hat	蓝色遮阳帽	怀旧服-道具#1007066
+Silver-Chain Hat	银链帽	怀旧服-道具#1007067
+Watermelon Hat	西瓜帽	怀旧服-道具#1007068
+Flower Crown	花冠	怀旧服-道具#1007069
+Red Straw Hat	红带草帽	怀旧服-道具#1007070
+Blue Straw Hat	蓝带草帽	怀旧服-道具#1007071
+Olive Beanie	绿编织帽	怀旧服-道具#1007072
+White Beanie	白编织帽	怀旧服-道具#1007073
+Woodsman Hat	猎户帽	怀旧服-道具#1007074
+Red Festive Gumball	红绒帽	怀旧服-道具#1007075
+White Festive Gumball	白绒帽	怀旧服-道具#1007076
+Angel Halo	天使之冠	怀旧服-道具#1007077
+Reindeer Hat	驯鹿帽	怀旧服-道具#1007078
+Hawaiian Flower	美人娇	怀旧服-道具#1007079
+Sunflower Petal	太阳花	怀旧服-道具#1007080
+Octopus Hat	章鱼怪帽	怀旧服-道具#1007081
+Orange Mushroom Hat	橙蘑菇帽	怀旧服-道具#1007082
+Zombie Mushroom Hat	僵尸蘑菇帽	怀旧服-道具#1007083
+Slime Hat	绿水灵帽	怀旧服-道具#1007084
+Drake Hat	青龙帽	怀旧服-道具#1007085
+Biker Bandana	Hippop头巾	怀旧服-道具#1007086
+Pink Knitted Beanie	红荷兰帽	怀旧服-道具#1007087
+Blue Knitted Beanie	点点星光帽	怀旧服-道具#1007088
+Yellow Knitted Beanie	黄色针织帽	怀旧服-道具#1007089
+Beige Checkered Hat	格子帽	怀旧服-道具#1007090
+Meshcap	黑扬基帽	怀旧服-道具#1007091
+Korean Flower Petal	凤仙花	怀旧服-道具#1007092
+Blue Jelly Cap	蓝网球帽	怀旧服-道具#1007093
+Pink Jelly Cap	粉网球帽	怀旧服-道具#1007094
+Rainbow Afro Wig	彩色蓬蓬头	怀旧服-道具#1007095
+Patissier Hat	高级大厨帽	怀旧服-道具#1007096
+Transparent Hat	透明帽	怀旧服-道具#1007097
+Long Brown Beard	褐色落腮胡	怀旧服-道具#1015000
+Goatee	黑胡子	怀旧服-道具#1015001
+5 O'Clock Shadow	刮脸痕迹	怀旧服-道具#1015002
+Battle Scar	伤痕	怀旧服-道具#1017000
+Bindi	印度僧点	怀旧服-道具#1017001
+Leather Mask	皮面罩	怀旧服-道具#1017002
+Rouge	红点	怀旧服-道具#1017003
+Camo Face Paint	颜面伪装	怀旧服-道具#1017004
+Bruise	青肿	怀旧服-道具#1017005
+Santa Beard	白胡子(30天)	怀旧服-道具#1017007
+Censor	马赛克	怀旧服-道具#1017008
+Rudolph's Red Nose	鲁道夫红鼻子	怀旧服-道具#1017009
+White Kabuki Mask	脸谱1	怀旧服-道具#1017010
+Red Kabuki Mask	脸谱2	怀旧服-道具#1017011
+Yellow Kabuki Mask	脸谱3	怀旧服-道具#1017012
+Gentleman's Mustache	优雅胡子	怀旧服-道具#1017013
+Fierce Face Paint	印第安脸饰	怀旧服-道具#1017014
+Bandage Strip	OK绷	怀旧服-道具#1017015
+Transparent Face Accessory	透明脸饰	怀旧服-道具#1017016
+Aqua Toy Shades	蓝时尚猫镜	怀旧服-道具#1025000
+Pink Toy Shades	紫时尚猫镜	怀旧服-道具#1026000
+Orange Shades	橙色眼镜	怀旧服-道具#1027000
+Blue Shades	紫色眼镜	怀旧服-道具#1027001
+Yellow Shades	黄色眼镜	怀旧服-道具#1027002
+Green Shades	绿色眼镜	怀旧服-道具#1027003
+Black Sunglasses	黑色太阳镜	怀旧服-道具#1027004
+Red Hard-Rimmed Glasses	红色宽边眼镜	怀旧服-道具#1027005
+Blue Hard-Rimmed Glasses	蓝色宽边眼镜	怀旧服-道具#1027006
+Green Hard-Rimmed Glasses	绿色宽边眼镜	怀旧服-道具#1027007
+Orange Hard-Rimmed Glasses	橙色宽边眼镜	怀旧服-道具#1027008
+Dark Shades	神秘太阳镜	怀旧服-道具#1027009
+Blue & Red Eye Guard	太极面具	怀旧服-道具#1027010
+Red Eye Guard	红色眼罩	怀旧服-道具#1027011
+Blue Eye Guard	蓝色眼罩	怀旧服-道具#1027012
+Black Eye Guard	黑色眼罩	怀旧服-道具#1027013
+Brown Aviator Shades	褐色航空墨镜	怀旧服-道具#1027014
+Black Aviator Shades	黑色航空墨镜	怀旧服-道具#1027015
+Blue Aviator Shades	青色航空墨镜	怀旧服-道具#1027016
+Purple Aviator Shades	紫色航空墨镜	怀旧服-道具#1027017
+Crested Eye Patch	隐者眼罩	怀旧服-道具#1027018
+Skull Patch	骷髅眼罩	怀旧服-道具#1027019
+Red Hearted Eye Patch	爱心眼罩	怀旧服-道具#1027020
+Purple Starred Eye Patch	星星眼罩	怀旧服-道具#1027021
+Medical Eye Patch	卫生眼罩	怀旧服-道具#1027022
+Spinning Groucho	环形大鼻子眼镜	怀旧服-道具#1027023
+Spinning Piglet	环形猪鼻子眼镜	怀旧服-道具#1027024
+White Toy Shades	白时尚猫镜	怀旧服-道具#1027025
+Yellow Toy Shades	黄时尚猫镜	怀旧服-道具#1027026
+Orange Sports Goggle	橙色运动镜	怀旧服-道具#1027027
+Green Sports Goggle	绿色运动镜	怀旧服-道具#1027028
+Frameless Glasses	无框方镜	怀旧服-道具#1027029
+Purple Round Shades	紫色哈里眼镜	怀旧服-道具#1027030
+Orange Round Shades	橙色哈里眼镜	怀旧服-道具#1027031
+Lead Monocle	绅士镜	怀旧服-道具#1027032
+Cyclist Shades	蛤蟆镜	怀旧服-道具#1027033
+Transparent Eye Accessory	透明眼饰	怀旧服-道具#1027034
+Single Earring	单边银色耳环	怀旧服-道具#1032000
+Amethyst Earrings	紫水晶耳环	怀旧服-道具#1032001
+Weighted Earrings	锤耳环	怀旧服-道具#1032002
+Yellow Square	黄方耳环	怀旧服-道具#1032003
+Gold Earrings	金耳环	怀旧服-道具#1032004
+Red Cross Earrings	红十字耳环	怀旧服-道具#1032005
+Lightning Earrings	雷电耳环	怀旧服-道具#1032006
+Emerald Earrings	祖母绿耳环	怀旧服-道具#1032007
+Star Earrings	黄星耳环	怀旧服-道具#1032008
+Sapphire Earrings	蓝宝石耳环	怀旧服-道具#1032009
+Cat's Eye	猫眼耳环	怀旧服-道具#1032010
+Pansy Earrings	紫荆花耳环	怀旧服-道具#1032012
+Skull Earrings	骷髅耳环	怀旧服-道具#1032013
+Red-Hearted Earrings	爱心耳环	怀旧服-道具#1032014
+Leaf Earrings	叶子耳环	怀旧服-道具#1032015
+Transparent Earrings	透明耳环	怀旧服-道具#1037000
+Blue-Striped Undershirt	蓝条背心	怀旧服-道具#1040000
+White Undershirt	白棉T恤	怀旧服-道具#1040001
+Grey T-Shirt	灰棉T恤	怀旧服-道具#1040002
+Undershirt	白色背心	怀旧服-道具#1040003
+Brown Lolico Armor	褐战士甲	怀旧服-道具#1040004
+Blue Lolico Armor	蓝战士甲	怀旧服-道具#1040005
+Blue Training Shirt	蓝修炼服	怀旧服-道具#1040006
+Grey / Brown Training Shirt	灰修炼服	怀旧服-道具#1040007
+Green Archer Top	草色旅行服	怀旧服-道具#1040008
+Brown Archer Top	褐旅行服	怀旧服-道具#1040009
+Red Cloth Vest	红梦	怀旧服-道具#1040010
+Blue Cloth Vest	青梦	怀旧服-道具#1040011
+Black Cloth Vest	黑梦	怀旧服-道具#1040012
+Blue One-lined T-Shirt	白线青T恤	怀旧服-道具#1040013
+Orange Sporty T-Shirt	橙色运动T恤	怀旧服-道具#1040014
+Brown Corporal	青铜胸甲	怀旧服-道具#1040015
+Steel Corporal	铁胸甲	怀旧服-道具#1040016
+Green Leather Hoodwear	绿连帽弓箭手服	怀旧服-道具#1040017
+Silver Leather Hoodwear	银连帽弓箭手服	怀旧服-道具#1040018
+Blue Nightshift	青夜	怀旧服-道具#1040019
+Dark Nightshift	黑夜	怀旧服-道具#1040020
+Blue Sergeant	蓝军官铠甲	怀旧服-道具#1040021
+Red Sergeant	红军官铠甲	怀旧服-道具#1040022
+Blue Split Piece	蓝伽蓝	怀旧服-道具#1040023
+Orange Split Piece	朱红伽蓝	怀旧服-道具#1040024
+Black Split Piece	黑伽蓝	怀旧服-道具#1040025
+Brown Hard Leather Top	褐色皮甲	怀旧服-道具#1040026
+Red Pao	红唐衫	怀旧服-道具#1040027
+Blue Pao	蓝唐衫	怀旧服-道具#1040028
+Black Pao	黑唐衫	怀旧服-道具#1040029
+Silver Master Sergeant	银军官铠甲	怀旧服-道具#1040030
+Orihalcon Master Sergeant	紫矿军官铠甲	怀旧服-道具#1040031
+Dark Master Sergeant	黑军官铠甲	怀旧服-道具#1040032
+Green Bennis Chainmail	绿打猎服	怀旧服-道具#1040033
+Blue Bennis Chainmail	蓝打猎服	怀旧服-道具#1040034
+Red Bennis Chainmail	红打猎服	怀旧服-道具#1040035
+Black Bennis Chainmail	黑打猎服	怀旧服-道具#1040036
+Brown Sneak	褐敏捷之服	怀旧服-道具#1040037
+Blue Sneak	蓝敏捷之服	怀旧服-道具#1040038
+Black Sneak	黑敏捷之服	怀旧服-道具#1040039
+Red Hwarang Shirt	红龙服	怀旧服-道具#1040040
+Green Hwarang Shirt	绿龙服	怀旧服-道具#1040041
+Green Hunter's Armor	绿浪人之服	怀旧服-道具#1040042
+Blue Hunter's Armor	蓝浪人之服	怀旧服-道具#1040043
+Red Hunter's Armor	红浪人之服	怀旧服-道具#1040044
+Dark Hunter's Armor	黑浪人之服	怀旧服-道具#1040045
+Dark Brown Stealer	黑褐寂静之服	怀旧服-道具#1040046
+Dark Silver Stealer	黑银寂静之服	怀旧服-道具#1040047
+Red Gold Stealer	红金寂静之服	怀旧服-道具#1040048
+Silver Black Stealer	银黑寂静之服	怀旧服-道具#1040049
+Blue Sky	苍天衣	怀旧服-道具#1040050
+Green Legolier	绿守护之服	怀旧服-道具#1040051
+Brown Legolier	褐守护之服	怀旧服-道具#1040052
+Red Legolier	红守护之服	怀旧服-道具#1040053
+Blue Legolier	蓝守护之服	怀旧服-道具#1040054
+Dark Legolier	黑守护之服	怀旧服-道具#1040055
+Red Knucklevest	红暗影之服	怀旧服-道具#1040056
+Green Knucklevest	绿暗影之服	怀旧服-道具#1040057
+Black Knucklevest	黑暗影之服	怀旧服-道具#1040058
+Maroon Jangoon Armor	紫金铠甲	怀旧服-道具#1040059
+Blue Jangoon Armor	青金铠甲	怀旧服-道具#1040060
+Yellow Jangoon Armor	黄金铠甲	怀旧服-道具#1040061
+Brown Piette	褐贵族之服	怀旧服-道具#1040062
+Dark Piette	黑贵族之服	怀旧服-道具#1040063
+White Piette	白贵族之服	怀旧服-道具#1040064
+Khaki Shadow	树林之影	怀旧服-道具#1040065
+Marine Shadow	沧海之影	怀旧服-道具#1040066
+Dark Shadow	黑色暗影之服	怀旧服-道具#1040067
+Blue Dragon	蓝龙服	怀旧服-道具#1040068
+Gold Dragon	金龙衣	怀旧服-道具#1040069
+Umber Shouldermail	黑板金铠甲	怀旧服-道具#1040070
+Blue Shouldermail	蓝板金铠甲	怀旧服-道具#1040071
+Oaker Shouldermail	蓝板金铠甲	怀旧服-道具#1040072
+Red China	赤阳	怀旧服-道具#1040073
+Blue China	青阳	怀旧服-道具#1040074
+Brown China	黄阳	怀旧服-道具#1040075
+Green China	绿阳	怀旧服-道具#1040076
+Pink Tanktop	粉红无袖衫	怀旧服-道具#1041000
+White Tubetop	白色无袖短T	怀旧服-道具#1041001
+Yellow T-Shirt	黄色短T	怀旧服-道具#1041002
+Green T-Shirt	绿色短T	怀旧服-道具#1041003
+Red-Striped Top	红线无袖衫	怀旧服-道具#1041004
+Orange Lolica Armor	黄皮制铠甲	怀旧服-道具#1041005
+Blueberry Lolica Armor	蓝皮制铠甲	怀旧服-道具#1041006
+Black Armine	黑棉制紧身衣	怀旧服-道具#1041007
+Green Armine	绿棉制紧身衣	怀旧服-道具#1041008
+Green Avelin	绿色旅行服	怀旧服-道具#1041009
+Yellow Avelin	黄旅行服	怀旧服-道具#1041010
+Pink Starry Shirt	星形短T	怀旧服-道具#1041014
+Red-Striped T-Shirt	黄色红线短T	怀旧服-道具#1041015
+Purple Arianne	紫锦丝紧身衣	怀旧服-道具#1041016
+Green Arianne	绿锦丝紧身衣	怀旧服-道具#1041017
+Pink Arianne	粉红锦丝紧身衣	怀旧服-道具#1041018
+Yellow Arianne	黄锦丝紧身衣	怀旧服-道具#1041019
+Green Able Armor	绿皮制旅行服	怀旧服-道具#1041020
+Yellow Able Armor	黄皮制旅行服	怀旧服-道具#1041021
+Grey Able Armor	黑皮制旅行服	怀旧服-道具#1041022
+Red Nightshift	赤夜	怀旧服-道具#1041023
+Brown Nightshift	黄夜	怀旧服-道具#1041024
+Red Lamelle	红十字军甲	怀旧服-道具#1041025
+Green Lamelle	绿十字军甲	怀旧服-道具#1041026
+Brown Lamelle	褐十字军甲	怀旧服-道具#1041027
+Purple Split	紫伽蓝	怀旧服-道具#1041028
+Red Split	红伽蓝	怀旧服-道具#1041029
+Black Split	黑伽蓝	怀旧服-道具#1041030
+Green Shivermail	绿硬皮装	怀旧服-道具#1041031
+Red Shivermail	红硬皮装	怀旧服-道具#1041032
+Purple Shivermail	紫硬皮装	怀旧服-道具#1041033
+Red Qi Pao	红色旗袍	怀旧服-道具#1041034
+Pink Qi Pao	粉红旗袍	怀旧服-道具#1041035
+Blue Qi Pao	蓝色旗袍	怀旧服-道具#1041036
+Blue Shark	蓝骑士甲	怀旧服-道具#1041037
+Sky Shark	天蓝骑士甲	怀旧服-道具#1041038
+Red Shark	红骑士甲	怀旧服-道具#1041039
+Yellow Bennis Chainmail	黄打猎服	怀旧服-道具#1041043
+Blood Sneak	红敏捷之服	怀旧服-道具#1041044
+Sky Sneak	蓝敏捷之服	怀旧服-道具#1041045
+Gold Sneak	绿敏捷之服	怀旧服-道具#1041046
+Dark Sneak	黑敏捷之服	怀旧服-道具#1041047
+Blue Fairy Top	蓝色妖精之服	怀旧服-道具#1041048
+Green Fairy Top	绿色妖精之服	怀旧服-道具#1041049
+Purple Fairy Top	紫色妖精之服	怀旧服-道具#1041050
+Green Huntress Armor	绿浪人之服	怀旧服-道具#1041051
+Black Huntress Armor	黑浪人之服	怀旧服-道具#1041052
+Red Steal	红寂静之服	怀旧服-道具#1041053
+Blue Steal	蓝寂静之服	怀旧服-道具#1041054
+Purple Steal	紫寂静之服	怀旧服-道具#1041055
+Black Steal	黑寂静之服	怀旧服-道具#1041056
+Red Amoria Top	红神圣法衣	怀旧服-道具#1041057
+Blue Amoria Top	蓝神圣法衣	怀旧服-道具#1041058
+Black Amoria Top	黑神圣法衣	怀旧服-道具#1041059
+Green Legolia	绿守护之服	怀旧服-道具#1041060
+Brown Legolia	褐守护之服	怀旧服-道具#1041061
+Red Legolia	红守护之服	怀旧服-道具#1041062
+Blue Legolia	蓝守护之服	怀旧服-道具#1041063
+Dark Legolia	黑守护之服	怀旧服-道具#1041064
+Red Jangoon Armor	红镇月铠甲	怀旧服-道具#1041065
+Brown Jangoon Armor	黄镇月铠甲	怀旧服-道具#1041066
+Black Jangoon Armor	黑镇月铠甲	怀旧服-道具#1041067
+White Piettra	白女贵族服	怀旧服-道具#1041068
+Brown Piettra	褐女贵族服	怀旧服-道具#1041069
+Dark Piettra	黑女贵族服	怀旧服-道具#1041070
+Red Shadow	火焰之影	怀旧服-道具#1041071
+Purple Shadow	花精之影	怀旧服-道具#1041072
+Red Shouldermail	红将军铠甲	怀旧服-道具#1041074
+Ivory Shouldermail	褐将军铠甲	怀旧服-道具#1041075
+Dark Shouldermail	黑将军铠甲	怀旧服-道具#1041076
+Red Moon	赤月	怀旧服-道具#1041077
+Maroon Moon	紫月	怀旧服-道具#1041079
+Brown Moon	黄月	怀旧服-道具#1041080
+Wizet Plain Suit	维泽特西装	怀旧服-道具#1042999
+Black Blazer	黑西装	怀旧服-道具#1045000
+Orange Baseball Jacket	橙色棒球服	怀旧服-道具#1045001
+Old School Blazer	青年装	怀旧服-道具#1045002
+Red Rider	红色运动服	怀旧服-道具#1045003
+Shine Rider	白色运动服	怀旧服-道具#1045004
+Dark Rider	黑色运动服	怀旧服-道具#1045005
+Blue Striped Trainer	青色运动服	怀旧服-道具#1045006
+Green Striped Trainer	绿色运动服	怀旧服-道具#1045007
+Orange Striped Trainer	橙色运动服	怀旧服-道具#1045008
+Green Disco Shirt	绿色翻领运动服	怀旧服-道具#1045009
+Orange Disco Shirt	橙色翻领运动服	怀旧服-道具#1045010
+Original Disco Shirt	灰色翻领运动服	怀旧服-道具#1045011
+Wild Top	白毛糙服	怀旧服-道具#1045012
+Brown Wild Top	灰毛糙服	怀旧服-道具#1045013
+Red Wild Top	黄毛糙服	怀旧服-道具#1045014
+Pre-School Uniform Top	幼儿园制服上衣	怀旧服-道具#1045015
+Skull T-Shirt	骷髅T恤	怀旧服-道具#1045016
+Hawaiian Shirt	夏威夷衬衫	怀旧服-道具#1045017
+Ragged Top	乞丐服	怀旧服-道具#1045018
+Crusader T-Shirt	英格兰T恤	怀旧服-道具#1045019
+Military Cargo Jacket	绿夹克装	怀旧服-道具#1045020
+Heart Tanktop	爱心背心	怀旧服-道具#1045021
+Blue Line Tanktop	田径背心	怀旧服-道具#1045022
+Red Casual Suit	红颓废西装	怀旧服-道具#1045023
+Green Tie Casual Suit	绿领带颓废西装	怀旧服-道具#1045024
+Pink Tie Casual Suit	粉领带颓废西装	怀旧服-道具#1045025
+Palm Tree Tanktop	椰树背心	怀旧服-道具#1045026
+Blue Frill Blouse	蓝白女服	怀旧服-道具#1046000
+Blue Sailor Shirt	蓝少女衫	怀旧服-道具#1046001
+Pink Mimi Blouse	粉红公主短T	怀旧服-道具#1046002
+Red Sailor Shirt	红少女衫	怀旧服-道具#1046003
+Pink Top	粉红吊带背心	怀旧服-道具#1046005
+Old School Uniform Top	青年装	怀旧服-道具#1046006
+Red Trainer Jacket	红白运动服	怀旧服-道具#1046007
+Sky Blue Trainer Jacket	蓝白运动服	怀旧服-道具#1046008
+Pink Trainer Jacket	粉白运动服	怀旧服-道具#1046009
+Black Trainer Jacket	黑白运动服	怀旧服-道具#1046010
+Pink Frill Pajama Top	粉红纱衣	怀旧服-道具#1046011
+Rainbow Knit	彩虹衫	怀旧服-道具#1046013
+Cross Sleeveless	红十字会背心	怀旧服-道具#1046015
+Yellow Frill Camisole	黄蛋糕吊带	怀旧服-道具#1046016
+Blue Frill Camisole	蓝蛋糕吊带	怀旧服-道具#1046017
+Pink Ribboned Janie	粉娃娃衫	怀旧服-道具#1046018
+Orange Hooded Vest	朱红连帽坎肩	怀旧服-道具#1047000
+Black Hooded Vest	黑色连帽坎肩	怀旧服-道具#1047001
+Red Hooded Vest	红色连帽坎肩	怀旧服-道具#1047002
+Pink Hooded Vest	粉红连帽坎肩	怀旧服-道具#1047003
+Pink Camping Shirt	粉红打猎装	怀旧服-道具#1047004
+Green Camping Shirt	绿色打猎装	怀旧服-道具#1047005
+Blue Camping Shirt	淡蓝打猎装	怀旧服-道具#1047006
+Wildcats Baseball Shirt (Basic)	蓝色棒球服	怀旧服-道具#1047007
+Baseball Shirt (Home)	白色棒球服	怀旧服-道具#1047008
+Baseball Shirt (Away)	灰色棒球服	怀旧服-道具#1047009
+Wildcats Baseball Shirt (Alternate)	黑蓝色棒球服	怀旧服-道具#1047010
+Yellow Snowboard Top	黄色滑雪服	怀旧服-道具#1047011
+Green Snowboard Top	绿色滑雪服	怀旧服-道具#1047012
+Yellow Layered Combo	红色皮茄克	怀旧服-道具#1047013
+Blue Layered Combo	黄色皮茄克	怀旧服-道具#1047014
+Pink Snowboard Top	粉红滑雪服	怀旧服-道具#1047015
+Sky Blue Snowboard Top	淡蓝滑雪服	怀旧服-道具#1047016
+Red T-Shirt w/ Heart	爱心T恤	怀旧服-道具#1047017
+M Layered T-Shirt	M纹红T恤	怀旧服-道具#1047018
+Old Military Uniform	褐色军服	怀旧服-道具#1047019
+Camouflaged Uniform	野战军服	怀旧服-道具#1047020
+Blue Polka-Dot Pajama Top	蓝色便装	怀旧服-道具#1047021
+Red Polka-Dot Pajama Top	红色便装	怀旧服-道具#1047022
+Prisoner Top	囚服	怀旧服-道具#1047023
+Flowery Dress Shirt	花纹衬衫	怀旧服-道具#1047024
+Slime T-Shirt	绿水灵T恤	怀旧服-道具#1047025
+Orange Mushroom T-Shirt	花蘑菇T恤	怀旧服-道具#1047026
+Beetle Longsleeve	黄蜘蛛衫	怀旧服-道具#1047027
+Beige Double-Coat	黄极地大衣	怀旧服-道具#1047028
+Green Double-Coat	绿极地大衣	怀旧服-道具#1047029
+Red Double-Coat	红极地大衣	怀旧服-道具#1047030
+Christmas Padded Jacket	红色冬恋大衣	怀旧服-道具#1047031
+Snowman Padded Jacket	白色冬恋大衣	怀旧服-道具#1047032
+Red Sweater	红运动衫	怀旧服-道具#1047033
+Sky Blue Allstar	蓝星长袖T恤	怀旧服-道具#1047034
+Pink Allstar	粉星长袖T恤	怀旧服-道具#1047035
+Black Allstar	黑星长袖T恤	怀旧服-道具#1047036
+White Hooded Vest	休闲连帽背心	怀旧服-道具#1047037
+Green Striped Rugby Tee	绿条T恤	怀旧服-道具#1047038
+Pink Striped Rugby Tee	粉条T恤	怀旧服-道具#1047039
+Bowling Shirt	蓝竖条T恤	怀旧服-道具#1047040
+White Casual Suit	白时尚上装	怀旧服-道具#1047041
+Beige Plain Robe	褐魔法袍	怀旧服-道具#1050000
+Blue Plain Robe	蓝魔法袍	怀旧服-道具#1050001
+Green Plain Robe	绿魔法袍	怀旧服-道具#1050002
+Blue Kendo Robe	蓝剑道服	怀旧服-道具#1050003
+Red Kendo Robe	红剑道服	怀旧服-道具#1050004
+White Kendo Robe	白剑道服	怀旧服-道具#1050005
+Brown Doros Robe	褐贤者之袍	怀旧服-道具#1050006
+Blue Doros Robe	蓝贤者之袍	怀旧服-道具#1050007
+Yellow Doros Robe	黄贤者之袍	怀旧服-道具#1050008
+White Doros Robe	白贤者之袍	怀旧服-道具#1050009
+Blue Sauna Robe	蓝色桑拿服	怀旧服-道具#1050010
+Black Dragon Robe	黑龙袍	怀旧服-道具#1050011
+Blue Wizard Robe	蓝祭司长袍	怀旧服-道具#1050012
+White Wizard Robe	白祭司长袍	怀旧服-道具#1050013
+Black Wizard Robe	黑祭司长袍	怀旧服-道具#1050014
+Green Wizard Robe	绿祭司长袍	怀旧服-道具#1050015
+Blue Crusader Chainmail	蓝十字锁子甲	怀旧服-道具#1050016
+Dark Crusader Chainmail	黑十字锁子甲	怀旧服-道具#1050017
+White Crusader Chainmail	白十字锁子甲	怀旧服-道具#1050018
+Blood Chaos Robe	红魔力长袍	怀旧服-道具#1050019
+Blue Chaos Robe	蓝魔力长袍	怀旧服-道具#1050020
+Dark Chaos Robe	黑魔力长袍	怀旧服-道具#1050021
+White Chaos Robe	白魔力长袍	怀旧服-道具#1050022
+Brown Starlight	褐星光长袍	怀旧服-道具#1050023
+Red Starlight	红星光长袍	怀旧服-道具#1050024
+Blue Starlight	蓝星光长袍	怀旧服-道具#1050025
+Green Starlight	绿星光长袍	怀旧服-道具#1050026
+Dark Starlight	黑星光长袍	怀旧服-道具#1050027
+Red Calas	红魔法战士衣	怀旧服-道具#1050028
+Blue Calas	蓝魔法战士衣	怀旧服-道具#1050029
+Orange Calas	朱红魔法战士衣	怀旧服-道具#1050030
+White Calas	白魔法战士衣	怀旧服-道具#1050031
+Dark Calas	黑魔法战士衣	怀旧服-道具#1050032
+Red-Lined Kismet	赤仙白宫	怀旧服-道具#1050033
+Blue-Lined Kismet	青仙白宫	怀旧服-道具#1050034
+Steel Fitted Mail	钢铁铠甲	怀旧服-道具#1051000
+Brown Doroness Robe	褐贤者之袍	怀旧服-道具#1051001
+Purple Doroness Robe	紫贤者之袍	怀旧服-道具#1051002
+Red Doroness Robe	红贤者之袍	怀旧服-道具#1051003
+Red Sauna Robe	红色桑拿服	怀旧服-道具#1051004
+Dark Engrit	黑护身铠甲	怀旧服-道具#1051005
+Red Engrit	红护身铠甲	怀旧服-道具#1051006
+Blue Engrit	蓝护身铠甲	怀旧服-道具#1051007
+Yellow Engrit	黄护身铠甲	怀旧服-道具#1051008
+Blood Fitted Mail	赤红铠甲	怀旧服-道具#1051009
+Sapphire Fitted Mail	蓝宝石铠甲	怀旧服-道具#1051010
+Emerald Fitted Mail	祖母绿铠甲	怀旧服-道具#1051011
+Silver Fitted Mail	银制铠甲	怀旧服-道具#1051012
+Red Avenger	红飞影甲	怀旧服-道具#1051013
+Blue Avenger	蓝飞影甲	怀旧服-道具#1051014
+Purple Avenger	紫飞影甲	怀旧服-道具#1051015
+Dark Avenger	黑飞影甲	怀旧服-道具#1051016
+Brown Moonlight	褐色月光服	怀旧服-道具#1051017
+Red Moonlight	红色月光服	怀旧服-道具#1051018
+Blue Moonlight	蓝色月光服	怀旧服-道具#1051019
+Purple Moonlight	紫色月光服	怀旧服-道具#1051020
+Dark Moonlight	黑色月光服	怀旧服-道具#1051021
+Red Calaf	红妖精礼服	怀旧服-道具#1051022
+Blue Calaf	蓝妖精礼服	怀旧服-道具#1051023
+Orange Calaf	朱红妖精礼服	怀旧服-道具#1051024
+Dark Calaf	黑妖精礼服	怀旧服-道具#1051025
+White Calaf	白妖精礼服	怀旧服-道具#1051026
+Green Lumati	绿贵族礼服	怀旧服-道具#1051027
+Blue Lumati	蓝贵族礼服	怀旧服-道具#1051028
+Red Lumati	红贵族礼服	怀旧服-道具#1051029
+Blue Officer Uniform	蓝色制服	怀旧服-道具#1055000
+Grey Skull Overall	灰骨头服	怀旧服-道具#1055001
+Red Skull Overall	红骨头服	怀旧服-道具#1055002
+Green Skull Overall	绿骨头服	怀旧服-道具#1055003
+Blue Skull Overall	蓝骨头服	怀旧服-道具#1055004
+Orange Skull Overall	朱红骨头服	怀旧服-道具#1055005
+Yellow Tights	黄紧身衣	怀旧服-道具#1055006
+Silver Officer Uniform	银色制服	怀旧服-道具#1055007
+Black Officer Uniform	黑色制服	怀旧服-道具#1055008
+Red Officer Uniform	红色制服	怀旧服-道具#1055009
+Red Swimming Trunk	红色泳裤	怀旧服-道具#1055010
+Blue Swimming Trunk	蓝色泳裤	怀旧服-道具#1055011
+Fine Brown Hanbok	褐色韩服	怀旧服-道具#1055012
+Fine Black Hanbok	黑色韩服	怀旧服-道具#1055013
+Fine Blue Hanbok	蓝色精致韩服	怀旧服-道具#1055014
+Dark Suit	骇客服	怀旧服-道具#1055015
+Ghost Costume	幽灵服装	怀旧服-道具#1055016
+Blue Celebration Hanbok	蓝色春节韩服	怀旧服-道具#1055017
+Green Celebration Hanbok	绿色春节韩服	怀旧服-道具#1055018
+Black Coat of Death	黑朝鲜装	怀旧服-道具#1055019
+Red M-Forcer	红鹰之服	怀旧服-道具#1055020
+Blue M-Forcer	蓝鲨之服	怀旧服-道具#1055021
+Green M-Forcer	绿虎之服	怀旧服-道具#1055022
+Black M-Forcer	黑色M-Forcer套服	怀旧服-道具#1055023
+Green Picnicwear	绿顽童服	怀旧服-道具#1055024
+Sky Blue Picnicwear	蓝顽童服	怀旧服-道具#1055025
+Boxing Trunks	拳击短裤	怀旧服-道具#1055026
+Wedding Tuxedo	燕尾服	怀旧服-道具#1055027
+Race Ace Suit	酷酷赛车服	怀旧服-道具#1055028
+Tiny Blue Swimshorts	蓝三角内裤	怀旧服-道具#1055029
+Tiny Black Swimshorts	黑三角内裤	怀旧服-道具#1055030
+Cat Suit	猫猫服	怀旧服-道具#1056000
+White Swimming Suit	白色泳衣	怀旧服-道具#1056001
+Red Swimming Suit	红色泳衣	怀旧服-道具#1056002
+Fine Red Hanbok	红色韩服	怀旧服-道具#1056003
+Dark Enamel Suit	骇客服	怀旧服-道具#1056005
+Witch Clothes	魔女裙	怀旧服-道具#1056006
+Mrs. Claus Costume	圣诞服	怀旧服-道具#1056007
+Blue Celeberation Hanbok	蓝色春节韩服	怀旧服-道具#1056008
+Pink Celebration Hanbok	粉红春节韩服	怀旧服-道具#1056009
+Bunny Costume	兔兔服	怀旧服-道具#1056010
+Blue Swimming Suit	健美装	怀旧服-道具#1056011
+Ghost Suit	幽灵套装	怀旧服-道具#1056012
+Ragged Hanbok	高丽女侍袍	怀旧服-道具#1056013
+Pink M-Forcer	粉色M-Forcer套服	怀旧服-道具#1056014
+Yellow M-Forcer	黄熊之服	怀旧服-道具#1056015
+Pink Picnic Dress	粉色野餐裙	怀旧服-道具#1056017
+Yellow Picnic Dress	休闲连衣裙(黄)	怀旧服-道具#1056018
+Purple Frill One Piece	紫色连衣裙	怀旧服-道具#1056019
+Blue Frill One Piece	蓝色连衣裙	怀旧服-道具#1056020
+Boxing Gear	拳击服	怀旧服-道具#1056021
+Wedding Dress	白色婚纱	怀旧服-道具#1056022
+Race Queen Uniform	赛车紧身服	怀旧服-道具#1056023
+Pink Strapless Bikini	粉红可爱游泳服	怀旧服-道具#1056024
+Blue Strapless Bikini	蓝色可爱游泳服	怀旧服-道具#1056025
+Flight Attendant Uniform	空姐服	怀旧服-道具#1056026
+Tropical Dress	红色抹胸礼服	怀旧服-道具#1056027
+Violet Strapless Dress	粉露肩晚礼服	怀旧服-道具#1056028
+Recycled Box	褐色纸箱	怀旧服-道具#1057000
+Paper Box	纸箱	怀旧服-道具#1057001
+Cardboard Box	朱红纸箱	怀旧服-道具#1057002
+Blue Chinese Undead Costume	蓝道袍	怀旧服-道具#1057003
+Maroon Chinese Undead Costume	紫道袍	怀旧服-道具#1057004
+Yellow Raincoat	黄色雨衣	怀旧服-道具#1057005
+Sky Blue Raincoat	天蓝雨衣	怀旧服-道具#1057006
+Red Raincoat	火红雨衣	怀旧服-道具#1057007
+Green Raincoat	果绿雨衣	怀旧服-道具#1057008
+Orange Overall	橙画工服	怀旧服-道具#1057009
+Pink Overall	红画工服	怀旧服-道具#1057010
+Blue Overall	蓝画工服	怀旧服-道具#1057011
+Green Overall	绿画工服	怀旧服-道具#1057012
+Graduation Gown	毕业服	怀旧服-道具#1057013
+Ducky Costume	鸭子服	怀旧服-道具#1057014
+Orange Life-Jacket	红勇士马甲	怀旧服-道具#1057015
+Green Life-Jacket	绿勇士马甲	怀旧服-道具#1057016
+Blue Life-Jacket	蓝勇士马甲	怀旧服-道具#1057017
+Denim Overall	五星背带裤	怀旧服-道具#1057018
+Premium Trenchcoat	褐色风衣	怀旧服-道具#1057019
+Toga	天使服	怀旧服-道具#1057020
+Reindeer Suit	驯鹿套装	怀旧服-道具#1057021
+Patissier Uniform	大厨服	怀旧服-道具#1057022
+Blue-Striped Boxers	蓝条内裤	怀旧服-道具#1060000
+Blue Jean Shorts	蓝牛仔短裤	怀旧服-道具#1060001
+Brown Cotton Shorts	黄牛仔短裤	怀旧服-道具#1060002
+Jean Capris	蓝马裤	怀旧服-道具#1060003
+Brown Lolico Pants	褐色战士裤	怀旧服-道具#1060004
+Blue Lolico Pants	蓝色战士裤	怀旧服-道具#1060005
+Blue Training Pants	蓝修炼裤	怀旧服-道具#1060006
+Grey / Brown Training Pants	灰修炼裤	怀旧服-道具#1060007
+Red Cloth Pants	红梦裤	怀旧服-道具#1060008
+Blue Cloth Pants	青梦裤	怀旧服-道具#1060009
+Black Cloth Pants	黑梦裤	怀旧服-道具#1060010
+Grey Thick Sweat Pants	灰色橡胶裤	怀旧服-道具#1060011
+Brown Corporal Pants	褐色铁板裤子	怀旧服-道具#1060012
+Steel Corporal Pants	铁板裤	怀旧服-道具#1060013
+Blue Nightshift Pants	青夜裤	怀旧服-道具#1060014
+Dark Nightshift Pants	黑夜裤	怀旧服-道具#1060015
+Steel Sergeant Kilt	钢铁军官裙	怀旧服-道具#1060016
+Red Sergeant Kilt	红军官裙	怀旧服-道具#1060017
+White Split Pants	白伽蓝裤	怀旧服-道具#1060018
+Black Split Pants	黑伽蓝裤	怀旧服-道具#1060019
+Red Pao Bottom	红唐衫裤	怀旧服-道具#1060020
+Blue Pao Bottom	蓝唐衫裤	怀旧服-道具#1060021
+Black Pao Bottom	黑唐衫裤	怀旧服-道具#1060022
+Silver Master Sergeant Kilt	银军官裤	怀旧服-道具#1060023
+Orihalcon Master Sergeant Kilt	紫矿军官裙	怀旧服-道具#1060024
+Dark Master Sergeant Kilt	黑军官裙	怀旧服-道具#1060025
+Brown Sneak Pants	褐敏捷之裤	怀旧服-道具#1060026
+Dark Brown Sneak Pants	黑褐敏捷之裤	怀旧服-道具#1060027
+Black Sneak Pants	黑敏捷之裤	怀旧服-道具#1060028
+Warfare Pants	密林部队裤	怀旧服-道具#1060029
+Red Martial Arts Pants	红武裤	怀旧服-道具#1060030
+Brown Martial Arts Pants	黄武裤	怀旧服-道具#1060031
+Black Martial Arts Pants	黑武裤	怀旧服-道具#1060032
+White Martial Arts Pants	白武裤	怀旧服-道具#1060033
+Green Hunter's Pants	绿浪人之裤	怀旧服-道具#1060034
+Blue Hunter's Pants	蓝浪人之裤	怀旧服-道具#1060035
+Red Hunter's Pants	红浪人之裤	怀旧服-道具#1060036
+Dark Hunter's Pants	黑浪人之裤	怀旧服-道具#1060037
+Dark Brown Stealer Pants	黑褐寂静之裤	怀旧服-道具#1060038
+Dark Silver Stealer Pants	黑银寂静之裤	怀旧服-道具#1060039
+Red / Gold Stealer Pants	红金寂静之裤	怀旧服-道具#1060040
+Silver / Black Stealer Pants	银黑寂静之裤	怀旧服-道具#1060041
+White Martial Arts Shorts	半白武裤	怀旧服-道具#1060042
+Green Legolier Pants	绿守护之裤	怀旧服-道具#1060043
+Brown Legolier Pants	褐守护之裤	怀旧服-道具#1060044
+Red Legolier Pants	红守护之裤	怀旧服-道具#1060045
+Blue Legolier Pants	蓝守护之裤	怀旧服-道具#1060046
+Dark Legolier Pants	黑守护之裤	怀旧服-道具#1060047
+Red Knucklevest Pants	红暗影之裤	怀旧服-道具#1060048
+Blue Knucklevest Pants	蓝暗影之裤	怀旧服-道具#1060049
+Black Knucklevest Pants	黑暗影之裤	怀旧服-道具#1060050
+Black Jangoon Pants	黑金裤	怀旧服-道具#1060051
+White Jangoon Pants	白金裤	怀旧服-道具#1060052
+Brown Jangoon Pants	黄金裤	怀旧服-道具#1060053
+Brown Piette Pants	褐贵族裤	怀旧服-道具#1060054
+Blue Piette Pants	蓝贵族裤	怀旧服-道具#1060055
+Dark Piette Pants	黑贵族裤	怀旧服-道具#1060056
+Khaki Shadow Pants	树林之裤	怀旧服-道具#1060057
+Marine Shadow Pants	沧海之裤	怀旧服-道具#1060058
+Dark Shadow Pants	黑色暗影裤	怀旧服-道具#1060059
+Umber Shouldermail Pants	黑板金裤	怀旧服-道具#1060060
+Blue Shouldermail Pants	蓝板金裤	怀旧服-道具#1060061
+Oaker Shouldermail Pants	蓝板金裤	怀旧服-道具#1060062
+Red China Pants	赤阳裤	怀旧服-道具#1060063
+Blue China Pants	青阳裤	怀旧服-道具#1060064
+Brown China Pants	黄阳裤	怀旧服-道具#1060065
+Green China Pants	绿阳裤	怀旧服-道具#1060066
+Pink Cotton Boxers	粉红棉内裤	怀旧服-道具#1061000
+Red Miniskirt	红超短裙	怀旧服-道具#1061001
+Indigo Miniskirt	蓝超短裙	怀旧服-道具#1061002
+Rookie Pants	红皮甲裤	怀旧服-道具#1061003
+Sophia Pants	黑皮甲裤	怀旧服-道具#1061004
+Black Armine Skirt	黑棉制紧身裙	怀旧服-道具#1061005
+Green Armine Skirt	绿棉制紧身裙	怀旧服-道具#1061006
+Green Avelin Skirt	绿色旅行裙	怀旧服-道具#1061007
+Yellow Avelin Skirt	黄旅行裙	怀旧服-道具#1061008
+Purple Arianne Skirt	紫锦丝紧身裙	怀旧服-道具#1061012
+Green Arianne Skirt	绿锦丝紧身裙	怀旧服-道具#1061013
+Pink Arianne Skirt	粉红锦丝紧身裙	怀旧服-道具#1061014
+Yellow Arianne Skirt	黄锦丝紧身裙	怀旧服-道具#1061015
+Green Able Armor Skirt	绿旅行皮裙	怀旧服-道具#1061016
+Brown Able Skirt	褐旅行皮裙	怀旧服-道具#1061017
+Grey Able Skirt	灰旅行皮裙	怀旧服-道具#1061018
+Red Nightshift Pants	赤夜裤	怀旧服-道具#1061019
+Brown Nightshift Pants	黄夜裤	怀旧服-道具#1061020
+Red Ramel Skirt	红十字军裙	怀旧服-道具#1061021
+Green Ramel Skirt	绿十字军裙	怀旧服-道具#1061022
+Brown Ramel Skirt	褐十字军裙	怀旧服-道具#1061023
+White Split Skirt	白伽蓝裙	怀旧服-道具#1061024
+Black Split Skirt	黑伽蓝裙	怀旧服-道具#1061025
+Green Shivermail Skirt	绿硬皮裙	怀旧服-道具#1061026
+Red Shivermail Skirt	红硬皮裙	怀旧服-道具#1061027
+Purple Shivermail Skirt	紫硬皮裙	怀旧服-道具#1061028
+Red Qi Pao Pants	红飞侠女裤	怀旧服-道具#1061029
+Blue Qi Pao Pants	蓝飞侠女裤	怀旧服-道具#1061030
+Purple Qi Pao Pants	紫飞侠女裤	怀旧服-道具#1061031
+Red Qi Pao Skirt	红旗袍裙	怀旧服-道具#1061032
+Blue Qi Pao Skirt	蓝旗袍裙	怀旧服-道具#1061033
+Purple Qi Pao Skirt	紫旗袍裙	怀旧服-道具#1061034
+Blue Shark Skirt	蓝骑士裙	怀旧服-道具#1061035
+Sky Shark Skirt	天蓝骑士裙	怀旧服-道具#1061036
+Red Shark Skirt	红骑士裙	怀旧服-道具#1061037
+Blood Sneak Pants	红敏捷裤	怀旧服-道具#1061038
+Sky Sneak Pants	蓝敏捷裤	怀旧服-道具#1061039
+Gold Sneak Pants	绿敏捷裤	怀旧服-道具#1061040
+Dark Sneak Pants	黑敏捷裤	怀旧服-道具#1061041
+Blue Fairy Skirt	蓝色妖精裙	怀旧服-道具#1061042
+Purple Fairy Skirt	紫色妖精裙	怀旧服-道具#1061043
+Green Fairy Skirt	绿色妖精裙	怀旧服-道具#1061044
+Green Huntress Pants	绿浪人裙	怀旧服-道具#1061045
+Black Huntress Pants	黑浪人裙	怀旧服-道具#1061046
+Red Huntress Pants	红浪人裙	怀旧服-道具#1061047
+Red Steal Pants	红寂静裙	怀旧服-道具#1061048
+Blue Steal Pants	蓝寂静裙	怀旧服-道具#1061049
+Purple Steal Pants	紫寂静裙	怀旧服-道具#1061050
+Black Steal Pants	黑寂静裙	怀旧服-道具#1061051
+Red Amoria Skirt	红神圣裙	怀旧服-道具#1061052
+Blue Amoria Skirt	蓝神圣裙	怀旧服-道具#1061053
+Black Amoria Skirt	黑神圣裙	怀旧服-道具#1061054
+Green Legolia Pants	绿守护裤	怀旧服-道具#1061055
+Brown Legolia Pants	褐守护裤	怀旧服-道具#1061056
+Red Legolia Pants	红守护裤	怀旧服-道具#1061057
+Blue Legolia Pants	蓝守护裤	怀旧服-道具#1061058
+Dark Legolia Pants	黑守护裤	怀旧服-道具#1061059
+Red Jangoon Skirt	红镇月裙	怀旧服-道具#1061060
+Brown Jangoon Skirt	黄镇月裙	怀旧服-道具#1061061
+Black Jangoon Skirt	黑镇月裙	怀旧服-道具#1061062
+Brown Piettra Skirt	褐贵族裙	怀旧服-道具#1061063
+Dark Piettra Skirt	黑贵族裙	怀旧服-道具#1061064
+White Piettra Skirt	白贵族裙	怀旧服-道具#1061065
+Red Shadow Pants	沧海之裤	怀旧服-道具#1061066
+Purple Shadow Pants	树林之裤	怀旧服-道具#1061067
+Red Shouldermail Pants	红将军裤	怀旧服-道具#1061069
+Ivory Shouldermail Pants	褐将军裤	怀旧服-道具#1061070
+Dark Shouldermail Pants	黑将军裤	怀旧服-道具#1061071
+Red Moon Pants	赤月裤	怀旧服-道具#1061072
+Blue Moon Pants	青月裤	怀旧服-道具#1061073
+Maroon Moon Pants	紫月裤	怀旧服-道具#1061074
+Brown Moon Pants	黄月裤	怀旧服-道具#1061075
+Archer Pants	绿色皮裤	怀旧服-道具#1062000
+Ice Jeans	白牛仔裤	怀旧服-道具#1062001
+Sandblasted Jeans	蓝牛仔裤	怀旧服-道具#1062002
+Brown Hard Leather Pants	褐色皮制裤	怀旧服-道具#1062003
+Bennis Chainpants	打猎裤	怀旧服-道具#1062004
+Wizet Plain Suit Pants	维泽特西裤	怀旧服-道具#1062999
+Black Suit Pants	黑西裤	怀旧服-道具#1065000
+Military Shorts	军用短裤	怀旧服-道具#1065001
+Blue Rider Pants	蓝摩托车裤	怀旧服-道具#1065002
+Shine Rider Pants	白摩托车裤	怀旧服-道具#1065003
+Dark Rider Pants	黑摩托车裤	怀旧服-道具#1065004
+Blue Trainer Pants	蓝运动裤	怀旧服-道具#1065005
+Green Trainer Pants	绿运动裤	怀旧服-道具#1065006
+Orange Trainer Pants	橙色登山裤	怀旧服-道具#1065007
+Original Disco Pants	灰色喇叭裤	怀旧服-道具#1065008
+Green Disco Pants	绿色喇叭裤	怀旧服-道具#1065009
+Blue Disco Pants	蓝色喇叭裤	怀旧服-道具#1065010
+Wild Pants	黄毛糙裤	怀旧服-道具#1065011
+Brown Wild Pants	褐毛糙裤	怀旧服-道具#1065012
+Red Wild Pants	红毛糙裤	怀旧服-道具#1065013
+Pre-School Pants	乖仔裤	怀旧服-道具#1065014
+Old School Uniform Pants	青年裤	怀旧服-道具#1065015
+Hawaiian Skirt	夏威夷裙	怀旧服-道具#1065016
+Torn-Up Jeans	长短裤	怀旧服-道具#1065017
+Blue Leggings	海员裤	怀旧服-道具#1065018
+Washed Jeans	苹果牛仔裤	怀旧服-道具#1065019
+Military Cargo Shorts	军用工装短裤	怀旧服-道具#1065020
+Tropical Shorts	红沙滩裤	怀旧服-道具#1065021
+Blue Bell Dress	宫廷裙	怀旧服-道具#1066000
+Blue Sailor Skirt	蓝色水手裙	怀旧服-道具#1066001
+Pink Miniskirt	粉红公主裙	怀旧服-道具#1066002
+Roll-Up Jean	卷边牛仔裤	怀旧服-道具#1066003
+Red Sailor Skirt	红迷你裙	怀旧服-道具#1066004
+Sky Blue Mimi Skirt	天蓝色咪咪裙	怀旧服-道具#1066005
+Yellow Mimi Skirt	黄色公主裙	怀旧服-道具#1066006
+Pre-School Uniform Skirt	乖囡裙	怀旧服-道具#1066007
+Red Trainer Pants	红色运动裤	怀旧服-道具#1066008
+Sky Blue Trainer Pants	淡蓝运动裤	怀旧服-道具#1066009
+Pink Trainer Pants	粉红运动裤	怀旧服-道具#1066010
+Black Trainer Pants	黑色运动裤	怀旧服-道具#1066011
+Blue Skirt	花袜牛仔裙	怀旧服-道具#1066012
+Old School Uniform (Skirt)	礼服裙	怀旧服-道具#1066013
+Red Training Shorts	红白运动短裤	怀旧服-道具#1066014
+Sky Blue Training Shorts	蓝白运动短裤	怀旧服-道具#1066015
+Pink Training Shorts	粉白运动短裤	怀旧服-道具#1066016
+Black Training Shorts	黑白运动短裤	怀旧服-道具#1066017
+Pink Frill Pajama Bottom	粉红女便装裤	怀旧服-道具#1066018
+Red Leggings	粉红线内服	怀旧服-道具#1066020
+Plitz Skirt	百褶裙	怀旧服-道具#1066021
+Blue Diamond Bootcuts	蓝摇滚喇叭裤	怀旧服-道具#1066022
+Pink Diamond Bootcuts	粉摇滚喇叭裤	怀旧服-道具#1066023
+Butterfly Skirt	哈妹裙	怀旧服-道具#1066024
+Red Hip-Hop Pants	红色街舞裤	怀旧服-道具#1067000
+Lined Hip-Hop Pants	蓝色街舞裤	怀旧服-道具#1067001
+Pink Camping Shorts	粉红马裤	怀旧服-道具#1067002
+Green Camping Shorts	绿色马裤	怀旧服-道具#1067003
+Blue Camping Shorts	淡蓝马裤	怀旧服-道具#1067004
+Wildcats Baseball Pants (Basic)	蓝色棒球裤	怀旧服-道具#1067005
+Baseball Pants (Home)	白色棒球裤	怀旧服-道具#1067006
+Baseball Pants (Away)	灰色棒球裤	怀旧服-道具#1067007
+Wildcats Baseball Pants (Alternate)	黑蓝色棒球裤	怀旧服-道具#1067008
+Ripped Jeans	个性牛仔裤	怀旧服-道具#1067009
+Yellow Snowboard Pants	黄色滑板裤	怀旧服-道具#1067010
+Green Snowboard Pants	绿色滑板裤	怀旧服-道具#1067011
+Bell-Bottomed Faded Jeans	紧身牛仔裤	怀旧服-道具#1067012
+Pink Snowboard Pants	粉红滑雪裤	怀旧服-道具#1067013
+Sky Blue Snowboard Pants	淡蓝滑雪裤	怀旧服-道具#1067014
+Jean Shorts	蓝色短裤	怀旧服-道具#1067015
+Old Army Pants	褐色军裤	怀旧服-道具#1067016
+Camouflaged Army Pants	野战军裤	怀旧服-道具#1067017
+Blue Polka-Dot Pajama Pants	蓝便装裤	怀旧服-道具#1067018
+Red Polka-Dot Pajama Pants	红便装裤	怀旧服-道具#1067019
+Prisoner Pants	囚裤	怀旧服-道具#1067020
+Picnic Jean Shorts	郊游牛仔短裤	怀旧服-道具#1067021
+Checkered Shorts	黄格子裤	怀旧服-道具#1067022
+Cargo Pants	荒野枪手中裤	怀旧服-道具#1067023
+Red Checkered Pants	红方格子裤	怀旧服-道具#1067024
+White Checkered Pants	白方格子裤	怀旧服-道具#1067025
+Hip Hop Jeans	褐线街舞裤	怀旧服-道具#1067026
+White Jeans	白色牛仔裤	怀旧服-道具#1067027
+Washed Denim Cargos	浅蓝嘻哈裤	怀旧服-道具#1067028
+Denim Cargos	深蓝嘻哈裤	怀旧服-道具#1067029
+Leather Sandals	皮制凉鞋	怀旧服-道具#1072000
+Red Rubber Boots	红橡胶长靴	怀旧服-道具#1072001
+Yellow Rubber Boots	黄橡胶长靴	怀旧服-道具#1072002
+Blue Rubber Boots	蓝橡胶长靴	怀旧服-道具#1072003
+Brown Basic Boots	褐马车鞋	怀旧服-道具#1072004
+Yellow Basic Boots	黄马车鞋	怀旧服-道具#1072005
+Blue Basic Boots	蓝马车鞋	怀旧服-道具#1072006
+Green Hard Leather Boots	绿硬皮鞋	怀旧服-道具#1072007
+Brown Hard Leather Boots	褐硬皮鞋	怀旧服-道具#1072008
+Blue Gidder Shoes	蓝冒险鞋	怀旧服-道具#1072009
+Brown Gidder Shoes	褐冒险鞋	怀旧服-道具#1072010
+White Gomushin	白橡胶鞋	怀旧服-道具#1072011
+Black Gomushin	黑橡胶鞋	怀旧服-道具#1072012
+Smelly Gomushin	脏橡胶鞋	怀旧服-道具#1072013
+Bronze Grieves	青铜鞋	怀旧服-道具#1072014
+Steel Grieves	钢铁斗士鞋	怀旧服-道具#1072015
+Beige Nitty	褐安全鞋	怀旧服-道具#1072016
+Black Nitty	黑安全鞋	怀旧服-道具#1072017
+Green Woodsman Boots	绿软布鞋	怀旧服-道具#1072018
+Brown Woodsman Boots	褐软布鞋	怀旧服-道具#1072019
+Blue Woodsman Boots	蓝软布鞋	怀旧服-道具#1072020
+Red Ninja Sandals	红忍者凉鞋	怀旧服-道具#1072021
+Yellow Ninja Sandals	黄忍者凉鞋	怀旧服-道具#1072022
+Blue Ninja Sandals	蓝忍者凉鞋	怀旧服-道具#1072023
+White Ninja Sandals	白忍者凉鞋	怀旧服-道具#1072024
+Bronze Aroa Boots	青铜阿罗亚靴	怀旧服-道具#1072025
+Brown Aroa Boots	黄短鞋	怀旧服-道具#1072026
+Green Aroa Boots	绿短鞋	怀旧服-道具#1072027
+Brown High Boots	褐旅行鞋	怀旧服-道具#1072028
+Orange High Boots	黄旅行鞋	怀旧服-道具#1072029
+Blue High Boots	蓝旅行鞋	怀旧服-道具#1072030
+Blue Jewelry Boots	蓝宝石鞋	怀旧服-道具#1072031
+Purple Jewelry Boots	紫宝石鞋	怀旧服-道具#1072032
+Red Jewelry Boots	红宝石鞋	怀旧服-道具#1072033
+Deer Huntertop	鹿毛鞋	怀旧服-道具#1072034
+Rabbit Huntertop	兔毛鞋	怀旧服-道具#1072035
+Bear Huntertop	熊毛鞋	怀旧服-道具#1072036
+Lion Huntertop	鹿毛鞋	怀旧服-道具#1072037
+Red Enamel Boots	红漆皮鞋	怀旧服-道具#1072038
+Blue Enamel Boots	蓝漆皮鞋	怀旧服-道具#1072039
+Black Enamel Boots	黑漆皮鞋	怀旧服-道具#1072040
+Blue Ankle-strap Sandals	蓝多罗鞋	怀旧服-道具#1072041
+Red Ankle-strap Sandals	红多罗鞋	怀旧服-道具#1072042
+Brown Ankle-strap Sandals	褐多罗鞋	怀旧服-道具#1072043
+Mithril War Boots	锂矿战斗鞋	怀旧服-道具#1072044
+Silver War Boots	银战斗鞋	怀旧服-道具#1072045
+Gold War Boots	金战斗鞋	怀旧服-道具#1072046
+Dark War Boots	黑战斗鞋	怀旧服-道具#1072047
+Silver Windshoes	银飘风鞋	怀旧服-道具#1072048
+Yellow Windshoes	黄飘风鞋	怀旧服-道具#1072049
+Black Windshoes	黑飘风鞋	怀旧服-道具#1072050
+Brown Jack Boots	皮质鞋子	怀旧服-道具#1072051
+Green Jack Boots	绿皮质鞋子	怀旧服-道具#1072052
+Red Jack Boots	红皮质鞋子	怀旧服-道具#1072053
+Blue Lappy Boots	蓝追击鞋	怀旧服-道具#1072054
+Red Lappy Boots	红追击鞋	怀旧服-道具#1072055
+Green Lappy Boots	绿追击鞋	怀旧服-道具#1072056
+Black Lappy Boots	黑追击鞋	怀旧服-道具#1072057
+Red Whitebottom Boots	红皮鞋	怀旧服-道具#1072058
+Orange Whitebottom Boots	朱红皮鞋	怀旧服-道具#1072059
+Pink Whitebottom Boots	粉红皮鞋	怀旧服-道具#1072060
+Blue Whitebottom Boots	蓝皮鞋	怀旧服-道具#1072061
+Emerald Battle Grieves	绿斗士鞋	怀旧服-道具#1072062
+Mithril Battle Grieves	秘银战斗胫甲	怀旧服-道具#1072063
+Silver Battle Grieves	银斗士鞋	怀旧服-道具#1072064
+Blood Battle Grieves	红斗士鞋	怀旧服-道具#1072065
+Red Magicshoes	红魔法鞋	怀旧服-道具#1072066
+Blue Magicshoes	蓝魔法鞋	怀旧服-道具#1072067
+White Magicshoes	白魔法鞋	怀旧服-道具#1072068
+Black Magicshoes	黑魔法鞋	怀旧服-道具#1072069
+Red Hunter Boots	红打猎鞋	怀旧服-道具#1072070
+Blue Hunter Boots	蓝打猎鞋	怀旧服-道具#1072071
+Green Hunter Boots	绿打猎鞋	怀旧服-道具#1072072
+Black Hunter Boots	黑打猎鞋	怀旧服-道具#1072073
+Brown Hunter Boots	褐打猎鞋	怀旧服-道具#1072074
+Bronze Chain Boots	青铜链鞋	怀旧服-道具#1072075
+Iron Chain Boots	钢铁链鞋	怀旧服-道具#1072076
+Silver Chain Boots	银链鞋	怀旧服-道具#1072077
+Gold Chain Boots	金链鞋	怀旧服-道具#1072078
+Red Snowshoes	红雪鞋	怀旧服-道具#1072079
+Blue Snowshoes	蓝雪鞋	怀旧服-道具#1072080
+Green Snowshoes	绿雪鞋	怀旧服-道具#1072081
+Black Snowshoes	黑雪鞋	怀旧服-道具#1072082
+Red Sneakers	红帆布鞋	怀旧服-道具#1072083
+Blue Sneakers	蓝帆布鞋	怀旧服-道具#1072084
+Steel Trigger	铁头皮鞋	怀旧服-道具#1072085
+Mithril Trigger	蓝铁头鞋	怀旧服-道具#1072086
+Dark Trigger	黑铁头鞋	怀旧服-道具#1072087
+Red Salt Shoes	红守护鞋	怀旧服-道具#1072088
+Purple Salt Shoes	紫守护鞋	怀旧服-道具#1072089
+Black Salt Shoes	黑守护鞋	怀旧服-道具#1072090
+Green Silky Boots	绿锦丝鞋	怀旧服-道具#1072091
+Red Silky Boots	红锦丝鞋	怀旧服-道具#1072092
+Blue Silky Boots	蓝锦丝鞋	怀旧服-道具#1072093
+Red White-Lined Boots	红杨柳鞋	怀旧服-道具#1072094
+Blue White-Lined Boots	蓝杨柳鞋	怀旧服-道具#1072095
+Green White-Lined Boots	绿杨柳鞋	怀旧服-道具#1072096
+Maroon Jangoon Shoes	紫金月鞋	怀旧服-道具#1072097
+Blue Jangoon Shoes	蓝金月鞋	怀旧服-道具#1072098
+Brown Jangoon Shoes	黄金月长靴	怀旧服-道具#1072099
+Red Moon Shoes	红月鞋	怀旧服-道具#1072100
+Blue Moon Shoes	蓝月鞋	怀旧服-道具#1072101
+Gold Moon Shoes	黄月鞋	怀旧服-道具#1072102
+Dark Moon Shoes	黑月鞋	怀旧服-道具#1072103
+Brown Pierre Shoes	褐精灵鞋	怀旧服-道具#1072104
+Yellow Pierre Shoes	黄精灵鞋	怀旧服-道具#1072105
+Red Pierre Shoes	红精灵鞋	怀旧服-道具#1072106
+Blue Pierre Shoes	蓝精灵鞋	怀旧服-道具#1072107
+Black Red-Lined Shoes	红流星鞋	怀旧服-道具#1072108
+Black Blue-Lined Shoes	黑蓝线鞋	怀旧服-道具#1072109
+Black Green-Lined Shoes	绿流星鞋	怀旧服-道具#1072110
+Black Yellow-Lined Shoes	黄流星鞋	怀旧服-道具#1072111
+Emerald Hildon Boots	祖母绿将军靴	怀旧服-道具#1072112
+Mithril Hildon Boots	锂矿蓝将军靴	怀旧服-道具#1072113
+Orihalcon Hildon Boots	紫矿将军靴	怀旧服-道具#1072114
+Gold Hildon Boots	黄金将军靴	怀旧服-道具#1072115
+Pink Goldwind Shoes	粉红黄金风	怀旧服-道具#1072116
+Blue Goldwind Shoes	蓝黄金风	怀旧服-道具#1072117
+Purple Goldwind Shoes	紫黄金风	怀旧服-道具#1072118
+Green Goldwind Shoes	绿色金风鞋	怀旧服-道具#1072119
+Brown Steel-Tip Boots	褐空空鞋	怀旧服-道具#1072120
+Green Steel-Tip Boots	绿空空鞋	怀旧服-道具#1072121
+Purple Steel-Tip Boots	紫空空鞋	怀旧服-道具#1072122
+Blue Steel-Tip Boots	蓝空空鞋	怀旧服-道具#1072123
+Red Goni Shoes	红雷电鞋	怀旧服-道具#1072124
+Blue Goni Shoes	蓝雷电鞋	怀旧服-道具#1072125
+Purple Goni Shoes	紫雷电鞋	怀旧服-道具#1072126
+Green Goni Shoes	绿雷电鞋	怀旧服-道具#1072127
+Squishy Shoes	绿黏液鞋子	怀旧服-道具#1072128
+Wizet Plain Shoes	蝴蝶结红皮鞋	怀旧服-道具#1072999
+Blue Gomushin	花少女鞋子	怀旧服-道具#1075000
+Black Santa Boots	黑圣诞鞋	怀旧服-道具#1075001
+Black Shoes of Death	波斯靴	怀旧服-道具#1075002
+Blue Loose Sox	蓝袜子鞋	怀旧服-道具#1076000
+Red Loose Sox	红袜子鞋	怀旧服-道具#1076001
+Red Santa Boots	圣诞鞋	怀旧服-道具#1076003
+Bunny Boots	兔兔鞋	怀旧服-道具#1076004
+Race Queen Boots	白色高跟礼靴	怀旧服-道具#1076005
+Black Dress Shoes	西装皮鞋	怀旧服-道具#1077000
+Red Air H's	红色运动鞋	怀旧服-道具#1077001
+Blue Air H's	蓝色运动鞋	怀旧服-道具#1077002
+Black Air H's	黑色运动鞋	怀旧服-道具#1077003
+Camping Boots	大头皮鞋	怀旧服-道具#1077004
+Yellow Flippers	黄色鸭蹼	怀旧服-道具#1077005
+Blue Flippers	蓝色鸭蹼	怀旧服-道具#1077006
+Yellow Rain Boots	黄色中靴	怀旧服-道具#1077007
+Sky Blue Rain Boots	蓝色中靴	怀旧服-道具#1077008
+Red Rain Boots	红色中靴	怀旧服-道具#1077009
+Green Rain Boots	绿色中靴	怀旧服-道具#1077010
+Blue Baseball Cleats	蓝色棒球鞋	怀旧服-道具#1077011
+Red Baseball Cleats	红色棒球鞋	怀旧服-道具#1077012
+Black Baseball Cleats	黑色棒球鞋	怀旧服-道具#1077013
+Black Leather Boots	黑皮中靴	怀旧服-道具#1077014
+Military Boots	军靴	怀旧服-道具#1077015
+Flipper Boots	鸭子长靴	怀旧服-道具#1077016
+Gold Kitty Slippers	猫拖鞋	怀旧服-道具#1077017
+Blue Marble Slippers	蓝圆头拖鞋	怀旧服-道具#1077018
+Red Marble Slippers	红圆头拖鞋	怀旧服-道具#1077019
+Bunny Slippers	兔兔拖	怀旧服-道具#1077020
+Beige Galoshes	翻毛绒靴(黄)	怀旧服-道具#1077021
+Sky Blue Galoshes	翻毛绒靴(蓝)	怀旧服-道具#1077022
+Pink Galoshes	翻毛绒靴(粉)	怀旧服-道具#1077023
+Black Boxing Shoes	黑拳击鞋	怀旧服-道具#1077024
+Blue Boxing Shoes	蓝拳击鞋	怀旧服-道具#1077025
+Red Boxing Shoes	红拳击鞋	怀旧服-道具#1077026
+Bear Shoes	虎爪	怀旧服-道具#1077027
+Bubbling Slippers	蓝水灵拖拖	怀旧服-道具#1077028
+Slime Slippers	绿水灵拖拖	怀旧服-道具#1077029
+Big Rabbit Feet	兔八哥鞋	怀旧服-道具#1077030
+Transparent Shoes	透明鞋	怀旧服-道具#1077031
+Work Gloves	工地手套	怀旧服-道具#1082000
+Juno	腕甲	怀旧服-道具#1082001
+Steel Fingerless Gloves	钢制短手套	怀旧服-道具#1082002
+Lemona	魔法手套	怀旧服-道具#1082003
+Basic Archer Gloves	青狩猎手套	怀旧服-道具#1082004
+Brown Duo	褐短指手套	怀旧服-道具#1082005
+Blue Duo	蓝短指手套	怀旧服-道具#1082006
+Black Duo	黑短指手套	怀旧服-道具#1082007
+Black Cat Gloves	墨玉咪咪手套	怀旧服-道具#1082008
+Blue Morrican	蓝色梅林手套	怀旧服-道具#1082009
+Green Morrican	绿色梅林手套	怀旧服-道具#1082010
+Purple Morrican	紫色梅林手套	怀旧服-道具#1082011
+Blue Diros	蓝狩猎手套	怀旧服-道具#1082012
+Red Diros	红狩猎手套	怀旧服-道具#1082013
+Green Diros	绿狩猎手套	怀旧服-道具#1082014
+Bronze Mischief	青铜飞侠手套	怀旧服-道具#1082015
+Mithril Mischief	锂矿飞侠手套	怀旧服-道具#1082016
+Dark Mischief	黑飞侠手套	怀旧服-道具#1082017
+White Fingerless Gloves	白纹短手套	怀旧服-道具#1082018
+Ocean Mesana	蓝贤者手套	怀旧服-道具#1082019
+Blood Mesana	红贤者手套	怀旧服-道具#1082020
+Dark Mesana	黑贤者手套	怀旧服-道具#1082021
+Blue Savata	蓝命中手套	怀旧服-道具#1082022
+Red Savata	红命中手套	怀旧服-道具#1082023
+Dark Savata	黑命中手套	怀旧服-道具#1082024
+Bronze Wolfskin	青铜精神手套	怀旧服-道具#1082025
+Mithril Wolfskin	锂矿精神手套	怀旧服-道具#1082026
+Dark Wolfskin	黑精神手套	怀旧服-道具#1082027
+Bronze Missel	青铜机器手套	怀旧服-道具#1082028
+Steel Missel	钢制机器手套	怀旧服-道具#1082029
+Orihalcon Missel	紫矿机器手套	怀旧服-道具#1082030
+Red Lutia	红守护手套	怀旧服-道具#1082031
+Blue Lutia	蓝守护手套	怀旧服-道具#1082032
+Black Lutia	黑守护手套	怀旧服-道具#1082033
+Brown Marker	褐击中手套	怀旧服-道具#1082034
+Green Marker	绿击中手套	怀旧服-道具#1082035
+Black Marker	黑击中手套	怀旧服-道具#1082036
+Steel Sylvia	钢铁暴风手套	怀旧服-道具#1082037
+Silver Sylvia	银暴风手套	怀旧服-道具#1082038
+Gold Sylvia	黄金暴风手套	怀旧服-道具#1082039
+Steel Briggon	铁制轻便手套	怀旧服-道具#1082040
+Yellow Briggon	黄轻便手套	怀旧服-道具#1082041
+Dark Briggon	黑轻便手套	怀旧服-道具#1082042
+Red Noel	红神圣手套	怀旧服-道具#1082043
+Blue Noel	蓝神圣手套	怀旧服-道具#1082044
+Dark Noel	黑神圣手套	怀旧服-道具#1082045
+Bronze Scaler	青铜名弓手套	怀旧服-道具#1082046
+Mithril Scaler	锂矿名弓手套	怀旧服-道具#1082047
+Gold Scaler	黄金名弓手套	怀旧服-道具#1082048
+Gold Arbion	黄金追击手套	怀旧服-道具#1082049
+Steel Arbion	钢铁追击手套	怀旧服-道具#1082050
+Orihalcon Arbion	紫矿追击手套	怀旧服-道具#1082051
+Iron Knuckle	钢铁指节手套	怀旧服-道具#1082052
+Adamantium Knuckle	朱矿指节手套	怀旧服-道具#1082053
+Dark Knuckle	黑指节手套	怀旧服-道具#1082054
+Red Arten	红精灵手套	怀旧服-道具#1082055
+Blue Arten	蓝精灵手套	怀旧服-道具#1082056
+Dark Arten	黑精灵手套	怀旧服-道具#1082057
+Aqua Brace	蓝勇气手套	怀旧服-道具#1082058
+Gold Brace	黄金勇气手套	怀旧服-道具#1082059
+Dark Brace	黑勇气手套	怀旧服-道具#1082060
+Red Cleave	红侠客手套	怀旧服-道具#1082061
+Gold Cleave	黄金侠客手套	怀旧服-道具#1082062
+Dark Cleave	黑侠客手套	怀旧服-道具#1082063
+Steel Brist	钢铁合金手套	怀旧服-道具#1082064
+Mithril Brist	锂矿合金手套	怀旧服-道具#1082065
+Gold Brist	黄金合金手套	怀旧服-道具#1082066
+Red Penance	红元素手套	怀旧服-道具#1082067
+Blue Penance	蓝元素手套	怀旧服-道具#1082068
+Dark Penance	黑元素手套	怀旧服-道具#1082069
+Red Willow	红意志手套	怀旧服-道具#1082070
+Blue Willow	蓝意志手套	怀旧服-道具#1082071
+Dark Willow	黑意志手套	怀旧服-道具#1082072
+Red Moon Gloves	赤月手套	怀旧服-道具#1082073
+Blue Moon Gloves	青月手套	怀旧服-道具#1082074
+Brown Moon Gloves	黄月手套	怀旧服-道具#1082075
+Wedding Gloves	婚礼手套	怀旧服-道具#1086000
+Red Boxing Gloves	红拳击手套	怀旧服-道具#1087000
+Blue Boxing Gloves	蓝拳击手套	怀旧服-道具#1087001
+Brown Baseball Glove	棒球手套	怀旧服-道具#1087002
+Blue Baseball Glove	蓝色棒球手套	怀旧服-道具#1087003
+White Bandage	白色绷带	怀旧服-道具#1087004
+Brown Bandage	褐色绷带	怀旧服-道具#1087005
+Black Bandage	黑色绷带	怀旧服-道具#1087006
+Santa Gloves	圣诞手套	怀旧服-道具#1087007
+Hair-Cutter Gloves	剪刀手套	怀旧服-道具#1087008
+M-Forcer Gloves	M-Forcer 手套	怀旧服-道具#1087009
+Transparent Gloves	透明手套	怀旧服-道具#1087010
+Stolen Fence	木盾	怀旧服-道具#1092000
+Wooden Buckler	木制圆盾	怀旧服-道具#1092001
+Pan Lid	锅盖	怀旧服-道具#1092002
+Steel Shield	钢盾	怀旧服-道具#1092003
+Mithril Buckler	锂矿圆盾	怀旧服-道具#1092004
+Mystic Shield	光子盾	怀旧服-道具#1092005
+Seclusion Wristguard	飞侠盾牌	怀旧服-道具#1092006
+Nimble Wristguard	褐色飞侠盾牌	怀旧服-道具#1092007
+Jurgen Wristguard	黑色飞侠盾牌	怀旧服-道具#1092008
+Red Triangular Shield	三角赤盾	怀旧服-道具#1092009
+Red Cross Shield	红十字盾牌	怀旧服-道具#1092010
+Esther Shield	电磁光盾	怀旧服-道具#1092011
+Battle Shield	战斗盾牌	怀旧服-道具#1092012
+Steel Tower Shield	钢铁方盾	怀旧服-道具#1092013
+Mithril Tower Shield	锂矿方盾	怀旧服-道具#1092014
+Adamantium Tower Shield	朱矿方盾	怀旧服-道具#1092015
+Skull Shield	骷髅盾	怀旧服-道具#1092016
+Transparent Shield	透明盾牌	怀旧服-道具#1097000
+Old Raggedy Cape	破披风	怀旧服-道具#1102000
+Green Icarus Cape	绿色伊卡洛斯披风	怀旧服-道具#1102001
+Yellow Icarus Cape	黄色伊卡洛斯披风	怀旧服-道具#1102002
+Blue Icarus Cape	蓝色伊卡洛斯披风	怀旧服-道具#1102003
+Green Napoleon	绿色拿破仑披风	怀旧服-道具#1102004
+Blue Napoleon	蓝色拿破仑披风	怀旧服-道具#1102005
+Red Napoleon	红色拿破仑披风	怀旧服-道具#1102006
+White Napoleon	白色拿破仑披风	怀旧服-道具#1102007
+Black Napoleon	黑色拿破仑披风	怀旧服-道具#1102008
+Red G-Wing Jetpack	红色机器翅膀	怀旧服-道具#1107000
+Blue G-Wing Jetpack	蓝色机器翅膀	怀旧服-道具#1107001
+Blue Nymph Wing	蓝妖精翅膀	怀旧服-道具#1107002
+Green Nymph Wing	绿妖精翅膀	怀旧服-道具#1107003
+Yellow Nymph Wing	黄妖精翅膀	怀旧服-道具#1107004
+Pink Nymph Wing	红妖精翅膀	怀旧服-道具#1107005
+Gargoyle Wings	恶魔之翼	怀旧服-道具#1107006
+Michael Wings	圣天使之翼	怀旧服-道具#1107007
+Transparent Cape	透明披风	怀旧服-道具#1107008
+White Label Ring	白色名片戒指	怀旧服-道具#1112100
+Blue Label Ring	水晶蓝名片戒指	怀旧服-道具#1112101
+Blue Label Ring 2	蓝色名片戒指2	怀旧服-道具#1112102
+Pink-Ribboned Label Ring	粉红绸带名片戒指	怀旧服-道具#1112103
+Blue-Ribboned Label Ring	蓝绸带名片戒指	怀旧服-道具#1112104
+Skull Label Ring	骷髅名片戒指	怀旧服-道具#1112105
+Butterfly Label Ring	蝴蝶名片戒指	怀旧服-道具#1112106
+Scoreboard Label Ring	闪电背景名片戒指	怀旧服-道具#1112107
+Classic Beginnings Label Ring	经典初心名牌戒指	怀旧服-道具#1112108
+Pink Chat Ring	粉色聊天戒指	怀旧服-道具#1112200
+Pink-Hearted Chat Ring	粉色爱心聊天戒指	怀旧服-道具#1112201
+Blue Chat Ring	蓝色聊天戒指	怀旧服-道具#1112202
+Pink-Flowered Chat Ring	粉色花朵聊天戒指	怀旧服-道具#1112203
+Blue-Flowered Chat Ring	蓝色花朵聊天戒指	怀旧服-道具#1112204
+Pink-Ribboned Chat Ring	粉色蝴蝶结聊天戒指	怀旧服-道具#1112205
+Blue-Ribboned Chat Ring	蓝色蝴蝶结聊天戒指	怀旧服-道具#1112206
+Skull Chat Ring	骷髅聊天戒指	怀旧服-道具#1112207
+Blue-Hearted Chat Ring	蓝色爱心聊天戒指	怀旧服-道具#1112208
+Gold-Yellow Chat Ring	金黄色聊天戒指	怀旧服-道具#1112209
+Pink Lady Chat Ring	粉红女郎聊天戒指	怀旧服-道具#1112210
+Silver-Blue Chat Ring	银蓝聊天戒指	怀旧服-道具#1112211
+Gold-Yellow Chat Ring 2	金黄色聊天戒指2	怀旧服-道具#1112212
+Pink Lady Chat Ring 2	粉红女郎聊天戒指2	怀旧服-道具#1112213
+Blue Marine Chat Ring	蓝色海洋聊天戒指	怀旧服-道具#1112214
+Kitty Chat Ring	猫咪聊天戒指	怀旧服-道具#1112215
+Paw-Print Chat Ring	爪印聊天戒指	怀旧服-道具#1112216
+Teddy Bear Chat Ring	泰迪熊聊天戒指	怀旧服-道具#1112217
+Scoreboard Chat Ring	计分板聊天戒指	怀旧服-道具#1112218
+Classic Beginnings Chat Ring	经典初心聊天戒指	怀旧服-道具#1112219
+Sword	剑	怀旧服-道具#1302000
+Long Sword	大剑	怀旧服-道具#1302001
+Sabre	武士刀	怀旧服-道具#1302002
+Saw	锯	怀旧服-道具#1302003
+Viking Sword	海盗剑	怀旧服-道具#1302004
+Machete	逆月刀	怀旧服-道具#1302005
+Eloon	太阳剑	怀旧服-道具#1302006
+Sky Blue Umbrella	蓝色雨伞	怀旧服-道具#1302007
+Gladius	战剑	怀旧服-道具#1302008
+Cutlus	弯刀	怀旧服-道具#1302010
+Red Whip	红色鞭子	怀旧服-道具#1302011
+Traus	黄沙之剑	怀旧服-道具#1302012
+Yellow Umbrella	黄色雨伞	怀旧服-道具#1302013
+Jeweled Katar	树灵之剑	怀旧服-道具#1302015
+Beginner's Long Sword	大剑	怀旧服-道具#1302016
+Hand Axe	小斧	怀旧服-道具#1312000
+Double Axe	双刃斧	怀旧服-道具#1312001
+Battle Axe	战斗斧	怀旧服-道具#1312002
+Scythe	镰刀	怀旧服-道具#1312003
+Mithril Axe	锂矿斧	怀旧服-道具#1312004
+Fireman's Axe	赤斧	怀旧服-道具#1312005
+Dankke	大斧	怀旧服-道具#1312006
+Blue Counter	青光斧	怀旧服-道具#1312007
+Buck	树灵之斧	怀旧服-道具#1312008
+Wooden Club	棍棒	怀旧服-道具#1322000
+Steel Pipe	钢管	怀旧服-道具#1322001
+Leather Purse	皮制手提包	怀旧服-道具#1322002
+Mace	铁瓜锤	怀旧服-道具#1322003
+Red Brick	红色砖头	怀旧服-道具#1322004
+Hammer	锤子	怀旧服-道具#1322005
+Square Shovel	方形铁铲	怀旧服-道具#1322006
+Hard Briefcase	007提包	怀旧服-道具#1322007
+Iron Mace	钢锤	怀旧服-道具#1322008
+Pointed Shovel	三角铁铲	怀旧服-道具#1322009
+Plunger	马桶吸	怀旧服-道具#1322010
+Fusion Mace	奇型锤	怀旧服-道具#1322011
+War Hammer	大战斗锤	怀旧服-道具#1322013
+Pig Illustrated	葵花宝典	怀旧服-道具#1322014
+Heavy Hammer	骑士锤	怀旧服-道具#1322015
+Jacker	重锤	怀旧服-道具#1322016
+Knuckle Mace	旋风锤	怀旧服-道具#1322017
+Blue Flowery Tube	蓝花纹游泳圈	怀旧服-道具#1322018
+Red Flowery Tube	红花纹游泳圈	怀旧服-道具#1322019
+Purple Tube	紫游泳圈	怀旧服-道具#1322020
+Black Tube	黑游泳圈	怀旧服-道具#1322021
+Wizet Secret Agent Suitcase	维泽特特殊提包	怀旧服-道具#1322999
+Razor	刮胡刀	怀旧服-道具#1332000
+Fruit Knife	短刀	怀旧服-道具#1332001
+Triangular Zamadar	三角刃	怀旧服-道具#1332002
+Field Dagger	战斗短刀	怀旧服-道具#1332003
+Triple-Tipped Zamadar	三指刃	怀旧服-道具#1332004
+Coconut Knife	牙刀	怀旧服-道具#1332005
+Stinger	飞影刃	怀旧服-道具#1332006
+Iron Dagger	钢短刀	怀旧服-道具#1332007
+Forked Dagger	双枝短刀	怀旧服-道具#1332008
+Cass	偃月刃	怀旧服-道具#1332009
+Reef Claw	水晶刃	怀旧服-道具#1332010
+Halfmoon Zamadar	半月刃	怀旧服-道具#1332011
+Gephart	暗影刃	怀旧服-道具#1332012
+Korean Fan	太极扇	怀旧服-道具#1332013
+Bazlud	刺客短刀	怀旧服-道具#1332014
+Shinkita	破碎刃	怀旧服-道具#1332015
+Sai	华戟	怀旧服-道具#1332016
+Beginner's Triangular Zamadar	三角刃	怀旧服-道具#1332017
+Wooden Wand	木制短杖	怀旧服-道具#1372000
+Hardwood Wand	高级木制短杖	怀旧服-道具#1372001
+Metal Wand	金属短杖	怀旧服-道具#1372002
+Ice Wand	冰精短杖	怀旧服-道具#1372003
+Mithril Wand	锂矿短杖	怀旧服-道具#1372004
+Wizard Wand	法师短杖	怀旧服-道具#1372005
+Fairy Wand	妖精短杖	怀旧服-道具#1372006
+Cromi	大魔法师短杖	怀旧服-道具#1372007
+Beginner's Wooden Wand	木制短杖	怀旧服-道具#1372008
+Wooden Staff	木制长杖	怀旧服-道具#1382000
+Sapphire Staff	蓝宝石长杖	怀旧服-道具#1382001
+Emerald Staff	祖母绿长杖	怀旧服-道具#1382002
+Old Wooden Staff	古树长杖	怀旧服-道具#1382003
+Wizard Staff	法师长杖	怀旧服-道具#1382004
+Arc Staff	精灵长杖	怀旧服-道具#1382005
+Wooden Sword	木剑	怀旧服-道具#1402000
+Wooden Baseball Bat	木球棍	怀旧服-道具#1402001
+Two-Handed Sword	双手剑	怀旧服-道具#1402002
+Broadsword	钢铁剑	怀旧服-道具#1402003
+Aluminum Baseball Bat	铝球棍	怀旧服-道具#1402004
+Scimitar	大刀	怀旧服-道具#1402005
+Lionheart	高原之剑	怀旧服-道具#1402006
+Zard	半月巨刀	怀旧服-道具#1402007
+Lion's Fang	虎剑	怀旧服-道具#1402008
+Metal Axe	铁斧	怀旧服-道具#1412000
+Iron Axe	伐木斧	怀旧服-道具#1412001
+Pickaxe	十字镐	怀旧服-道具#1412002
+Two-Handed Axe	双手斧	怀旧服-道具#1412003
+Blue Axe	重型巨斧	怀旧服-道具#1412004
+Niam	绿蛇刀	怀旧服-道具#1412005
+Sabretooth	格斗斧	怀旧服-道具#1412006
+The Rising	太阳之斧	怀旧服-道具#1412007
+Wooden Mallet	木锤	怀旧服-道具#1422000
+Heavy Mace	钢铁圆锤	怀旧服-道具#1422001
+Square Hammer	方形锤子	怀旧服-道具#1422002
+Monkey Wrench	猴子扳手	怀旧服-道具#1422003
+Mithril Maul	锂矿锤	怀旧服-道具#1422004
+Sledgehammer	大锤	怀旧服-道具#1422005
+Titan	巨人锤	怀旧服-道具#1422006
+Golden Mole	黄金锤	怀旧服-道具#1422007
+Spear	长枪	怀旧服-道具#1432000
+Fork on a Stick	叉枪	怀旧服-道具#1432001
+Fish Spear	海神叉	怀旧服-道具#1432002
+Forked Spear	三支枪	怀旧服-道具#1432003
+Nakamaki	刺枪	怀旧服-道具#1432004
+Zeco	双天戟	怀旧服-道具#1432005
+Serpent's Tongue	长八蛇矛	怀旧服-道具#1432006
+Pole Arm	矛	怀旧服-道具#1442000
+Iron Ball	蓝铁锤	怀旧服-道具#1442001
+Studded Polearm	幻影	怀旧服-道具#1442002
+Janitor's Mop	拖把	怀旧服-道具#1442003
+Mithril Pole Arm	秘银戟	怀旧服-道具#1442004
+Axe Pole Arm	斧戟	怀旧服-道具#1442005
+Crescent Polearm	月牙戟	怀旧服-道具#1442006
+The Nine Dragons	九龙刀	怀旧服-道具#1442007
+War Bow	长弓	怀旧服-道具#1452000
+Composite Bow	钢铁弓	怀旧服-道具#1452001
+Hunter's Bow	打猎弓	怀旧服-道具#1452002
+Battle Bow	战斗弓	怀旧服-道具#1452003
+Ryden	雷电	怀旧服-道具#1452004
+Red Viper	火焰之弓	怀旧服-道具#1452005
+Vaulter 2000	暴风弓	怀旧服-道具#1452006
+Olympus	天弓	怀旧服-道具#1452007
+Beginner's War Bow	长弓	怀旧服-道具#1452008
+Crossbow	弩弓	怀旧服-道具#1462000
+Battle Crossbow	战斗弩弓	怀旧服-道具#1462001
+Balanche	猎弩弓	怀旧服-道具#1462002
+Mountain Crossbow	山羊弩	怀旧服-道具#1462003
+Eagle Crow	鹰弩	怀旧服-道具#1462004
+Heckler	双弦弩	怀旧服-道具#1462005
+Silver Crow	白银弩	怀旧服-道具#1462006
+Rower	炎弩	怀旧服-道具#1462007
+Garnier	拳套	怀旧服-道具#1472000
+Steel Titans	钢铁拳套	怀旧服-道具#1472001
+Mithril Titans	锂矿拳套	怀旧服-道具#1472002
+Gold Titans	黄金拳套	怀旧服-道具#1472003
+Bronze Igor	青铜指虎	怀旧服-道具#1472004
+Steel Igor	钢铁指虎	怀旧服-道具#1472005
+Adamantium Igor	朱矿指虎	怀旧服-道具#1472006
+Meba	狼牙	怀旧服-道具#1472007
+Steel Guards	钢铁斗拳	怀旧服-道具#1472008
+Mithril Guards	锂矿斗拳	怀旧服-道具#1472009
+Adamantium Guards	朱矿斗拳	怀旧服-道具#1472010
+Bronze Guardian	青铜守护拳套	怀旧服-道具#1472011
+Silver Guardian	银守护拳套	怀旧服-道具#1472012
+Dark Guardian	黑守护拳套	怀旧服-道具#1472013
+Steel Avarice	钢铁护腕	怀旧服-道具#1472014
+Blood Avarice	赤红护腕	怀旧服-道具#1472015
+Adamantium Avarice	朱矿护腕	怀旧服-道具#1472016
+Dark Avarice	黑护腕	怀旧服-道具#1472017
+Steel Slain	钢铁手甲	怀旧服-道具#1472018
+Blood Slain	赤红手甲	怀旧服-道具#1472019
+Sapphire Slain	蓝宝手甲	怀旧服-道具#1472020
+Dark Slain	黑手甲	怀旧服-道具#1472021
+Beginner's Garnier	拳套	怀旧服-道具#1472022
+Dual Plasma Blade	星战激光剑	怀旧服-道具#1702000
+Bouquet	玫瑰花束	怀旧服-道具#1702001
+Wooden Slingshot	木制弹弓	怀旧服-道具#1702002
+Plastic Slingshot	塑料弹弓	怀旧服-道具#1702003
+Angel Wand	天使星星棒	怀旧服-道具#1702004
+Yellow Candy Cane	黄彩棒	怀旧服-道具#1702005
+Red Candy Cane	红彩棒	怀旧服-道具#1702006
+Green Candy Cane	绿彩棒	怀旧服-道具#1702007
+Santa Sack	礼物包	怀旧服-道具#1702008
+Tiger Paw	虎爪手套	怀旧服-道具#1702009
+Orange Toy Hammer	橙色充气榔头	怀旧服-道具#1702010
+Pink Toy Hammer	紫色充气榔头	怀旧服-道具#1702011
+Yellow Spatula	苍蝇拍	怀旧服-道具#1702012
+Teddy Bear	熊宝宝	怀旧服-道具#1702013
+Toy Rifle	玩具步枪	怀旧服-道具#1702014
+Bug Net	网兜	怀旧服-道具#1702015
+Picnic Basket	玩具彩箱	怀旧服-道具#1702016
+Pink Rabbit Puppet	兔宝宝	怀旧服-道具#1702017
+Vanilla Ice Cream	香草冰淇淋	怀旧服-道具#1702018
+Pillow	蓝色大抱枕	怀旧服-道具#1702019
+Cupid's Bow	黄金天使弓	怀旧服-道具#1702021
+Cherub's Bow	蓝宝天使弓	怀旧服-道具#1702022
+Cupid's Crossbow	黄金天使弩	怀旧服-道具#1702023
+Blazing Sword	梦幻激光剑	怀旧服-道具#1702024
+Donut	甜甜圈	怀旧服-道具#1702025
+White Rabbit's Foot	白猫拳	怀旧服-道具#1702026
+Red Ribbon	红色丝带	怀旧服-道具#1802000
+Yellow Hat	黄色帽子	怀旧服-道具#1802001
+Red Hat	红色帽子	怀旧服-道具#1802002
+Black Hat	黑色帽子	怀旧服-道具#1802003
+Pink Laced Cap	粉红花边帽子	怀旧服-道具#1802004
+Sky Blue Laced Cap	天蓝蕾丝帽	怀旧服-道具#1802005
+Blue Top Hat	蓝魔术帽	怀旧服-道具#1802006
+Red Top Hat	红魔术帽	怀旧服-道具#1802007
+Rudolph's Hat	圣诞鹿帽	怀旧服-道具#1802008
+Tree Hat	圣诞树帽	怀旧服-道具#1802009
+Red Potion	红色药水	怀旧服-道具#2000000
+Orange Potion	橙色药水	怀旧服-道具#2000001
+White Potion	白色药水	怀旧服-道具#2000002
+Blue Potion	蓝色药水	怀旧服-道具#2000003
+Elixir	特殊药水	怀旧服-道具#2000004
+Power Elixir	超级药水	怀旧服-道具#2000005
+Mana Elixir	活力神水	怀旧服-道具#2000006
+Warrior Potion	攻击神水	怀旧服-道具#2002000
+Magic Potion	魔力神水	怀旧服-道具#2002001
+Sniper Potion	命中神水	怀旧服-道具#2002002
+Dexterity Potion	敏捷药水	怀旧服-道具#2002003
+Speed Potion	速度药水	怀旧服-道具#2002004
+Weaponcrafting Kit	武器制作工具包	怀旧服-道具#2002005
+Woodcrafting Kit	木工制作工具包	怀旧服-道具#2002006
+Smithing Kit	锻造工具包	怀旧服-道具#2002007
+Leatherworking Kit	皮革制作工具包	怀旧服-道具#2002008
+Tailoring Kit	裁缝工具包	怀旧服-道具#2002009
+Arcforge Kit	秘法锻造工具包	怀旧服-道具#2002010
+Apple	苹果	怀旧服-道具#2010001
+Egg	鸡蛋	怀旧服-道具#2010002
+Meat	肉	怀旧服-道具#2010003
+Orange	橙子	怀旧服-道具#2010004
+Lemon	柠檬	怀旧服-道具#2010005
+Watermelon	西瓜	怀旧服-道具#2010006
+Green Apple	青苹果	怀旧服-道具#2010007
+Drake's Blood	龙血	怀旧服-道具#2012000
+Fairy's Honey	妖精的蜂蜜	怀旧服-道具#2012001
+Sap of Ancient Tree	古木树液	怀旧服-道具#2012002
+Drake's Meat	龙肉	怀旧服-道具#2012003
+Salad	沙拉	怀旧服-道具#2020000
+Fried Chicken	炸鸡	怀旧服-道具#2020001
+Cake	蛋糕	怀旧服-道具#2020002
+Pizza	披萨	怀旧服-道具#2020003
+Hamburger	汉堡	怀旧服-道具#2020004
+Hot Dog	热狗	怀旧服-道具#2020005
+Hot Dog Supreme	豪华热狗	怀旧服-道具#2020006
+Dried Squid	鱿鱼干	怀旧服-道具#2020007
+Fat Sausage	香肠	怀旧服-道具#2020008
+Orange Juice	橙汁	怀旧服-道具#2020009
+Grape Juice	葡萄汁	怀旧服-道具#2020010
+W Ramen	兰州拉面	怀旧服-道具#2020011
+Ice Cream Pop	棒棒冰	怀旧服-道具#2020012
+Red Bean Sundae	红豆刨冰	怀旧服-道具#2020013
+Pure Water	矿泉水	怀旧服-道具#2022000
+Red Bean Porridge	红豆粥	怀旧服-道具#2022001
+Cider	雪碧	怀旧服-道具#2022002
+Unagi	烤鳗鱼	怀旧服-道具#2022003
+Mysterious Meso Pouch	神秘金币袋	怀旧服-道具#2028000
+10000 Meso Pouch	10000金币袋	怀旧服-道具#2028001
+50000 Meso Pouch	50000金币袋	怀旧服-道具#2028002
+Return Scroll - Nearest Town	回城卷轴	怀旧服-道具#2030000
+Return Scroll to Lith Harbor	明珠港回城卷	怀旧服-道具#2030001
+Return Scroll to Ellinia	魔法密林回城卷	怀旧服-道具#2030002
+Return Scroll to Perion	勇士部落回城卷	怀旧服-道具#2030003
+Return Scroll to Henesys	射手村回城卷	怀旧服-道具#2030004
+Return Scroll to Kerning City	废弃都市回城卷	怀旧服-道具#2030005
+Return Scroll to Sleepywood	林中之城回城卷	怀旧服-道具#2030006
+Return Scroll to Forgotten Hollow	遗忘幽谷回城卷	怀旧服-道具#2030007
+Hat Accuracy Scroll: Lesser	头盔命中率卷轴：初级	怀旧服-道具#2040000
+Hat Accuracy Scroll: Intermediate	头盔命中率卷轴：中级	怀旧服-道具#2040001
+Hat Accuracy Scroll: Greater	头盔命中率卷轴：高级	怀旧服-道具#2040002
+Hat Accuracy Scroll: Chaos	头盔命中率卷轴：混沌	怀旧服-道具#2040003
+Hat HP Scroll: Lesser	头盔生命值卷轴：初级	怀旧服-道具#2040004
+Hat HP Scroll: Intermediate	头盔生命值卷轴：中级	怀旧服-道具#2040005
+Hat HP Scroll: Greater	头盔生命值卷轴：高级	怀旧服-道具#2040006
+Hat HP Scroll: Chaos	头盔生命值卷轴：混沌	怀旧服-道具#2040007
+Hat MP Scroll: Lesser	头盔魔法值卷轴：初级	怀旧服-道具#2040008
+Hat MP Scroll: Intermediate	头盔魔法值卷轴：中级	怀旧服-道具#2040009
+Hat MP Scroll: Greater	头盔魔法值卷轴：高级	怀旧服-道具#2040010
+Hat MP Scroll: Chaos	头盔魔法值卷轴：混沌	怀旧服-道具#2040011
+Earring STR Scroll: Lesser	耳环力量卷轴：初级	怀旧服-道具#2040300
+Earring STR Scroll: Intermediate	耳环力量卷轴：中级	怀旧服-道具#2040301
+Earring STR Scroll: Greater	耳环力量卷轴：高级	怀旧服-道具#2040302
+Earring STR Scroll: Chaos	耳环力量卷轴：混沌	怀旧服-道具#2040303
+Earring DEX Scroll: Lesser	耳环敏捷卷轴：初级	怀旧服-道具#2040304
+Earring DEX Scroll: Intermediate	耳环敏捷卷轴：中级	怀旧服-道具#2040305
+Earring DEX Scroll: Greater	耳环敏捷卷轴：高级	怀旧服-道具#2040306
+Earring DEX Scroll: Chaos	耳环敏捷卷轴：混沌	怀旧服-道具#2040307
+Earring INT Scroll: Lesser	耳环智力卷轴：初级	怀旧服-道具#2040308
+Earring INT Scroll: Intermediate	耳环智力卷轴：中级	怀旧服-道具#2040309
+Earring INT Scroll: Greater	耳环智力卷轴：高级	怀旧服-道具#2040310
+Earring INT Scroll: Chaos	耳环智力卷轴：混沌	怀旧服-道具#2040311
+Earring LUK Scroll: Lesser	耳环幸运卷轴：初级	怀旧服-道具#2040312
+Earring LUK Scroll: Intermediate	耳环幸运卷轴：中级	怀旧服-道具#2040313
+Earring LUK Scroll: Greater	耳环幸运卷轴：高级	怀旧服-道具#2040314
+Earring LUK Scroll: Chaos	耳环幸运卷轴：混沌	怀旧服-道具#2040315
+Earring Crit. Damage Scroll: Lesser	耳环暴击伤害卷轴：初级	怀旧服-道具#2040316
+Earring Crit. Damage Scroll: Intermediate	耳环暴击伤害卷轴：中级	怀旧服-道具#2040317
+Earring Crit. Damage Scroll: Greater	耳环暴击伤害卷轴：高级	怀旧服-道具#2040318
+Earring Crit. Damage Scroll: Chaos	耳环暴击伤害卷轴：混沌	怀旧服-道具#2040319
+Earring Avoidability Scroll: Lesser	耳环回避率卷轴：初级	怀旧服-道具#2040320
+Earring Avoidability Scroll: Intermediate	耳环回避率卷轴：中级	怀旧服-道具#2040321
+Earring Avoidability Scroll: Greater	耳环回避率卷轴：高级	怀旧服-道具#2040322
+Earring Avoidability Scroll: Chaos	耳环回避率卷轴：混沌	怀旧服-道具#2040323
+Topwear DEF Scroll: Lesser	上衣防御力卷轴：初级	怀旧服-道具#2040400
+Topwear DEF Scroll: Intermediate	上衣防御力卷轴：中级	怀旧服-道具#2040401
+Topwear DEF Scroll: Greater	上衣防御力卷轴：高级	怀旧服-道具#2040402
+Topwear DEF Scroll: Chaos	上衣防御力卷轴：混沌	怀旧服-道具#2040403
+Topwear HP Scroll: Lesser	上衣生命值卷轴：初级	怀旧服-道具#2040404
+Topwear HP Scroll: Intermediate	上衣生命值卷轴：中级	怀旧服-道具#2040405
+Topwear HP Scroll: Greater	上衣生命值卷轴：高级	怀旧服-道具#2040406
+Topwear HP Scroll: Chaos	上衣生命值卷轴：混沌	怀旧服-道具#2040407
+Topwear MP Scroll: Lesser	上衣魔法值卷轴：初级	怀旧服-道具#2040408
+Topwear MP Scroll: Intermediate	上衣魔法值卷轴：中级	怀旧服-道具#2040409
+Topwear MP Scroll: Greater	上衣魔法值卷轴：高级	怀旧服-道具#2040410
+Topwear MP Scroll: Chaos	上衣魔法值卷轴：混沌	怀旧服-道具#2040411
+Overall Armor DEF Scroll: Lesser	套服防御力卷轴：初级	怀旧服-道具#2040500
+Overall Armor DEF Scroll: Intermediate	套服防御力卷轴：中级	怀旧服-道具#2040501
+Overall Armor DEF Scroll: Greater	套服防御力卷轴：高级	怀旧服-道具#2040502
+Overall Armor DEF Scroll: Chaos	套服防御力卷轴：混沌	怀旧服-道具#2040503
+Overall Armor STR Scroll: Lesser	套服力量卷轴：初级	怀旧服-道具#2040504
+Overall Armor STR Scroll: Intermediate	套服力量卷轴：中级	怀旧服-道具#2040505
+Overall Armor STR Scroll: Greater	套服力量卷轴：高级	怀旧服-道具#2040506
+Overall Armor STR Scroll: Chaos	套服力量卷轴：混沌	怀旧服-道具#2040507
+Overall Armor DEX Scroll: Lesser	套服敏捷卷轴：初级	怀旧服-道具#2040508
+Overall Armor DEX Scroll: Intermediate	套服敏捷卷轴：中级	怀旧服-道具#2040509
+Overall Armor DEX Scroll: Greater	套服敏捷卷轴：高级	怀旧服-道具#2040510
+Overall Armor DEX Scroll: Chaos	套服敏捷卷轴：混沌	怀旧服-道具#2040511
+Overall Armor INT Scroll: Lesser	套服智力卷轴：初级	怀旧服-道具#2040512
+Overall Armor INT Scroll: Intermediate	套服智力卷轴：中级	怀旧服-道具#2040513
+Overall Armor INT Scroll: Greater	套服智力卷轴：高级	怀旧服-道具#2040514
+Overall Armor INT Scroll: Chaos	套服智力卷轴：混沌	怀旧服-道具#2040515
+Overall Armor LUK Scroll: Lesser	套服幸运卷轴：初级	怀旧服-道具#2040516
+Overall Armor LUK Scroll: Intermediate	套服幸运卷轴：中级	怀旧服-道具#2040517
+Overall Armor LUK Scroll: Greater	套服幸运卷轴：高级	怀旧服-道具#2040518
+Overall Armor LUK Scroll: Chaos	套服幸运卷轴：混沌	怀旧服-道具#2040519
+Bottomwear DEF Scroll: Lesser	下装防御力卷轴：初级	怀旧服-道具#2040600
+Bottomwear DEF Scroll: Intermediate	下装防御力卷轴：中级	怀旧服-道具#2040601
+Bottomwear DEF Scroll: Greater	下装防御力卷轴：高级	怀旧服-道具#2040602
+Bottomwear DEF Scroll: Chaos	下装防御力卷轴：混沌	怀旧服-道具#2040603
+Bottomwear HP Scroll: Lesser	下装生命值卷轴：初级	怀旧服-道具#2040604
+Bottomwear HP Scroll: Intermediate	下装生命值卷轴：中级	怀旧服-道具#2040605
+Bottomwear HP Scroll: Greater	下装生命值卷轴：高级	怀旧服-道具#2040606
+Bottomwear HP Scroll: Chaos	下装生命值卷轴：混沌	怀旧服-道具#2040607
+Bottomwear MP Scroll: Lesser	下装魔法值卷轴：初级	怀旧服-道具#2040608
+Bottomwear MP Scroll: Intermediate	下装魔法值卷轴：中级	怀旧服-道具#2040609
+Bottomwear MP Scroll: Greater	下装魔法值卷轴：高级	怀旧服-道具#2040610
+Bottomwear MP Scroll: Chaos	下装魔法值卷轴：混沌	怀旧服-道具#2040611
+Shoes Jump Scroll: Lesser	鞋子跳跃力卷轴：初级	怀旧服-道具#2040700
+Shoes Jump Scroll: Intermediate	鞋子跳跃力卷轴：中级	怀旧服-道具#2040701
+Shoes Jump Scroll: Greater	鞋子跳跃力卷轴：高级	怀旧服-道具#2040702
+Shoes Jump Scroll: Chaos	鞋子跳跃力卷轴：混沌	怀旧服-道具#2040703
+Shoes Speed Scroll: Lesser	鞋子移动速度卷轴：初级	怀旧服-道具#2040704
+Shoes Speed Scroll: Intermediate	鞋子移动速度卷轴：中级	怀旧服-道具#2040705
+Shoes Speed Scroll: Greater	鞋子移动速度卷轴：高级	怀旧服-道具#2040706
+Shoes Speed Scroll: Chaos	鞋子移动速度卷轴：混沌	怀旧服-道具#2040707
+Shoes Avoidability Scroll: Lesser	鞋子回避率卷轴：初级	怀旧服-道具#2040708
+Shoes Avoidability Scroll: Intermediate	鞋子回避率卷轴：中级	怀旧服-道具#2040709
+Shoes Avoidability Scroll: Greater	鞋子回避率卷轴：高级	怀旧服-道具#2040710
+Shoes Avoidability Scroll: Chaos	鞋子回避率卷轴：混沌	怀旧服-道具#2040711
+Gloves Attack Scroll: Lesser	手套攻击力卷轴：初级	怀旧服-道具#2040800
+Gloves Attack Scroll: Intermediate	手套攻击力卷轴：中级	怀旧服-道具#2040801
+Gloves Attack Scroll: Greater	手套攻击力卷轴：高级	怀旧服-道具#2040802
+Gloves Attack Scroll: Chaos	手套攻击力卷轴：混沌	怀旧服-道具#2040803
+Gloves Magic Attack Scroll: Lesser	手套魔法攻击力卷轴：初级	怀旧服-道具#2040804
+Gloves Magic Attack Scroll: Intermediate	手套魔法攻击力卷轴：中级	怀旧服-道具#2040805
+Gloves Magic Attack Scroll: Greater	手套魔法攻击力卷轴：高级	怀旧服-道具#2040806
+Gloves Magic Attack Scroll: Chaos	手套魔法攻击力卷轴：混沌	怀旧服-道具#2040807
+Gloves Accuracy Scroll: Lesser	手套命中率卷轴：初级	怀旧服-道具#2040808
+Gloves Accuracy Scroll: Intermediate	手套命中率卷轴：中级	怀旧服-道具#2040809
+Gloves Accuracy Scroll: Greater	手套命中率卷轴：高级	怀旧服-道具#2040810
+Gloves Accuracy Scroll: Chaos	手套命中率卷轴：混沌	怀旧服-道具#2040811
+Gloves Crit. Rate Scroll: Lesser	手套暴击率卷轴：初级	怀旧服-道具#2040812
+Gloves Crit. Rate Scroll: Intermediate	手套暴击率卷轴：中级	怀旧服-道具#2040813
+Gloves Crit. Rate Scroll: Greater	手套暴击率卷轴：高级	怀旧服-道具#2040814
+Gloves Crit. Rate Scroll: Chaos	手套暴击率卷轴：混沌	怀旧服-道具#2040815
+Shield DEF Scroll: Lesser	盾牌防御力卷轴：初级	怀旧服-道具#2040900
+Shield DEF Scroll: Intermediate	盾牌防御力卷轴：中级	怀旧服-道具#2040901
+Shield DEF Scroll: Greater	盾牌防御力卷轴：高级	怀旧服-道具#2040902
+Shield DEF Scroll: Chaos	盾牌防御力卷轴：混沌	怀旧服-道具#2040903
+Shield Accuracy Scroll: Lesser	盾牌命中率卷轴：初级	怀旧服-道具#2040904
+Shield Accuracy Scroll: Intermediate	盾牌命中率卷轴：中级	怀旧服-道具#2040905
+Shield Accuracy Scroll: Greater	盾牌命中率卷轴：高级	怀旧服-道具#2040906
+Shield Accuracy Scroll: Chaos	盾牌命中率卷轴：混沌	怀旧服-道具#2040907
+Cape Weapon Def. Scroll: Lesser	披风物理防御力卷轴：初级	怀旧服-道具#2041000
+Cape Weapon Def. Scroll: Intermediate	披风物理防御力卷轴：中级	怀旧服-道具#2041001
+Cape Weapon Def. Scroll: Greater	披风物理防御力卷轴：高级	怀旧服-道具#2041002
+Cape Weapon Def. Scroll: Chaos	披风物理防御力卷轴：混沌	怀旧服-道具#2041003
+Cape Magic Def. Scroll: Lesser	披风魔法防御力卷轴：初级	怀旧服-道具#2041004
+Cape Magic Def. Scroll: Intermediate	披风魔法防御力卷轴：中级	怀旧服-道具#2041005
+Cape Magic Def. Scroll: Greater	披风魔法防御力卷轴：高级	怀旧服-道具#2041006
+Cape Magic Def. Scroll: Chaos	披风魔法防御力卷轴：混沌	怀旧服-道具#2041007
+Cape STR Scroll: Lesser	披风力量卷轴：初级	怀旧服-道具#2041008
+Cape STR Scroll: Intermediate	披风力量卷轴：中级	怀旧服-道具#2041009
+Cape STR Scroll: Greater	披风力量卷轴：高级	怀旧服-道具#2041010
+Cape STR Scroll: Chaos	披风力量卷轴：混沌	怀旧服-道具#2041011
+Cape DEX Scroll: Lesser	披风敏捷卷轴：初级	怀旧服-道具#2041012
+Cape DEX Scroll: Intermediate	披风敏捷卷轴：中级	怀旧服-道具#2041013
+Cape DEX Scroll: Greater	披风敏捷卷轴：高级	怀旧服-道具#2041014
+Cape DEX Scroll: Chaos	披风敏捷卷轴：混沌	怀旧服-道具#2041015
+Cape INT Scroll: Lesser	披风智力卷轴：初级	怀旧服-道具#2041016
+Cape INT Scroll: Intermediate	披风智力卷轴：中级	怀旧服-道具#2041017
+Cape INT Scroll: Greater	披风智力卷轴：高级	怀旧服-道具#2041018
+Cape INT Scroll: Chaos	披风智力卷轴：混沌	怀旧服-道具#2041019
+Cape LUK Scroll: Lesser	披风幸运卷轴：初级	怀旧服-道具#2041020
+Cape LUK Scroll: Intermediate	披风幸运卷轴：中级	怀旧服-道具#2041021
+Cape LUK Scroll: Greater	披风幸运卷轴：高级	怀旧服-道具#2041022
+Cape LUK Scroll: Chaos	披风幸运卷轴：混沌	怀旧服-道具#2041023
+Cape Accuracy Scroll: Lesser	披风命中率卷轴：初级	怀旧服-道具#2041024
+Cape Accuracy Scroll: Intermediate	披风命中率卷轴：中级	怀旧服-道具#2041025
+Cape Accuracy Scroll: Greater	披风命中率卷轴：高级	怀旧服-道具#2041026
+Cape Accuracy Scroll: Chaos	披风命中率卷轴：混沌	怀旧服-道具#2041027
+One-Handed Sword Attack Scroll: Lesser	单手剑攻击力卷轴：初级	怀旧服-道具#2043000
+One-Handed Sword Attack Scroll: Intermediate	单手剑攻击力卷轴：中级	怀旧服-道具#2043001
+One-Handed Sword Attack Scroll: Greater	单手剑攻击力卷轴：高级	怀旧服-道具#2043002
+One-Handed Sword Attack Scroll: Chaos	单手剑攻击力卷轴：混沌	怀旧服-道具#2043003
+One-Handed Axe Attack Scroll: Lesser	单手斧攻击力卷轴：初级	怀旧服-道具#2043100
+One-Handed Axe Attack Scroll: Intermediate	单手斧攻击力卷轴：中级	怀旧服-道具#2043101
+One-Handed Axe Attack Scroll: Greater	单手斧攻击力卷轴：高级	怀旧服-道具#2043102
+One-Handed Axe Attack Scroll: Chaos	单手斧攻击力卷轴：混沌	怀旧服-道具#2043103
+One-Handed Blunt Weapon Attack Scroll: Lesser	单手钝器攻击力卷轴：初级	怀旧服-道具#2043200
+One-Handed Blunt Weapon Attack Scroll: Intermediate	单手钝器攻击力卷轴：中级	怀旧服-道具#2043201
+One-Handed Blunt Weapon Attack Scroll: Greater	单手钝器攻击力卷轴：高级	怀旧服-道具#2043202
+One-Handed Blunt Weapon Attack Scroll: Chaos	单手钝器攻击力卷轴：混沌	怀旧服-道具#2043203
+Dagger Attack Scroll: Lesser	短剑攻击力卷轴：初级	怀旧服-道具#2043300
+Dagger Attack Scroll: Intermediate	短剑攻击力卷轴：中级	怀旧服-道具#2043301
+Dagger Attack Scroll: Greater	短剑攻击力卷轴：高级	怀旧服-道具#2043302
+Dagger Attack Scroll: Chaos	短剑攻击力卷轴：混沌	怀旧服-道具#2043303
+Wand Magic Attack Scroll: Lesser	短杖魔法攻击力卷轴：初级	怀旧服-道具#2043700
+Wand Magic Attack Scroll: Intermediate	短杖魔法攻击力卷轴：中级	怀旧服-道具#2043701
+Wand Magic Attack Scroll: Greater	短杖魔法攻击力卷轴：高级	怀旧服-道具#2043702
+Wand Magic Attack Scroll: Chaos	短杖魔法攻击力卷轴：混沌	怀旧服-道具#2043703
+Staff Magic Attack Scroll: Lesser	长杖魔法攻击力卷轴：初级	怀旧服-道具#2043800
+Staff Magic Attack Scroll: Intermediate	长杖魔法攻击力卷轴：中级	怀旧服-道具#2043801
+Staff Magic Attack Scroll: Greater	长杖魔法攻击力卷轴：高级	怀旧服-道具#2043802
+Staff Magic Attack Scroll: Chaos	长杖魔法攻击力卷轴：混沌	怀旧服-道具#2043803
+Two-handed Sword Attack Scroll: Lesser	双手剑攻击力卷轴：初级	怀旧服-道具#2044000
+Two-handed Sword Attack Scroll: Intermediate	双手剑攻击力卷轴：中级	怀旧服-道具#2044001
+Two-handed Sword Attack Scroll: Greater	双手剑攻击力卷轴：高级	怀旧服-道具#2044002
+Two-handed Sword Attack Scroll: Chaos	双手剑攻击力卷轴：混沌	怀旧服-道具#2044003
+Two-handed Axe Attack Scroll: Lesser	双手斧攻击力卷轴：初级	怀旧服-道具#2044100
+Two-handed Axe Attack Scroll: Intermediate	双手斧攻击力卷轴：中级	怀旧服-道具#2044101
+Two-handed Axe Attack Scroll: Greater	双手斧攻击力卷轴：高级	怀旧服-道具#2044102
+Two-handed Axe Attack Scroll: Chaos	双手斧攻击力卷轴：混沌	怀旧服-道具#2044103
+Two-handed Blunt Weapon Attack Scroll: Lesser	双手钝器攻击力卷轴：初级	怀旧服-道具#2044200
+Two-handed Blunt Weapon Attack Scroll: Intermediate	双手钝器攻击力卷轴：中级	怀旧服-道具#2044201
+Two-handed Blunt Weapon Attack Scroll: Greater	双手钝器攻击力卷轴：高级	怀旧服-道具#2044202
+Two-handed Blunt Weapon Attack Scroll: Chaos	双手钝器攻击力卷轴：混沌	怀旧服-道具#2044203
+Spear Attack Scroll: Lesser	枪攻击力卷轴：初级	怀旧服-道具#2044300
+Spear Attack Scroll: Intermediate	枪攻击力卷轴：中级	怀旧服-道具#2044301
+Spear Attack Scroll: Greater	枪攻击力卷轴：高级	怀旧服-道具#2044302
+Spear Attack Scroll: Chaos	枪攻击力卷轴：混沌	怀旧服-道具#2044303
+Polearm Attack Scroll: Lesser	矛攻击力卷轴：初级	怀旧服-道具#2044400
+Polearm Attack Scroll: Intermediate	矛攻击力卷轴：中级	怀旧服-道具#2044401
+Polearm Attack Scroll: Greater	矛攻击力卷轴：高级	怀旧服-道具#2044402
+Polearm Attack Scroll: Chaos	矛攻击力卷轴：混沌	怀旧服-道具#2044403
+Bow Attack Scroll: Lesser	弓攻击力卷轴：初级	怀旧服-道具#2044500
+Bow Attack Scroll: Intermediate	弓攻击力卷轴：中级	怀旧服-道具#2044501
+Bow Attack Scroll: Greater	弓攻击力卷轴：高级	怀旧服-道具#2044502
+Bow Attack Scroll: Chaos	弓攻击力卷轴：混沌	怀旧服-道具#2044503
+Crossbow Attack Scroll: Lesser	弩攻击力卷轴：初级	怀旧服-道具#2044600
+Crossbow Attack Scroll: Intermediate	弩攻击力卷轴：中级	怀旧服-道具#2044601
+Crossbow Attack Scroll: Greater	弩攻击力卷轴：高级	怀旧服-道具#2044602
+Crossbow Attack Scroll: Chaos	弩攻击力卷轴：混沌	怀旧服-道具#2044603
+Claw Attack Scroll: Lesser	拳套攻击力卷轴：初级	怀旧服-道具#2044700
+Claw Attack Scroll: Intermediate	拳套攻击力卷轴：中级	怀旧服-道具#2044701
+Claw Attack Scroll: Greater	拳套攻击力卷轴：高级	怀旧服-道具#2044702
+Claw Attack Scroll: Chaos	拳套攻击力卷轴：混沌	怀旧服-道具#2044703
+Pet Equip. Speed Scroll: Lesser	宠物装备移动速度卷轴：初级	怀旧服-道具#2048000
+Pet Equip. Speed Scroll: Intermediate	宠物装备移动速度卷轴：中级	怀旧服-道具#2048001
+Pet Equip. Speed Scroll: Greater	宠物装备移动速度卷轴：高级	怀旧服-道具#2048002
+Pet Equip. Speed Scroll: Chaos	宠物装备移动速度卷轴：混沌	怀旧服-道具#2048003
+Pet Equip. Jump Scroll: Lesser	宠物装备跳跃力卷轴：初级	怀旧服-道具#2048004
+Pet Equip. Jump Scroll: Intermediate	宠物装备跳跃力卷轴：中级	怀旧服-道具#2048005
+Pet Equip. Jump Scroll: Greater	宠物装备跳跃力卷轴：高级	怀旧服-道具#2048006
+Pet Equip. Jump Scroll: Chaos	宠物装备跳跃力卷轴：混沌	怀旧服-道具#2048007
+Arrow for Bow	弓矢	怀旧服-道具#2060000
+Bronze Arrow for Bow	青铜弓矢	怀旧服-道具#2060001
+Iron Arrow for Bow	钢铁弓矢	怀旧服-道具#2060002
+Adamantium Arrow for Bow	金刚弓矢	怀旧服-道具#2060003
+Arrow for Crossbow	弩矢	怀旧服-道具#2061000
+Bronze Arrow for Crossbow	青铜弩矢	怀旧服-道具#2061001
+Iron Arrow for Crossbow	钢铁弩矢	怀旧服-道具#2061002
+Mithril Arrow for Crossbow	秘银弩矢	怀旧服-道具#2061003
+Subi Throwing-Stars	海星镖	怀旧服-道具#2070000
+Wolbi Throwing-Stars	回旋镖	怀旧服-道具#2070001
+Mokbi Throwing-Stars	黑色利刃	怀旧服-道具#2070002
+Kumbi Throwing-Stars	雪花镖	怀旧服-道具#2070003
+Tobi Throwing-Stars	黑色刺	怀旧服-道具#2070004
+Steely Throwing-Knives	金钱镖	怀旧服-道具#2070005
+Ilbi Throwing-Stars	齿轮镖	怀旧服-道具#2070006
+Hwabi Throwing-Stars	月牙镖	怀旧服-道具#2070007
+Snowball	小雪球	怀旧服-道具#2070008
+Wooden Top	木制陀螺	怀旧服-道具#2070009
+Icicle	冰菱	怀旧服-道具#2070010
+Black Sack	黑包	怀旧服-道具#2100000
+Pet Food	宠物食品	怀旧服-道具#2120000
+Lie Detector Test	测谎仪	怀旧服-道具#2190000
+Rainbow-colored Snail Shell	彩虹色蜗牛壳儿	怀旧服-道具#2210000
+The Songs of Solomon	兵法书(孙子)	怀旧服-道具#2375000
+Companion’s Magic Box	伙伴的魔法箱	怀旧服-道具#2430000
+Natalie's Fashion Box(M)	娜塔莉的时装箱（男）	怀旧服-道具#2430001
+Natalie's Fashion Box(F)	娜塔莉的时装箱（女）	怀旧服-道具#2430002
+Gift for the New Journey	新旅程礼物	怀旧服-道具#2430003
+Leaf Points (1000) Exchange Coupon	枫叶点数1000兑换券	怀旧服-道具#2430004
+2x EXP Coupon (30 min)	2倍经验券（30分钟）	怀旧服-道具#2450000
+3x EXP Coupon (15 min)	3倍经验券（15分钟）	怀旧服-道具#2450001
+The Green Relaxer	绿色休闲椅	怀旧服-道具#3010000
+The Yellow Relaxer	黄蓝休闲椅	怀旧服-道具#3010001
+The Red Relaxer	红色休闲椅	怀旧服-道具#3010002
+Sky-blue Wooden Chair	蓝色木椅	怀旧服-道具#3010003
+Green Chair	绿色时尚转椅	怀旧服-道具#3010004
+Red Chair	红色时尚转椅	怀旧服-道具#3010005
+Yellow Chair	黄色时尚转椅	怀旧服-道具#3010006
+Pink Seal Cushion	粉色海豹靠垫	怀旧服-道具#3010007
+Blue Seal Cushion	蓝色海豹靠垫	怀旧服-道具#3010008
+Letter L	字母 L	怀旧服-道具#3994000
+Letter E	字母E	怀旧服-道具#3994001
+Letter A	字母 A	怀旧服-道具#3994002
+Letter F	字母 F	怀旧服-道具#3994003
+Letter P	字母P	怀旧服-道具#3994004
+Letter O	字母 O	怀旧服-道具#3994005
+Letter I	字母 I	怀旧服-道具#3994006
+Letter N	字母 N	怀旧服-道具#3994007
+Letter T	字母T	怀旧服-道具#3994008
+Letter S	字母S	怀旧服-道具#3994009
+Jr. Sentinel Shellpiece	小石球碎片	怀旧服-道具#4000000
+Snail Shell	蜗牛壳	怀旧服-道具#4000001
+Blue Snail Shell	蓝色蜗牛壳	怀旧服-道具#4000002
+Mushroom Spore	蘑菇芽孢	怀旧服-道具#4000003
+Red Snail Shell	红色蜗牛壳	怀旧服-道具#4000004
+Tree Branch	树枝	怀旧服-道具#4000005
+Squishy Liquid	绿液球	怀旧服-道具#4000006
+Slime Bubble	绿水灵珠	怀旧服-道具#4000007
+Pig's Head	猪头	怀旧服-道具#4000008
+Orange Mushroom Cap	花蘑菇盖	怀旧服-道具#4000009
+Pig's Ribbon	蝴蝶结	怀旧服-道具#4000010
+Leaf	树叶	怀旧服-道具#4000011
+Octopus Leg	三眼章鱼脚	怀旧服-道具#4000012
+Green Mushroom Cap	绿蘑菇盖	怀旧服-道具#4000013
+Bubbling's Huge Bubble	蓝水灵大水珠	怀旧服-道具#4000014
+Firewood	木柴	怀旧服-道具#4000015
+Blue Mushroom Cap	蓝蘑菇盖	怀旧服-道具#4000016
+Stirge Wing	蝙蝠翅膀	怀旧服-道具#4000017
+Jr. Necki Skin	蛇皮	怀旧服-道具#4000018
+Horny Mushroom Cap	刺蘑菇盖	怀旧服-道具#4000019
+Charm of the Undead	不死符咒	怀旧服-道具#4000020
+Wild Boar Tooth	野猪尖牙	怀旧服-道具#4000021
+Evil Eye Tail	风独眼兽之尾	怀旧服-道具#4000022
+Iron Hog's Metal Hoof	铁甲猪的铁蹄	怀旧服-道具#4000023
+Fairy's Tentacle	妖精触须	怀旧服-道具#4000024
+Ligator Skin	鳄鱼皮	怀旧服-道具#4000025
+Fire Boar's Tooth	火野猪尖牙	怀旧服-道具#4000026
+Curse Eye Tail	风独眼兽之尾	怀旧服-道具#4000027
+Tablecloth	桌布	怀旧服-道具#4000028
+Jr. Boogie Horn	幼魔精灵的角	怀旧服-道具#4000029
+Lupin Doll	猴子娃娃	怀旧服-道具#4000030
+Lupin's Banana	香蕉	怀旧服-道具#4000031
+Lorang Claw	红螃蟹钳	怀旧服-道具#4000032
+Cursed Doll	诅咒娃娃	怀旧服-道具#4000033
+Cold Eye Tail	冰独眼兽之尾	怀旧服-道具#4000034
+Nependeath Seed	食人花的种子	怀旧服-道具#4000035
+Drake Skull	龙的头骨	怀旧服-道具#4000036
+Tortie Shell	乌龟壳	怀旧服-道具#4000037
+Dark Nependeath Seed	黑食人花的种子	怀旧服-道具#4000038
+Medicine With Weird Vibes	奇怪的药	怀旧服-道具#4000039
+Clang Claw	青螃蟹钳	怀旧服-道具#4000040
+Croco Skin	黑鳄鱼皮	怀旧服-道具#4000041
+Malady's Experimental Frog	巫婆的试验用青蛙	怀旧服-道具#4000042
+Stone Golem Rubble	石块	怀旧服-道具#4000043
+Dark Stone Golem Rubble	黑石块	怀旧服-道具#4000044
+Wild Kargo Eye	野生卡戈之眼	怀旧服-道具#4000045
+Tauromacis Horn	月牙牛魔王的角	怀旧服-道具#4000046
+Taurospear Horn	长枪牛魔王之角	怀旧服-道具#4000047
+Mushmom Spore	蘑菇王芽孢	怀旧服-道具#4000048
+Leather	动物皮	怀旧服-道具#4000049
+Dragon Skin	龙皮	怀旧服-道具#4000050
+Glowing Mushroom Spore	发光蘑菇孢子	怀旧服-道具#4000051
+Raffle Petal	寄生花小花瓣	怀旧服-道具#4000052
+Golden Stirge Wing	黄金蝙蝠翅膀	怀旧服-道具#4000053
+Aqumander Tail	水螈尾巴	怀旧服-道具#4000054
+Echopus Leg	回音章鱼脚	怀旧服-道具#4000055
+Rafflesia Petal	大王花花瓣	怀旧服-道具#4000056
+Duskmander Tail	暮色螈尾巴	怀旧服-道具#4000057
+Giant Tree's Bough	巨大树枝	怀旧服-道具#4000058
+Decayed Charm	腐朽符咒	怀旧服-道具#4000059
+Giant Tree's Rotten Bough	腐朽巨大树枝	怀旧服-道具#4000060
+Coconut	椰子	怀旧服-道具#4000061
+Animal Fur Bundle	动物毛束	怀旧服-道具#4000062
+Fragment of Magic	魔力碎片	怀旧服-道具#4000063
+Poisonous Mushroom	毒蘑菇	怀旧服-道具#4000064
+Rotten Mushmom Cap	腐烂蘑菇王盖	怀旧服-道具#4000065
+Arwen's Glass Shoes	艾温的玻璃鞋	怀旧服-道具#4001000
+Coupon	优惠券	怀旧服-道具#4001001
+Pass	通行许可证	怀旧服-道具#4001002
+VIP Mirror	贵族镜子	怀旧服-道具#4001003
+The Girl Next Door	小说书	怀旧服-道具#4001004
+Old Gold Watch	旧金表	怀旧服-道具#4001005
+"Blackbull's" deed to the land	黑牛的土地契约	怀旧服-道具#4001006
+Ancient Scroll	上卷轴轴	怀旧服-道具#4001007
+Flaming Feather	火焰羽毛	怀旧服-道具#4001008
+Event Trophy	金杯	怀旧服-道具#4001009
+Screw	螺丝	怀旧服-道具#4003000
+Processed Wood	加工好的木材	怀旧服-道具#4003001
+Stiff Feather	粗羽毛	怀旧服-道具#4003002
+Soft Feather	柔软羽毛	怀旧服-道具#4003003
+Piece of Ice	冰块	怀旧服-道具#4003004
+Fairy Wing	妖精之翼	怀旧服-道具#4003005
+Processed Leather	加工皮革	怀旧服-道具#4003006
+Spool of Thread	线轴	怀旧服-道具#4003007
+Processed Cloth	加工布料	怀旧服-道具#4003008
+Processed Parchment	加工羊皮纸	怀旧服-道具#4003009
+Black Dye	黑色染料	怀旧服-道具#4003010
+White Dye	白色染料	怀旧服-道具#4003011
+Red Dye	红色染料	怀旧服-道具#4003012
+Yellow Dye	黄色染料	怀旧服-道具#4003013
+Blue Dye	蓝色染料	怀旧服-道具#4003014
+Bronze Ore	青铜母矿	怀旧服-道具#4010000
+Iron Ore	钢铁母矿	怀旧服-道具#4010001
+Mithril Ore	锂矿石母矿	怀旧服-道具#4010002
+Adamantium Ore	朱矿石母矿	怀旧服-道具#4010003
+Silver Ore	银的母矿	怀旧服-道具#4010004
+Orihalcon Ore	紫矿石母矿	怀旧服-道具#4010005
+Gold Ore	黄金母矿	怀旧服-道具#4010006
+Bronze Ingot	青铜锭	怀旧服-道具#4010100
+Iron Ingot	铁锭	怀旧服-道具#4010101
+Mithril Ingot	秘银锭	怀旧服-道具#4010102
+Adamantium Ingot	精金锭	怀旧服-道具#4010103
+Silver Ingot	银锭	怀旧服-道具#4010104
+Orihalcon Ingot	奥利哈钢锭	怀旧服-道具#4010105
+Gold Ingot	金锭	怀旧服-道具#4010106
+Moon Rock	月石	怀旧服-道具#4010107
+Garnet Ore	石榴石母矿	怀旧服-道具#4020000
+Amethyst Ore	紫水晶母矿	怀旧服-道具#4020001
+Aquamarine Ore	海蓝宝石母矿	怀旧服-道具#4020002
+Emerald Ore	祖母绿母矿	怀旧服-道具#4020003
+Opal Ore	蛋白石母矿	怀旧服-道具#4020004
+Sapphire Ore	蓝宝石母矿	怀旧服-道具#4020005
+Topaz Ore	黄晶母矿	怀旧服-道具#4020006
+Diamond Ore	钻石母矿	怀旧服-道具#4020007
+Black Crystal Ore	黑水晶母矿	怀旧服-道具#4020008
+Garnet	石榴石	怀旧服-道具#4020100
+Amethyst	紫水晶	怀旧服-道具#4020101
+Aquamarine	海蓝宝石	怀旧服-道具#4020102
+Emerald	祖母绿	怀旧服-道具#4020103
+Opal	蛋白石	怀旧服-道具#4020104
+Sapphire	蓝宝石	怀旧服-道具#4020105
+Topaz	黄晶	怀旧服-道具#4020106
+Diamond	钻石	怀旧服-道具#4020107
+Black Crystal	黑水晶	怀旧服-道具#4020108
+Star Rock	星石	怀旧服-道具#4020109
+Sera's Mirror	莎丽的镜子	怀旧服-道具#4031000
+Maria's Letter	玛丽亚的信	怀旧服-道具#4031001
+Lucas' Letter	卢卡斯的信	怀旧服-道具#4031002
+Rusty Screw	旧螺丝钉	怀旧服-道具#4031003
+Old Wooden Board	旧木板	怀旧服-道具#4031004
+Broken Mirror Glass	破碎镜子碎片	怀旧服-道具#4031007
+Sparkling Glass Marble	玻璃珠	怀旧服-道具#4031008
+Weird Medicine	奇怪的药	怀旧服-道具#4031009
+Arcon's Blood	变异蘑菇的血	怀旧服-道具#4031010
+Sparkling Rock	闪耀的石头	怀旧服-道具#4031011
+Witchgrass Leaf	魔女草叶子	怀旧服-道具#4031012
+Dances with Balrog's Letter	武术教练的信件	怀旧服-道具#4031013
+Grendel the Really Old's Letter	汉斯的信件	怀旧服-道具#4031014
+Athena Pierce's Letter	赫丽娜的信件	怀旧服-道具#4031015
+Dark Lord's Letter	达克鲁的信件	怀旧服-道具#4031016
+Dark Marble	黑珠	怀旧服-道具#4031017
+The Proof of a Hero	英雄证书	怀旧服-道具#4031018
+Pink Anthurium	粉红花束	怀旧服-道具#4031025
+Double-Rooted Red Ginseng	强效红参	怀旧服-道具#4031026
+Zelya’s Map Fragment	泽莉娅的地图碎片	怀旧服-道具#4031028
+Ominous Rotten Branch	不祥的腐朽树枝	怀旧服-道具#4031029
+Fresh Milk	新鲜的牛奶	怀旧服-道具#4031031
+Secret Book	神秘书	怀旧服-道具#4031032
+Black Feather	黑色羽毛	怀旧服-道具#4031033
+Life Scroll	生命卷轴	怀旧服-道具#4031034
+Bartos' Letter	巴托斯的信	怀旧服-道具#4031035
+Ticket to Construction Site B1	工地B1门票	怀旧服-道具#4031036
+Ticket to Construction Site B2	工地B2门票	怀旧服-道具#4031037
+Ticket to Construction Site B3	工地B3门票	怀旧服-道具#4031038
+Shumi's Coin	休咪的金币	怀旧服-道具#4031039
+Shumi's Roll of Cash	休咪的钞票	怀旧服-道具#4031040
+Shumi's Sack of Cash	休咪的钱包	怀旧服-道具#4031041
+Pink Viola	粉红花	怀旧服-道具#4031042
+Blue Viola	蓝色花	怀旧服-道具#4031043
+White Viola	白花	怀旧服-道具#4031044
+Monster Card	怪物卡	怀旧服-道具#4031045
+Omok Table	围棋盘	怀旧服-道具#4031046
+Omok Piece: Slime	绿水灵棋子	怀旧服-道具#4031047
+Omok Piece: Mushroom	蘑菇棋子	怀旧服-道具#4031048
+Omok Piece: Pig	猪猪棋子	怀旧服-道具#4031051
+Omok Piece: Octopus	章鱼棋子	怀旧服-道具#4031054
+Red Cape	红色披风	怀旧服-道具#4031064
+Scroll of Secrets	恶魔文件	怀旧服-道具#4031065
+Treasure Scroll	藏宝图	怀旧服-道具#4031066
+Magic Box	宝箱	怀旧服-道具#4031067
+Animal Fossil	动物化石	怀旧服-道具#4031068
+Plant Fossil	植物化石	怀旧服-道具#4031069
+Winston's Recommendation	芳博士的介绍书	怀旧服-道具#4031070
+Fossil Box	化石箱	怀旧服-道具#4031071
+Plant Sample	植物样品	怀旧服-道具#4031072
+Stuffed Drake Skull	龙的头骨	怀旧服-道具#4031073
+Fossil Report	化石研究报告书	怀旧服-道具#4031074
+Stump's Teardrop	木妖的眼泪	怀旧服-道具#4031075
+Ayan's Toy Sword	玩具刀	怀旧服-道具#4031076
+Ayan's Letter	伊安的信	怀旧服-道具#4031077
+Alligator Skin Pouch	鳄鱼皮革袋	怀旧服-道具#4031078
+Flying Medicine	飞翔秘药	怀旧服-道具#4031079
+Strange Mushroom Spore	奇怪的蘑菇孢子	怀旧服-道具#4031080
+Glowing Mushroom	发光蘑菇	怀旧服-道具#4031081
+Slime & Mushroom Omok Set	绿水灵/蘑菇五目石	怀旧服-道具#4080000
+Slime & Pig Omok Set	绿水灵/猪猪五子棋	怀旧服-道具#4080001
+Slime & Octopus Omok Set	绿水灵/三眼章五子棋	怀旧服-道具#4080002
+Pig & Mushroom Omok Set	猪猪/蘑菇五子棋	怀旧服-道具#4080003
+Octopus & Mushroom Omok Set	三眼章鱼/蘑菇五子棋	怀旧服-道具#4080004
+Pig & Octopus Omok Set	猪猪/三眼章鱼五子棋	怀旧服-道具#4080005
+Set of Match Cards	记忆卡套组	怀旧服-道具#4080100
+Equipment Crafting Stimulator	装备制作促进剂	怀旧服-道具#4130000
+Scroll Crafting Stimulator	卷轴制作促进剂	怀旧服-道具#4130001
+Pet Ability Transfer Scroll	宠物指令说明书：小狗篇	怀旧服-道具#4160000
+Brown Kitty	褐色小猫	怀旧服-道具#5000000
+Brown Puppy	褐色小狗	怀旧服-道具#5000001
+Pink Bunny	粉红兔子	怀旧服-道具#5000002
+Mini Kargo	小怪猫	怀旧服-道具#5000003
+Black Kitty	黑色小猫	怀旧服-道具#5000004
+White Bunny	白色兔子	怀旧服-道具#5000005
+Husky	哈士奇	怀旧服-道具#5000006
+Black Pig	黑小猪	怀旧服-道具#5000007
+Panda	熊猫	怀旧服-道具#5000008
+Dino Boy	恐龙王子	怀旧服-道具#5000009
+Dino Girl	恐龙公主	怀旧服-道具#5000010
+Smiley Sun	太阳效果	怀旧服-道具#5010000
+Moon & the Stars	星月效果	怀旧服-道具#5010001
+Colorful Rainbow	彩虹效果	怀旧服-道具#5010002
+Little Devil	小恶魔效果	怀旧服-道具#5010003
+Underwater	潜水中	怀旧服-道具#5010004
+Mushroom House Elf	蘑菇屋精灵	怀旧服-道具#5030000
+Cashier: Teddy Bear Clerk	雇佣商人：泰迪熊店员	怀旧服-道具#5030001
+The Robot Stand	机器人商店	怀旧服-道具#5030002
+Homely Coffeehouse	温馨咖啡屋	怀旧服-道具#5030003
+Granny's Food Stand	老奶奶小吃摊	怀旧服-道具#5030004
+AP Reset Scroll	AP 重置卷轴	怀旧服-道具#5050100
+SP Reset Scroll	技能点初始化卷轴	怀旧服-道具#5051001
+Megaphone	红喇叭	怀旧服-道具#5070000
+Super Megaphone	超级喇叭	怀旧服-道具#5070001
+Snowy Snow	下雪了	怀旧服-道具#5120000
+Sprinkled Flowers	浪漫樱花	怀旧服-道具#5120001
+Soap Bubbles	泡泡飞舞	怀旧服-道具#5120002
+Snowflakes	雪绒花	怀旧服-道具#5120003
+Sprinkled Presents	飘礼物	怀旧服-道具#5120004
+Sprinkled Chocolate	甜心	怀旧服-道具#5120005
+Sprinkled Flower Petals	花瓣雨	怀旧服-道具#5120006
+Sprinkled Candy	棒棒糖	怀旧服-道具#5120007
+Sprinkled Maple Leaves	飘枫叶	怀旧服-道具#5120008
+Fireworks	烟花	怀旧服-道具#5120009
+Regular Store Permit	营业执照	怀旧服-道具#5140000
+Summer Store Permit	蓝色个人商店	怀旧服-道具#5140001
+Pink Store Permit	粉色商店许可证	怀旧服-道具#5140002
+Fall Store Permit	秋日商店许可证	怀旧服-道具#5140003
+Spring Store Permit	春日商店许可证	怀旧服-道具#5140004
+Henesys Hair Style Coupon (REG)	射手村美发店普通会员卡	怀旧服-道具#5150000
+Kerning City Hair Style Coupon (REG)	废弃都市美发店普通会员卡	怀旧服-道具#5150001
+Henesys Hair Style Coupon (VIP)	射手村发型券（VIP）	怀旧服-道具#5150100
+Kerning City Hair Style Coupon (VIP)	废弃都市美发店高级会员卡	怀旧服-道具#5150101
+Henesys Hair Color Coupon (REG)	射手村染色普通会员卡	怀旧服-道具#5151000
+Kerning City Hair Color Coupon (REG)	废弃都市染色普通会员卡	怀旧服-道具#5151001
+Henesys Hair Color Coupon (VIP)	射手村染色高级会员卡	怀旧服-道具#5151100
+Kerning City Hair Color Coupon (VIP)	废弃都市染色高级会员卡	怀旧服-道具#5151101
+Face Coupon (REG)	万能一般整形卡	怀旧服-道具#5152000
+Face Coupon (VIP)	整容券（VIP）	怀旧服-道具#5152200
+Henesys Skin Coupon	射手村护肤中心会员卡	怀旧服-道具#5153000
+Pet Name Tag	取宠物名	怀旧服-道具#5170000
+Water of Life	生命水	怀旧服-道具#5180000
+Auto HP Potion Skill	自动服用血量药水技能	怀旧服-道具#5190000
+Auto MP Potion Skill	自动服用魔量药水技能	怀旧服-道具#5190001
+Auto Move Skill	自动捡取功能	怀旧服-道具#5190002
+Expanded Auto Move Skill	扩大移动范围技能	怀旧服-道具#5190003
+Storage Room 5-slot Coupon	仓库栏5格扩充券	怀旧服-道具#5680000
+Equip Tab 5-slot Coupon	装备栏5格扩充券	怀旧服-道具#5680001
+Use Tab 5-slot Coupon	消耗栏5格扩充券	怀旧服-道具#5680002
+Set-up Tab 5-slot Coupon	设置栏5格扩充券	怀旧服-道具#5680003
+Etc. Tab 5-slot Coupon	其他栏5格扩充券	怀旧服-道具#5680004
+Husky Package	测试用礼包	怀旧服-道具#9100000
+Transparent Package	牛气福袋	怀旧服-道具#9100001
+[Storage Room] Add 8 Inventory Slots	增加仓库窗	怀旧服-道具#9110000
+[Storage Room] Add 4 Inventory Slots	[仓库] 增加4格	怀旧服-道具#9110004
+[Equip] Add 8 Inventory Slots	增加装备窗	怀旧服-道具#9111000
+[Equip] Add 4 Inventory Slots	[装备] 增加4格	怀旧服-道具#9111004
+[Use] Add 8 Inventory Slots	增加消耗窗	怀旧服-道具#9112000
+[Use] Add 4 Inventory Slots	[消耗] 增加4格	怀旧服-道具#9112004
+[Set-up] Add 8 Inventory Slots	增加设置窗	怀旧服-道具#9113000
+[Set-up] Add 4 Inventory Slots	[设置] 增加4格	怀旧服-道具#9113004
+[Etc] Add 8 Inventory Slots	增加其他窗	怀旧服-道具#9114000
+[Etc] Add 4 Inventory Slots	[其他] 增加4格	怀旧服-道具#9114004
+Maple Point 100	枫叶点数 100	怀旧服-道具#980000100
+Maple Point 200	枫叶点数 200	怀旧服-道具#980000200
+Maple Point 300	枫叶点数 300	怀旧服-道具#980000300
+Maple Point 400	枫叶点数 400	怀旧服-道具#980000400
+Maple Point 500	枫叶点数 500	怀旧服-道具#980000500
+Maple Point 600	枫叶点数 600	怀旧服-道具#980000600
+Maple Point 700	枫叶点数 700	怀旧服-道具#980000700
+Maple Point 800	枫叶点数 800	怀旧服-道具#980000800
+Maple Point 900	枫叶点数 900	怀旧服-道具#980000900
+Maple Point 1000	枫叶点数 1000	怀旧服-道具#980001000
+Maple Point 2000	枫叶点数 2000	怀旧服-道具#980002000
+Maple Point 3000	枫叶点数 3000	怀旧服-道具#980003000
+Maple Point 4000	枫叶点数 4000	怀旧服-道具#980004000
+Maple Point 5000	枫叶点数 5000	怀旧服-道具#980005000
+Maple Point 6000	枫叶点数 6000	怀旧服-道具#980006000
+Maple Point 7000	枫叶点数 7000	怀旧服-道具#980007000
+Maple Point 8000	枫叶点数 8000	怀旧服-道具#980008000
+Maple Point 9000	枫叶点数 9000	怀旧服-道具#980009000
+Maple Point 10000	枫叶点数 10000	怀旧服-道具#980010000
+Maple Point 15000	枫叶点数 15000	怀旧服-道具#980015000
+Maple Point 20000	枫叶点数 20000	怀旧服-道具#980020000
+Maple Point 25000	枫叶点数 25000	怀旧服-道具#980025000
+Maple Point 30000	枫叶点数 30000	怀旧服-道具#980030000
+Maple Point 35000	枫叶点数 35000	怀旧服-道具#980035000
+Maple Point 40000	枫叶点数 40000	怀旧服-道具#980040000
+Maple Point 45000	枫叶点数 45000	怀旧服-道具#980045000
+Maple Point 50000	枫叶点数 50000	怀旧服-道具#980050000
+Maple Point 55000	枫叶点数 55000	怀旧服-道具#980055000
+Maple Point 60000	枫叶点数 60000	怀旧服-道具#980060000
+Maple Point 65000	枫叶点数 65000	怀旧服-道具#980065000
+Maple Point 70000	枫叶点数 70000	怀旧服-道具#980070000
+Maple Point 75000	枫叶点数 75000	怀旧服-道具#980075000
+Maple Point 80000	枫叶点数 80000	怀旧服-道具#980080000
+Maple Point 85000	枫叶点数 85000	怀旧服-道具#980085000
+Maple Point 90000	枫叶点数 90000	怀旧服-道具#980090000
+Maple Point 95000	枫叶点数 95000	怀旧服-道具#980095000
+Maple Point 100000	枫叶点数 100000	怀旧服-道具#980100000
