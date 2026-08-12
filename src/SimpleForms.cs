@@ -113,7 +113,7 @@ namespace MapleOverlay
             top.Controls.Add(new Label { Text = "搜索：", AutoSize = true, Padding = new Padding(0, 8, 0, 0) });
             search.Width = 260; search.TextChanged += delegate { FilterRows(); }; top.Controls.Add(search);
             Button add = new Button { Text = "新增", AutoSize = true };
-            add.Click += delegate { int i = grid.Rows.Add("", "", "自定义"); grid.CurrentCell = grid.Rows[i].Cells[0]; grid.BeginEdit(true); };
+            add.Click += delegate { int i = grid.Rows.Add("", "", "自定义", ""); grid.CurrentCell = grid.Rows[i].Cells[0]; grid.BeginEdit(true); };
             Button delete = new Button { Text = "删除选中", AutoSize = true };
             delete.Click += delegate { foreach (DataGridViewRow row in grid.SelectedRows) if (!row.IsNewRow) grid.Rows.Remove(row); };
             Button save = new Button { Text = "保存并载入内存", AutoSize = true };
@@ -131,6 +131,8 @@ namespace MapleOverlay
             grid.Columns.Add("English", "英文原文");
             grid.Columns.Add("Chinese", "中文翻译");
             grid.Columns.Add("Category", "分类/版本备注");
+            grid.Columns.Add("IconHash", "图标指纹");
+            grid.Columns[3].Visible = false;
             grid.Columns[0].FillWeight = 42; grid.Columns[1].FillWeight = 38; grid.Columns[2].FillWeight = 20;
             root.Controls.Add(grid, 0, 1);
 
@@ -152,7 +154,8 @@ namespace MapleOverlay
             {
                 if (String.IsNullOrWhiteSpace(raw) || raw.TrimStart().StartsWith("#")) continue;
                 string[] p = raw.Split('\t');
-                if (p.Length >= 2) grid.Rows.Add(p[0].Trim(), p[1].Trim(), p.Length > 2 ? p[2].Trim() : "");
+                if (p.Length >= 2) grid.Rows.Add(p[0].Trim(), p[1].Trim(),
+                    p.Length > 2 ? p[2].Trim() : "", p.Length > 3 ? p[3].Trim() : "");
             }
             status.Text = (grid.Rows.Count - 1) + " 条";
         }
@@ -177,14 +180,17 @@ namespace MapleOverlay
         private string SerializeRows()
         {
             StringBuilder b = new StringBuilder();
-            b.AppendLine("# 枫语幕词库：英文<Tab>中文<Tab>分类/备注");
+            b.AppendLine("# 枫语幕词库：英文<Tab>中文<Tab>分类/资料ID<Tab>可选图标指纹");
             HashSet<string> seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (DataGridViewRow row in grid.Rows)
             {
                 if (row.IsNewRow) continue;
                 string en = Clean(row.Cells[0].Value), zh = Clean(row.Cells[1].Value), cat = Clean(row.Cells[2].Value);
+                string iconHash = Clean(row.Cells[3].Value);
                 if (en.Length == 0 || zh.Length == 0 || !seen.Add(en)) continue;
-                b.Append(en).Append('\t').Append(zh).Append('\t').Append(cat).AppendLine();
+                b.Append(en).Append('\t').Append(zh).Append('\t').Append(cat);
+                if (iconHash.Length > 0) b.Append('\t').Append(iconHash);
+                b.AppendLine();
             }
             return b.ToString();
         }
@@ -212,16 +218,21 @@ namespace MapleOverlay
         private void Merge(string text)
         {
             Dictionary<string, string[]> all = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
-            foreach (DataGridViewRow row in grid.Rows) if (!row.IsNewRow) all[Clean(row.Cells[0].Value)] = new string[] { Clean(row.Cells[1].Value), Clean(row.Cells[2].Value) };
+            foreach (DataGridViewRow row in grid.Rows) if (!row.IsNewRow) all[Clean(row.Cells[0].Value)] = new string[] {
+                Clean(row.Cells[1].Value), Clean(row.Cells[2].Value), Clean(row.Cells[3].Value) };
             int count = 0;
             foreach (string raw in text.Replace("\r", "").Split('\n'))
             {
                 if (String.IsNullOrWhiteSpace(raw) || raw.TrimStart().StartsWith("#")) continue;
                 string[] p = raw.Split('\t');
                 if (p.Length < 2 || Clean(p[0]).Length == 0 || Clean(p[1]).Length == 0) continue;
-                all[Clean(p[0])] = new string[] { Clean(p[1]), p.Length > 2 ? Clean(p[2]) : "QQ群" }; count++;
+                string key = Clean(p[0]);
+                string preservedHash = all.ContainsKey(key) && all[key].Length > 2 ? all[key][2] : "";
+                all[key] = new string[] { Clean(p[1]), p.Length > 2 ? Clean(p[2]) : "QQ群",
+                    p.Length > 3 ? Clean(p[3]) : preservedHash }; count++;
             }
-            grid.Rows.Clear(); foreach (KeyValuePair<string, string[]> p in all) grid.Rows.Add(p.Key, p.Value[0], p.Value[1]);
+            grid.Rows.Clear(); foreach (KeyValuePair<string, string[]> p in all)
+                grid.Rows.Add(p.Key, p.Value[0], p.Value[1], p.Value.Length > 2 ? p.Value[2] : "");
             status.Text = "已合并 " + count + " 条，尚未保存";
         }
 
