@@ -1,0 +1,619 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Microsoft.Win32;
+using Windows.Foundation;
+using Windows.Graphics.Imaging;
+using Windows.Media.Ocr;
+using Windows.Storage.Streams;
+
+namespace MapleOverlay
+{
+    internal static class Program
+    {
+        internal static bool Benchmark;
+        [STAThread]
+        private static void Main(string[] args)
+        {
+            Benchmark = args != null && Array.IndexOf(args, "--benchmark") >= 0;
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            try { Application.Run(new OverlayForm()); }
+            catch (Exception ex)
+            {
+                MessageBox.Show("程序发生错误：\n\n" + ex.Message,
+                    "枫语幕", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+    }
+
+    internal sealed class TranslationEntry
+    {
+        public string English;
+        public string Chinese;
+        public string Category;
+        public string Normalized;
+    }
+
+    internal sealed class TranslationStore
+    {
+        private readonly string sourcePath;
+        private readonly Dictionary<char, List<TranslationEntry>> buckets =
+            new Dictionary<char, List<TranslationEntry>>();
+        public int Count { get; private set; }
+
+        public TranslationStore(string source)
+        {
+            sourcePath = source;
+        }
+
+        public void Load()
+        {
+            List<TranslationEntry> entries = ReadTsv(sourcePath);
+
+            buckets.Clear();
+            foreach (TranslationEntry entry in entries)
+            {
+                if (entry.Normalized.Length == 0) continue;
+                char key = entry.Normalized[0];
+                List<TranslationEntry> list;
+                if (!buckets.TryGetValue(key, out list))
+                {
+                    list = new List<TranslationEntry>();
+                    buckets.Add(key, list);
+                }
+                list.Add(entry);
+            }
+            foreach (List<TranslationEntry> list in buckets.Values)
+                list.Sort(delegate(TranslationEntry a, TranslationEntry b) {
+                    return b.Normalized.Length.CompareTo(a.Normalized.Length);
+                });
+            Count = entries.Count;
+        }
+
+        public List<MatchResult> FindMatches(string text)
+        {
+            string normalized = Normalize(text);
+            List<MatchResult> results = new List<MatchResult>();
+            int position = 0;
+            while (position < normalized.Length)
+            {
+                List<TranslationEntry> candidates;
+                TranslationEntry best = null;
+                if (buckets.TryGetValue(normalized[position], out candidates))
+                {
+                    foreach (TranslationEntry candidate in candidates)
+                    {
+                        if (position + candidate.Normalized.Length > normalized.Length) continue;
+                        if (string.CompareOrdinal(normalized, position, candidate.Normalized, 0,
+                            candidate.Normalized.Length) != 0) continue;
+                        if (!IsBoundary(normalized, position - 1) ||
+                            !IsBoundary(normalized, position + candidate.Normalized.Length)) continue;
+                        best = candidate;
+                        break;
+                    }
+                }
+                if (best == null) { position++; continue; }
+                results.Add(new MatchResult { Entry = best, Start = position, Length = best.Normalized.Length });
+                position += best.Normalized.Length;
+            }
+            return results;
+        }
+
+        public static string Normalize(string value)
+        {
+            if (String.IsNullOrEmpty(value)) return String.Empty;
+            StringBuilder b = new StringBuilder(value.Length);
+            bool space = false;
+            foreach (char raw in value.Trim().ToLowerInvariant())
+            {
+                char c = raw == '\u2019' || raw == '\u2018' ? '\'' : raw;
+                if (Char.IsWhiteSpace(c))
+                {
+                    if (!space && b.Length > 0) b.Append(' ');
+                    space = true;
+                }
+                else
+                {
+                    b.Append(c);
+                    space = false;
+                }
+            }
+            return b.ToString().Trim();
+        }
+
+        private static bool IsBoundary(string text, int at)
+        {
+            if (at < 0 || at >= text.Length) return true;
+            char c = text[at];
+            return !Char.IsLetterOrDigit(c) && c != '\'';
+        }
+
+        private static List<TranslationEntry> ReadTsv(string path)
+        {
+            List<TranslationEntry> result = new List<TranslationEntry>();
+            if (!File.Exists(path)) throw new FileNotFoundException("找不到词库", path);
+            HashSet<string> seen = new HashSet<string>(StringComparer.Ordinal);
+            foreach (string raw in File.ReadAllLines(path, Encoding.UTF8))
+            {
+                if (String.IsNullOrWhiteSpace(raw) || raw.TrimStart().StartsWith("#")) continue;
+                string[] parts = raw.Split('\t');
+                if (parts.Length < 2) continue;
+                string english = parts[0].Trim();
+                string chinese = parts[1].Trim();
+                string normalized = Normalize(english);
+                if (normalized.Length == 0 || chinese.Length == 0 || !seen.Add(normalized)) continue;
+                result.Add(new TranslationEntry {
+                    English = english, Chinese = chinese,
+                    Category = parts.Length > 2 ? parts[2].Trim() : "",
+                    Normalized = normalized
+                });
+            }
+            return result;
+        }
+
+        private static void WriteBinary(string path, List<TranslationEntry> entries)
+        {
+            using (FileStream stream = File.Create(path))
+            using (BinaryWriter writer = new BinaryWriter(stream, Encoding.UTF8))
+            {
+                writer.Write(new byte[] { 77, 83, 68, 49 }); // MSD1
+                writer.Write(entries.Count);
+                foreach (TranslationEntry e in entries)
+                {
+                    writer.Write(e.English);
+                    writer.Write(e.Chinese);
+                    writer.Write(e.Category ?? "");
+                }
+            }
+        }
+
+        private static List<TranslationEntry> ReadBinary(string path)
+        {
+            List<TranslationEntry> result = new List<TranslationEntry>();
+            using (FileStream stream = File.OpenRead(path))
+            using (BinaryReader reader = new BinaryReader(stream, Encoding.UTF8))
+            {
+                byte[] magic = reader.ReadBytes(4);
+                if (magic.Length != 4 || magic[0] != 77 || magic[1] != 83 || magic[2] != 68 || magic[3] != 49)
+                    throw new InvalidDataException("词库缓存版本不兼容");
+                int count = reader.ReadInt32();
+                if (count < 0 || count > 1000000) throw new InvalidDataException("词库缓存损坏");
+                for (int i = 0; i < count; i++)
+                {
+                    string en = reader.ReadString();
+                    result.Add(new TranslationEntry {
+                        English = en, Chinese = reader.ReadString(), Category = reader.ReadString(),
+                        Normalized = Normalize(en)
+                    });
+                }
+            }
+            return result;
+        }
+    }
+
+    internal sealed class MatchResult
+    {
+        public TranslationEntry Entry;
+        public int Start;
+        public int Length;
+    }
+
+    internal sealed class OverlayLabel
+    {
+        public RectangleF Bounds;
+        public string Text;
+    }
+
+    internal sealed class OverlayForm : Form
+    {
+        private const int HOTKEY_SHOW = 1001;
+        private const int HOTKEY_HIDE = 1002;
+        private const int WM_HOTKEY = 0x0312;
+        private const int GWL_EXSTYLE = -20;
+        private const int WS_EX_TRANSPARENT = 0x20;
+        private const int WS_EX_TOOLWINDOW = 0x80;
+        private const int WS_EX_NOACTIVATE = 0x08000000;
+        private const uint WDA_EXCLUDEFROMCAPTURE = 0x11;
+        private readonly string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+        private readonly TranslationStore translations;
+        private readonly List<OverlayLabel> labels = new List<OverlayLabel>();
+        private readonly NotifyIcon tray = new NotifyIcon();
+        private bool processing;
+        private bool visibleTranslation;
+        private OcrEngine ocr;
+        private Keys showKey = Keys.F8;
+        private Keys hideKey = Keys.F9;
+        private uint showModifiers;
+        private uint hideModifiers;
+        private Rectangle captureBounds;
+        private DictionaryOnlyForm dictionaryEditor;
+        private HotkeyForm hotkeyEditor;
+
+        [DllImport("user32.dll")] private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint modifiers, uint key);
+        [DllImport("user32.dll")] private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+        [DllImport("user32.dll")] private static extern int GetWindowLong(IntPtr hWnd, int index);
+        [DllImport("user32.dll")] private static extern int SetWindowLong(IntPtr hWnd, int index, int value);
+        [DllImport("user32.dll")] private static extern bool SetWindowDisplayAffinity(IntPtr hWnd, uint affinity);
+        [DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
+        [DllImport("user32.dll")] private static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint flags);
+        [DllImport("user32.dll", CharSet = CharSet.Auto)] private static extern bool GetMonitorInfo(IntPtr monitor, ref MONITORINFO info);
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct RECT { public int Left, Top, Right, Bottom; }
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MONITORINFO
+        {
+            public int Size;
+            public RECT Monitor;
+            public RECT Work;
+            public uint Flags;
+        }
+
+        public OverlayForm()
+        {
+            translations = new TranslationStore(Path.Combine(baseDir, "枫语幕词库.tsv"));
+            translations.Load();
+            ocr = OcrEngine.TryCreateFromUserProfileLanguages();
+            if (ocr == null) throw new InvalidOperationException("Windows OCR 不可用，请在系统语言设置中安装英语 OCR。 ");
+
+            FormBorderStyle = FormBorderStyle.None;
+            ShowInTaskbar = false;
+            TopMost = true;
+            BackColor = Color.Magenta;
+            TransparencyKey = Color.Magenta;
+            StartPosition = FormStartPosition.Manual;
+            Bounds = SystemInformation.VirtualScreen;
+            DoubleBuffered = true;
+
+            LoadSettings();
+
+            BuildTray();
+            Shown += async delegate {
+                SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) |
+                    WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE);
+                SetWindowDisplayAffinity(Handle, WDA_EXCLUDEFROMCAPTURE);
+                bool h1 = RegisterHotKey(Handle, HOTKEY_SHOW, showModifiers, (uint)showKey);
+                bool h2 = RegisterHotKey(Handle, HOTKEY_HIDE, hideModifiers, (uint)hideKey);
+                tray.ShowBalloonTip(2500, "枫语幕已启动",
+                    "词库 " + translations.Count + " 条。" + HotkeyText(showKey, showModifiers) + " 呼出，" +
+                    HotkeyText(hideKey, hideModifiers) + " 缩回后台。" + ((!h1 || !h2) ? "（有快捷键注册失败）" : ""), ToolTipIcon.Info);
+                if (Program.Benchmark)
+                {
+                    await Task.Delay(350);
+                    await ShowTranslationAsync();
+                    Close();
+                }
+            };
+        }
+
+        protected override bool ShowWithoutActivation { get { return true; } }
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE;
+                return cp;
+            }
+        }
+
+        private void LoadSettings()
+        {
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\FengYuMu"))
+            {
+                Keys parsed;
+                if (key == null) return;
+                string sk = Convert.ToString(key.GetValue("ShowKey", "F8"));
+                string hk = Convert.ToString(key.GetValue("HideKey", "F9"));
+                if (Enum.TryParse<Keys>(sk, true, out parsed)) showKey = parsed;
+                if (Enum.TryParse<Keys>(hk, true, out parsed)) hideKey = parsed;
+                showModifiers = ParseModifiers(Convert.ToString(key.GetValue("ShowModifiers", "")));
+                hideModifiers = ParseModifiers(Convert.ToString(key.GetValue("HideModifiers", "")));
+            }
+        }
+
+        internal static uint ParseModifiers(string value)
+        {
+            uint result = 0;
+            foreach (string part in value.Split('+'))
+            {
+                string m = part.Trim().ToUpperInvariant();
+                if (m == "ALT") result |= 0x0001;
+                else if (m == "CTRL" || m == "CONTROL") result |= 0x0002;
+                else if (m == "SHIFT") result |= 0x0004;
+                else if (m == "WIN" || m == "WINDOWS") result |= 0x0008;
+            }
+            return result;
+        }
+
+        internal static string ModifiersText(uint modifiers)
+        {
+            List<string> items = new List<string>();
+            if ((modifiers & 0x0002) != 0) items.Add("CTRL");
+            if ((modifiers & 0x0001) != 0) items.Add("ALT");
+            if ((modifiers & 0x0004) != 0) items.Add("SHIFT");
+            if ((modifiers & 0x0008) != 0) items.Add("WIN");
+            return String.Join("+", items.ToArray());
+        }
+
+        private string HotkeyText(Keys key, uint modifiers)
+        {
+            string p = ModifiersText(modifiers);
+            if (p.Length > 0) p += "+";
+            return p + key;
+        }
+
+        internal Keys ShowKey { get { return showKey; } }
+        internal Keys HideKey { get { return hideKey; } }
+        internal uint ShowModifiers { get { return showModifiers; } }
+        internal uint HideModifiers { get { return hideModifiers; } }
+
+        internal void ApplyHotkeys(Keys newShowKey, uint newShowModifiers, Keys newHideKey, uint newHideModifiers)
+        {
+            UnregisterHotKey(Handle, HOTKEY_SHOW);
+            UnregisterHotKey(Handle, HOTKEY_HIDE);
+            showKey = newShowKey; showModifiers = newShowModifiers;
+            hideKey = newHideKey; hideModifiers = newHideModifiers;
+            bool ok1 = RegisterHotKey(Handle, HOTKEY_SHOW, showModifiers, (uint)showKey);
+            bool ok2 = RegisterHotKey(Handle, HOTKEY_HIDE, hideModifiers, (uint)hideKey);
+            if (!ok1 || !ok2) MessageBox.Show("快捷键被其他程序占用，请换一个组合。", "快捷键设置");
+        }
+
+        internal void ReloadDictionary()
+        {
+            translations.Load();
+            tray.ShowBalloonTip(1200, "词库已载入内存", translations.Count + " 条", ToolTipIcon.Info);
+        }
+
+        private void ShowDictionaryEditor()
+        {
+            HideTranslation();
+            if (dictionaryEditor == null || dictionaryEditor.IsDisposed) dictionaryEditor = new DictionaryOnlyForm(this, baseDir);
+            dictionaryEditor.Show();
+            dictionaryEditor.Activate();
+        }
+
+        private void ShowHotkeyEditor()
+        {
+            HideTranslation();
+            if (hotkeyEditor == null || hotkeyEditor.IsDisposed) hotkeyEditor = new HotkeyForm(this);
+            hotkeyEditor.Show();
+            hotkeyEditor.Activate();
+        }
+
+        private void BuildTray()
+        {
+            tray.Icon = SystemIcons.Information;
+            tray.Text = "枫语幕";
+            tray.Visible = true;
+            ContextMenuStrip menu = new ContextMenuStrip();
+            ToolStripMenuItem dictionary = new ToolStripMenuItem("打开并更改词库");
+            dictionary.Click += delegate { ShowDictionaryEditor(); };
+            ToolStripMenuItem hotkeys = new ToolStripMenuItem("更改快捷键");
+            hotkeys.Click += delegate { ShowHotkeyEditor(); };
+            ToolStripMenuItem exit = new ToolStripMenuItem("退出");
+            exit.Click += delegate { Close(); };
+            menu.Items.Add(dictionary);
+            menu.Items.Add(hotkeys);
+            menu.Items.Add(exit);
+            tray.ContextMenuStrip = menu;
+            tray.DoubleClick += delegate { ShowDictionaryEditor(); };
+        }
+
+        private async Task ToggleAsync()
+        {
+            if (visibleTranslation)
+            {
+                visibleTranslation = false;
+                labels.Clear();
+                Invalidate();
+                tray.Text = "枫语幕（内存待机）";
+            }
+            else await ShowTranslationAsync();
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == WM_HOTKEY)
+            {
+                int id = m.WParam.ToInt32();
+                if (id == HOTKEY_SHOW) { Task ignored = ShowTranslationAsync(); }
+                else if (id == HOTKEY_HIDE) HideTranslation();
+            }
+            base.WndProc(ref m);
+        }
+
+        private void HideTranslation()
+        {
+            visibleTranslation = false;
+            labels.Clear();
+            Invalidate();
+            tray.Text = "枫语幕（内存待机）";
+        }
+
+        private async Task ShowTranslationAsync()
+        {
+            if (processing) return;
+            processing = true;
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            try
+            {
+                Rectangle screen = GetActiveMonitorBounds();
+                captureBounds = screen;
+                using (Bitmap bitmap = new Bitmap(screen.Width, screen.Height, PixelFormat.Format32bppArgb))
+                {
+                    using (Graphics g = Graphics.FromImage(bitmap))
+                    {
+                        if (Program.Benchmark)
+                        {
+                            g.Clear(Color.White);
+                            using (Font f = new Font("Arial", 28, FontStyle.Regular))
+                                g.DrawString("MapleStory Classic World   Henesys   Orange Mushroom   Quest Complete", f, Brushes.Black, 40, 40);
+                        }
+                        else g.CopyFromScreen(screen.Left, screen.Top, 0, 0, screen.Size, CopyPixelOperation.SourceCopy);
+                    }
+                    OcrResult result = await RecognizeAsync(bitmap);
+                    List<OverlayLabel> next = BuildLabels(result);
+                    labels.Clear(); labels.AddRange(next);
+                }
+                visibleTranslation = true;
+                Invalidate();
+                stopwatch.Stop();
+                tray.Text = "枫语幕（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
+                if (Program.Benchmark)
+                    File.WriteAllText(Path.Combine(baseDir, "last_run.txt"),
+                        "耗时毫秒=" + stopwatch.ElapsedMilliseconds + Environment.NewLine +
+                        "命中数量=" + labels.Count + Environment.NewLine +
+                        "时间=" + DateTime.Now.ToString("s") + Environment.NewLine, Encoding.UTF8);
+            }
+            catch (Exception ex)
+            {
+                tray.ShowBalloonTip(3000, "识别失败", ex.Message, ToolTipIcon.Error);
+            }
+            finally { processing = false; }
+        }
+
+        private static Rectangle GetActiveMonitorBounds()
+        {
+            IntPtr monitor = MonitorFromWindow(GetForegroundWindow(), 2); // nearest monitor
+            MONITORINFO info = new MONITORINFO();
+            info.Size = Marshal.SizeOf(typeof(MONITORINFO));
+            if (monitor != IntPtr.Zero && GetMonitorInfo(monitor, ref info))
+                return Rectangle.FromLTRB(info.Monitor.Left, info.Monitor.Top, info.Monitor.Right, info.Monitor.Bottom);
+            return Screen.PrimaryScreen.Bounds;
+        }
+
+        private async Task<OcrResult> RecognizeAsync(Bitmap bitmap)
+        {
+            using (MemoryStream png = new MemoryStream())
+            {
+                bitmap.Save(png, ImageFormat.Png);
+                byte[] bytes = png.ToArray();
+                using (InMemoryRandomAccessStream stream = new InMemoryRandomAccessStream())
+                {
+                    using (DataWriter writer = new DataWriter(stream.GetOutputStreamAt(0)))
+                    {
+                        writer.WriteBytes(bytes);
+                        await ToTask<uint>((IAsyncOperation<uint>)writer.StoreAsync());
+                        await ToTask<bool>(writer.FlushAsync());
+                    }
+                    BitmapDecoder decoder = await ToTask<BitmapDecoder>(BitmapDecoder.CreateAsync(stream));
+                    SoftwareBitmap software = await ToTask<SoftwareBitmap>(decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8,
+                        BitmapAlphaMode.Premultiplied));
+                    using (software) { return await ToTask<OcrResult>(ocr.RecognizeAsync(software)); }
+                }
+            }
+        }
+
+        private static Task<T> ToTask<T>(IAsyncOperation<T> operation)
+        {
+            TaskCompletionSource<T> source = new TaskCompletionSource<T>();
+            operation.Completed = delegate(IAsyncOperation<T> info, AsyncStatus status)
+            {
+                try
+                {
+                    if (status == AsyncStatus.Completed) source.TrySetResult(info.GetResults());
+                    else if (status == AsyncStatus.Canceled) source.TrySetCanceled();
+                    else source.TrySetException(info.ErrorCode ?? new InvalidOperationException("Windows OCR 异步操作失败"));
+                }
+                catch (Exception ex) { source.TrySetException(ex); }
+            };
+            return source.Task;
+        }
+
+        private List<OverlayLabel> BuildLabels(OcrResult result)
+        {
+            List<OverlayLabel> output = new List<OverlayLabel>();
+            foreach (OcrLine line in result.Lines)
+            {
+                List<MatchResult> matches = translations.FindMatches(line.Text);
+                if (matches.Count == 0) continue;
+                string normalizedLine = TranslationStore.Normalize(line.Text);
+                foreach (MatchResult match in matches)
+                {
+                    // OCR exposes word boxes, not character boxes. Approximate the phrase span by character ratio.
+                    float x0 = Single.MaxValue, y0 = Single.MaxValue, x1 = Single.MinValue, y1 = Single.MinValue;
+                    int cursor = 0;
+                    foreach (OcrWord word in line.Words)
+                    {
+                        string nw = TranslationStore.Normalize(word.Text);
+                        int found = normalizedLine.IndexOf(nw, cursor, StringComparison.Ordinal);
+                        if (found < 0) found = cursor;
+                        int end = found + nw.Length;
+                        if (end > match.Start && found < match.Start + match.Length)
+                        {
+                            x0 = Math.Min(x0, (float)word.BoundingRect.X + captureBounds.Left - Bounds.Left);
+                            y0 = Math.Min(y0, (float)word.BoundingRect.Y + captureBounds.Top - Bounds.Top);
+                            x1 = Math.Max(x1, (float)(word.BoundingRect.X + word.BoundingRect.Width) + captureBounds.Left - Bounds.Left);
+                            y1 = Math.Max(y1, (float)(word.BoundingRect.Y + word.BoundingRect.Height) + captureBounds.Top - Bounds.Top);
+                        }
+                        cursor = end + 1;
+                    }
+                    if (x0 == Single.MaxValue) continue;
+                    output.Add(new OverlayLabel {
+                        Bounds = new RectangleF(x0 - 3, y0 - 2, Math.Max(28, x1 - x0 + 6), Math.Max(18, y1 - y0 + 4)),
+                        Text = match.Entry.Chinese
+                    });
+                }
+            }
+            return output;
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+            using (SolidBrush background = new SolidBrush(Color.FromArgb(238, 18, 18, 20)))
+            using (Pen border = new Pen(Color.FromArgb(220, 255, 190, 45), 1.0f))
+            using (SolidBrush text = new SolidBrush(Color.White))
+            using (Font font = new Font("Microsoft YaHei UI", 12.0f, FontStyle.Bold, GraphicsUnit.Pixel))
+            {
+                foreach (OverlayLabel label in labels)
+                {
+                    RectangleF r = label.Bounds;
+                    SizeF size = e.Graphics.MeasureString(label.Text, font);
+                    r.Width = Math.Max(r.Width, size.Width + 8);
+                    r.Height = Math.Max(r.Height, size.Height + 5);
+                    using (GraphicsPath path = RoundedRect(r, 4.0f))
+                    {
+                        e.Graphics.FillPath(background, path);
+                        e.Graphics.DrawPath(border, path);
+                    }
+                    e.Graphics.DrawString(label.Text, font, text, r.X + 4, r.Y + (r.Height - size.Height) / 2 - 1);
+                }
+            }
+        }
+
+        private static GraphicsPath RoundedRect(RectangleF r, float radius)
+        {
+            float d = radius * 2;
+            GraphicsPath p = new GraphicsPath();
+            p.AddArc(r.X, r.Y, d, d, 180, 90);
+            p.AddArc(r.Right - d, r.Y, d, d, 270, 90);
+            p.AddArc(r.Right - d, r.Bottom - d, d, d, 0, 90);
+            p.AddArc(r.X, r.Bottom - d, d, d, 90, 90);
+            p.CloseFigure();
+            return p;
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            UnregisterHotKey(Handle, HOTKEY_SHOW);
+            UnregisterHotKey(Handle, HOTKEY_HIDE);
+            tray.Visible = false;
+            tray.Dispose();
+            base.OnFormClosed(e);
+        }
+    }
+}
