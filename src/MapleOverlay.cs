@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using Windows.Foundation;
+using Windows.Globalization;
 using Windows.Graphics.Imaging;
 using Windows.Media.Ocr;
 using Windows.Storage.Streams;
@@ -20,10 +22,17 @@ namespace MapleOverlay
     internal static class Program
     {
         internal static bool Benchmark;
+        internal static string BenchmarkIconPath;
+        internal static int BenchmarkBestIconDistance = 65;
+        internal static string BenchmarkBestIcon = "";
+        internal static string BenchmarkCurrentArea = "";
         [STAThread]
         private static void Main(string[] args)
         {
             Benchmark = args != null && Array.IndexOf(args, "--benchmark") >= 0;
+            if (args != null) foreach (string arg in args)
+                if (arg.StartsWith("--benchmark-icon=", StringComparison.OrdinalIgnoreCase))
+                    BenchmarkIconPath = arg.Substring("--benchmark-icon=".Length);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             try { Application.Run(new OverlayForm()); }
@@ -41,6 +50,8 @@ namespace MapleOverlay
         public string Chinese;
         public string Category;
         public string Normalized;
+        public ulong IconHash;
+        public bool HasIcon;
     }
 
     internal sealed class TranslationStore
@@ -48,7 +59,9 @@ namespace MapleOverlay
         private readonly string sourcePath;
         private readonly Dictionary<char, List<TranslationEntry>> buckets =
             new Dictionary<char, List<TranslationEntry>>();
+        private readonly List<TranslationEntry> iconEntries = new List<TranslationEntry>();
         public int Count { get; private set; }
+        public int IconCount { get { return iconEntries.Count; } }
 
         public TranslationStore(string source)
         {
@@ -60,6 +73,7 @@ namespace MapleOverlay
             List<TranslationEntry> entries = ReadTsv(sourcePath);
 
             buckets.Clear();
+            iconEntries.Clear();
             foreach (TranslationEntry entry in entries)
             {
                 if (entry.Normalized.Length == 0) continue;
@@ -71,6 +85,7 @@ namespace MapleOverlay
                     buckets.Add(key, list);
                 }
                 list.Add(entry);
+                if (entry.HasIcon) iconEntries.Add(entry);
             }
             foreach (List<TranslationEntry> list in buckets.Values)
                 list.Sort(delegate(TranslationEntry a, TranslationEntry b) {
@@ -106,6 +121,69 @@ namespace MapleOverlay
                 position += best.Normalized.Length;
             }
             return results;
+        }
+
+        public IconMatchResult FindIconAssistedMatch(ulong hash, string recognizedText)
+        {
+            string normalizedText = Normalize(recognizedText);
+            if (normalizedText.Length < 3) return null;
+            IconMatchResult best = null;
+            float secondScore = Single.MinValue;
+            foreach (TranslationEntry entry in iconEntries)
+            {
+                int distance = HammingDistance(hash, entry.IconHash);
+                float similarity = TextSimilarity(normalizedText, entry.Normalized);
+                if (Program.Benchmark && similarity >= 0.75f)
+                {
+                    if (distance < Program.BenchmarkBestIconDistance)
+                    {
+                        Program.BenchmarkBestIconDistance = distance;
+                        Program.BenchmarkBestIcon = entry.English + "@" + Program.BenchmarkCurrentArea;
+                    }
+                }
+                if (distance > 24) continue;
+                if (similarity < 0.58f) continue;
+                // A noisy icon is accepted only when the OCR text is already a strong fuzzy match.
+                if (distance > 9 && similarity < 0.78f) continue;
+                float score = similarity * 22.0f - distance * 0.45f;
+                if (best == null || score > best.Score)
+                {
+                    if (best != null) secondScore = Math.Max(secondScore, best.Score);
+                    best = new IconMatchResult { Entry = entry, Score = score, IconDistance = distance };
+                }
+                else secondScore = Math.Max(secondScore, score);
+            }
+            if (best == null || best.Score < 9.0f) return null;
+            if (secondScore != Single.MinValue && best.Score - secondScore < 1.0f) return null;
+            return best;
+        }
+
+        private static int HammingDistance(ulong left, ulong right)
+        {
+            ulong value = left ^ right;
+            int count = 0;
+            while (value != 0) { value &= value - 1; count++; }
+            return count;
+        }
+
+        private static float TextSimilarity(string left, string right)
+        {
+            if (left == right) return 1.0f;
+            if (left.Length == 0 || right.Length == 0) return 0.0f;
+            int[] previous = new int[right.Length + 1];
+            int[] current = new int[right.Length + 1];
+            for (int j = 0; j <= right.Length; j++) previous[j] = j;
+            for (int i = 1; i <= left.Length; i++)
+            {
+                current[0] = i;
+                for (int j = 1; j <= right.Length; j++)
+                {
+                    int cost = left[i - 1] == right[j - 1] ? 0 : 1;
+                    current[j] = Math.Min(Math.Min(current[j - 1] + 1, previous[j] + 1), previous[j - 1] + cost);
+                }
+                int[] swap = previous; previous = current; current = swap;
+            }
+            return 1.0f - (float)previous[right.Length] / Math.Max(left.Length, right.Length);
         }
 
         public static string Normalize(string value)
@@ -151,10 +229,13 @@ namespace MapleOverlay
                 string chinese = parts[1].Trim();
                 string normalized = Normalize(english);
                 if (normalized.Length == 0 || chinese.Length == 0 || !seen.Add(normalized)) continue;
+                ulong iconHash = 0;
+                bool hasIcon = parts.Length > 3 && UInt64.TryParse(parts[3].Trim(),
+                    NumberStyles.HexNumber, CultureInfo.InvariantCulture, out iconHash);
                 result.Add(new TranslationEntry {
                     English = english, Chinese = chinese,
                     Category = parts.Length > 2 ? parts[2].Trim() : "",
-                    Normalized = normalized
+                    Normalized = normalized, IconHash = hasIcon ? iconHash : 0, HasIcon = hasIcon
                 });
             }
             return result;
@@ -207,6 +288,13 @@ namespace MapleOverlay
         public int Length;
     }
 
+    internal sealed class IconMatchResult
+    {
+        public TranslationEntry Entry;
+        public float Score;
+        public int IconDistance;
+    }
+
     internal sealed class OverlayLabel
     {
         public RectangleF Bounds;
@@ -244,11 +332,16 @@ namespace MapleOverlay
         [DllImport("user32.dll")] private static extern int SetWindowLong(IntPtr hWnd, int index, int value);
         [DllImport("user32.dll")] private static extern bool SetWindowDisplayAffinity(IntPtr hWnd, uint affinity);
         [DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
+        [DllImport("user32.dll")] private static extern bool GetClientRect(IntPtr hwnd, out RECT rect);
+        [DllImport("user32.dll")] private static extern bool ClientToScreen(IntPtr hwnd, ref POINT point);
+        [DllImport("user32.dll")] private static extern bool IsIconic(IntPtr hwnd);
         [DllImport("user32.dll")] private static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint flags);
         [DllImport("user32.dll", CharSet = CharSet.Auto)] private static extern bool GetMonitorInfo(IntPtr monitor, ref MONITORINFO info);
 
         [StructLayout(LayoutKind.Sequential)]
         private struct RECT { public int Left, Top, Right, Bottom; }
+        [StructLayout(LayoutKind.Sequential)]
+        private struct POINT { public int X, Y; }
         [StructLayout(LayoutKind.Sequential)]
         private struct MONITORINFO
         {
@@ -262,7 +355,10 @@ namespace MapleOverlay
         {
             translations = new TranslationStore(Path.Combine(baseDir, "枫语幕词库.tsv"));
             translations.Load();
-            ocr = OcrEngine.TryCreateFromUserProfileLanguages();
+            // The international client and the dictionary use English source text.
+            // Pin OCR to English first so a Chinese Windows profile does not misclassify Latin glyphs.
+            ocr = OcrEngine.TryCreateFromLanguage(new Language("en-US"));
+            if (ocr == null) ocr = OcrEngine.TryCreateFromUserProfileLanguages();
             if (ocr == null) throw new InvalidOperationException("Windows OCR 不可用，请在系统语言设置中安装英语 OCR。 ");
 
             FormBorderStyle = FormBorderStyle.None;
@@ -284,7 +380,8 @@ namespace MapleOverlay
                 bool h1 = RegisterHotKey(Handle, HOTKEY_SHOW, showModifiers, (uint)showKey);
                 bool h2 = RegisterHotKey(Handle, HOTKEY_HIDE, hideModifiers, (uint)hideKey);
                 tray.ShowBalloonTip(2500, "枫语幕已启动",
-                    "词库 " + translations.Count + " 条。" + HotkeyText(showKey, showModifiers) + " 呼出，" +
+                    "词库 " + translations.Count + " 条，图标指纹 " + translations.IconCount + " 条，已载入内存。" +
+                    HotkeyText(showKey, showModifiers) + " 呼出，" +
                     HotkeyText(hideKey, hideModifiers) + " 缩回后台。" + ((!h1 || !h2) ? "（有快捷键注册失败）" : ""), ToolTipIcon.Info);
                 if (Program.Benchmark)
                 {
@@ -445,10 +542,17 @@ namespace MapleOverlay
         {
             if (processing) return;
             processing = true;
+            // Screen results are never reused. Every F8 starts from an empty overlay and a fresh capture.
+            visibleTranslation = false;
+            labels.Clear();
+            Invalidate();
             Stopwatch stopwatch = Stopwatch.StartNew();
+            string benchmarkOcrText = "";
             try
             {
-                Rectangle screen = GetActiveMonitorBounds();
+                Rectangle screen = Program.Benchmark
+                    ? new Rectangle(0, 0, 1280, 720)
+                    : GetForegroundCaptureBounds();
                 captureBounds = screen;
                 using (Bitmap bitmap = new Bitmap(screen.Width, screen.Height, PixelFormat.Format32bppArgb))
                 {
@@ -456,15 +560,31 @@ namespace MapleOverlay
                     {
                         if (Program.Benchmark)
                         {
-                            g.Clear(Color.White);
-                            using (Font f = new Font("Arial", 28, FontStyle.Regular))
-                                g.DrawString("MapleStory Classic World   Henesys   Orange Mushroom   Quest Complete", f, Brushes.Black, 40, 40);
+                            if (!String.IsNullOrEmpty(Program.BenchmarkIconPath) && File.Exists(Program.BenchmarkIconPath))
+                            {
+                                g.Clear(Color.FromArgb(18, 18, 20));
+                                using (Image icon = Image.FromFile(Program.BenchmarkIconPath))
+                                    g.DrawImage(icon, new Rectangle(40, 40, 32, 32));
+                                using (Font f = new Font("Arial", 14, FontStyle.Regular))
+                                    g.DrawString("Blue Potlon", f, Brushes.White, 82, 47);
+                            }
+                            else
+                            {
+                                g.Clear(Color.White);
+                                using (Font f = new Font("Arial", 14, FontStyle.Regular))
+                                    g.DrawString("MapleStory Classic World   Henesys   Orange Mushroom   Quest Complete", f, Brushes.Black, 40, 40);
+                            }
                         }
                         else g.CopyFromScreen(screen.Left, screen.Top, 0, 0, screen.Size, CopyPixelOperation.SourceCopy);
                     }
-                    OcrResult result = await RecognizeAsync(bitmap);
-                    List<OverlayLabel> next = BuildLabels(result);
-                    labels.Clear(); labels.AddRange(next);
+                    float ocrScale;
+                    using (Bitmap prepared = PrepareForOcr(bitmap, out ocrScale))
+                    {
+                        OcrResult result = await RecognizeAsync(prepared);
+                        if (Program.Benchmark) benchmarkOcrText = result.Text;
+                        List<OverlayLabel> next = BuildLabels(result, ocrScale, prepared);
+                        labels.Clear(); labels.AddRange(next);
+                    }
                 }
                 visibleTranslation = true;
                 Invalidate();
@@ -474,23 +594,81 @@ namespace MapleOverlay
                     File.WriteAllText(Path.Combine(baseDir, "last_run.txt"),
                         "耗时毫秒=" + stopwatch.ElapsedMilliseconds + Environment.NewLine +
                         "命中数量=" + labels.Count + Environment.NewLine +
+                        "图标指纹数量=" + translations.IconCount + Environment.NewLine +
+                        "OCR文本=" + benchmarkOcrText.Replace("\r", " ").Replace("\n", " | ") + Environment.NewLine +
+                        "最佳图标距离=" + Program.BenchmarkBestIconDistance + Environment.NewLine +
+                        "最佳图标候选=" + Program.BenchmarkBestIcon + Environment.NewLine +
                         "时间=" + DateTime.Now.ToString("s") + Environment.NewLine, Encoding.UTF8);
             }
             catch (Exception ex)
             {
+                visibleTranslation = false;
+                labels.Clear();
+                Invalidate();
                 tray.ShowBalloonTip(3000, "识别失败", ex.Message, ToolTipIcon.Error);
             }
             finally { processing = false; }
         }
 
-        private static Rectangle GetActiveMonitorBounds()
+        private static Rectangle GetForegroundCaptureBounds()
         {
-            IntPtr monitor = MonitorFromWindow(GetForegroundWindow(), 2); // nearest monitor
+            IntPtr foreground = GetForegroundWindow();
+            if (foreground != IntPtr.Zero && !IsIconic(foreground))
+            {
+                RECT client;
+                POINT origin = new POINT();
+                if (GetClientRect(foreground, out client) && ClientToScreen(foreground, ref origin))
+                {
+                    Rectangle window = new Rectangle(origin.X, origin.Y,
+                        client.Right - client.Left, client.Bottom - client.Top);
+                    Rectangle clipped = Rectangle.Intersect(window, SystemInformation.VirtualScreen);
+                    if (clipped.Width >= 160 && clipped.Height >= 120) return clipped;
+                }
+            }
+
+            IntPtr monitor = MonitorFromWindow(foreground, 2); // nearest monitor
             MONITORINFO info = new MONITORINFO();
             info.Size = Marshal.SizeOf(typeof(MONITORINFO));
             if (monitor != IntPtr.Zero && GetMonitorInfo(monitor, ref info))
                 return Rectangle.FromLTRB(info.Monitor.Left, info.Monitor.Top, info.Monitor.Right, info.Monitor.Bottom);
             return Screen.PrimaryScreen.Bounds;
+        }
+
+        private static Bitmap PrepareForOcr(Bitmap source, out float scale)
+        {
+            const float targetLongEdge = 2400.0f;
+            int longEdge = Math.Max(source.Width, source.Height);
+            scale = Math.Min(2.5f, Math.Max(1.0f, targetLongEdge / Math.Max(1, longEdge)));
+            int width = Math.Max(1, (int)Math.Round(source.Width * scale));
+            int height = Math.Max(1, (int)Math.Round(source.Height * scale));
+            Bitmap result = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+            result.SetResolution(source.HorizontalResolution, source.VerticalResolution);
+
+            using (Graphics g = Graphics.FromImage(result))
+            using (ImageAttributes attributes = new ImageAttributes())
+            {
+                g.Clear(Color.Black);
+                g.CompositingMode = CompositingMode.SourceCopy;
+                g.CompositingQuality = CompositingQuality.HighQuality;
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                g.SmoothingMode = SmoothingMode.HighQuality;
+
+                // Slight contrast boost helps outlined game text while preserving coloured item names.
+                float contrast = 1.18f;
+                float offset = (1.0f - contrast) / 2.0f;
+                ColorMatrix matrix = new ColorMatrix(new float[][] {
+                    new float[] { contrast, 0, 0, 0, 0 },
+                    new float[] { 0, contrast, 0, 0, 0 },
+                    new float[] { 0, 0, contrast, 0, 0 },
+                    new float[] { 0, 0, 0, 1, 0 },
+                    new float[] { offset, offset, offset, 0, 1 }
+                });
+                attributes.SetColorMatrix(matrix);
+                g.DrawImage(source, new Rectangle(0, 0, width, height),
+                    0, 0, source.Width, source.Height, GraphicsUnit.Pixel, attributes);
+            }
+            return result;
         }
 
         private async Task<OcrResult> RecognizeAsync(Bitmap bitmap)
@@ -531,13 +709,18 @@ namespace MapleOverlay
             return source.Task;
         }
 
-        private List<OverlayLabel> BuildLabels(OcrResult result)
+        private List<OverlayLabel> BuildLabels(OcrResult result, float ocrScale, Bitmap prepared)
         {
             List<OverlayLabel> output = new List<OverlayLabel>();
             foreach (OcrLine line in result.Lines)
             {
                 List<MatchResult> matches = translations.FindMatches(line.Text);
-                if (matches.Count == 0) continue;
+                if (matches.Count == 0)
+                {
+                    OverlayLabel assisted = BuildIconAssistedLabel(line, ocrScale, prepared);
+                    if (assisted != null) output.Add(assisted);
+                    continue;
+                }
                 string normalizedLine = TranslationStore.Normalize(line.Text);
                 foreach (MatchResult match in matches)
                 {
@@ -552,10 +735,10 @@ namespace MapleOverlay
                         int end = found + nw.Length;
                         if (end > match.Start && found < match.Start + match.Length)
                         {
-                            x0 = Math.Min(x0, (float)word.BoundingRect.X + captureBounds.Left - Bounds.Left);
-                            y0 = Math.Min(y0, (float)word.BoundingRect.Y + captureBounds.Top - Bounds.Top);
-                            x1 = Math.Max(x1, (float)(word.BoundingRect.X + word.BoundingRect.Width) + captureBounds.Left - Bounds.Left);
-                            y1 = Math.Max(y1, (float)(word.BoundingRect.Y + word.BoundingRect.Height) + captureBounds.Top - Bounds.Top);
+                            x0 = Math.Min(x0, (float)word.BoundingRect.X / ocrScale + captureBounds.Left - Bounds.Left);
+                            y0 = Math.Min(y0, (float)word.BoundingRect.Y / ocrScale + captureBounds.Top - Bounds.Top);
+                            x1 = Math.Max(x1, (float)(word.BoundingRect.X + word.BoundingRect.Width) / ocrScale + captureBounds.Left - Bounds.Left);
+                            y1 = Math.Max(y1, (float)(word.BoundingRect.Y + word.BoundingRect.Height) / ocrScale + captureBounds.Top - Bounds.Top);
                         }
                         cursor = end + 1;
                     }
@@ -567,6 +750,87 @@ namespace MapleOverlay
                 }
             }
             return output;
+        }
+
+        private OverlayLabel BuildIconAssistedLabel(OcrLine line, float ocrScale, Bitmap prepared)
+        {
+            string normalized = TranslationStore.Normalize(line.Text);
+            if (normalized.Length < 3 || normalized.Length > 64 || line.Words.Count == 0) return null;
+
+            float left = Single.MaxValue, top = Single.MaxValue;
+            float right = Single.MinValue, bottom = Single.MinValue;
+            foreach (OcrWord word in line.Words)
+            {
+                left = Math.Min(left, (float)word.BoundingRect.X);
+                top = Math.Min(top, (float)word.BoundingRect.Y);
+                right = Math.Max(right, (float)(word.BoundingRect.X + word.BoundingRect.Width));
+                bottom = Math.Max(bottom, (float)(word.BoundingRect.Y + word.BoundingRect.Height));
+            }
+            if (left == Single.MaxValue) return null;
+
+            float baseSize = Math.Max(22.0f * ocrScale, 32.0f * ocrScale);
+            float[] sizeFactors = new float[] { 0.82f, 1.0f, 1.2f };
+            float[] gaps = new float[] { 2.0f * ocrScale, 9.0f * ocrScale, 18.0f * ocrScale };
+            // Tooltips often place a 32px icon above the text baseline; skill lists centre it.
+            float[] verticalFactors = new float[] { -0.85f, -0.55f, -0.25f, 0.0f, 0.25f };
+            IconMatchResult best = null;
+
+            foreach (float sizeFactor in sizeFactors)
+            {
+                float size = baseSize * sizeFactor;
+                foreach (float gap in gaps)
+                {
+                    foreach (float verticalFactor in verticalFactors)
+                    {
+                        RectangleF iconArea = new RectangleF(left - gap - size,
+                            (top + bottom - size) / 2.0f + verticalFactor * size, size, size);
+                        ulong hash;
+                        if (!TryComputeDHash(prepared, iconArea, out hash)) continue;
+                        if (Program.Benchmark) Program.BenchmarkCurrentArea = iconArea.ToString();
+                        IconMatchResult candidate = translations.FindIconAssistedMatch(hash, line.Text);
+                        if (candidate != null && (best == null || candidate.Score > best.Score)) best = candidate;
+                    }
+                }
+            }
+            if (best == null) return null;
+
+            return new OverlayLabel {
+                Bounds = new RectangleF(left / ocrScale + captureBounds.Left - Bounds.Left - 3,
+                    top / ocrScale + captureBounds.Top - Bounds.Top - 2,
+                    Math.Max(28, (right - left) / ocrScale + 6),
+                    Math.Max(18, (bottom - top) / ocrScale + 4)),
+                Text = best.Entry.Chinese
+            };
+        }
+
+        private static bool TryComputeDHash(Bitmap image, RectangleF area, out ulong hash)
+        {
+            hash = 0;
+            if (area.Width < 8 || area.Height < 8 || area.Left < 0 || area.Top < 0 ||
+                area.Right >= image.Width || area.Bottom >= image.Height) return false;
+            int[,] luminance = new int[8, 9];
+            using (Bitmap reduced = new Bitmap(9, 8, PixelFormat.Format32bppArgb))
+            using (Graphics graphics = Graphics.FromImage(reduced))
+            {
+                graphics.Clear(Color.FromArgb(18, 18, 20));
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                graphics.DrawImage(image, new Rectangle(0, 0, 9, 8), area.X, area.Y,
+                    area.Width, area.Height, GraphicsUnit.Pixel);
+                for (int y = 0; y < 8; y++)
+                {
+                    for (int x = 0; x < 9; x++)
+                    {
+                        Color color = reduced.GetPixel(x, y);
+                        luminance[y, x] = (color.R * 299 + color.G * 587 + color.B * 114) / 1000;
+                    }
+                }
+            }
+            int bit = 0;
+            for (int y = 0; y < 8; y++)
+                for (int x = 0; x < 8; x++, bit++)
+                    if (luminance[y, x] > luminance[y, x + 1]) hash |= 1UL << bit;
+            return true;
         }
 
         protected override void OnPaint(PaintEventArgs e)
