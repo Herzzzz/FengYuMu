@@ -259,6 +259,7 @@ namespace MapleOverlay
         private readonly CheckBox onlineReview = new CheckBox();
         private readonly System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
         private readonly HashSet<string> seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private readonly HashSet<string> protectedPlayerNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private Rectangle chatRegion;
         private bool live;
         private bool busy;
@@ -401,12 +402,17 @@ namespace MapleOverlay
                     if (line.Length < 3 || seen.Contains(line)) continue;
                     seen.Add(line);
                     if (seen.Count > 180) seen.Clear();
-                    string glossary = BuildGlossary(line);
+                    string speakerPrefix, message;
+                    SplitSpeaker(line, out speakerPrefix, out message);
+                    Dictionary<string, string> nameTokens;
+                    string protectedMessage = ProtectPlayerNames(message, out nameTokens);
+                    string glossary = BuildGlossary(protectedMessage);
                     lastWasOnline = false;
-                    string translated = await ai.TranslateAsync(line, "自动识别（中英日韩）", "中文", glossary);
-                    translated = await ReviewOnlineIfEnabled(line, translated, "中文", glossary);
-                    lastSource = line; lastTranslation = translated;
-                    AppendOutput(line + Environment.NewLine + "→ " + translated + Environment.NewLine);
+                    string translated = await ai.TranslateAsync(protectedMessage, "自动识别（中英日韩）", "中文", glossary);
+                    translated = await ReviewOnlineIfEnabled(protectedMessage, translated, "中文", glossary);
+                    translated = RestorePlayerNames(translated, nameTokens);
+                    lastSource = message; lastTranslation = translated;
+                    AppendOutput(line + Environment.NewLine + "→ " + speakerPrefix + translated + Environment.NewLine);
                 }
             }
             catch (Exception ex) { status.Text = ex.Message; }
@@ -419,12 +425,17 @@ namespace MapleOverlay
             busy = true;
             try
             {
-                string glossary = BuildGlossary(value);
+                string speakerPrefix, message;
+                SplitSpeaker(value, out speakerPrefix, out message);
+                Dictionary<string, string> nameTokens;
+                string protectedMessage = ProtectPlayerNames(message, out nameTokens);
+                string glossary = BuildGlossary(protectedMessage);
                 lastWasOnline = false;
-                string translated = await ai.TranslateAsync(value, Convert.ToString(source.SelectedItem), Convert.ToString(target.SelectedItem), glossary);
-                translated = await ReviewOnlineIfEnabled(value, translated, Convert.ToString(target.SelectedItem), glossary);
-                lastSource = value; lastTranslation = translated;
-                AppendOutput(value + Environment.NewLine + "→ " + translated + Environment.NewLine);
+                string translated = await ai.TranslateAsync(protectedMessage, Convert.ToString(source.SelectedItem), Convert.ToString(target.SelectedItem), glossary);
+                translated = await ReviewOnlineIfEnabled(protectedMessage, translated, Convert.ToString(target.SelectedItem), glossary);
+                translated = RestorePlayerNames(translated, nameTokens);
+                lastSource = message; lastTranslation = translated;
+                AppendOutput(value + Environment.NewLine + "→ " + speakerPrefix + translated + Environment.NewLine);
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, "AI翻译失败"); }
             finally { busy = false; }
@@ -442,6 +453,46 @@ namespace MapleOverlay
                 result.Append(p[0]).Append(" = ").Append(p[1]).AppendLine(); count++;
             }
             return result.ToString();
+        }
+
+        private void SplitSpeaker(string line, out string prefix, out string message)
+        {
+            prefix = ""; message = line;
+            Match match = Regex.Match(line, @"^(\s*(?:\[[^\]]{1,20}\]\s*)?(?:<[^>]{1,24}>|[^:：]{1,24})\s*[:：]\s*)(.+)$");
+            if (!match.Success)
+            {
+                match = Regex.Match(line, @"^(\s*<([^>]{1,24})>\s*)(.+)$");
+                if (!match.Success) return;
+            }
+            prefix = match.Groups[1].Value;
+            message = match.Groups[match.Groups.Count - 1].Value;
+            string name = Regex.Replace(prefix, @"^\s*(?:\[[^\]]+\]\s*)?", "");
+            name = name.Trim().TrimEnd(':', '：').Trim().Trim('<', '>').Trim();
+            if (name.Length >= 3 && name.Length <= 24) protectedPlayerNames.Add(name);
+        }
+
+        private string ProtectPlayerNames(string message, out Dictionary<string, string> tokens)
+        {
+            tokens = new Dictionary<string, string>();
+            List<string> names = new List<string>(protectedPlayerNames);
+            names.Sort(delegate(string left, string right) { return right.Length.CompareTo(left.Length); });
+            string result = message; int index = 0;
+            foreach (string name in names)
+            {
+                if (result.IndexOf(name, StringComparison.OrdinalIgnoreCase) < 0) continue;
+                string token = "__FYM_PLAYER_" + index++ + "__";
+                result = Regex.Replace(result, Regex.Escape(name), token, RegexOptions.IgnoreCase);
+                tokens[token] = name;
+            }
+            return result;
+        }
+
+        private static string RestorePlayerNames(string translation, Dictionary<string, string> tokens)
+        {
+            string result = translation;
+            foreach (KeyValuePair<string, string> item in tokens)
+                result = Regex.Replace(result, Regex.Escape(item.Key), item.Value, RegexOptions.IgnoreCase);
+            return result;
         }
 
         private async Task<string> ReviewOnlineIfEnabled(string original, string local, string targetLanguage, string glossary)
