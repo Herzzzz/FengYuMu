@@ -430,6 +430,93 @@ namespace MapleOverlay
         public string Text;
     }
 
+    internal static class ChatRegionSettings
+    {
+        private const int Scale = 10000;
+
+        public static void Save(Rectangle region, Rectangle gameBounds)
+        {
+            if (region.Width < 40 || region.Height < 20 || gameBounds.Width < 1 || gameBounds.Height < 1) return;
+            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu"))
+            {
+                key.SetValue("ChatX", region.X); key.SetValue("ChatY", region.Y);
+                key.SetValue("ChatW", region.Width); key.SetValue("ChatH", region.Height);
+                key.SetValue("ChatRelX", (region.X - gameBounds.X) * Scale / gameBounds.Width);
+                key.SetValue("ChatRelY", (region.Y - gameBounds.Y) * Scale / gameBounds.Height);
+                key.SetValue("ChatRelW", region.Width * Scale / gameBounds.Width);
+                key.SetValue("ChatRelH", region.Height * Scale / gameBounds.Height);
+                key.SetValue("ChatGameX", gameBounds.X); key.SetValue("ChatGameY", gameBounds.Y);
+                key.SetValue("ChatGameW", gameBounds.Width); key.SetValue("ChatGameH", gameBounds.Height);
+            }
+        }
+
+        public static Rectangle LoadAbsolute()
+        {
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\FengYuMu"))
+                {
+                    if (key == null) return Rectangle.Empty;
+                    return new Rectangle(Convert.ToInt32(key.GetValue("ChatX", 0)),
+                        Convert.ToInt32(key.GetValue("ChatY", 0)),
+                        Convert.ToInt32(key.GetValue("ChatW", 0)),
+                        Convert.ToInt32(key.GetValue("ChatH", 0)));
+                }
+            }
+            catch { return Rectangle.Empty; }
+        }
+
+        public static bool HasSelection()
+        {
+            Rectangle value = LoadAbsolute();
+            return value.Width >= 80 && value.Height >= 30;
+        }
+
+        public static Rectangle ResolveForGame(Rectangle gameBounds)
+        {
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\FengYuMu"))
+                {
+                    if (key != null)
+                    {
+                        int relX = Convert.ToInt32(key.GetValue("ChatRelX", -1));
+                        int relY = Convert.ToInt32(key.GetValue("ChatRelY", -1));
+                        int relW = Convert.ToInt32(key.GetValue("ChatRelW", -1));
+                        int relH = Convert.ToInt32(key.GetValue("ChatRelH", -1));
+                        if (relX >= 0 && relY >= 0 && relW >= 100 && relH >= 100 &&
+                            relX + relW <= Scale && relY + relH <= Scale)
+                        {
+                            Rectangle relative = new Rectangle(gameBounds.X + relX * gameBounds.Width / Scale,
+                                gameBounds.Y + relY * gameBounds.Height / Scale,
+                                Math.Max(40, relW * gameBounds.Width / Scale),
+                                Math.Max(20, relH * gameBounds.Height / Scale));
+                            return Rectangle.Intersect(relative, gameBounds);
+                        }
+                    }
+                }
+            }
+            catch { }
+
+            Rectangle absolute = LoadAbsolute();
+            if (absolute.Width >= 80 && absolute.Height >= 30)
+            {
+                Rectangle overlap = Rectangle.Intersect(absolute, gameBounds);
+                long sourceArea = (long)absolute.Width * absolute.Height;
+                long overlapArea = (long)overlap.Width * overlap.Height;
+                if (sourceArea > 0 && overlapArea * 10 >= sourceArea * 7) return overlap;
+            }
+            return DefaultForGame(gameBounds);
+        }
+
+        public static Rectangle DefaultForGame(Rectangle gameBounds)
+        {
+            return new Rectangle(gameBounds.Left + gameBounds.Width * 10 / 100,
+                gameBounds.Top + gameBounds.Height * 76 / 100,
+                gameBounds.Width * 55 / 100, gameBounds.Height * 21 / 100);
+        }
+    }
+
     internal sealed class OverlayForm : Form
     {
         private const int HOTKEY_SHOW = 1001;
@@ -1025,37 +1112,17 @@ namespace MapleOverlay
 
         private Rectangle GetChatExclusionBounds()
         {
-            Rectangle configured = Rectangle.Empty;
-            try
+            Rectangle resolved = ChatRegionSettings.ResolveForGame(captureBounds);
+            // If the game moved or changed resolution, an F8 capture is the reliable moment
+            // when its current client bounds are known. Refresh the same shared absolute box
+            // so the AI reader and the F8 exclusion continue to point at one region.
+            if (ChatRegionSettings.HasSelection() && ChatRegionSettings.LoadAbsolute() != resolved)
             {
-                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\FengYuMu"))
-                {
-                    if (key != null)
-                        configured = new Rectangle(Convert.ToInt32(key.GetValue("ChatX", 0)),
-                            Convert.ToInt32(key.GetValue("ChatY", 0)),
-                            Convert.ToInt32(key.GetValue("ChatW", 0)),
-                            Convert.ToInt32(key.GetValue("ChatH", 0)));
-                }
+                ChatRegionSettings.Save(resolved, captureBounds);
+                if (chatTranslator != null && !chatTranslator.IsDisposed)
+                    chatTranslator.UpdateChatRegion(resolved);
             }
-            catch { configured = Rectangle.Empty; }
-
-            if (configured.Width >= 80 && configured.Height >= 30)
-            {
-                Rectangle overlap = Rectangle.Intersect(configured, captureBounds);
-                long configuredArea = (long)configured.Width * configured.Height;
-                long overlapArea = (long)overlap.Width * overlap.Height;
-                bool mostlyInsideCurrentWindow = configuredArea > 0 && overlapArea * 10 >= configuredArea * 7;
-                bool stillNearGameBottom = configured.Top + configured.Height / 2 >=
-                    captureBounds.Top + captureBounds.Height * 55 / 100;
-                if (overlap.Width >= 80 && overlap.Height >= 30 && mostlyInsideCurrentWindow && stillNearGameBottom)
-                    return overlap;
-            }
-
-            // Default MapleStory chat strip. Once the player binds the AI chat region,
-            // the exact saved rectangle above replaces this resolution-independent fallback.
-            return new Rectangle(captureBounds.Left + captureBounds.Width * 10 / 100,
-                captureBounds.Top + captureBounds.Height * 76 / 100,
-                captureBounds.Width * 55 / 100, captureBounds.Height * 21 / 100);
+            return resolved;
         }
 
         private bool IsChatLine(OcrLine line, float ocrScale, Rectangle exclusion)
