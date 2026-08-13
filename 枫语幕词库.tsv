@@ -1,5 +1,5 @@
-﻿# 枫语幕词库 1.5 - 冒险岛国际怀旧服专用（常规＋完整任务文本＋接取地图分类）
-# 补全版本：1.5.3（主OCR排除玩家聊天框；聊天完全交给AI）
+﻿# 枫语幕词库 1.6 - 冒险岛国际怀旧服专用（常规＋完整任务文本＋技能/装备/物品详情）
+# 补全版本：1.6.0（悬停详情整块翻译＋分类分页；玩家聊天完全交给AI）
 # 生成日期：2026-08-13
 # 主数据：https://mxdgcw.dvg.cn/（当前GCW资料ID与中英文名）
 # NPC补全：https://meowdb.com/msclassic/（按同一NPC ID对齐）
@@ -294,7 +294,7 @@ Proof of Qualification	资格证明	怀旧服-任务#20003		战士转职
 The Magician's Next Journey	魔法师的下一段旅程	怀旧服-任务#20100		魔法师转职
 The Bowman's Next Journey	弓箭手的下一段旅程	怀旧服-任务#20200		弓箭手转职
 The Thief's Next Journey	飞侠的下一段旅程	怀旧服-任务#20300		飞侠转职
-"Mar" the Fairy and the Water of Life	妖精“玛尔”和生命之水	怀旧服-任务#80000		魔法密林
+Mar the Fairy and the Water of Life	妖精“玛尔”和生命之水	怀旧服-任务#80000		魔法密林
 Make a Match Cards Set	制作记忆卡套组	怀旧服-任务#80001		射手村
 Make a Slime & Mushroom Omok Set	制作绿水灵与蘑菇五子棋套组	怀旧服-任务#80002		射手村
 Make a Slime & Pig Omok Set	制作绿水灵与猪五子棋套组	怀旧服-任务#80003		射手村
@@ -3152,7 +3152,7 @@ Pass	通行许可证	怀旧服-道具#4001002	2759b066cc91e26c
 VIP Mirror	贵族镜子	怀旧服-道具#4001003	050b76e4c4b4a1c0
 The Girl Next Door	小说书	怀旧服-道具#4001004	6760d89ab089b91a
 Old Gold Watch	旧金表	怀旧服-道具#4001005	853c78f2e468616e
-"Blackbull's" deed to the land	黑牛的土地契约	怀旧服-道具#4001006	077ef8e9c96cf9e1
+Blackbull's deed to the land	黑牛的土地契约	怀旧服-道具#4001006	077ef8e9c96cf9e1
 Ancient Scroll	上卷轴轴	怀旧服-道具#4001007	848e1c19b2746272
 Flaming Feather	火焰羽毛	怀旧服-道具#4001008	2358b871e3c498d0
 Event Trophy	金杯	怀旧服-道具#4001009	796971d4f8ba79f2
@@ -3789,7 +3789,7 @@ Right! I also need a cape for my friend! A few days ago, I lent a Red Cape to Ri
 Please! If you can gather everything for me, I'll be able to make something to help my friend on their journey!	拜托！如果你能为我收集所有东西，我就能够做一些东西来帮助我的朋友完成他们的旅程！	怀旧服-任务对白#10120	英文对白语境翻译
 You must be very busy... If you have time later, please get back to me! My friend will set out soon.	你一定很忙吧...如果你稍后有时间的话请回复我！我的朋友很快就要出发了...	怀旧服-任务对白#10120	英文对白语境翻译
 Hi. Nice weather, isn't it? What? You want the Red Cape that I borrowed from Pia ?	嗨。天气真好，不是吗？什么？你想要我从皮娅那里借来的红斗篷吗？	怀旧服-任务对白#10120	英文对白语境翻译
-Hmm... I should say... "No"... because I didn't borrow it from Pia . Pia took some things that were precious to me and never gave them back. So I took this cape from her in return. Therefore, no. I can't give this cape to you.	嗯……我应该说……“不”……因为我不是从皮亚那里借来的。皮娅拿走了一些对我来说很珍贵的东西，再也没有还给我。所以我从她那里拿走了这件斗篷作为回报。因此，不。我不能把这斗篷给你。	怀旧服-任务对白#10120	英文对白语境翻译
+"Hmm... I should say... ""No""... because I didn't borrow it from Pia . Pia took some things that were precious to me and never gave them back. So I took this cape from her in return. Therefore, no. I can't give this cape to you."	嗯……我应该说……“不”……因为我不是从皮亚那里借来的。皮娅拿走了一些对我来说很珍贵的东西，再也没有还给我。所以我从她那里拿走了这件斗篷作为回报。因此，不。我不能把这斗篷给你。	怀旧服-任务对白#10120	英文对白语境翻译
 You can get the Red Cape from Rina in Henesys.	你可以从 射手村 的 丽娜 那里得到红斗篷......	怀旧服-任务对白#10120	英文对白语境翻译
 I went to see Rina in Henesys, and instead, she tells me she took that red cape because Pia didn't return the items she borrowed from her. She said that she would return the cape if she gets her items back... the items are 1 Black Crystal, 1 Ancient Scroll, and 30 Medicine With Weird Vibes.	看来丽娜不归还皮亚借走的东西也有自己的理由。我去射手村找丽娜，她反而告诉我，是因为皮亚没有归还从她那里借走的物品，她才拿走了红披风。她说如果把那些物品还给她，就会归还披风……物品是 1 个黑水晶、1 张古代卷轴和 30 个奇怪感觉的药。我替皮亚偿还了欠丽娜的东西，并拿回了红披风。现在只要把它带回给皮亚就行了吧？	怀旧服-任务说明#10121	GCW同任务代码中文
 Hmm... If you really need this, you should give back the things that Pia took. Then, I will give the Red Cape to you.	嗯……如果你真的需要这个，就应该把皮娅拿走的东西还给我。那么，我就把红斗篷送给你。	怀旧服-任务对白#10121	英文对白语境翻译
@@ -4044,7 +4044,7 @@ Even if I come back alive with these charms, I won't be fully alive, per se, kin
 Do you like the cape that I gave you? It's a cape made of the devastating powers of the Charm of the Undead . I'll see you... around... somewhere... somehow.	你喜欢我送你的斗篷吗？这是一件由不死符咒的毁灭性力量制成的斗篷。我会在...附近...某个地方...以某种方式见到你...	怀旧服-任务对白#10310	英文对白语境翻译
 You still didn't get 25 Charm of the Undead ? Please hurry... It's so cold here.	你还没有获得25点亡灵魅力吗？请快点...这里太冷了。	怀旧服-任务对白#10310	英文对白语境翻译
 Don't forget, you also need to defeat 50 Zombie Mushrooms.	别忘了，你还需要击败 50 个僵尸蘑菇......	怀旧服-任务对白#10310	英文对白语境翻译
-Lakelis in Kerning City asked me to challenge the party quest "First Time Together” and defeat the King Slime inside. The party quest must be attempted by a party of four adventurers, all level 21 or higher. Once the party is ready, the party leader should speak to Lakelis. Better start looking for some friends to join me.	废弃都市的拉克莉丝似乎在寻找能一起挑战组队任务的队伍，这个任务需要多名冒险家合作完成。拉克莉丝让我挑战组队任务“第一次同行”，并打倒里面的绿水灵王。这个组队任务必须由 4 名等级 21 以上的冒险家组成队伍才能挑战。队伍准备好后，队长应该和拉克莉丝对话。看来该开始找朋友一起加入了。按照拉克莉丝的请求，我和朋友们挑战了组队任务“第一次同行”，并打倒了绿水灵王。只要大家齐心协力，就没有做不到的事！	怀旧服-任务说明#10311	GCW同任务代码中文
+"Lakelis in Kerning City asked me to challenge the party quest ""First Time Together” and defeat the King Slime inside. The party quest must be attempted by a party of four adventurers, all level 21 or higher. Once the party is ready, the party leader should speak to Lakelis. Better start looking for some friends to join me."	废弃都市的拉克莉丝似乎在寻找能一起挑战组队任务的队伍，这个任务需要多名冒险家合作完成。拉克莉丝让我挑战组队任务“第一次同行”，并打倒里面的绿水灵王。这个组队任务必须由 4 名等级 21 以上的冒险家组成队伍才能挑战。队伍准备好后，队长应该和拉克莉丝对话。看来该开始找朋友一起加入了。按照拉克莉丝的请求，我和朋友们挑战了组队任务“第一次同行”，并打倒了绿水灵王。只要大家齐心协力，就没有做不到的事！	怀旧服-任务说明#10311	GCW同任务代码中文
 Hello, I'm Lakelis . Together with my sisters, Cloto and Nella (KPQ 1st Stage) , I look into the destinies of the adventurers who journey across Victoria Island. Have you ever wondered... is human destiny predetermined, or is it something we carve out ourselves?	你好，我是莱克利斯。我和我的姐妹 克鲁特 和 内拉（KPQ 第一阶段）一起探索穿越维多利亚岛的冒险家的命运。你有没有想过……人类的命运是预先决定的，还是我们自己创造的？	怀旧服-任务对白#10311	英文对白语境翻译
 Perhaps your arrival here is destiny as well. Hm... How uncharacteristic of me to ramble on like this. Well then, let's get to the point. The three of us are seeking a party that can work together to overcome difficult challenges.	也许你的到来也是命运的安排。嗯……这样胡言乱语真是不符合我的性格。那么，我们就进入正题吧。我们三人正在寻找一个能够共同努力克服困难挑战的政党。	怀旧服-任务对白#10311	英文对白语境翻译
 Form a party with three other companions, then challenge the party quest First Time Together. Inside, you will face various obstacles and must defeat King Slime before returning to me. How does that sound?	与其他三名同伴组成队伍，然后挑战队伍任务“第一次在一起”。在里面，你将面临各种障碍，必须击败史莱姆王才能回到我身边。听起来怎么样？	怀旧服-任务对白#10311	英文对白语境翻译
@@ -4117,13 +4117,13 @@ Oh you're back!! Did you meet up with Wing the Fairy ? What about the medicine? 
 Wow, this is it. This medicine will enable me to fly anywhere I desire and finally realize my dream. Thank you so much for all your help. Here's a little thank you present from me. Hopefully it'll help you down the road. I'll see you around!	哇，就是这个。这种药将使我能够飞向任何我想去的地方，最终实现我的梦想。非常感谢您的帮助。这是我送给你的一点感谢礼物。希望它能对您有所帮助。我会再见的！	怀旧服-任务对白#10321	英文对白语境翻译
 You haven't given the medicine to Icarus yet? I thought I told you it won't work on anyone else but him, meaning YOU CAN'T FLY WITH IT. Now that you know, go see Icarus immediately and give him the medicine, all right?	你还没有把药给伊卡洛斯吗？我想我告诉过你这对除了他以外的任何人都不起作用，这意味着你不能用它飞行。既然你知道了，就立刻去见伊卡洛斯，给他下药，好吗？	怀旧服-任务对白#10321	英文对白语境翻译
 Random reward - one of:	随机奖励 - 以下之一：	怀旧服-任务对白#10321	英文对白语境翻译
-Right here, in this dusty town of Perion, I ran into an oddly-dressed man named "Blackbull." He told me he needs to fix his house and wondered if I could help him out by defeating 20 Stumps and 20 Dark Stumps and getting him 10 Tree Branches and 10 Leafs. If I do him a favor, I'll get a nice shield from him, but what if I say no? I wouldn't... be... EATEN BY HIM... no?? I really hope not.	听说勇士部落的“黑牛”正在修房子。就在这个尘土飞扬的勇士部落，我遇到了一个打扮奇怪、名叫“黑牛”的男人。他说自己需要修理房子，问我能不能帮他打倒 20 个木妖和 20 个黑木妖，并带来 10 根树枝和 10 片叶子。如果帮他，他会给我一个不错的盾牌，但如果我拒绝呢？我不会……被他……吃掉吧……不，希望不会……你帮勇士部落的“黑牛”打倒了 20 个木妖和 20 个黑木妖，并带回 10 根树枝和 10 片叶子。有了这些，他终于能修好房子了。你得到了这个盾牌作为奖励……不过……到处都是刮痕，看起来也很旧……这真的还能用吗？	怀旧服-任务说明#10400	GCW同任务代码中文
+"Right here, in this dusty town of Perion, I ran into an oddly-dressed man named ""Blackbull."" He told me he needs to fix his house and wondered if I could help him out by defeating 20 Stumps and 20 Dark Stumps and getting him 10 Tree Branches and 10 Leafs. If I do him a favor, I'll get a nice shield from him, but what if I say no? I wouldn't... be... EATEN BY HIM... no?? I really hope not."	听说勇士部落的“黑牛”正在修房子。就在这个尘土飞扬的勇士部落，我遇到了一个打扮奇怪、名叫“黑牛”的男人。他说自己需要修理房子，问我能不能帮他打倒 20 个木妖和 20 个黑木妖，并带来 10 根树枝和 10 片叶子。如果帮他，他会给我一个不错的盾牌，但如果我拒绝呢？我不会……被他……吃掉吧……不，希望不会……你帮勇士部落的“黑牛”打倒了 20 个木妖和 20 个黑木妖，并带回 10 根树枝和 10 片叶子。有了这些，他终于能修好房子了。你得到了这个盾牌作为奖励……不过……到处都是刮痕，看起来也很旧……这真的还能用吗？	怀旧服-任务说明#10400	GCW同任务代码中文
 Can you defeat 20 Stumps and 20 Dark Stumps and get me 10 Tree Branches and 10 Leafs ? I want to renovate my house. If you can do this for me, I will give you a nice shield that I no longer need... You should be able to get those items from the tree-like creatures nearby.	你能打败 20 个树桩和 20 个黑暗树桩并给我 10 根树枝和 10 片叶子吗？我想装修我的房子。如果你能为我做到这一点，我会给你一个我不再需要的漂亮盾牌......你应该能够从附近的树状生物那里得到这些物品......	怀旧服-任务对白#10400	英文对白语境翻译
 Incredible! You must be someone special, to be able to get that many. Hmm... All right, the shield is yours. It's my favorite one. Please take good care of it.	难以置信！你一定是一个特别的人，才能得到这么多。嗯……好吧，盾牌是你的了。这是我最喜欢的一个。请好好照顾它。	怀旧服-任务对白#10400	英文对白语境翻译
 I guess you still haven't collected 10 Tree Branches and 10 Leafs.	我猜你还没收集到 10 根树枝和 10 片叶子......	怀旧服-任务对白#10400	英文对白语境翻译
 Don't forget, you also need to defeat 20 Stumps and 20 Dark Stumps.	别忘了，你还需要击败20个树桩和20个黑暗树桩。	怀旧服-任务对白#10400	英文对白语境翻译
 Random reward - one of:	随机奖励 - 以下之一：	怀旧服-任务对白#10400	英文对白语境翻译
-I ran into "Blackbull" again, the guy whose house I helped fix. He was surprised at how strong I looked and asked me for a much harder favor. His cousins from Henesys are all trying to move to Perion, so he needs to build a new house! To build a new house, he said he needed 100 Stone Golem Rubbles, 30 Screws, 30 Processed Wood, and "Blackbull's" deed to the land. His son had the deed to the land, but it was stolen by Curse Eyes near Sleepywood... hmmm... I should be looking for those wandering around the deep forest.	听说勇士部落的“黑牛”正在建新房子……我再次遇到了“黑牛”，也就是之前我帮忙修房子的那个人。他惊讶于我看起来变强了很多，于是拜托我一个更困难的忙。他在射手村的亲戚们都想搬到勇士部落，所以他需要建一栋新房子！他说要建新房子，需要 100 个石头人碎片、30 个螺丝、30 个加工木材和“黑牛”的地契。他儿子原本拿着地契，但被林中之城附近的风独眼兽偷走了……嗯……我应该去森林深处找那些游荡的怪物。为了让“黑牛”的亲戚们都能搬到勇士部落，你帮他收集了所需物品。真的很辛苦，希望他下次不要让我亲手给他盖房子……	怀旧服-任务说明#10401	GCW同任务代码中文
+"I ran into ""Blackbull"" again, the guy whose house I helped fix. He was surprised at how strong I looked and asked me for a much harder favor. His cousins from Henesys are all trying to move to Perion, so he needs to build a new house! To build a new house, he said he needed 100 Stone Golem Rubbles, 30 Screws, 30 Processed Wood, and ""Blackbull's"" deed to the land. His son had the deed to the land, but it was stolen by Curse Eyes near Sleepywood... hmmm... I should be looking for those wandering around the deep forest."	听说勇士部落的“黑牛”正在建新房子……我再次遇到了“黑牛”，也就是之前我帮忙修房子的那个人。他惊讶于我看起来变强了很多，于是拜托我一个更困难的忙。他在射手村的亲戚们都想搬到勇士部落，所以他需要建一栋新房子！他说要建新房子，需要 100 个石头人碎片、30 个螺丝、30 个加工木材和“黑牛”的地契。他儿子原本拿着地契，但被林中之城附近的风独眼兽偷走了……嗯……我应该去森林深处找那些游荡的怪物。为了让“黑牛”的亲戚们都能搬到勇士部落，你帮他收集了所需物品。真的很辛苦，希望他下次不要让我亲手给他盖房子……	怀旧服-任务说明#10401	GCW同任务代码中文
 Hey, it's you! Got pretty famous since the last time I saw you, huh? Well, thanks to you, I got my house fixed just fine. But hmm... There's a problem... All my relatives from Henesys want to move to this town. I need to build a new house for them, but I don't even have the materials to build with.	嘿，是你！自从我上次见到你以来，你已经很有名了，是吗？嗯，多亏了你，我的房子才修好了。但是嗯...有一个问题...我所有来自 射手村 的亲戚都想搬到这个小镇。我需要为他们建造一座新房子，但我连建造的材料都没有……	怀旧服-任务对白#10401	英文对白语境翻译
 Well hey! Sorry to ask you for another favor, but can you get the stuff necessary to build a house for my cousins? So many relatives are coming in that things like a Tree Branch or Leafs from last time won't do. Do you think you could help? I'll tell you what to get instead.	好吧嘿！很抱歉再请你帮个忙，但是你能为我的表兄弟姐妹们提供建造房子所需的材料吗？这么多亲戚进来，上次的树枝或树叶之类的东西是不够的。你认为你能帮忙吗？我会告诉你该买什么。	怀旧服-任务对白#10401	英文对白语境翻译
 I'll need 100 Stone Golem Rubbles , 30 Screws , and 30 pieces of Processed Wood . But with only these... Well, a couple of days ago, a document titled Blackbull's Deed to the Land that I purchased disappeared... My son said he was attacked by monsters while carrying the deed.	我需要 100 个石傀儡碎石、30 个螺丝和 30 块加工过的木材。但只有这些……好吧，几天前，我购买的一份名为《黑牛土地契约》的文件消失了……我儿子说他在携带契约时遭到了怪物的袭击。	怀旧服-任务对白#10401	英文对白语境翻译
@@ -4454,7 +4454,7 @@ Hmmm... It definitely is the letter from Dark Lord ... So, you came all the way 
 Construction Site North of Kerning City’s Thief Job Instructor gave me a mission to enter a hidden area, defeat the monsters there, and collect a certain item.	废弃都市北方工地的飞侠转职教官似乎准备好给我测试，证明我是否值得变得更强。废弃都市北方工地的飞侠转职教官给了我一个任务：进入隐藏区域，打倒里面的怪物，并收集指定道具。你通过了废弃都市北方工地飞侠转职教官的测试！	怀旧服-任务说明#20302	GCW同任务代码中文
 After successfully passing Thief Job Instructor’s test, I received k as proof. Now, I should return to Dark Lord in Kerning City, right?	既然我通过了飞侠转职教官的测试，应该已经证明了自己的实力！成功通过飞侠转职教官测试后，我获得了英雄的证明。现在应该回废弃都市找达克鲁了吧？废弃都市的达克鲁热情地欢迎了我，我完成了新的转职，获得了更强大的力量！	怀旧服-任务说明#20303	GCW同任务代码中文
 All right. You've passed the test, and for that, I'll reward you with The Proof of a Hero . Take that item and go back to Kerning City.	好的。你已经通过了考验，为此，我将奖励你《英雄的证明》。拿着那个物品，返回废弃都市。	怀旧服-任务对白#20303	英文对白语境翻译
-At Ellinia, I ran into a fairy that's been busily studying the magic of life. Her name is "Mar" and after taking a look at my pet that's been turned into a doll, she told me she can make it come back alive with Water of Life and Life Scroll. I heard that she knows Cloy of ... since it looks like a pet trainer named Trainer Bartos of knows something about the scroll of life, I should head over there.	在魔法密林，我遇到了一位忙着研究生命魔法的妖精。她名叫“玛尔”。她看了我变成玩偶的宠物后告诉我，只要有生命水和生命卷轴，就能让宠物重新活过来。听说她认识射手村的克洛伊……既然射手村的宠物训练师巴特斯似乎知道生命卷轴的事，我应该去那里看看……我轻松通过了射手村宠物训练师巴特斯的测试，拿到了生命水和生命卷轴，并把它们交给了妖精玛尔。凭借她的魔力和我带来的道具，她把玩偶变回了活生生的宠物。现在我还能和它再相处一段时间了……太好了……	怀旧服-任务说明#80000	GCW同任务代码中文
+"At Ellinia, I ran into a fairy that's been busily studying the magic of life. Her name is ""Mar"" and after taking a look at my pet that's been turned into a doll, she told me she can make it come back alive with Water of Life and Life Scroll. I heard that she knows Cloy of ... since it looks like a pet trainer named Trainer Bartos of knows something about the scroll of life, I should head over there."	在魔法密林，我遇到了一位忙着研究生命魔法的妖精。她名叫“玛尔”。她看了我变成玩偶的宠物后告诉我，只要有生命水和生命卷轴，就能让宠物重新活过来。听说她认识射手村的克洛伊……既然射手村的宠物训练师巴特斯似乎知道生命卷轴的事，我应该去那里看看……我轻松通过了射手村宠物训练师巴特斯的测试，拿到了生命水和生命卷轴，并把它们交给了妖精玛尔。凭借她的魔力和我带来的道具，她把玩偶变回了活生生的宠物。现在我还能和它再相处一段时间了……太好了……	怀旧服-任务说明#80000	GCW同任务代码中文
 Casey, whom I met in , said he knows a way to enjoy myself when I get tired of hunting, and asked me to collect Monster Cards. He said I could easily get them by defeating any of these monsters scattered across Maple World: Blue Snail, Pig, Ribbon Pig, Octopus, Blue Mushroom, Horny Mushroom, Evil Eye, Curse Eye, Lupin, Cold Eye, Lorang, Tortie, Wraith, Drake, Wild Kargo. I should try to gather them when I have the time.	射手村公园的凯西似乎知道在冒险岛世界寻找另一种乐趣的方法。我在射手村公园遇到凯西，他说当我打猎累了时，可以用另一种方式享受冒险，于是让我收集怪物卡片。他说只要打倒散布在冒险岛世界各处的蓝蜗牛、猪、漂漂猪、章鱼、蓝蘑菇、刺蘑菇、独眼兽、风独眼兽、猴子、冰独眼兽、洛朗、乌龟、小幽灵、飞龙、野生卡格等怪物，就能比较容易获得。以后有空应该试着收集。我把要求的道具交给射手村公园的凯西，并收到了记忆卡套组！有了它，就可以随时随地和其他冒险家玩记忆卡小游戏！如果想了解小游戏的更多内容，记得去问凯西。	怀旧服-任务说明#80001	GCW同任务代码中文
 Hey, you! You look like you're worn out from all that hunting. My creed is to live a life of enjoyment! How about it? If you bring me just a few items, I'll exchange them for a mini-game item. What do you say?	嘿，你！你看上去因为打猎而疲惫不堪。我的信条是享受生活！怎么样？如果你给我带来一些物品，我就用它们换取迷你游戏物品。你怎么说？	怀旧服-任务对白#80001	英文对白语境翻译
 Good! But you can't just play a mini-game right away. If you want to play the Match Cards mini-game, you'll need a Set of Match Cards.	好！但你不能立即玩迷你游戏。如果您想玩比赛卡迷你游戏，您将需要一套比赛卡。	怀旧服-任务对白#80001	英文对白语境翻译
@@ -6942,3 +6942,1270 @@ Arwen the Fairy	妖精艾温	怀旧服-NPC#900006	d1e171f1b8bcda60
 Natalie	娜塔莉	怀旧服-NPC#900007	f8e161f1b09becf8
 Lakelis	拉克莉丝	怀旧服-NPC#900008	d87168f87870f873
 Maple Administrator	冒险岛运营员	怀旧服-NPC#9010000	c97979b09cd2c3f8
+CHARACTER STAT	角色属性	怀旧服-界面
+CHARACTER STATS	角色属性	怀旧服-界面
+NAME	名称	怀旧服-界面
+JOB	职业	怀旧服-界面
+FAME	人气	怀旧服-界面
+STR	力量	怀旧服-界面
+DEX	敏捷	怀旧服-界面
+INT	智力	怀旧服-界面
+LUK	运气	怀旧服-界面
+WEAPON DEF.	物理防御力	怀旧服-界面
+WEAPON DEF	物理防御力	怀旧服-界面
+W. DEF	物理防御力	怀旧服-界面
+MAGIC	魔法攻击力	怀旧服-界面
+MAGIC DEF.	魔法防御力	怀旧服-界面
+MAGIC DEF	魔法防御力	怀旧服-界面
+M. DEF	魔法防御力	怀旧服-界面
+EVASION	回避率	怀旧服-界面
+CRIT. RATE	暴击率	怀旧服-界面
+CRIT RATE	暴击率	怀旧服-界面
+CRITICAL RATE	暴击率	怀旧服-界面
+CRIT. DAMAGE	暴击伤害	怀旧服-界面
+CRIT DAMAGE	暴击伤害	怀旧服-界面
+CRITICAL DAMAGE	暴击伤害	怀旧服-界面
+SPEED	移动速度	怀旧服-界面
+JUMP	跳跃力	怀旧服-界面
+MAX HP	最大生命值	怀旧服-界面
+MAX MP	最大魔法值	怀旧服-界面
+ABILITY POINT	能力值点数	怀旧服-界面
+DETAIL	详情	怀旧服-界面
+SKILL INVENTORY	技能栏	怀旧服-界面
+SKILLS	技能	怀旧服-界面
+SKILL POINT	技能点数	怀旧服-界面
+MASTER LEVEL	最高等级	怀旧服-界面
+CURRENT LEVEL	当前等级	怀旧服-界面
+NEXT LEVEL	下一等级	怀旧服-界面
+MAX LEVEL	最高等级	怀旧服-界面
+REQUIRED SKILL	前置技能	怀旧服-界面
+REQUIRED SKILLS	前置技能	怀旧服-界面
+REQUIRED SP	所需技能点	怀旧服-界面
+PASSIVE SKILL	被动技能	怀旧服-界面
+ACTIVE SKILL	主动技能	怀旧服-界面
+SUPPORT SKILL	辅助技能	怀旧服-界面
+COOLDOWN	冷却时间	怀旧服-界面
+DURATION	持续时间	怀旧服-界面
+HP COST	生命值消耗	怀旧服-界面
+MP COST	魔法值消耗	怀旧服-界面
+DAMAGE	伤害	怀旧服-界面
+RANGE	范围	怀旧服-界面
+TARGETS	目标数量	怀旧服-界面
+MASTERY	熟练度	怀旧服-界面
+ATTACK POWER	攻击力	怀旧服-界面
+ATTACK SPEED	攻击速度	怀旧服-界面
+MOVEMENT SPEED	移动速度	怀旧服-界面
+QUEST HELPER	任务助手	怀旧服-界面
+QUEST LOG	任务列表	怀旧服-界面
+QUEST INFO	任务信息	怀旧服-界面
+QUEST SUMMARY	任务概要	怀旧服-界面
+QUEST REQUIREMENTS	任务条件	怀旧服-界面
+QUEST REWARDS	任务奖励	怀旧服-界面
+ITEM INVENTORY	道具背包	怀旧服-界面
+EQUIPMENT INVENTORY	装备背包	怀旧服-界面
+USE INVENTORY	消耗背包	怀旧服-界面
+SET-UP INVENTORY	设置背包	怀旧服-界面
+ETC INVENTORY	其他背包	怀旧服-界面
+EQUIP	装备	怀旧服-界面
+SET-UP	设置	怀旧服-界面
+ETC	其他	怀旧服-界面
+REQ LEV	需要等级	怀旧服-界面
+REQ LEVEL	需要等级	怀旧服-界面
+REQ STR	需要力量	怀旧服-界面
+REQ DEX	需要敏捷	怀旧服-界面
+REQ INT	需要智力	怀旧服-界面
+REQ LUK	需要运气	怀旧服-界面
+WEAPON ATTACK	物理攻击力	怀旧服-界面
+WEAPON DEFENSE	物理防御力	怀旧服-界面
+MAGIC DEFENSE	魔法防御力	怀旧服-界面
+UPGRADES AVAILABLE	可升级次数	怀旧服-界面
+NUMBER OF UPGRADES AVAILABLE	可升级次数	怀旧服-界面
+UNTRADEABLE	不可交易	怀旧服-界面
+ONE-OF-A-KIND ITEM	唯一道具	怀旧服-界面
+CANNOT BE TRADED	无法交易	怀旧服-界面
+FAST	快	怀旧服-界面
+NORMAL	普通	怀旧服-界面
+SLOW	慢	怀旧服-界面
+AVERAGE	普通	怀旧服-界面
+CATEGORY	分类	怀旧服-界面
+CLASS	职业	怀旧服-界面
+COMMON	全职业	怀旧服-界面
+WARRIOR	战士	怀旧服-界面
+MAGICIAN	魔法师	怀旧服-界面
+BOWMAN	弓箭手	怀旧服-界面
+THIEF	飞侠	怀旧服-界面
+BEGINNER	新手	怀旧服-界面
+ALL	全部	怀旧服-界面
+WHISPER	悄悄话	怀旧服-界面
+BUDDY	好友	怀旧服-界面
+ALLIANCE	联盟	怀旧服-界面
+SYSTEM	系统	怀旧服-界面
+NOTICE	公告	怀旧服-界面
+ADD	添加	怀旧服-界面
+DELETE	删除	怀旧服-界面
+INVITE	邀请	怀旧服-界面
+LEAVE	离开	怀旧服-界面
+CREATE	创建	怀旧服-界面
+DISBAND	解散	怀旧服-界面
+SEARCH	搜索	怀旧服-界面
+CHANGE CHANNEL	更换频道	怀旧服-界面
+AUTO	自动	怀旧服-界面
+ONLINE	在线	怀旧服-界面
+OFFLINE	离线	怀旧服-界面
+[Master Level : 3] Hurls snail shells to attack monsters from long distance.	[最高等级：3] 投掷蜗牛壳，从远距离攻击怪物。	怀旧服-技能说明#1000	资料站完整技能说明
+[Master Level : 3]	[最高等级：3]	怀旧服-技能说明#1000	资料站技能说明分段
+Hurls snail shells to attack monsters from long distance.	投掷蜗牛壳，从远距离攻击怪物。	怀旧服-技能说明#1000	资料站技能说明分段
+[Master Level : 3] Enables the user to recover HP constantly for 30 sec.	[最高等级：3] 可在30秒内持续恢复HP。	怀旧服-技能说明#1001	资料站完整技能说明
+[Master Level : 3]	[最高等级：3]	怀旧服-技能说明#1001	资料站技能说明分段
+Enables the user to recover HP constantly for 30 sec.	可在30秒内持续恢复HP。	怀旧服-技能说明#1001	资料站技能说明分段
+[Master Level: 3] Enables the character to move around quickly for a short amount of time.	[最高等级：3] 可在短时间内快速移动。	怀旧服-技能说明#1002	资料站完整技能说明
+[Master Level: 3]	[最高等级：3]	怀旧服-技能说明#1002	资料站技能说明分段
+Enables the character to move around quickly for a short amount of time.	可在短时间内快速移动。	怀旧服-技能说明#1002	资料站技能说明分段
+[Master Level: 15] HP naturally regenerates over time, not just when standing still. Also, HP recovery from items and skills is boosted.	[最高等级：15] HP会随着时间自然恢复，不只是在站立不动时恢复。同时，使用道具和技能恢复HP的效果提升。	怀旧服-技能说明#1000000	资料站完整技能说明
+[Master Level: 15]	[最高等级：15]	怀旧服-技能说明#1000000	资料站技能说明分段
+HP naturally regenerates over time, not just when standing still. Also, HP recovery from items and skills is boosted.	HP会随着时间自然恢复，不只是在站立不动时恢复。同时，使用道具和技能恢复HP的效果提升。	怀旧服-技能说明#1000000	资料站技能说明分段
+[Master Level: 15] Max HP increases. Required Skill: At least Level 3 on Improved HP Recovery#	[最高等级：15] 最大HP增加。前置技能：生命恢复至少3级。	怀旧服-技能说明#1000001	资料站完整技能说明
+[Master Level: 15]	[最高等级：15]	怀旧服-技能说明#1000001	资料站技能说明分段
+Max HP increases.	最大HP增加。	怀旧服-技能说明#1000001	资料站技能说明分段
+Required Skill: At least Level 3 on Improved HP Recovery#	前置技能：生命恢复至少3级。	怀旧服-技能说明#1000001	资料站技能说明分段
+[Master Level: 15] Repeated practice with your weapon has increased your Accuracy and Critical Rate.	[最高等级：15] 通过反复练习武器，命中率和暴击率提升。	怀旧服-技能说明#1000002	资料站完整技能说明
+[Master Level: 15]	[最高等级：15]	怀旧服-技能说明#1000002	资料站技能说明分段
+Repeated practice with your weapon has increased your Accuracy and Critical Rate.	通过反复练习武器，命中率和暴击率提升。	怀旧服-技能说明#1000002	资料站技能说明分段
+[Master Level: 20] Temporarily increases your Weapon Defense. Required Skill: At least Level 3 on Max HP Increase#	[最高等级：20] 暂时提升物理防御力。前置技能：生命强化至少3级。	怀旧服-技能说明#1001000	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#1001000	资料站技能说明分段
+Temporarily increases your Weapon Defense.	暂时提升物理防御力。	怀旧服-技能说明#1001000	资料站技能说明分段
+Required Skill: At least Level 3 on Max HP Increase#	前置技能：生命强化至少3级。	怀旧服-技能说明#1001000	资料站技能说明分段
+[Master Level: 20] Use MP to deliver a killer blow to a single monster with your weapon.	[最高等级：20] 消耗MP，用武器对单个怪物造成强力一击。	怀旧服-技能说明#1001001	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#1001001	资料站技能说明分段
+Use MP to deliver a killer blow to a single monster with your weapon.	消耗MP，用武器对单个怪物造成强力一击。	怀旧服-技能说明#1001001	资料站技能说明分段
+[Master Level: 20] Use HP and MP to attack up to 4 enemies around you with your weapon. Required Skill: At least Level 1 on Power Strike#	[最高等级：20] 消耗HP和MP，用武器攻击周围最多4个敌人。前置技能：强力攻击至少1级。	怀旧服-技能说明#1001002	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#1001002	资料站技能说明分段
+Use HP and MP to attack up to 4 enemies around you with your weapon.	消耗HP和MP，用武器攻击周围最多4个敌人。	怀旧服-技能说明#1001002	资料站技能说明分段
+Required Skill: At least Level 1 on Power Strike#	前置技能：强力攻击至少1级。	怀旧服-技能说明#1001002	资料站技能说明分段
+[Master Level : 20] Increases Sword Mastery and Accuracy. It only applies when a one-handed or two-handed sword is equipped.	[最高等级：20] 提高剑类武器熟练度和命中率。装备单手剑或双手剑时生效。	怀旧服-技能说明#1100000	资料站完整技能说明
+[Master Level : 20]	[最高等级：20]	怀旧服-技能说明#1100000	资料站技能说明分段
+Increases Sword Mastery and Accuracy. It only applies when a one-handed or two-handed sword is equipped.	提高剑类武器熟练度和命中率。装备单手剑或双手剑时生效。	怀旧服-技能说明#1100000	资料站技能说明分段
+[Master Level : 20] Increases Axe Mastery, and attacks have a chance to inflict a bleeding effect on the target when attacking. It only applies when a one-handed or two-handed axe is equipped.	[最高等级：20] 提高斧类武器熟练度，攻击时有概率使目标进入流血状态。装备单手斧或双手斧时生效。	怀旧服-技能说明#1100001	资料站完整技能说明
+[Master Level : 20]	[最高等级：20]	怀旧服-技能说明#1100001	资料站技能说明分段
+Increases Axe Mastery, and attacks have a chance to inflict a bleeding effect on the target when attacking. It only applies when a one-handed or two-handed axe is equipped.	提高斧类武器熟练度，攻击时有概率使目标进入流血状态。装备单手斧或双手斧时生效。	怀旧服-技能说明#1100001	资料站技能说明分段
+[Master Level : 30] While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to up to three enemies. This skill only activates when a one-handed or two-handed sword is equipped. Using the skill activates the effect, and using it again deactivates it. Required Skill : At least Level 3 on Sword Mastery#	[最高等级：30] 效果激活期间，使用攻击技能时有概率发动终极攻击，对最多3个敌人造成高额伤害。仅在装备单手剑或双手剑时发动。再次使用技能可开启或关闭该效果。前置技能：精准剑至少3级。	怀旧服-技能说明#1101000	资料站完整技能说明
+[Master Level : 30]	[最高等级：30]	怀旧服-技能说明#1101000	资料站技能说明分段
+While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to up to three enemies. This skill only activates when a one-handed or two-handed sword is equipped. Using the skill activates the effect, and using it again deactivates it.	效果激活期间，使用攻击技能时有概率发动终极攻击，对最多3个敌人造成高额伤害。仅在装备单手剑或双手剑时发动。再次使用技能可开启或关闭该效果。	怀旧服-技能说明#1101000	资料站技能说明分段
+Required Skill : At least Level 3 on Sword Mastery#	前置技能：精准剑至少3级。	怀旧服-技能说明#1101000	资料站技能说明分段
+[Master Level : 30] While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to up to three enemies. This skill only activates when a one-handed or two-handed axe is equipped. Using the skill activates the effect, and using it again deactivates it. Required Skill : At least Level 3 on Axe Mastery#	[最高等级：30] 效果激活期间，使用攻击技能时有概率发动终极攻击，对最多3个敌人造成高额伤害。仅在装备单手斧或双手斧时发动。再次使用技能可开启或关闭该效果。前置技能：精准斧至少3级。	怀旧服-技能说明#1101001	资料站完整技能说明
+[Master Level : 30]	[最高等级：30]	怀旧服-技能说明#1101001	资料站技能说明分段
+While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to up to three enemies. This skill only activates when a one-handed or two-handed axe is equipped. Using the skill activates the effect, and using it again deactivates it.	效果激活期间，使用攻击技能时有概率发动终极攻击，对最多3个敌人造成高额伤害。仅在装备单手斧或双手斧时发动。再次使用技能可开启或关闭该效果。	怀旧服-技能说明#1101001	资料站技能说明分段
+Required Skill : At least Level 3 on Axe Mastery#	前置技能：精准斧至少3级。	怀旧服-技能说明#1101001	资料站技能说明分段
+[Master Level : 20] Uses HP and MP to temporarily increase the Attack Speed of the equipped sword. It only applies when a one-handed or two-handed sword is equipped. Required Skill : At least Level 5 on Sword Mastery#	[最高等级：20] 消耗HP和MP，暂时提升已装备剑的攻击速度。装备单手剑或双手剑时生效。前置技能：精准剑至少5级。	怀旧服-技能说明#1101002	资料站完整技能说明
+[Master Level : 20]	[最高等级：20]	怀旧服-技能说明#1101002	资料站技能说明分段
+Uses HP and MP to temporarily increase the Attack Speed of the equipped sword. It only applies when a one-handed or two-handed sword is equipped.	消耗HP和MP，暂时提升已装备剑的攻击速度。装备单手剑或双手剑时生效。	怀旧服-技能说明#1101002	资料站技能说明分段
+Required Skill : At least Level 5 on Sword Mastery#	前置技能：精准剑至少5级。	怀旧服-技能说明#1101002	资料站技能说明分段
+[Master Level : 20] Uses HP and MP to temporarily increase the Attack Speed of the equipped axe. It only applies when a one-handed or a two-handed axe is equipped. Required Skill : At least Level 5 on Axe Mastery#	[最高等级：20] 消耗HP和MP，暂时提升已装备斧的攻击速度。装备单手斧或双手斧时生效。前置技能：精准斧至少5级。	怀旧服-技能说明#1101003	资料站完整技能说明
+[Master Level : 20]	[最高等级：20]	怀旧服-技能说明#1101003	资料站技能说明分段
+Uses HP and MP to temporarily increase the Attack Speed of the equipped axe. It only applies when a one-handed or a two-handed axe is equipped.	消耗HP和MP，暂时提升已装备斧的攻击速度。装备单手斧或双手斧时生效。	怀旧服-技能说明#1101003	资料站技能说明分段
+Required Skill : At least Level 5 on Axe Mastery#	前置技能：精准斧至少5级。	怀旧服-技能说明#1101003	资料站技能说明分段
+[Master Level : 30] Temporarily increases the Attack Power of everyone in the party around the area, but also decreases Weapon Def.	[最高等级：30] 暂时提高附近队员的攻击力，但会降低物理防御力。	怀旧服-技能说明#1101004	资料站完整技能说明
+[Master Level : 30]	[最高等级：30]	怀旧服-技能说明#1101004	资料站技能说明分段
+Temporarily increases the Attack Power of everyone in the party around the area, but also decreases Weapon Def.	暂时提高附近队员的攻击力，但会降低物理防御力。	怀旧服-技能说明#1101004	资料站技能说明分段
+[Master Level : 20] Reflects a portion of the physical damage received from enemies. If incoming damage is guarded with a shield, 100% of the damage is reflected instead. However, the reflected damage cannot exceed 10% of the enemy’s Max HP at once. Required Skill : At least Level 3 on Rage#	[最高等级：20] 反弹受到的部分物理伤害。如果用盾牌格挡受到的伤害，则反弹100%的伤害。但一次反弹伤害不能超过敌人最大HP的10%。前置技能：愤怒之火至少3级。	怀旧服-技能说明#1101005	资料站完整技能说明
+[Master Level : 20]	[最高等级：20]	怀旧服-技能说明#1101005	资料站技能说明分段
+Reflects a portion of the physical damage received from enemies. If incoming damage is guarded with a shield, 100% of the damage is reflected instead. However, the reflected damage cannot exceed 10% of the enemy’s Max HP at once.	反弹受到的部分物理伤害。如果用盾牌格挡受到的伤害，则反弹100%的伤害。但一次反弹伤害不能超过敌人最大HP的10%。	怀旧服-技能说明#1101005	资料站技能说明分段
+Required Skill : At least Level 3 on Rage#	前置技能：愤怒之火至少3级。	怀旧服-技能说明#1101005	资料站技能说明分段
+[Master Level : 20] Increases Sword Mastery and Accuracy. It only applies when a one-handed or two-handed sword is equipped.	[最高等级：20] 提高剑类武器熟练度和命中率。装备单手剑或双手剑时生效。	怀旧服-技能说明#1200000	资料站完整技能说明
+[Master Level : 20]	[最高等级：20]	怀旧服-技能说明#1200000	资料站技能说明分段
+Increases Sword Mastery and Accuracy. It only applies when a one-handed or two-handed sword is equipped.	提高剑类武器熟练度和命中率。装备单手剑或双手剑时生效。	怀旧服-技能说明#1200000	资料站技能说明分段
+[Master Level : 20] Increases Blunt Weapon Mastery and Attack Power, with a chance to stun the target when attacking. This skill only applies when a one-handed or two-handed blunt weapon is equipped.	[最高等级：20] 提高钝器熟练度和攻击力，攻击时有概率使目标眩晕。装备单手钝器或双手钝器时生效。	怀旧服-技能说明#1200001	资料站完整技能说明
+[Master Level : 20]	[最高等级：20]	怀旧服-技能说明#1200001	资料站技能说明分段
+Increases Blunt Weapon Mastery and Attack Power, with a chance to stun the target when attacking. This skill only applies when a one-handed or two-handed blunt weapon is equipped.	提高钝器熟练度和攻击力，攻击时有概率使目标眩晕。装备单手钝器或双手钝器时生效。	怀旧服-技能说明#1200001	资料站技能说明分段
+[Master Level : 30] While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to a single enemy. This skill only activates when a one-handed or two-handed sword is equipped. Using the skill activates the effect, and using it again deactivates it. Required Skill : At least Level 3 on Sword Mastery#	[最高等级：30] 效果激活期间，使用攻击技能时有概率发动终极攻击，对单个敌人造成高额伤害。仅在装备单手剑或双手剑时发动。再次使用技能可开启或关闭该效果。前置技能：精准剑至少3级。	怀旧服-技能说明#1201000	资料站完整技能说明
+[Master Level : 30]	[最高等级：30]	怀旧服-技能说明#1201000	资料站技能说明分段
+While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to a single enemy. This skill only activates when a one-handed or two-handed sword is equipped. Using the skill activates the effect, and using it again deactivates it.	效果激活期间，使用攻击技能时有概率发动终极攻击，对单个敌人造成高额伤害。仅在装备单手剑或双手剑时发动。再次使用技能可开启或关闭该效果。	怀旧服-技能说明#1201000	资料站技能说明分段
+Required Skill : At least Level 3 on Sword Mastery#	前置技能：精准剑至少3级。	怀旧服-技能说明#1201000	资料站技能说明分段
+[Master Level : 30] While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to a single enemy. This skill only activates when a one-handed or two-handed blunt weapon is equipped. Using the skill activates the effect, and using it again deactivates it. Required Skill : At least Level 3 on Blunt Weapon Mastery#	[最高等级：30] 效果激活期间，使用攻击技能时有概率发动终极攻击，对单个敌人造成高额伤害。仅在装备单手钝器或双手钝器时发动。再次使用技能可开启或关闭该效果。前置技能：精准钝器至少3级。	怀旧服-技能说明#1201001	资料站完整技能说明
+[Master Level : 30]	[最高等级：30]	怀旧服-技能说明#1201001	资料站技能说明分段
+While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to a single enemy. This skill only activates when a one-handed or two-handed blunt weapon is equipped. Using the skill activates the effect, and using it again deactivates it.	效果激活期间，使用攻击技能时有概率发动终极攻击，对单个敌人造成高额伤害。仅在装备单手钝器或双手钝器时发动。再次使用技能可开启或关闭该效果。	怀旧服-技能说明#1201001	资料站技能说明分段
+Required Skill : At least Level 3 on Blunt Weapon Mastery#	前置技能：精准钝器至少3级。	怀旧服-技能说明#1201001	资料站技能说明分段
+[Master Level : 20] Uses HP and MP to temporarily increase the Attack Speed of the equipped sword. It only applies when a one-handed or two-handed sword is equipped. Required Skill : At least Level 5 on Sword Mastery#	[最高等级：20] 消耗HP和MP，暂时提升已装备剑的攻击速度。装备单手剑或双手剑时生效。前置技能：精准剑至少5级。	怀旧服-技能说明#1201002	资料站完整技能说明
+[Master Level : 20]	[最高等级：20]	怀旧服-技能说明#1201002	资料站技能说明分段
+Uses HP and MP to temporarily increase the Attack Speed of the equipped sword. It only applies when a one-handed or two-handed sword is equipped.	消耗HP和MP，暂时提升已装备剑的攻击速度。装备单手剑或双手剑时生效。	怀旧服-技能说明#1201002	资料站技能说明分段
+Required Skill : At least Level 5 on Sword Mastery#	前置技能：精准剑至少5级。	怀旧服-技能说明#1201002	资料站技能说明分段
+[Master Level : 20] Uses HP and MP to temporarily increase the Attack Speed of the equipped blunt weapon. It only applies when a one-handed or two-handed blunt weapon is equipped. Required Skill : At least Level 5 on Blunt Weapon Mastery#	[最高等级：20] 消耗HP和MP，暂时提升已装备钝器的攻击速度。装备单手钝器或双手钝器时生效。前置技能：精准钝器至少5级。	怀旧服-技能说明#1201003	资料站完整技能说明
+[Master Level : 20]	[最高等级：20]	怀旧服-技能说明#1201003	资料站技能说明分段
+Uses HP and MP to temporarily increase the Attack Speed of the equipped blunt weapon. It only applies when a one-handed or two-handed blunt weapon is equipped.	消耗HP和MP，暂时提升已装备钝器的攻击速度。装备单手钝器或双手钝器时生效。	怀旧服-技能说明#1201003	资料站技能说明分段
+Required Skill : At least Level 5 on Blunt Weapon Mastery#	前置技能：精准钝器至少5级。	怀旧服-技能说明#1201003	资料站技能说明分段
+[Master Level : 30] Use MP to temporarily threaten monsters. Decreases the Movement Speed, Weapon Attack, and Weapon Def. of up to 4 monsters around the area.	[最高等级：30] 消耗MP，暂时威胁怪物。降低周围最多4个怪物的移动速度、物理攻击力和物理防御力。	怀旧服-技能说明#1201004	资料站完整技能说明
+[Master Level : 30]	[最高等级：30]	怀旧服-技能说明#1201004	资料站技能说明分段
+Use MP to temporarily threaten monsters. Decreases the Movement Speed, Weapon Attack, and Weapon Def. of up to 4 monsters around the area.	消耗MP，暂时威胁怪物。降低周围最多4个怪物的移动速度、物理攻击力和物理防御力。	怀旧服-技能说明#1201004	资料站技能说明分段
+[Master Level : 20] Reflects a portion of the physical damage received from enemies. If incoming damage is guarded with a shield, 100% of the damage is reflected instead. However, the reflected damage cannot exceed 10% of the enemy’s Max HP at once. Required Skill : At least Level 3 on Threaten#	[最高等级：20] 反弹受到的部分物理伤害。如果用盾牌格挡受到的伤害，则反弹100%的伤害。但一次反弹伤害不能超过敌人最大HP的10%。前置技能：威胁至少3级。	怀旧服-技能说明#1201005	资料站完整技能说明
+[Master Level : 20]	[最高等级：20]	怀旧服-技能说明#1201005	资料站技能说明分段
+Reflects a portion of the physical damage received from enemies. If incoming damage is guarded with a shield, 100% of the damage is reflected instead. However, the reflected damage cannot exceed 10% of the enemy’s Max HP at once.	反弹受到的部分物理伤害。如果用盾牌格挡受到的伤害，则反弹100%的伤害。但一次反弹伤害不能超过敌人最大HP的10%。	怀旧服-技能说明#1201005	资料站技能说明分段
+Required Skill : At least Level 3 on Threaten#	前置技能：威胁至少3级。	怀旧服-技能说明#1201005	资料站技能说明分段
+[Master Level : 20] Increases Spear Mastery and Avoidability. It only applies when a spear is equipped.	[最高等级：20] 提高枪类武器熟练度和回避率。装备枪时生效。	怀旧服-技能说明#1300000	资料站完整技能说明
+[Master Level : 20]	[最高等级：20]	怀旧服-技能说明#1300000	资料站技能说明分段
+Increases Spear Mastery and Avoidability. It only applies when a spear is equipped.	提高枪类武器熟练度和回避率。装备枪时生效。	怀旧服-技能说明#1300000	资料站技能说明分段
+[Master Level : 20] Increases Polearm Mastery and movement speed. It only applies when a polearm is equipped.	[最高等级：20] 提高矛类武器熟练度和移动速度。装备矛时生效。	怀旧服-技能说明#1300001	资料站完整技能说明
+[Master Level : 20]	[最高等级：20]	怀旧服-技能说明#1300001	资料站技能说明分段
+Increases Polearm Mastery and movement speed. It only applies when a polearm is equipped.	提高矛类武器熟练度和移动速度。装备矛时生效。	怀旧服-技能说明#1300001	资料站技能说明分段
+[Master Level : 30] While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to the enemy and absorbing a portion of the damage dealt as HP. The amount absorbed per activation cannot exceed 25% of the character’s Max HP or the enemy’s Max HP. This skill only activates when a spear is equipped. Using the skill activates the effect, and using it again deactivates it. Required Skill : At least Level 3 on Spear Mastery#	[最高等级：30] 效果激活期间，使用攻击技能时有概率发动终极攻击，对敌人造成高额伤害，并将造成伤害的一部分吸收为HP。每次发动吸收量不能超过角色最大HP或敌人最大HP的25%。仅在装备枪时发动。再次使用技能可开启或关闭该效果。前置技能：精准枪至少3级。	怀旧服-技能说明#1301000	资料站完整技能说明
+[Master Level : 30]	[最高等级：30]	怀旧服-技能说明#1301000	资料站技能说明分段
+While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to the enemy and absorbing a portion of the damage dealt as HP. The amount absorbed per activation cannot exceed 25% of the character’s Max HP or the enemy’s Max HP. This skill only activates when a spear is equipped. Using the skill activates the effect, and using it again deactivates it.	效果激活期间，使用攻击技能时有概率发动终极攻击，对敌人造成高额伤害，并将造成伤害的一部分吸收为HP。每次发动吸收量不能超过角色最大HP或敌人最大HP的25%。仅在装备枪时发动。再次使用技能可开启或关闭该效果。	怀旧服-技能说明#1301000	资料站技能说明分段
+Required Skill : At least Level 3 on Spear Mastery#	前置技能：精准枪至少3级。	怀旧服-技能说明#1301000	资料站技能说明分段
+[Master Level : 30] While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to the enemy and absorbing a portion of the damage dealt as HP. The amount absorbed per activation cannot exceed 25% of the character’s Max HP or the enemy’s Max HP. This skill only activates when a polearm is equipped. Using the skill activates the effect, and using it again deactivates it. Required Skill : At least Level 3 on Polearm Mastery#	[最高等级：30] 效果激活期间，使用攻击技能时有概率发动终极攻击，对敌人造成高额伤害，并将造成伤害的一部分吸收为HP。每次发动吸收量不能超过角色最大HP或敌人最大HP的25%。仅在装备矛时发动。再次使用技能可开启或关闭该效果。前置技能：精准矛至少3级。	怀旧服-技能说明#1301001	资料站完整技能说明
+[Master Level : 30]	[最高等级：30]	怀旧服-技能说明#1301001	资料站技能说明分段
+While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to the enemy and absorbing a portion of the damage dealt as HP. The amount absorbed per activation cannot exceed 25% of the character’s Max HP or the enemy’s Max HP. This skill only activates when a polearm is equipped. Using the skill activates the effect, and using it again deactivates it.	效果激活期间，使用攻击技能时有概率发动终极攻击，对敌人造成高额伤害，并将造成伤害的一部分吸收为HP。每次发动吸收量不能超过角色最大HP或敌人最大HP的25%。仅在装备矛时发动。再次使用技能可开启或关闭该效果。	怀旧服-技能说明#1301001	资料站技能说明分段
+Required Skill : At least Level 3 on Polearm Mastery#	前置技能：精准矛至少3级。	怀旧服-技能说明#1301001	资料站技能说明分段
+[Master Level : 20] Uses HP and MP to temporarily increase the Attack Speed of the equipped spear. It only applies when a spear is equipped. Required Skill : At least Level 5 on Spear Mastery#	[最高等级：20] 消耗HP和MP，暂时提升已装备枪的攻击速度。装备枪时生效。前置技能：精准枪至少5级。	怀旧服-技能说明#1301002	资料站完整技能说明
+[Master Level : 20]	[最高等级：20]	怀旧服-技能说明#1301002	资料站技能说明分段
+Uses HP and MP to temporarily increase the Attack Speed of the equipped spear. It only applies when a spear is equipped.	消耗HP和MP，暂时提升已装备枪的攻击速度。装备枪时生效。	怀旧服-技能说明#1301002	资料站技能说明分段
+Required Skill : At least Level 5 on Spear Mastery#	前置技能：精准枪至少5级。	怀旧服-技能说明#1301002	资料站技能说明分段
+[Master Level : 20] Uses HP and MP to temporarily increase the Attack Speed of the equipped polearm. It only applies when a polearm is equipped. Required Skill : At least Level 5 on Polearm Mastery#	[最高等级：20] 消耗HP和MP，暂时提升已装备矛的攻击速度。装备矛时生效。前置技能：精准矛至少5级。	怀旧服-技能说明#1301003	资料站完整技能说明
+[Master Level : 20]	[最高等级：20]	怀旧服-技能说明#1301003	资料站技能说明分段
+Uses HP and MP to temporarily increase the Attack Speed of the equipped polearm. It only applies when a polearm is equipped.	消耗HP和MP，暂时提升已装备矛的攻击速度。装备矛时生效。	怀旧服-技能说明#1301003	资料站技能说明分段
+Required Skill : At least Level 5 on Polearm Mastery#	前置技能：精准矛至少5级。	怀旧服-技能说明#1301003	资料站技能说明分段
+[Master Level : 30] Temporarily increases the user's Weapon Defense and grants a chance to ignore knockback effects.	[最高等级：30] 暂时提高自身物理防御力，并获得一定概率无视击退效果。	怀旧服-技能说明#1301004	资料站完整技能说明
+[Master Level : 30]	[最高等级：30]	怀旧服-技能说明#1301004	资料站技能说明分段
+Temporarily increases the user's Weapon Defense and grants a chance to ignore knockback effects.	暂时提高自身物理防御力，并获得一定概率无视击退效果。	怀旧服-技能说明#1301004	资料站技能说明分段
+[Master Level : 20] Temporarily increases the Max HP of all party members around the area. Required Skill : At least Level 3 on Iron Will#	[最高等级：20] 暂时提高周围所有队员的最大HP。前置技能：钢铁意志至少3级。	怀旧服-技能说明#1301005	资料站完整技能说明
+[Master Level : 20]	[最高等级：20]	怀旧服-技能说明#1301005	资料站技能说明分段
+Temporarily increases the Max HP of all party members around the area.	暂时提高周围所有队员的最大HP。	怀旧服-技能说明#1301005	资料站技能说明分段
+Required Skill : At least Level 3 on Iron Will#	前置技能：钢铁意志至少3级。	怀旧服-技能说明#1301005	资料站技能说明分段
+[Master Level : 15] The amount of MP that naturally regenerates over time increases. Also, MP recovery from items and skills is boosted.	[最高等级：15] 随着时间自然恢复的MP量增加。同时，使用道具和技能恢复MP的效果提升。	怀旧服-技能说明#2000000	资料站完整技能说明
+[Master Level : 15]	[最高等级：15]	怀旧服-技能说明#2000000	资料站技能说明分段
+The amount of MP that naturally regenerates over time increases. Also, MP recovery from items and skills is boosted.	随着时间自然恢复的MP量增加。同时，使用道具和技能恢复MP的效果提升。	怀旧服-技能说明#2000000	资料站技能说明分段
+[Master Level: 15] Max MP increases. Required Skill: At least Level 3 on Improved MP Recovery#	[最高等级：15] 最大MP增加。前置技能：魔力恢复至少3级。	怀旧服-技能说明#2000001	资料站完整技能说明
+[Master Level: 15]	[最高等级：15]	怀旧服-技能说明#2000001	资料站技能说明分段
+Max MP increases.	最大MP增加。	怀旧服-技能说明#2000001	资料站技能说明分段
+Required Skill: At least Level 3 on Improved MP Recovery#	前置技能：魔力恢复至少3级。	怀旧服-技能说明#2000001	资料站技能说明分段
+[Master Level :15] Replaces a portion of incoming damage with MP instead of HP. If MP reaches 0, all damage is received as HP damage. The effect is activated when used and deactivated when used again.	[最高等级：15] 将受到的部分伤害由MP代替HP承受。MP为0时，所有伤害都由HP承受。使用时开启效果，再次使用时关闭效果。	怀旧服-技能说明#2001000	资料站完整技能说明
+[Master Level :15]	[最高等级：15]	怀旧服-技能说明#2001000	资料站技能说明分段
+Replaces a portion of incoming damage with MP instead of HP. If MP reaches 0, all damage is received as HP damage. The effect is activated when used and deactivated when used again.	将受到的部分伤害由MP代替HP承受。MP为0时，所有伤害都由HP承受。使用时开启效果，再次使用时关闭效果。	怀旧服-技能说明#2001000	资料站技能说明分段
+[Master Level: 20] Temporarily boosts Weapon Def. and Magic Def. by concentrating magic into your armor. Required Skill: At least Level 3 on Magic Guard#	[最高等级：20] 将魔力集中到铠甲上，暂时提高物理防御力和魔法防御力。前置技能：魔法盾至少3级。	怀旧服-技能说明#2001001	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#2001001	资料站技能说明分段
+Temporarily boosts Weapon Def. and Magic Def. by concentrating magic into your armor.	将魔力集中到铠甲上，暂时提高物理防御力和魔法防御力。	怀旧服-技能说明#2001001	资料站技能说明分段
+Required Skill: At least Level 3 on Magic Guard#	前置技能：魔法盾至少3级。	怀旧服-技能说明#2001001	资料站技能说明分段
+[Master Level : 20] Use MP to attack one enemy. The higher the Mastery, the lower the damage variation.	[最高等级：20] 消耗MP攻击1个敌人。熟练度越高，伤害浮动越小。	怀旧服-技能说明#2001002	资料站完整技能说明
+[Master Level : 20]	[最高等级：20]	怀旧服-技能说明#2001002	资料站技能说明分段
+Use MP to attack one enemy. The higher the Mastery, the lower the damage variation.	消耗MP攻击1个敌人。熟练度越高，伤害浮动越小。	怀旧服-技能说明#2001002	资料站技能说明分段
+[Master Level : 20] Use MP to attack an enemy twice. The higher the Mastery, the lower the damage variation. Required Skill : At least Level 1 on Energy Bolt#	[最高等级：20] 消耗MP连续攻击敌人2次。熟练度越高，伤害浮动越小。前置技能：魔法弹至少1级。	怀旧服-技能说明#2001003	资料站完整技能说明
+[Master Level : 20]	[最高等级：20]	怀旧服-技能说明#2001003	资料站技能说明分段
+Use MP to attack an enemy twice. The higher the Mastery, the lower the damage variation.	消耗MP连续攻击敌人2次。熟练度越高，伤害浮动越小。	怀旧服-技能说明#2001003	资料站技能说明分段
+Required Skill : At least Level 1 on Energy Bolt#	前置技能：魔法弹至少1级。	怀旧服-技能说明#2001003	资料站技能说明分段
+[Master Level: 20] Absorbs the enemy's MP when attacking with Magic skills, but only once every 5 seconds. Cannot absorb if the enemy’s MP is 0.	[最高等级：20] 使用魔法技能攻击时吸收敌人的MP，但每5秒只能吸收一次。敌人MP为0时无法吸收。	怀旧服-技能说明#2100000	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#2100000	资料站技能说明分段
+Absorbs the enemy's MP when attacking with Magic skills, but only once every 5 seconds. Cannot absorb if the enemy’s MP is 0.	使用魔法技能攻击时吸收敌人的MP，但每5秒只能吸收一次。敌人MP为0时无法吸收。	怀旧服-技能说明#2100000	资料站技能说明分段
+[Master Level: 20] Meditate for a bit to temporarily increase the Magic Attack of party members around the area. Required Skill : At least Level 3 on MP Eater#	[最高等级：20] 冥想片刻，暂时提高周围队员的魔法攻击力。前置技能：魔力吸收至少3级。	怀旧服-技能说明#2101000	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#2101000	资料站技能说明分段
+Meditate for a bit to temporarily increase the Magic Attack of party members around the area.	冥想片刻，暂时提高周围队员的魔法攻击力。	怀旧服-技能说明#2101000	资料站技能说明分段
+Required Skill : At least Level 3 on MP Eater#	前置技能：魔力吸收至少3级。	怀旧服-技能说明#2101000	资料站技能说明分段
+[Master Level: 20] Use the arrow keys to teleport a set distance within the same map.	[最高等级：20] 使用方向键在同一地图内瞬移一定距离。	怀旧服-技能说明#2101001	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#2101001	资料站技能说明分段
+Use the arrow keys to teleport a set distance within the same map.	使用方向键在同一地图内瞬移一定距离。	怀旧服-技能说明#2101001	资料站技能说明分段
+[Master Level: 20] Temporarily slows down the movement of up to 4 monsters. Cannot be used on the same monsters more than twice in a row. Required Skill : At least Level 5 on Teleport#	[最高等级：20] 暂时降低最多4个怪物的移动速度。不能连续对同一怪物使用超过2次。前置技能：瞬间移动至少5级。	怀旧服-技能说明#2101002	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#2101002	资料站技能说明分段
+Temporarily slows down the movement of up to 4 monsters. Cannot be used on the same monsters more than twice in a row.	暂时降低最多4个怪物的移动速度。不能连续对同一怪物使用超过2次。	怀旧服-技能说明#2101002	资料站技能说明分段
+Required Skill : At least Level 5 on Teleport#	前置技能：瞬间移动至少5级。	怀旧服-技能说明#2101002	资料站技能说明分段
+[Master Level: 30] Creates a fire arrow using magic power and fires it at a single enemy. The enemy hit takes fire-elemental damage and is burned, receiving continuous damage every second for 3 seconds. Deals reduced damage to fire-based enemies and increased damage to ice-based enemies.	[最高等级：30] 用魔法力量生成火焰箭并射向单个敌人。命中的敌人受到火属性伤害并被灼烧，在3秒内每秒受到持续伤害。对火属性敌人伤害降低，对冰属性敌人伤害提高。	怀旧服-技能说明#2101003	资料站完整技能说明
+[Master Level: 30]	[最高等级：30]	怀旧服-技能说明#2101003	资料站技能说明分段
+Creates a fire arrow using magic power and fires it at a single enemy. The enemy hit takes fire-elemental damage and is burned, receiving continuous damage every second for 3 seconds. Deals reduced damage to fire-based enemies and increased damage to ice-based enemies.	用魔法力量生成火焰箭并射向单个敌人。命中的敌人受到火属性伤害并被灼烧，在3秒内每秒受到持续伤害。对火属性敌人伤害降低，对冰属性敌人伤害提高。	怀旧服-技能说明#2101003	资料站技能说明分段
+[Master Level: 30] Creates a poison droplet and fires it at a single enemy. When it hits, the droplet explodes on contact, dealing poison-elemental damage to up to 4 nearby enemies. Enemies hit have a chance to become poisoned for a certain duration.	[最高等级：30] 生成毒液并射向单个敌人。命中后毒液接触爆炸，对附近最多4个敌人造成毒属性伤害。命中的敌人有一定概率在一段时间内中毒。	怀旧服-技能说明#2101004	资料站完整技能说明
+[Master Level: 30]	[最高等级：30]	怀旧服-技能说明#2101004	资料站技能说明分段
+Creates a poison droplet and fires it at a single enemy. When it hits, the droplet explodes on contact, dealing poison-elemental damage to up to 4 nearby enemies.	生成毒液并射向单个敌人。命中后毒液接触爆炸，对附近最多4个敌人造成毒属性伤害。命中的敌人有一定概率在一段时间内中毒。	怀旧服-技能说明#2101004	资料站技能说明分段
+Enemies hit have a chance to become poisoned for a certain duration.	[最高等级：30] 生成毒液并射向单个敌人。命中后毒液接触爆炸，对附近最多4个敌人造成毒属性伤害。命中的敌人有一定概率在一段时间内中毒。	怀旧服-技能说明#2101004	资料站技能说明分段
+[Master Level: 20] Absorbs the enemy's MP when attacking with Magic skills, but only once every 5 seconds. Cannot absorb if the enemy’s MP is 0.	[最高等级：20] 使用魔法技能攻击时吸收敌人的MP，但每5秒只能吸收一次。敌人MP为0时无法吸收。	怀旧服-技能说明#2200000	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#2200000	资料站技能说明分段
+Absorbs the enemy's MP when attacking with Magic skills, but only once every 5 seconds. Cannot absorb if the enemy’s MP is 0.	使用魔法技能攻击时吸收敌人的MP，但每5秒只能吸收一次。敌人MP为0时无法吸收。	怀旧服-技能说明#2200000	资料站技能说明分段
+[Master Level: 20] Meditate for a bit to temporarily increase the Magic Attack of party members around the area. Required Skill : At least Level 3 on MP Eater#	[最高等级：20] 冥想片刻，暂时提高周围队员的魔法攻击力。前置技能：魔力吸收至少3级。	怀旧服-技能说明#2201000	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#2201000	资料站技能说明分段
+Meditate for a bit to temporarily increase the Magic Attack of party members around the area.	冥想片刻，暂时提高周围队员的魔法攻击力。	怀旧服-技能说明#2201000	资料站技能说明分段
+Required Skill : At least Level 3 on MP Eater#	前置技能：魔力吸收至少3级。	怀旧服-技能说明#2201000	资料站技能说明分段
+[Master Level: 20] Use the arrow keys to teleport a set distance within the same map.	[最高等级：20] 使用方向键在同一地图内瞬移一定距离。	怀旧服-技能说明#2201001	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#2201001	资料站技能说明分段
+Use the arrow keys to teleport a set distance within the same map.	使用方向键在同一地图内瞬移一定距离。	怀旧服-技能说明#2201001	资料站技能说明分段
+[Master Level: 20] Temporarily slows down the movement of up to 4 monsters. Cannot be used on the same monsters more than twice in a row. Required Skill : At least Level 5 on Teleport#	[最高等级：20] 暂时降低最多4个怪物的移动速度。不能连续对同一怪物使用超过2次。前置技能：瞬间移动至少5级。	怀旧服-技能说明#2201002	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#2201002	资料站技能说明分段
+Temporarily slows down the movement of up to 4 monsters. Cannot be used on the same monsters more than twice in a row.	暂时降低最多4个怪物的移动速度。不能连续对同一怪物使用超过2次。	怀旧服-技能说明#2201002	资料站技能说明分段
+Required Skill : At least Level 5 on Teleport#	前置技能：瞬间移动至少5级。	怀旧服-技能说明#2201002	资料站技能说明分段
+[Master Level: 30] Attacks a single monster with a sharp piece of ice. dealing ice-elemental damage. All monsters except those strong against ice will be briefly slowed when hit. Deals reduced damage to ice-based enemies and increased damage to fire-based enemies.	[最高等级：30] 用锋利的冰块攻击单个怪物，造成冰属性伤害。除抗冰怪物外，被命中的怪物都会短暂减速。对冰属性敌人伤害降低，对火属性敌人伤害提高。	怀旧服-技能说明#2201003	资料站完整技能说明
+[Master Level: 30]	[最高等级：30]	怀旧服-技能说明#2201003	资料站技能说明分段
+Attacks a single monster with a sharp piece of ice. dealing ice-elemental damage. All monsters except those strong against ice will be briefly slowed when hit. Deals reduced damage to ice-based enemies and increased damage to fire-based enemies.	用锋利的冰块攻击单个怪物，造成冰属性伤害。除抗冰怪物外，被命中的怪物都会短暂减速。对冰属性敌人伤害降低，对火属性敌人伤害提高。	怀旧服-技能说明#2201003	资料站技能说明分段
+[Master Level: 30] Attacks surrounding monsters with a thunderbolt, dealing lightning-elemental damage. All monsters, except those resistant to lightning, have a chance to be stunned by electrocution.	[最高等级：30] 用雷电攻击周围怪物，造成雷属性伤害。除抗雷怪物外，命中的怪物有概率因触电而眩晕。	怀旧服-技能说明#2201004	资料站完整技能说明
+[Master Level: 30]	[最高等级：30]	怀旧服-技能说明#2201004	资料站技能说明分段
+Attacks surrounding monsters with a thunderbolt, dealing lightning-elemental damage. All monsters, except those resistant to lightning, have a chance to be stunned by electrocution.	用雷电攻击周围怪物，造成雷属性伤害。除抗雷怪物外，命中的怪物有概率因触电而眩晕。	怀旧服-技能说明#2201004	资料站技能说明分段
+[Master Level: 20] Absorbs the enemy's MP when attacking with Magic skills, but only once every 5 seconds. Cannot absorb if the enemy’s MP is 0.	[最高等级：20] 使用魔法技能攻击时吸收敌人的MP，但每5秒只能吸收一次。敌人MP为0时无法吸收。	怀旧服-技能说明#2300000	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#2300000	资料站技能说明分段
+Absorbs the enemy's MP when attacking with Magic skills, but only once every 5 seconds. Cannot absorb if the enemy’s MP is 0.	使用魔法技能攻击时吸收敌人的MP，但每5秒只能吸收一次。敌人MP为0时无法吸收。	怀旧服-技能说明#2300000	资料站技能说明分段
+[Master Level: 20] Use the arrow keys to teleport a set distance within the same map.	[最高等级：20] 使用方向键在同一地图内瞬移一定距离。	怀旧服-技能说明#2301000	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#2301000	资料站技能说明分段
+Use the arrow keys to teleport a set distance within the same map.	使用方向键在同一地图内瞬移一定距离。	怀旧服-技能说明#2301000	资料站技能说明分段
+[Master Level: 30] Recovers the HP of all party members around the area. The amount of healing depends on the number of people being healed, and undead monsters around the area will receive damage.	[最高等级：30] 恢复周围所有队员的HP。恢复量取决于被治疗的人数，周围的不死系怪物会受到伤害。	怀旧服-技能说明#2301001	资料站完整技能说明
+[Master Level: 30]	[最高等级：30]	怀旧服-技能说明#2301001	资料站技能说明分段
+Recovers the HP of all party members around the area. The amount of healing depends on the number of people being healed, and undead monsters around the area will receive damage.	恢复周围所有队员的HP。恢复量取决于被治疗的人数，周围的不死系怪物会受到伤害。	怀旧服-技能说明#2301001	资料站技能说明分段
+[Master Level: 20] Reduces physical damage taken for a certain duration, and deals non-elemental magic damage to any monster that takes contact damage from the caster. Required Skill : At least Level 5 on Heal#	[最高等级：20] 在一定时间内减少受到的物理伤害，并对接触施法者造成碰撞伤害的怪物造成无属性魔法伤害。前置技能：群体治愈至少5级。	怀旧服-技能说明#2301002	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#2301002	资料站技能说明分段
+Reduces physical damage taken for a certain duration, and deals non-elemental magic damage to any monster that takes contact damage from the caster.	在一定时间内减少受到的物理伤害，并对接触施法者造成碰撞伤害的怪物造成无属性魔法伤害。	怀旧服-技能说明#2301002	资料站技能说明分段
+Required Skill : At least Level 5 on Heal#	前置技能：群体治愈至少5级。	怀旧服-技能说明#2301002	资料站技能说明分段
+[Master Level: 20] Temporarily increases the Accuracy, Avoidability, and HP recovery from items and skills of all party members around the area. Required Skill : At least Level 5 on Invincible#	[最高等级：20] 暂时提高周围所有队员的命中率、回避率，以及道具和技能的HP恢复效果。前置技能：神之保护至少5级。	怀旧服-技能说明#2301003	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#2301003	资料站技能说明分段
+Temporarily increases the Accuracy, Avoidability, and HP recovery from items and skills of all party members around the area.	暂时提高周围所有队员的命中率、回避率，以及道具和技能的HP恢复效果。	怀旧服-技能说明#2301003	资料站技能说明分段
+Required Skill : At least Level 5 on Invincible#	前置技能：神之保护至少5级。	怀旧服-技能说明#2301003	资料站技能说明分段
+[Master Level: 30] Attacks monsters by firing holy arrows. Very effective against the undead or devil-based monsters.	[最高等级：30] 发射圣箭攻击怪物。对不死系或恶魔系怪物非常有效。	怀旧服-技能说明#2301004	资料站完整技能说明
+[Master Level: 30]	[最高等级：30]	怀旧服-技能说明#2301004	资料站技能说明分段
+Attacks monsters by firing holy arrows. Very effective against the undead or devil-based monsters.	发射圣箭攻击怪物。对不死系或恶魔系怪物非常有效。	怀旧服-技能说明#2301004	资料站技能说明分段
+[Master Level : 15] Increases Critical Rate and Critical Damage.	[最高等级：15] 提高暴击率和暴击伤害。	怀旧服-技能说明#3000000	资料站完整技能说明
+[Master Level : 15]	[最高等级：15]	怀旧服-技能说明#3000000	资料站技能说明分段
+Increases Critical Rate and Critical Damage.	提高暴击率和暴击伤害。	怀旧服-技能说明#3000000	资料站技能说明分段
+[Master Level : 15] Critical hits sever the enemy's tendons, slowing them down. Required Skill : At least Level 3 on Critical Shot#	[最高等级：15] 暴击会切断敌人的筋腱，使其减速。前置技能：强力箭至少3级。	怀旧服-技能说明#3000001	资料站完整技能说明
+[Master Level : 15]	[最高等级：15]	怀旧服-技能说明#3000001	资料站技能说明分段
+Critical hits sever the enemy's tendons, slowing them down.	暴击会切断敌人的筋腱，使其减速。	怀旧服-技能说明#3000001	资料站技能说明分段
+Required Skill : At least Level 3 on Critical Shot#	前置技能：强力箭至少3级。	怀旧服-技能说明#3000001	资料站技能说明分段
+[Master Level: 15] Increases attack range for bows and crossbows.	[最高等级：15] 增加弓和弩的攻击距离。	怀旧服-技能说明#3000002	资料站完整技能说明
+[Master Level: 15]	[最高等级：15]	怀旧服-技能说明#3000002	资料站技能说明分段
+Increases attack range for bows and crossbows.	增加弓和弩的攻击距离。	怀旧服-技能说明#3000002	资料站技能说明分段
+[Master Level : 20] Focus to temporarily increase Accuracy and Avoidability. Required Skill: At least Level 3 on The Eye of Amazon#	[最高等级：20] 集中精神，暂时提高命中率和回避率。前置技能：亚马逊之眼至少3级。	怀旧服-技能说明#3001000	资料站完整技能说明
+[Master Level : 20]	[最高等级：20]	怀旧服-技能说明#3001000	资料站技能说明分段
+Focus to temporarily increase Accuracy and Avoidability.	集中精神，暂时提高命中率和回避率。	怀旧服-技能说明#3001000	资料站技能说明分段
+Required Skill: At least Level 3 on The Eye of Amazon#	前置技能：亚马逊之眼至少3级。	怀旧服-技能说明#3001000	资料站技能说明分段
+[Master Level: 20] Fires an arrow with authority. Applies more damage than usual.	[最高等级：20] 射出强力箭矢，造成比平常更高的伤害。	怀旧服-技能说明#3001001	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#3001001	资料站技能说明分段
+Fires an arrow with authority. Applies more damage than usual.	射出强力箭矢，造成比平常更高的伤害。	怀旧服-技能说明#3001001	资料站技能说明分段
+[Master Level: 20] Fires two arrows at once to attack up to two enemies. Required Skill: At least Level 1 on Arrow Blow#	[最高等级：20] 一次射出两支箭，攻击最多2个敌人。前置技能：断魂箭至少1级。	怀旧服-技能说明#3001002	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#3001002	资料站技能说明分段
+Fires two arrows at once to attack up to two enemies.	一次射出两支箭，攻击最多2个敌人。	怀旧服-技能说明#3001002	资料站技能说明分段
+Required Skill: At least Level 1 on Arrow Blow#	前置技能：断魂箭至少1级。	怀旧服-技能说明#3001002	资料站技能说明分段
+[Master Level: 20] Increases Bow Mastery and Avoidability. This effect only applies when a bow is equipped.	[最高等级：20] 提高弓熟练度和回避率。装备弓时生效。	怀旧服-技能说明#3100000	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#3100000	资料站技能说明分段
+Increases Bow Mastery and Avoidability. This effect only applies when a bow is equipped.	提高弓熟练度和回避率。装备弓时生效。	怀旧服-技能说明#3100000	资料站技能说明分段
+[Master Level: 30] While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to up to three enemies. This skill only activates when a bow is equipped. Using the skill activates the effect, and using it again deactivates it. Required Skill: At least Level 3 on Bow Mastery#	[最高等级：30] 效果激活期间，使用攻击技能时有概率发动终极攻击，对最多3个敌人造成高额伤害。仅在装备弓时发动。再次使用技能可开启或关闭该效果。前置技能：精准弓至少3级。	怀旧服-技能说明#3101000	资料站完整技能说明
+[Master Level: 30]	[最高等级：30]	怀旧服-技能说明#3101000	资料站技能说明分段
+While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to up to three enemies. This skill only activates when a bow is equipped. Using the skill activates the effect, and using it again deactivates it.	效果激活期间，使用攻击技能时有概率发动终极攻击，对最多3个敌人造成高额伤害。仅在装备弓时发动。再次使用技能可开启或关闭该效果。	怀旧服-技能说明#3101000	资料站技能说明分段
+Required Skill: At least Level 3 on Bow Mastery#	前置技能：精准弓至少3级。	怀旧服-技能说明#3101000	资料站技能说明分段
+[Master Level: 20] Uses HP and MP to temporarily increase the Attack Speed of the equipped bow. It only applies when a bow is equipped. Required Skill: At least Level 5 on Bow Mastery#	[最高等级：20] 消耗HP和MP，暂时提升已装备弓的攻击速度。装备弓时生效。前置技能：精准弓至少5级。	怀旧服-技能说明#3101001	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#3101001	资料站技能说明分段
+Uses HP and MP to temporarily increase the Attack Speed of the equipped bow. It only applies when a bow is equipped.	消耗HP和MP，暂时提升已装备弓的攻击速度。装备弓时生效。	怀旧服-技能说明#3101001	资料站技能说明分段
+Required Skill: At least Level 5 on Bow Mastery#	前置技能：精准弓至少5级。	怀旧服-技能说明#3101001	资料站技能说明分段
+[Master Level: 20] Swings the bow widely to push multiple enemies far back. This attack always hits as a critical, and as the level rises, the number of monsters that one can push back with one swing increases.	[最高等级：20] 大幅挥动弓，将多个敌人击退到远处。此攻击必定暴击，技能等级越高，一次挥击可击退的怪物数量越多。	怀旧服-技能说明#3101002	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#3101002	资料站技能说明分段
+Swings the bow widely to push multiple enemies far back. This attack always hits as a critical, and as the level rises, the number of monsters that one can push back with one swing increases.	大幅挥动弓，将多个敌人击退到远处。此攻击必定暴击，技能等级越高，一次挥击可击退的怪物数量越多。	怀旧服-技能说明#3101002	资料站技能说明分段
+[Master Level: 20] Temporarily allows the character to fire bow arrows without using up arrows. Only works with a bow equipped. Required Skill: At least Level 5 on Bow Booster#	[最高等级：20] 暂时使角色射出弓箭时不消耗箭矢。仅在装备弓时生效。前置技能：快速弓至少5级。	怀旧服-技能说明#3101003	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#3101003	资料站技能说明分段
+Temporarily allows the character to fire bow arrows without using up arrows. Only works with a bow equipped.	暂时使角色射出弓箭时不消耗箭矢。仅在装备弓时生效。	怀旧服-技能说明#3101003	资料站技能说明分段
+Required Skill: At least Level 5 on Bow Booster#	前置技能：快速弓至少5级。	怀旧服-技能说明#3101003	资料站技能说明分段
+[Master Level: 30] Fires an arrow with a bomb attached to it. If struck cleanly, the bomb explodes on the enemy, stunning some enemies around with a certain success rate. Can't attack more than 4 at once, and it only works with a bow equipped.	[最高等级：30] 射出带有炸弹的箭矢。若准确命中，炸弹会在敌人身上爆炸，并以一定成功率使周围部分敌人眩晕。一次最多攻击4个敌人，且仅在装备弓时生效。	怀旧服-技能说明#3101004	资料站完整技能说明
+[Master Level: 30]	[最高等级：30]	怀旧服-技能说明#3101004	资料站技能说明分段
+Fires an arrow with a bomb attached to it. If struck cleanly, the bomb explodes on the enemy, stunning some enemies around with a certain success rate. Can't attack more than 4 at once, and it only works with a bow equipped.	射出带有炸弹的箭矢。若准确命中，炸弹会在敌人身上爆炸，并以一定成功率使周围部分敌人眩晕。一次最多攻击4个敌人，且仅在装备弓时生效。	怀旧服-技能说明#3101004	资料站技能说明分段
+[Master Level: 20] Increases Crossbow Mastery and gives a chance to deal damage that ignores the target’s Weapon Def. This effect only applies when a crossbow is equipped.	[最高等级：20] 提高弩熟练度，并有概率造成无视目标物理防御力的伤害。装备弩时生效。	怀旧服-技能说明#3200000	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#3200000	资料站技能说明分段
+Increases Crossbow Mastery and gives a chance to deal damage that ignores the target’s Weapon Def. This effect only applies when a crossbow is equipped.	提高弩熟练度，并有概率造成无视目标物理防御力的伤害。装备弩时生效。	怀旧服-技能说明#3200000	资料站技能说明分段
+[Master Level: 30] While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to a single enemy. This skill only activates when a crossbow is equipped. Using the skill activates the effect, and using it again deactivates it. Required Skill: At least Level 3 on Crossbow Mastery#	[最高等级：30] 效果激活期间，使用攻击技能时有概率发动终极攻击，对单个敌人造成高额伤害。仅在装备弩时发动。再次使用技能可开启或关闭该效果。前置技能：精准弩至少3级。	怀旧服-技能说明#3201000	资料站完整技能说明
+[Master Level: 30]	[最高等级：30]	怀旧服-技能说明#3201000	资料站技能说明分段
+While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to a single enemy. This skill only activates when a crossbow is equipped. Using the skill activates the effect, and using it again deactivates it.	效果激活期间，使用攻击技能时有概率发动终极攻击，对单个敌人造成高额伤害。仅在装备弩时发动。再次使用技能可开启或关闭该效果。	怀旧服-技能说明#3201000	资料站技能说明分段
+Required Skill: At least Level 3 on Crossbow Mastery#	前置技能：精准弩至少3级。	怀旧服-技能说明#3201000	资料站技能说明分段
+[Master Level: 20] Uses HP and MP to temporarily increase the Attack Speed of the equipped crossbow. It only applies when a crossbow is equipped. Required Skill: At least Level 5 on Crossbow Mastery#	[最高等级：20] 消耗HP和MP，暂时提升已装备弩的攻击速度。装备弩时生效。前置技能：精准弩至少5级。	怀旧服-技能说明#3201001	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#3201001	资料站技能说明分段
+Uses HP and MP to temporarily increase the Attack Speed of the equipped crossbow. It only applies when a crossbow is equipped.	消耗HP和MP，暂时提升已装备弩的攻击速度。装备弩时生效。	怀旧服-技能说明#3201001	资料站技能说明分段
+Required Skill: At least Level 5 on Crossbow Mastery#	前置技能：精准弩至少5级。	怀旧服-技能说明#3201001	资料站技能说明分段
+[Master Level: 20] Swings the crossbow widely to push multiple enemies far back. This attack always hits as a critical, and as the level rises, the number of monsters that one can push back with one swing increases.	[最高等级：20] 大幅挥动弩，将多个敌人击退到远处。此攻击必定暴击，技能等级越高，一次挥击可击退的怪物数量越多。	怀旧服-技能说明#3201002	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#3201002	资料站技能说明分段
+Swings the crossbow widely to push multiple enemies far back. This attack always hits as a critical, and as the level rises, the number of monsters that one can push back with one swing increases.	大幅挥动弩，将多个敌人击退到远处。此攻击必定暴击，技能等级越高，一次挥击可击退的怪物数量越多。	怀旧服-技能说明#3201002	资料站技能说明分段
+[Master Level: 20] Temporarily allows the character to fire crossbow arrows without using up arrows. Only works with a crossbow equipped. Required Skill: At least Level 5 on Crossbow Booster#	[最高等级：20] 暂时使角色射出弩箭时不消耗箭矢。仅在装备弩时生效。前置技能：快速弩至少5级。	怀旧服-技能说明#3201003	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#3201003	资料站技能说明分段
+Temporarily allows the character to fire crossbow arrows without using up arrows. Only works with a crossbow equipped.	暂时使角色射出弩箭时不消耗箭矢。仅在装备弩时生效。	怀旧服-技能说明#3201003	资料站技能说明分段
+Required Skill: At least Level 5 on Crossbow Booster#	前置技能：快速弩至少5级。	怀旧服-技能说明#3201003	资料站技能说明分段
+[Master Level: 30] Attacks up to 4 monsters at once with a powerful arrow, which penetrates through them. Damage decreases as the arrow flies through each monster.	[最高等级：30] 用强力箭矢同时攻击最多4个怪物，并贯穿它们。箭矢每穿过一个怪物，伤害都会降低。	怀旧服-技能说明#3201004	资料站完整技能说明
+[Master Level: 30]	[最高等级：30]	怀旧服-技能说明#3201004	资料站技能说明分段
+Attacks up to 4 monsters at once with a powerful arrow, which penetrates through them. Damage decreases as the arrow flies through each monster.	用强力箭矢同时攻击最多4个怪物，并贯穿它们。箭矢每穿过一个怪物，伤害都会降低。	怀旧服-技能说明#3201004	资料站技能说明分段
+[Master Level : 15] Increases Accuracy and Avoidability.	[最高等级：15] 提高命中率和回避率。	怀旧服-技能说明#4000000	资料站完整技能说明
+[Master Level : 15]	[最高等级：15]	怀旧服-技能说明#4000000	资料站技能说明分段
+Increases Accuracy and Avoidability.	提高命中率和回避率。	怀旧服-技能说明#4000000	资料站技能说明分段
+[Master Level: 15] Increases attack range for throwing weapons such as throwing stars & knives. Required Skill: At least Level 3 on Nimble Body#	[最高等级：15] 增加飞镖、飞刀等投掷武器的攻击距离。前置技能：集中术至少3级。	怀旧服-技能说明#4000001	资料站完整技能说明
+[Master Level: 15]	[最高等级：15]	怀旧服-技能说明#4000001	资料站技能说明分段
+Increases attack range for throwing weapons such as throwing stars & knives.	增加飞镖、飞刀等投掷武器的攻击距离。	怀旧服-技能说明#4000001	资料站技能说明分段
+Required Skill: At least Level 3 on Nimble Body#	前置技能：集中术至少3级。	怀旧服-技能说明#4000001	资料站技能说明分段
+"[Master Level: 20] Temporarily decreases the Attack Power and Weapon Def. of an enemy and dissuades it from attacking you. Has no effect on a monster that's already in ""Disorder."""	[最高等级：20] 暂时降低一个敌人的攻击力和物理防御力，并使其不愿攻击你。对已经处于“诅咒术”状态的怪物无效。	怀旧服-技能说明#4001000	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#4001000	资料站技能说明分段
+"Temporarily decreases the Attack Power and Weapon Def. of an enemy and dissuades it from attacking you. Has no effect on a monster that's already in ""Disorder."""	暂时降低一个敌人的攻击力和物理防御力，并使其不愿攻击你。对已经处于“诅咒术”状态的怪物无效。	怀旧服-技能说明#4001000	资料站技能说明分段
+[Master Level : 20] Use MP to hide behind the shadows. Can't be attacked, and can't attack either. The effect is activated when used and deactivated when used again. Required Skill : At least Level 3 on Disorder#	[最高等级：20] 消耗MP隐藏在阴影中。不会受到攻击，也无法攻击。使用时开启效果，再次使用时关闭效果。前置技能：诅咒术至少3级。	怀旧服-技能说明#4001001	资料站完整技能说明
+[Master Level : 20]	[最高等级：20]	怀旧服-技能说明#4001001	资料站技能说明分段
+Use MP to hide behind the shadows. Can't be attacked, and can't attack either. The effect is activated when used and deactivated when used again.	消耗MP隐藏在阴影中。不会受到攻击，也无法攻击。使用时开启效果，再次使用时关闭效果。	怀旧服-技能说明#4001001	资料站技能说明分段
+Required Skill : At least Level 3 on Disorder#	前置技能：诅咒术至少3级。	怀旧服-技能说明#4001001	资料站技能说明分段
+[Master Level: 20] Use MP to quickly stab a monster twice in one turn using a dagger.	[最高等级：20] 消耗MP，用短刀快速连续刺击怪物2次。	怀旧服-技能说明#4001002	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#4001002	资料站技能说明分段
+Use MP to quickly stab a monster twice in one turn using a dagger.	消耗MP，用短刀快速连续刺击怪物2次。	怀旧服-技能说明#4001002	资料站技能说明分段
+[Master Level : 20] Use MP to throw 2 throwing stars and apply damage based on LUK, regardless of the rate of Claw Mastery.	[最高等级：20] 消耗MP投掷2枚飞镖，无视拳套熟练度，以LUK为基础计算伤害。	怀旧服-技能说明#4001003	资料站完整技能说明
+[Master Level : 20]	[最高等级：20]	怀旧服-技能说明#4001003	资料站技能说明分段
+Use MP to throw 2 throwing stars and apply damage based on LUK, regardless of the rate of Claw Mastery.	消耗MP投掷2枚飞镖，无视拳套熟练度，以LUK为基础计算伤害。	怀旧服-技能说明#4001003	资料站技能说明分段
+[Master Level: 20] Increases Claw Mastery and Attack Power, and gives a chance to recover used throwing stars when using throwing star attacks. Only applies when a claw is equipped.	[最高等级：20] 提高拳套熟练度和攻击力，并在使用飞镖攻击时有概率回收已使用的飞镖。装备拳套时生效。	怀旧服-技能说明#4100000	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#4100000	资料站技能说明分段
+Increases Claw Mastery and Attack Power, and gives a chance to recover used throwing stars when using throwing star attacks. Only applies when a claw is equipped.	提高拳套熟练度和攻击力，并在使用飞镖攻击时有概率回收已使用的飞镖。装备拳套时生效。	怀旧服-技能说明#4100000	资料站技能说明分段
+[Master Level: 30] Increases Critical Rate and Critical Damage. Required Skill: At least Level 3 on Claw Mastery#	[最高等级：30] 提高暴击率和暴击伤害。前置技能：精准暗器至少3级。	怀旧服-技能说明#4100001	资料站完整技能说明
+[Master Level: 30]	[最高等级：30]	怀旧服-技能说明#4100001	资料站技能说明分段
+Increases Critical Rate and Critical Damage.	提高暴击率和暴击伤害。	怀旧服-技能说明#4100001	资料站技能说明分段
+Required Skill: At least Level 3 on Claw Mastery#	前置技能：精准暗器至少3级。	怀旧服-技能说明#4100001	资料站技能说明分段
+[Master Level: 20] Recovers additional HP and MP with a certain chance when landing a critical hit. Cannot recover again within 30 seconds after a recovery.	[最高等级：20] 暴击命中时有一定概率额外恢复HP和MP。恢复后30秒内不能再次恢复。	怀旧服-技能说明#4100002	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#4100002	资料站技能说明分段
+Recovers additional HP and MP with a certain chance when landing a critical hit. Cannot recover again within 30 seconds after a recovery.	暴击命中时有一定概率额外恢复HP和MP。恢复后30秒内不能再次恢复。	怀旧服-技能说明#4100002	资料站技能说明分段
+[Master Level: 20] Uses HP and MP to temporarily increase the Attack Speed of the equipped claw. It only applies when the character is equipped with a claw and throwing stars. Required Skill : At least Level 5 on Claw Mastery#	[最高等级：20] 消耗HP和MP，暂时提升已装备拳套的攻击速度。角色装备拳套和飞镖时生效。前置技能：精准暗器至少5级。	怀旧服-技能说明#4101000	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#4101000	资料站技能说明分段
+Uses HP and MP to temporarily increase the Attack Speed of the equipped claw. It only applies when the character is equipped with a claw and throwing stars.	消耗HP和MP，暂时提升已装备拳套的攻击速度。角色装备拳套和飞镖时生效。	怀旧服-技能说明#4101000	资料站技能说明分段
+Required Skill : At least Level 5 on Claw Mastery#	前置技能：精准暗器至少5级。	怀旧服-技能说明#4101000	资料站技能说明分段
+[Master Level: 20] Temporarily increases the speed and jump of all party members around the area.	[最高等级：20] 暂时提高周围所有队员的速度和跳跃力。	怀旧服-技能说明#4101001	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#4101001	资料站技能说明分段
+Temporarily increases the speed and jump of all party members around the area.	暂时提高周围所有队员的速度和跳跃力。	怀旧服-技能说明#4101001	资料站技能说明分段
+[Master Level: 30] Absorbs some of the damage dished out to the enemy as HP. The most one can absorb at once is 25% of the character's Max HP, and can't absorb more than the Max HP of the enemy. Required Skill : At least Level 3 on Critical Recovery#	[最高等级：30] 将对敌人造成的部分伤害吸收为HP。一次最多可吸收角色最大HP的25%，且不能超过敌人的最大HP。前置技能：恢复术至少3级。	怀旧服-技能说明#4101002	资料站完整技能说明
+[Master Level: 30]	[最高等级：30]	怀旧服-技能说明#4101002	资料站技能说明分段
+Absorbs some of the damage dished out to the enemy as HP. The most one can absorb at once is 25% of the character's Max HP, and can't absorb more than the Max HP of the enemy.	将对敌人造成的部分伤害吸收为HP。一次最多可吸收角色最大HP的25%，且不能超过敌人的最大HP。	怀旧服-技能说明#4101002	资料站技能说明分段
+Required Skill : At least Level 3 on Critical Recovery#	前置技能：恢复术至少3级。	怀旧服-技能说明#4101002	资料站技能说明分段
+[Master Level: 20] Increases Dagger Mastery and Critical Rate, with a chance to ignore knockback effects. It only applies when a dagger is equipped.	[最高等级：20] 提高短刀熟练度和暴击率，并有概率无视击退效果。装备短刀时生效。	怀旧服-技能说明#4200000	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#4200000	资料站技能说明分段
+Increases Dagger Mastery and Critical Rate, with a chance to ignore knockback effects. It only applies when a dagger is equipped.	提高短刀熟练度和暴击率，并有概率无视击退效果。装备短刀时生效。	怀旧服-技能说明#4200000	资料站技能说明分段
+[Master Level: 20] Recover HP and MP with a certain chance when evading. Cannot recover again within 30 seconds after a recovery.	[最高等级：20] 回避时有一定概率恢复HP和MP。恢复后30秒内不能再次恢复。	怀旧服-技能说明#4200001	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#4200001	资料站技能说明分段
+Recover HP and MP with a certain chance when evading. Cannot recover again within 30 seconds after a recovery.	回避时有一定概率恢复HP和MP。恢复后30秒内不能再次恢复。	怀旧服-技能说明#4200001	资料站技能说明分段
+[Master Level: 20] Uses HP and MP to temporarily increase the Attack Speed of the equipped dagger. It only applies when a dagger is equipped. Required Skill : At least Level 5 on Dagger Mastery#	[最高等级：20] 消耗HP和MP，暂时提升已装备短刀的攻击速度。装备短刀时生效。前置技能：精准短刀至少5级。	怀旧服-技能说明#4201000	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#4201000	资料站技能说明分段
+Uses HP and MP to temporarily increase the Attack Speed of the equipped dagger. It only applies when a dagger is equipped.	消耗HP和MP，暂时提升已装备短刀的攻击速度。装备短刀时生效。	怀旧服-技能说明#4201000	资料站技能说明分段
+Required Skill : At least Level 5 on Dagger Mastery#	前置技能：精准短刀至少5级。	怀旧服-技能说明#4201000	资料站技能说明分段
+[Master Level: 20] Temporarily increases the speed and jump of all party members around the area.	[最高等级：20] 暂时提高周围所有队员的速度和跳跃力。	怀旧服-技能说明#4201001	资料站完整技能说明
+[Master Level: 20]	[最高等级：20]	怀旧服-技能说明#4201001	资料站技能说明分段
+Temporarily increases the speed and jump of all party members around the area.	暂时提高周围所有队员的速度和跳跃力。	怀旧服-技能说明#4201001	资料站技能说明分段
+[Master Level: 30] Steals one of the monster's items with a given success rate. On success, stuns the enemy for 1.5 seconds and increases Attack Power for 30 seconds. Stealing works only once against the same monster, and can be attempted until successful. Required Skill : At least Level 5 on Haste#	[最高等级：30] 以一定成功率偷取怪物的一件道具。成功时使敌人眩晕1.5秒，并在30秒内提高攻击力。对同一只怪物只能成功偷取一次，成功前可反复尝试。前置技能：轻功至少5级。	怀旧服-技能说明#4201002	资料站完整技能说明
+[Master Level: 30]	[最高等级：30]	怀旧服-技能说明#4201002	资料站技能说明分段
+Steals one of the monster's items with a given success rate. On success, stuns the enemy for 1.5 seconds and increases Attack Power for 30 seconds. Stealing works only once against the same monster, and can be attempted until successful.	以一定成功率偷取怪物的一件道具。成功时使敌人眩晕1.5秒，并在30秒内提高攻击力。对同一只怪物只能成功偷取一次，成功前可反复尝试。	怀旧服-技能说明#4201002	资料站技能说明分段
+Required Skill : At least Level 5 on Haste#	前置技能：轻功至少5级。	怀旧服-技能说明#4201002	资料站技能说明分段
+[Master Level: 30] Use MP to attack an enemy up to 6 times in a row with a dagger.	[最高等级：30] 消耗MP，用短刀连续攻击一个敌人最多6次。	怀旧服-技能说明#4201003	资料站完整技能说明
+[Master Level: 30]	[最高等级：30]	怀旧服-技能说明#4201003	资料站技能说明分段
+Use MP to attack an enemy up to 6 times in a row with a dagger.	消耗MP，用短刀连续攻击一个敌人最多6次。	怀旧服-技能说明#4201003	资料站技能说明分段
+HELPER	任务助手	怀旧服-界面
+ITEM NAME	道具名称	怀旧服-界面
+EQUIPPED	已装备	怀旧服-界面
+UNAVAILABLE	不可用	怀旧服-界面
+REQUIREMENTS	装备条件	怀旧服-界面
+DESCRIPTION	说明	怀旧服-界面
+SELLING PRICE	出售价格	怀旧服-界面
+PURCHASE PRICE	购买价格	怀旧服-界面
+QUANTITY	数量	怀旧服-界面
+TOTAL PRICE	总价	怀旧服-界面
+SLOT	栏位	怀旧服-界面
+AVAILABLE SLOTS	可用栏位	怀旧服-界面
+OWNED	持有数量	怀旧服-界面
+IN STOCK	库存	怀旧服-界面
+LV.	等级	怀旧服-界面
+MENU	菜单	怀旧服-界面
+SHORT CUT	快捷栏	怀旧服-界面
+BEGINNER SKILLS	新手技能	怀旧服-界面
+WARRIOR SKILLS	战士技能	怀旧服-界面
+FIGHTER SKILLS	剑客技能	怀旧服-界面
+PAGE SKILLS	准骑士技能	怀旧服-界面
+SPEARMAN SKILLS	枪战士技能	怀旧服-界面
+CRUSADER SKILLS	勇士技能	怀旧服-界面
+WHITE KNIGHT SKILLS	骑士技能	怀旧服-界面
+DRAGON KNIGHT SKILLS	龙骑士技能	怀旧服-界面
+MAGICIAN SKILLS	魔法师技能	怀旧服-界面
+FIRE/POISON WIZARD SKILLS	火毒法师技能	怀旧服-界面
+ICE/LIGHTNING WIZARD SKILLS	冰雷法师技能	怀旧服-界面
+CLERIC SKILLS	牧师技能	怀旧服-界面
+FIRE/POISON MAGE SKILLS	火毒巫师技能	怀旧服-界面
+ICE/LIGHTNING MAGE SKILLS	冰雷巫师技能	怀旧服-界面
+PRIEST SKILLS	祭司技能	怀旧服-界面
+BOWMAN SKILLS	弓箭手技能	怀旧服-界面
+HUNTER SKILLS	猎人技能	怀旧服-界面
+CROSSBOWMAN SKILLS	弩弓手技能	怀旧服-界面
+RANGER SKILLS	射手技能	怀旧服-界面
+SNIPER SKILLS	游侠技能	怀旧服-界面
+THIEF SKILLS	飞侠技能	怀旧服-界面
+ASSASSIN SKILLS	刺客技能	怀旧服-界面
+BANDIT SKILLS	侠客技能	怀旧服-界面
+HERMIT SKILLS	无影人技能	怀旧服-界面
+CHIEF BANDIT SKILLS	独行客技能	怀旧服-界面
+使用铁板制作的铁头盔。\n\n#c- 防御率：+{defensePower:g}%	使用铁板制作的铁头盔。\n\n#c- 防御率：+{defensePower:g}%	怀旧服-装备说明#1002030	资料站完整物品说明
+可供深渊远征队员使用的帽子。\r\n远征队员佩戴时，该队员的攻击速度提高。	可供深渊远征队员使用的帽子。\r\n远征队员佩戴时，该队员的攻击速度提高。	怀旧服-装备说明#1002053	资料站完整物品说明
+可供深渊远征队员使用的帽子。\r\n远征队员佩戴时，该队员的攻击速度提高。	可供深渊远征队员使用的帽子。\r\n远征队员佩戴时，该队员的攻击速度提高。	怀旧服-装备说明#1002081	资料站完整物品说明
+可供深渊远征队员使用的帽子。\r\n远征队员佩戴时，该队员的攻击速度提高。	可供深渊远征队员使用的帽子。\r\n远征队员佩戴时，该队员的攻击速度提高。	怀旧服-装备说明#1002085	资料站完整物品说明
+可供深渊远征队员使用的帽子。\r\n远征队员佩戴时，该队员的攻击速度提高。	可供深渊远征队员使用的帽子。\r\n远征队员佩戴时，该队员的攻击速度提高。	怀旧服-装备说明#1002092	资料站完整物品说明
+可供深渊远征队员使用的帽子。\r\n远征队员佩戴时，该队员的攻击速度提高。	可供深渊远征队员使用的帽子。\r\n远征队员佩戴时，该队员的攻击速度提高。	怀旧服-装备说明#1002160	资料站完整物品说明
+可供深渊远征队员使用的帽子。\r\n远征队员佩戴时，该队员的攻击速度提高。	可供深渊远征队员使用的帽子。\r\n远征队员佩戴时，该队员的攻击速度提高。	怀旧服-装备说明#1002180	资料站完整物品说明
+由中国冒险岛玩家“以淼”设计的羽毛信使帽.	由中国冒险岛玩家“以淼”设计的羽毛信使帽.	怀旧服-装备说明#1005003	资料站完整物品说明
+不重。	不重。	怀旧服-装备说明#1005005	资料站完整物品说明
+由冒险岛中国玩家温温设计。	由冒险岛中国玩家温温设计。	怀旧服-装备说明#1006007	资料站完整物品说明
+由冒险岛中国玩家温温设计。	由冒险岛中国玩家温温设计。	怀旧服-装备说明#1006008	资料站完整物品说明
+中国冒险岛玩家Criceto设计。	中国冒险岛玩家Criceto设计。	怀旧服-装备说明#1006009	资料站完整物品说明
+Flowing veil that brides wear on their Wedding Day.	婚礼当天新娘佩戴的飘逸头纱。	怀旧服-装备说明#1006010	资料站完整物品说明
+可供深渊远征队员使用的帽子。\r\n远征队员佩戴时，该队员的攻击速度提高。	可供深渊远征队员使用的帽子。\r\n远征队员佩戴时，该队员的攻击速度提高。	怀旧服-装备说明#1007007	资料站完整物品说明
+在#c挑战者世界第3季#达成#c钻石段位#以上，即可获得该奖励。	在#c挑战者世界第3季#达成#c钻石段位#以上，即可获得该奖励。	怀旧服-装备说明#1007008	资料站完整物品说明
+由中国冒险岛玩家以淼设计。	由中国冒险岛玩家以淼设计。	怀旧服-装备说明#1007009	资料站完整物品说明
+由中国冒险岛玩家以淼设计。	由中国冒险岛玩家以淼设计。	怀旧服-装备说明#1007010	资料站完整物品说明
+由中国冒险岛玩家以淼设计。	由中国冒险岛玩家以淼设计。	怀旧服-装备说明#1007011	资料站完整物品说明
+由中国冒险岛玩家以淼设计。	由中国冒险岛玩家以淼设计。	怀旧服-装备说明#1007012	资料站完整物品说明
+#c注意！穿戴尺寸较大的头套形态的帽子时，部分动作的输出顺序可能不自然。#	#c注意！穿戴尺寸较大的头套形态的帽子时，部分动作的输出顺序可能不自然。#	怀旧服-装备说明#1007025	资料站完整物品说明
+由新加坡玩家(Cyrri)设计。	由新加坡玩家(Cyrri)设计。	怀旧服-装备说明#1007043	资料站完整物品说明
+由新加坡玩家(Cyrri)设计。	由新加坡玩家(Cyrri)设计。	怀旧服-装备说明#1007044	资料站完整物品说明
+可供深渊远征队员使用的帽子。\r\n远征队员佩戴时，该队员的攻击速度提高。	可供深渊远征队员使用的帽子。\r\n远征队员佩戴时，该队员的攻击速度提高。	怀旧服-装备说明#1007052	资料站完整物品说明
+可供深渊远征队员使用的帽子。\r\n远征队员佩戴时，该队员的攻击速度提高。	可供深渊远征队员使用的帽子。\r\n远征队员佩戴时，该队员的攻击速度提高。	怀旧服-装备说明#1007054	资料站完整物品说明
+装备后做部分动作时，可以浮在空中。	装备后做部分动作时，可以浮在空中。	怀旧服-装备说明#1007063	资料站完整物品说明
+装备后做部分动作时，可以浮在空中。	装备后做部分动作时，可以浮在空中。	怀旧服-装备说明#1007064	资料站完整物品说明
+由中国冒险岛玩家Criceto设计。	由中国冒险岛玩家Criceto设计。	怀旧服-装备说明#1007088	资料站完整物品说明
+由中国冒险岛玩家火柴设计。	由中国冒险岛玩家火柴设计。	怀旧服-装备说明#1007089	资料站完整物品说明
+由中国冒险岛玩家火柴设计。	由中国冒险岛玩家火柴设计。	怀旧服-装备说明#1007090	资料站完整物品说明
+由中国冒险岛玩家以淼设计。	由中国冒险岛玩家以淼设计。	怀旧服-装备说明#1007091	资料站完整物品说明
+由中国冒险岛玩家以淼设计。	由中国冒险岛玩家以淼设计。	怀旧服-装备说明#1007092	资料站完整物品说明
+由中国冒险岛玩家Criceto设计。	由中国冒险岛玩家Criceto设计。	怀旧服-装备说明#1007093	资料站完整物品说明
+由中国冒险岛玩家Criceto设计。	由中国冒险岛玩家Criceto设计。	怀旧服-装备说明#1007094	资料站完整物品说明
+由中国冒险岛玩家Criceto设计。	由中国冒险岛玩家Criceto设计。	怀旧服-装备说明#1007095	资料站完整物品说明
+由中国冒险岛玩家Criceto设计。	由中国冒险岛玩家Criceto设计。	怀旧服-装备说明#1007096	资料站完整物品说明
+Wear this if you want to make your hat invisible while still using all of the stats it possesses.	想让帽子外观变为透明、同时保留其所有属性时可以佩戴。	怀旧服-装备说明#1007097	资料站完整物品说明
+Wear this if you want to make your face accessory invisible while still using all of the stats it possesses.	想让脸饰外观变为透明、同时保留其所有属性时可以佩戴。	怀旧服-装备说明#1017016	资料站完整物品说明
+Wear this if you want to make your eye accessory invisible while still using all of the stats it possesses.	想让眼饰外观变为透明、同时保留其所有属性时可以佩戴。	怀旧服-装备说明#1027034	资料站完整物品说明
+Wear this if you want to make your earrings invisible while still using all of the stats they possess.	想让耳环外观变为透明、同时保留其所有属性时可以佩戴。	怀旧服-装备说明#1037000	资料站完整物品说明
+透过魔法之力，进化而成为蓝龙！ 冷静聪明的蓝龙，因生命之水干枯而变成了玩偶的状态。需使用特殊的魔法，重新赋予蓝龙生命力。	透过魔法之力，进化而成为蓝龙！ 冷静聪明的蓝龙，因生命之水干枯而变成了玩偶的状态。需使用特殊的魔法，重新赋予蓝龙生命力。	怀旧服-装备说明#1040068	资料站完整物品说明
+If worn inside the hotel sauna, the recovery rate for HP and MP will increase 1.5x.	在宾馆桑拿房内穿着时，HP和MP恢复速度提升至1.5倍。	怀旧服-装备说明#1050010	资料站完整物品说明
+可供深渊远征队员使用的衣服。\r\n远征队员佩戴时，该队员的移动速度增加。	可供深渊远征队员使用的衣服。\r\n远征队员佩戴时，该队员的移动速度增加。	怀旧服-装备说明#1050011	资料站完整物品说明
+可供深渊远征队员使用的衣服。\r\n远征队员佩戴时，该队员的移动速度增加。	可供深渊远征队员使用的衣服。\r\n远征队员佩戴时，该队员的移动速度增加。	怀旧服-装备说明#1050018	资料站完整物品说明
+If worn inside the hotel sauna, the recovery rate of HP and MP will be 1.5x faster.	在宾馆桑拿房内穿着时，HP和MP恢复速度提升至1.5倍。	怀旧服-装备说明#1051004	资料站完整物品说明
+#c答应林中之城的泰素夫的请求后获得的浴袍。#在酒店的桑拿房穿上时，血量和魔量的恢复量为桑拿房恢复量的1.5倍。	#c答应林中之城的泰素夫的请求后获得的浴袍。#在酒店的桑拿房穿上时，血量和魔量的恢复量为桑拿房恢复量的1.5倍。	怀旧服-装备说明#1051017	资料站完整物品说明
+可供深渊远征队员使用的衣服。\r\n远征队员佩戴时，该队员的移动速度增加。	可供深渊远征队员使用的衣服。\r\n远征队员佩戴时，该队员的移动速度增加。	怀旧服-装备说明#1057000	资料站完整物品说明
+可供深渊远征队员使用的衣服。\r\n远征队员佩戴时，该队员的移动速度增加。	可供深渊远征队员使用的衣服。\r\n远征队员佩戴时，该队员的移动速度增加。	怀旧服-装备说明#1057005	资料站完整物品说明
+Caution! Equipping with other items that are not part of the Outfit set may not display the character's image as intended.	注意！若搭配非套装部件的其他道具，角色外观可能无法按预期显示。	怀旧服-装备说明#1057014	资料站完整物品说明
+注意！同时穿戴与下装不属于同一套的装备道具时，角色形象可能会显得不协调。	注意！同时穿戴与下装不属于同一套的装备道具时，角色形象可能会显得不协调。	怀旧服-装备说明#1066021	资料站完整物品说明
+Wear this if you want to make your shoes invisible while still using all of the stats they possess.	想让鞋子外观变为透明、同时保留其所有属性时可以佩戴。	怀旧服-装备说明#1077031	资料站完整物品说明
+不知为何，好像在哪里见过很多次的旧手套。如果戴上这副手套，感觉劳动力可能会增加。\n\n- #c攻击力：+{attackPower:g}\n- 伤害：{damage:g}%\n- 攻击速度：{attackSpeed:g}\n- 攻击目标：{attackCount:g}\n- 怪物计数：{mobCount:g}	不知为何，好像在哪里见过很多次的旧手套。如果戴上这副手套，感觉劳动力可能会增加。\n\n- #c攻击力：+{attackPower:g}\n- 伤害：{damage:g}%\n- 攻击速度：{attackSpeed:g}\n- 攻击目标：{attackCount:g}\n- 怪物计数：{mobCount:g}	怀旧服-装备说明#1082000	资料站完整物品说明
+一个玩具城里制作的玩具勇者套件。	一个玩具城里制作的玩具勇者套件。	怀旧服-装备说明#1087009	资料站完整物品说明
+Wear this if you want to make your gloves invisible while still using all of the stats they possess.	想让手套外观变为透明、同时保留其所有属性时可以佩戴。	怀旧服-装备说明#1087010	资料站完整物品说明
+Gives a chance to block enemy attacks entirely.	有一定几率完全格挡敌人的攻击。	怀旧服-装备说明#1092000	资料站完整物品说明
+Gives a chance to block enemy attacks entirely.	有一定几率完全格挡敌人的攻击。	怀旧服-装备说明#1092001	资料站完整物品说明
+Gives a chance to block enemy attacks entirely.	有一定几率完全格挡敌人的攻击。	怀旧服-装备说明#1092002	资料站完整物品说明
+Gives a chance to block enemy attacks entirely.	有一定几率完全格挡敌人的攻击。	怀旧服-装备说明#1092003	资料站完整物品说明
+Gives a chance to block enemy attacks entirely.	有一定几率完全格挡敌人的攻击。	怀旧服-装备说明#1092004	资料站完整物品说明
+Gives a chance to block enemy attacks entirely.	有一定几率完全格挡敌人的攻击。	怀旧服-装备说明#1092005	资料站完整物品说明
+Gives a chance to block enemy attacks entirely.	有一定几率完全格挡敌人的攻击。	怀旧服-装备说明#1092006	资料站完整物品说明
+Gives a chance to block enemy attacks entirely.	有一定几率完全格挡敌人的攻击。	怀旧服-装备说明#1092007	资料站完整物品说明
+Gives a chance to block enemy attacks entirely.	有一定几率完全格挡敌人的攻击。	怀旧服-装备说明#1092008	资料站完整物品说明
+Gives a chance to block enemy attacks entirely.	有一定几率完全格挡敌人的攻击。	怀旧服-装备说明#1092009	资料站完整物品说明
+Gives a chance to block enemy attacks entirely.	有一定几率完全格挡敌人的攻击。	怀旧服-装备说明#1092010	资料站完整物品说明
+Gives a chance to block enemy attacks entirely.	有一定几率完全格挡敌人的攻击。	怀旧服-装备说明#1092011	资料站完整物品说明
+Gives a chance to block enemy attacks entirely.	有一定几率完全格挡敌人的攻击。	怀旧服-装备说明#1092012	资料站完整物品说明
+Gives a chance to block enemy attacks entirely.	有一定几率完全格挡敌人的攻击。	怀旧服-装备说明#1092013	资料站完整物品说明
+Gives a chance to block enemy attacks entirely.	有一定几率完全格挡敌人的攻击。	怀旧服-装备说明#1092014	资料站完整物品说明
+Gives a chance to block enemy attacks entirely.	有一定几率完全格挡敌人的攻击。	怀旧服-装备说明#1092015	资料站完整物品说明
+Gives a chance to block enemy attacks entirely.	有一定几率完全格挡敌人的攻击。	怀旧服-装备说明#1092016	资料站完整物品说明
+Wear this if you want to make your shield invisible while still using all of the stats they possess.	使盾牌、灵魂手镯、控制器变得透明的透明盾牌。	怀旧服-装备说明#1097000	资料站完整物品说明
+Wear this if you want to make your cape invisible while still using all of the stats it possesses.	想让披风外观变为透明、同时保留其所有属性时可以佩戴。	怀旧服-装备说明#1107008	资料站完整物品说明
+Under the character avatar, the name of the character will be featured in white background and black font.	角色头像下方的角色名会以白色背景、黑色字体显示。	怀旧服-装备说明#1112100	资料站完整物品说明
+Under the character avatar, the name of the character will be featured in blue background and white font.	角色头像下方的角色名会以蓝色背景、白色字体显示。	怀旧服-装备说明#1112101	资料站完整物品说明
+Under the character avatar, the name of the character will be featured in blue background and white font.	角色头像下方的角色名会以蓝色背景、白色字体显示。	怀旧服-装备说明#1112102	资料站完整物品说明
+Under the character avatar, the name of the character will be featured in pink ribbon background and black font.	角色头像下方的角色名会以粉色缎带背景、黑色字体显示。	怀旧服-装备说明#1112103	资料站完整物品说明
+Under the character avatar, the name of the character will be featured in blue ribbon background and black font.	角色头像下方的角色名会以蓝色缎带背景、黑色字体显示。	怀旧服-装备说明#1112104	资料站完整物品说明
+Under the character avatar, the name of the character will be featured in black-skulled background and white font.	角色头像下方的角色名会以黑色骷髅背景、白色字体显示。	怀旧服-装备说明#1112105	资料站完整物品说明
+Under the character avatar, the name of the character will be featured in butterfly background and white font.	角色头像下方的角色名会以蝴蝶背景、白色字体显示。	怀旧服-装备说明#1112106	资料站完整物品说明
+Under the character avatar, the name of the character will be featured in scoreboard background and yellow font.	角色头像下方的角色名会以计分板背景、黄色字体显示。	怀旧服-装备说明#1112107	资料站完整物品说明
+Under the character avatar, the name of the character will be featured in purple background and orange font.\n#cCan be reobtained after Official Launch.#	角色头像下方的角色名会以紫色背景、橙色字体显示。正式开服后可重新获得。	怀旧服-装备说明#1112108	资料站完整物品说明
+While the character chats, the chat bubble is in pink.	角色聊天时，聊天气泡会显示为粉色。	怀旧服-装备说明#1112200	资料站完整物品说明
+When your character chats with others, the text will appear in a chat bubble festooned with tiny pink hearts.	角色与他人聊天时，文字会显示在点缀着粉色小爱心的聊天气泡中。	怀旧服-装备说明#1112201	资料站完整物品说明
+While the character chats, the chat bubble is in blue.	角色聊天时，聊天气泡会显示为蓝色。	怀旧服-装备说明#1112202	资料站完整物品说明
+While the character chats, the chat bubble comes out decorated in pink flowers.	角色聊天时，聊天气泡会以粉色花朵装饰显示。	怀旧服-装备说明#1112203	资料站完整物品说明
+While the character chats, the chat bubble comes out decorated in blue flowers.	角色聊天时，聊天气泡会以蓝色花朵装饰显示。	怀旧服-装备说明#1112204	资料站完整物品说明
+While the character chats, the chat bubble comes out decorated in pink ribbons.	角色聊天时，聊天气泡会以粉色缎带装饰显示。	怀旧服-装备说明#1112205	资料站完整物品说明
+While the character chats, the chat bubble comes out decorated in sky blue ribbons.	角色聊天时，聊天气泡会以天蓝色缎带装饰显示。	怀旧服-装备说明#1112206	资料站完整物品说明
+When your character chats with others, the text will appear in a chat bubble adorned with tiny skulls.	角色与他人聊天时，文字会显示在点缀着小骷髅的聊天气泡中。	怀旧服-装备说明#1112207	资料站完整物品说明
+While the character chats, the chat bubble comes out decorated in blue background and heart-shaped.	角色聊天时，聊天气泡会显示为蓝色背景的心形样式。	怀旧服-装备说明#1112208	资料站完整物品说明
+While the character chats, the chat bubble comes out decorated in glimmering yellow star background and in black font.	角色聊天时，聊天气泡会以闪亮黄色星星背景和黑色字体显示。	怀旧服-装备说明#1112209	资料站完整物品说明
+While the character chats, the chat bubble comes out decorated in glimmering pink star background and in white font.	角色聊天时，聊天气泡会以闪亮粉色星星背景和白色字体显示。	怀旧服-装备说明#1112210	资料站完整物品说明
+While the character chats, the chat bubble comes out decorated in glimmering silver star background and in black font.	角色聊天时，聊天气泡会以闪亮银色星星背景和黑色字体显示。	怀旧服-装备说明#1112211	资料站完整物品说明
+While the character chats, the chat bubble comes out decorated in glimmering yellow star background and in white font.	角色聊天时，聊天气泡会以闪亮黄色星星背景和白色字体显示。	怀旧服-装备说明#1112212	资料站完整物品说明
+While the character chats, the chat bubble comes out decorated in glimmering pink star background and in black font.	角色聊天时，聊天气泡会以闪亮粉色星星背景和黑色字体显示。	怀旧服-装备说明#1112213	资料站完整物品说明
+While the character chats, the chat bubble comes out decorated in glimmering blue star background and in white font.	角色聊天时，聊天气泡会以闪亮蓝色星星背景和白色字体显示。	怀旧服-装备说明#1112214	资料站完整物品说明
+While the character chats, the chat bubble comes out decorated in brown cat background and in black font.	角色聊天时，聊天气泡会以棕色猫咪背景和黑色字体显示。	怀旧服-装备说明#1112215	资料站完整物品说明
+While the character chats, the chat bubble comes out decorated in brown dog printed background and in white font.	角色聊天时，聊天气泡会以棕色狗爪印背景和白色字体显示。	怀旧服-装备说明#1112216	资料站完整物品说明
+While the character chats, the chat bubble comes out decorated in brown teddy bear background and in black font.	角色聊天时，聊天气泡会以棕色泰迪熊背景和黑色字体显示。	怀旧服-装备说明#1112217	资料站完整物品说明
+While the character chats, the chat bubble comes out decorated in scoreboard background and in yellow font.	角色聊天时，聊天气泡会以计分板背景和黄色字体显示。	怀旧服-装备说明#1112218	资料站完整物品说明
+While the character chats, the chat bubble comes out decorated in purple background and in orange font.\n#cCan be reobtained after Official Launch.#	角色聊天时，聊天气泡会以紫色背景和橙色字体显示。正式开服后可重新获得。	怀旧服-装备说明#1112219	资料站完整物品说明
+可装备在所有武器上。	可装备在所有武器上。	怀旧服-装备说明#1302011	资料站完整物品说明
+可装备在所有武器上。	可装备在所有武器上。	怀旧服-装备说明#1332013	资料站完整物品说明
+一把木制的剑.\n\n#c- 攻击力：+{attackPower:g}\n- 伤害：{damage:g}%\n- 攻击速度：{attackSpeed:g}\n- 攻击目标：{attackCount:g}\n- 怪物计数：{mobCount:g}	一把木制的剑.\n\n#c- 攻击力：+{attackPower:g}\n- 伤害：{damage:g}%\n- 攻击速度：{attackSpeed:g}\n- 攻击目标：{attackCount:g}\n- 怪物计数：{mobCount:g}	怀旧服-装备说明#1402000	资料站完整物品说明
+一把铁制的戟。\n\n#c- 攻击力：+{attackPower:g}\n- 伤害：{damage:g}%\n- 攻击速度：{attackSpeed:g}\n- 攻击目标：{attackCount:g}\n- 怪物计数：{mobCount:g}	一把铁制的戟。\n\n#c- 攻击力：+{attackPower:g}\n- 伤害：{damage:g}%\n- 攻击速度：{attackSpeed:g}\n- 攻击目标：{attackCount:g}\n- 怪物计数：{mobCount:g}	怀旧服-装备说明#1432003	资料站完整物品说明
+利用铁板和原木制作的弩弓。\n\n- #c攻击力：+{attackPower:g}\n- 伤害：{damage:g}%\n- 攻击速度：{attackSpeed:g}\n- 攻击目标：{attackCount:g}\n- 怪物计数：{mobCount:g}	利用铁板和原木制作的弩弓。\n\n- #c攻击力：+{attackPower:g}\n- 伤害：{damage:g}%\n- 攻击速度：{attackSpeed:g}\n- 攻击目标：{attackCount:g}\n- 怪物计数：{mobCount:g}	怀旧服-装备说明#1462000	资料站完整物品说明
+Can be equipped over any #cdagger#.	可覆盖装备在任意短刀上。	怀旧服-装备说明#1702000	资料站完整物品说明
+A pretty bouquet that can be equipped over any #cone-handed sword, one-handed axe, one-handed blunt weapon, or dagger#.	一束漂亮的花束，可覆盖装备在任意单手剑、单手斧、单手钝器或短刀上。	怀旧服-装备说明#1702001	资料站完整物品说明
+A toy Wooden Slingshot that can be equipped over any #cbow#.	玩具木制弹弓，可覆盖装备在任意弓上。	怀旧服-装备说明#1702002	资料站完整物品说明
+A toy Plastic Slingshot that can be equipped over any #cbow#.	玩具塑料弹弓，可覆盖装备在任意弓上。	怀旧服-装备说明#1702003	资料站完整物品说明
+A sparkling magic wand that can be equipped over any #cone-handed sword, one-handed axe, one-handed blunt weapon, wand, or staff#.	闪闪发光的魔法棒，可覆盖装备在任意单手剑、单手斧、单手钝器、短杖或长杖上。	怀旧服-装备说明#1702004	资料站完整物品说明
+A yellow candy cane that can be equipped over any #cone-handed sword, one-handed axe, one-handed blunt weapon, wand, or staff#.	黄色拐杖糖，可覆盖装备在任意单手剑、单手斧、单手钝器、短杖或长杖上。	怀旧服-装备说明#1702005	资料站完整物品说明
+A red candy cane that can be equipped over any #cone-handed sword, one-handed axe, one-handed blunt weapon, wand, or staff#.	红色拐杖糖，可覆盖装备在任意单手剑、单手斧、单手钝器、短杖或长杖上。	怀旧服-装备说明#1702006	资料站完整物品说明
+A green candy cane that can be equipped over any #cone-handed sword, one-handed axe, one-handed blunt weapon, wand, or staff#.	绿色拐杖糖，可覆盖装备在任意单手剑、单手斧、单手钝器、短杖或长杖上。	怀旧服-装备说明#1702007	资料站完整物品说明
+A sack full of gifts that can be equipped over any #ctwo-handed axe or two-handed blunt weapon#.	装满礼物的袋子，可覆盖装备在任意双手斧或双手钝器上。	怀旧服-装备说明#1702008	资料站完整物品说明
+These sharp tiger claw gloves can be equipped over any #cclaw#.	锋利的虎爪手套，可覆盖装备在任意拳套上。	怀旧服-装备说明#1702009	资料站完整物品说明
+An orange toy hammer that can be equipped over any #ctwo-handed sword#.	橙色玩具锤，可覆盖装备在任意双手剑上。	怀旧服-装备说明#1702010	资料站完整物品说明
+A magenta toy hammer that can be equipped over any #ctwo-handed sword#.	洋红色玩具锤，可覆盖装备在任意双手剑上。	怀旧服-装备说明#1702011	资料站完整物品说明
+A spatula used for cooking that can be equipped over any #cwand or staff#.	烹饪用锅铲，可覆盖装备在任意短杖或长杖上。	怀旧服-装备说明#1702012	资料站完整物品说明
+An adorable teddy bear. This weapon skin can be equipped over any #cone-handed sword, one-handed axe, one-handed blunt weapon, wand, or staff#.	可爱的泰迪熊。此武器外观可覆盖装备在任意单手剑、单手斧、单手钝器、短杖或长杖上。	怀旧服-装备说明#1702013	资料站完整物品说明
+Can be equipped over any #ccrossbow#.	可覆盖装备在任意弩上。	怀旧服-装备说明#1702014	资料站完整物品说明
+A long Bug Net that can be equipped over any #cspear.#	长长的捕虫网，可覆盖装备在任意枪上。	怀旧服-装备说明#1702015	资料站完整物品说明
+A Picnic Basket, filled with a packed lunch, that can be equipped over any #cdagger.#	装着便当的野餐篮，可覆盖装备在任意短刀上。	怀旧服-装备说明#1702016	资料站完整物品说明
+A pink bunny that goes over any equipped #cclaw#.	粉色兔子玩偶，可覆盖装备在任意拳套上。	怀旧服-装备说明#1702017	资料站完整物品说明
+A delicious-looking Vanilla Ice Cream that can be equipped over any #cdagger, wand, or staff#.	[制作] 这种材料用于在厨神的厨房中制作物品。\n#c冰箱#升到3阶后可从冰箱处获取。	怀旧服-装备说明#1702018	资料站完整物品说明
+A very comfortable looking pillow. This weapon skin can be equipped over any #cone-handed sword, one-handed axe, or one-handed blunt weapon#.	看起来非常舒服的枕头。此武器外观可覆盖装备在任意单手剑、单手斧或单手钝器上。	怀旧服-装备说明#1702019	资料站完整物品说明
+A swirly candy treat. This weapon skin can be equipped over any #cone-handed sword, one-handed axe, one-handed blunt weapon, wand, or staff#.	旋涡形的糖果点心。此武器外观可覆盖装备在任意单手剑、单手斧、单手钝器、短杖或长杖上。	怀旧服-装备说明#1702020	资料站完整物品说明
+Can be equipped over any #cbow#.	可覆盖装备在任意弓上。	怀旧服-装备说明#1702021	资料站完整物品说明
+Can be equipped over any #cbow#.	可覆盖装备在任意弓上。	怀旧服-装备说明#1702022	资料站完整物品说明
+Can be equipped over any #ccrossbow#.	可覆盖装备在任意弩上。	怀旧服-装备说明#1702023	资料站完整物品说明
+A blazing amber saber-style sword. This weapon skin can be equipped over any #cone-handed sword, one-handed axe, one-handed blunt weapon, two-handed sword, two-handed axe, two-handed blunt weapon, wand, or staff#.	燃烧着琥珀色火焰的军刀式剑。此武器外观可覆盖装备在任意单手剑、单手斧、单手钝器、双手剑、双手斧、双手钝器、短杖或长杖上。	怀旧服-装备说明#1702024	资料站完整物品说明
+A warm, freshly-baked donut that goes over any equipped #cclaw#.	温热的新鲜甜甜圈，可覆盖装备在任意拳套上。	怀旧服-装备说明#1702025	资料站完整物品说明
+A cute glove resembling a white rabbit's foot that goes over any equipped #cclaw#.	像白兔脚一样的可爱手套，可覆盖装备在任意拳套上。	怀旧服-装备说明#1702026	资料站完整物品说明
+Only these pets can equip this cute hat: #cBrown Kitty, Black Kitty, Brown Puppy, Pink Bunny, White Bunny, Mini Kargo, Husky, Black Pig, Panda, Dino Boy# and #cDino Girl#.	只有以下宠物可以装备这顶可爱的帽子：褐色小猫、黑色小猫、褐色小狗、粉色兔子、白色兔子、迷你卡戈、哈士奇、黑猪、熊猫、恐龙男孩和恐龙女孩。	怀旧服-装备说明#1802000	资料站完整物品说明
+Only these pets can equip this cute hat: #cBrown Kitty, Black Kitty, Brown Puppy, Pink Bunny, White Bunny, Mini Kargo, Husky, Black Pig, Panda, Dino Boy# and #cDino Girl#.	只有以下宠物可以装备这顶可爱的帽子：褐色小猫、黑色小猫、褐色小狗、粉色兔子、白色兔子、迷你卡戈、哈士奇、黑猪、熊猫、恐龙男孩和恐龙女孩。	怀旧服-装备说明#1802001	资料站完整物品说明
+Only these pets can equip this cute hat: #cBrown Kitty, Black Kitty, Brown Puppy, Pink Bunny, White Bunny, Mini Kargo, Husky, Black Pig, Panda, Dino Boy# and #cDino Girl#.	只有以下宠物可以装备这顶可爱的帽子：褐色小猫、黑色小猫、褐色小狗、粉色兔子、白色兔子、迷你卡戈、哈士奇、黑猪、熊猫、恐龙男孩和恐龙女孩。	怀旧服-装备说明#1802002	资料站完整物品说明
+Only these pets can equip this cute hat: #cBrown Kitty, Black Kitty, Brown Puppy, Pink Bunny, White Bunny, Mini Kargo, Husky, Black Pig, Panda, Dino Boy# and #cDino Girl#.	只有以下宠物可以装备这顶可爱的帽子：褐色小猫、黑色小猫、褐色小狗、粉色兔子、白色兔子、迷你卡戈、哈士奇、黑猪、熊猫、恐龙男孩和恐龙女孩。	怀旧服-装备说明#1802003	资料站完整物品说明
+Only these pets can equip this cute hat: #cBrown Kitty, Black Kitty, Brown Puppy, Pink Bunny, White Bunny, Mini Kargo, Husky, Black Pig, Panda, Dino Boy# and #cDino Girl#.	只有以下宠物可以装备这顶可爱的帽子：褐色小猫、黑色小猫、褐色小狗、粉色兔子、白色兔子、迷你卡戈、哈士奇、黑猪、熊猫、恐龙男孩和恐龙女孩。	怀旧服-装备说明#1802004	资料站完整物品说明
+Only these pets can equip this cute hat: #cBrown Kitty, Black Kitty, Brown Puppy, Pink Bunny, White Bunny, Mini Kargo, Husky, Black Pig, Panda, Dino Boy# and #cDino Girl#.	只有以下宠物可以装备这顶可爱的帽子：褐色小猫、黑色小猫、褐色小狗、粉色兔子、白色兔子、迷你卡戈、哈士奇、黑猪、熊猫、恐龙男孩和恐龙女孩。	怀旧服-装备说明#1802005	资料站完整物品说明
+Only these pets can equip this cute hat: #cBrown Kitty, Black Kitty, Brown Puppy, Pink Bunny, White Bunny, Mini Kargo, Husky, Black Pig, Panda, Dino Boy# and #cDino Girl#.	只有以下宠物可以装备这顶可爱的帽子：褐色小猫、黑色小猫、褐色小狗、粉色兔子、白色兔子、迷你卡戈、哈士奇、黑猪、熊猫、恐龙男孩和恐龙女孩。	怀旧服-装备说明#1802006	资料站完整物品说明
+Only these pets can equip this cute hat: #cBrown Kitty, Black Kitty, Brown Puppy, Pink Bunny, White Bunny, Mini Kargo, Husky, Black Pig, Panda, Dino Boy# and #cDino Girl#.	只有以下宠物可以装备这顶可爱的帽子：褐色小猫、黑色小猫、褐色小狗、粉色兔子、白色兔子、迷你卡戈、哈士奇、黑猪、熊猫、恐龙男孩和恐龙女孩。	怀旧服-装备说明#1802007	资料站完整物品说明
+Only these pets can equip this cute hat: #cBrown Kitty, Black Kitty, Brown Puppy, Pink Bunny, White Bunny, Mini Kargo, Husky, Black Pig, Panda, Dino Boy# and #cDino Girl#.	只有以下宠物可以装备这顶可爱的帽子：褐色小猫、黑色小猫、褐色小狗、粉色兔子、白色兔子、迷你卡戈、哈士奇、黑猪、熊猫、恐龙男孩和恐龙女孩。	怀旧服-装备说明#1802008	资料站完整物品说明
+Only these pets can equip this cute hat: #cBrown Kitty, Black Kitty, Brown Puppy, Pink Bunny, White Bunny, Mini Kargo, Husky, Black Pig, Panda, Dino Boy# and #cDino Girl#.	只有以下宠物可以装备这顶可爱的帽子：褐色小猫、黑色小猫、褐色小狗、粉色兔子、白色兔子、迷你卡戈、哈士奇、黑猪、熊猫、恐龙男孩和恐龙女孩。	怀旧服-装备说明#1802009	资料站完整物品说明
+A potion made out of red herbs. Recovers 100 HP.	由红色草药制成的药水。恢复100 HP。	怀旧服-物品说明#2000000	资料站完整物品说明
+A concentrated potion made out of red herbs.\nRecovers 250 HP.	由红色草药制成的浓缩药水。恢复250 HP。	怀旧服-物品说明#2000001	资料站完整物品说明
+A highly concentrated potion made out of red herbs.\nRecovers 500 HP.	由红色草药制成的高浓缩药水。恢复500 HP。	怀旧服-物品说明#2000002	资料站完整物品说明
+A potion made out of blue herbs. Recovers 200 MP.	由蓝色草药制成的药水。恢复200 MP。	怀旧服-物品说明#2000003	资料站完整物品说明
+A legendary potion.\nRestores 35% of HP and MP, but due to its powerful effect, there is a cooldown before it can be used again.	傳說中的秘藥。\n可恢復約50%的HP，\n並恢復約50%的MP。	怀旧服-物品说明#2000004	资料站完整物品说明
+A legendary potion.\nRestores 100% of HP and MP, but due to its powerful effect, there is a cooldown before it can be used again.	传说中的药水。恢复100%的HP和MP，但由于效果强大，使用后需要等待冷却时间才能再次使用。	怀旧服-物品说明#2000005	资料站完整物品说明
+A legendary potion.\nRestores 50% of MP, but due to its powerful effect, there is a cooldown before it can be used again.	传说中的药水。恢复50%的MP，但由于效果强大，使用后需要等待冷却时间才能再次使用。	怀旧服-物品说明#2000006	资料站完整物品说明
+Increases Attack Power.\nAttack Power +10 for 10 min.	增加攻击力。10分钟内攻击力 +10。	怀旧服-物品说明#2002000	资料站完整物品说明
+Increases Magic Attack.\nMagic Attack +10 for 10 min.	增加魔法攻击力。10分钟内魔法攻击力 +10。	怀旧服-物品说明#2002001	资料站完整物品说明
+Increases Accuracy.\nAccuracy +5 for 10 min.	增加命中率。10分钟内命中率 +5。	怀旧服-物品说明#2002002	资料站完整物品说明
+Increases Avoidability.\nAvoidability +5 for 10 min.	增加回避率。10分钟内回避率 +5。	怀旧服-物品说明#2002003	资料站完整物品说明
+Increases Speed.\nSpeed +8 for 10 min.	增加移动速度。10分钟内移动速度 +8。	怀旧服-物品说明#2002004	资料站完整物品说明
+A set of tools that make weaponcrafting more convenient. Using it increases the amount of crafting skill EXP gained from weaponcrafting by 10% for 15 minutes.	一套让武器制作更方便的工具。使用后，15分钟内通过武器制作获得的制作技能EXP增加10%。	怀旧服-物品说明#2002005	资料站完整物品说明
+A set of tools that make woodcrafting more convenient. Using it increases the amount of crafting skill EXP gained from woodcrafting by 10% for 15 minutes.	一套让木工制作更方便的工具。使用后，15分钟内通过木工制作获得的制作技能EXP增加10%。	怀旧服-物品说明#2002006	资料站完整物品说明
+A set of tools that make smithing more convenient. Using it increases the amount of crafting skill EXP gained from smithing by 10% for 15 minutes.	一套让锻造更方便的工具。使用后，15分钟内通过锻造获得的制作技能EXP增加10%。	怀旧服-物品说明#2002007	资料站完整物品说明
+A set of tools that make leatherworking more convenient. Using it increases the amount of crafting skill EXP gained from leatherworking by 10% for 15 minutes.	一套让皮革制作更方便的工具。使用后，15分钟内通过皮革制作获得的制作技能EXP增加10%。	怀旧服-物品说明#2002008	资料站完整物品说明
+A set of tools that make tailoring more convenient. Using it increases the amount of crafting skill EXP gained from tailoring by 10% for 15 minutes.	一套让裁缝制作更方便的工具。使用后，15分钟内通过裁缝制作获得的制作技能EXP增加10%。	怀旧服-物品说明#2002009	资料站完整物品说明
+A set of tools that make arcforge more convenient. Using it increases the amount of crafting skill EXP gained from arcforge by 10% for 15 minutes.	一套让秘法锻造更方便的工具。使用后，15分钟内通过秘法锻造获得的制作技能EXP增加10%。	怀旧服-物品说明#2002010	资料站完整物品说明
+A ripe, red apple.\nRecovers HP 30.\n\n#cTo eat Roger's Apple, simply double-click on it in your use inventory#.	成熟的红苹果。恢复30 HP。要吃罗杰的苹果，只需在消耗栏中双击它。	怀旧服-物品说明#2010000	资料站完整物品说明
+A red, ripe, and tasty apple.\nRecovers around 40 HP.	又红又熟、味道很好的苹果。恢复约40 HP。	怀旧服-物品说明#2010001	资料站完整物品说明
+A nutritious egg.\nRecovers around 60 HP.	营养丰富的鸡蛋。恢复约60 HP。	怀旧服-物品说明#2010002	资料站完整物品说明
+A tasty-looking meat.\nRecovers around 160 HP.	从市场中买的新鲜鱼肉，#c小鲨鱼#的食物。可以恢复全部饱满度，#c亲密度增加100#	怀旧服-物品说明#2010003	资料站完整物品说明
+A sweet, tasty orange.\nRecovers around 50 MP.	香甜可口的橙子。恢复约50 MP。	怀旧服-物品说明#2010004	资料站完整物品说明
+Very sour.\nRecovers around 150 MP.	[制作] 这种材料用于在厨神的厨房中制作物品。	怀旧服-物品说明#2010005	资料站完整物品说明
+A very ripe watermelon.\nRecovers about 800 HP and 800 MP.	非常成熟的西瓜。恢复约800 HP和800 MP。	怀旧服-物品说明#2010006	资料站完整物品说明
+Sour and crunchy green apple.\nRecovers MP +30.	酸脆的青苹果。恢复30 MP。	怀旧服-物品说明#2010007	资料站完整物品说明
+Drake's blood. \nAttack Power +12 for 5 min.	龙的血。5分钟内攻击力 +12。	怀旧服-物品说明#2012000	资料站完整物品说明
+It's honey, the fairies' favorite.\nAvoidability +10 for 5 min.	妖精最喜欢的蜂蜜。5分钟内回避率 +10。	怀旧服-物品说明#2012001	资料站完整物品说明
+Sap of a thousands-of-years-old tree. \nMagic Attack +12 for 5 min.	千年古树的树液。5分钟内魔法攻击力 +12。	怀旧服-物品说明#2012002	资料站完整物品说明
+Drake's meat.\nWeapon Def. +10 for 5 min.	龙肉。5分钟内物理防御力 +10。	怀旧服-物品说明#2012003	资料站完整物品说明
+Made out of fresh vegetable.\nRecovers 200 MP.	由新鲜蔬菜制成。恢复200 MP。	怀旧服-物品说明#2020000	资料站完整物品说明
+Well-fried chicken.\nRecovers around 120 HP.	[厨神的厨房] 这个物品可以获得评价！把它发送给其他的玩家，然后就等着收到成吨的评价吧！当然，制作人自己不能参加评价。\n#c评价完毕效果 :# 消灭怪物获得经验提升1.5倍，持续1小时。注意，一次只能使用一种药水。	怀旧服-物品说明#2020001	资料站完整物品说明
+A cake full of sweetness. Recovers 100 for both HP and MP.	充满甜味的蛋糕。恢复100 HP和100 MP。	怀旧服-物品说明#2020002	资料站完整物品说明
+A freshly-baked pizza. Recovers 360 HP.	[厨神的厨房] 这个物品可以获得评价！把它发送给其他的玩家，然后就等着收到成吨的评价吧！当然，制作人自己不能参加评价。\n#c评价完毕效果 :# 所有属性+15，物攻+10，魔攻+10，持续1小时。注意，一次只能使用一种药水。	怀旧服-物品说明#2020003	资料站完整物品说明
+A hamburger with bulgogi in it. Recovers 500 HP.	夹着韩式烤肉的汉堡包。恢复400血量。	怀旧服-物品说明#2020004	资料站完整物品说明
+A hotdog with ketchup on it. Recovers 300 HP.	刚刚制作的热狗.\n10分钟之内敏捷提高200.	怀旧服-物品说明#2020005	资料站完整物品说明
+A huge hot dog. Recovers 600 HP.	一只大热狗。回复500血量。	怀旧服-物品说明#2020006	资料站完整物品说明
+Well-dried. Recovers 300 HP.	晒得很干。恢复300 HP。	怀旧服-物品说明#2020007	资料站完整物品说明
+Tastes great, and is quite nutritious. Recovers 800 HP.	味道很好，也很有营养。恢复800 HP。	怀旧服-物品说明#2020008	资料站完整物品说明
+Pure OJ... Recovers 450 MP.	#c萌萌绿水灵#喜欢的新鲜橙汁。可以恢复全部饱腹感，并#c提高100点亲密度#。	怀旧服-物品说明#2020009	资料站完整物品说明
+Used real grapes for this. Recovers 900 MP.	使用真正的葡萄制成。恢复900 MP。	怀旧服-物品说明#2020010	资料站完整物品说明
+A cup ramen with awesome soup.\nRecovers 40% of HP and MP.	汤头超棒的杯面。恢复40%的HP和MP。	怀旧服-物品说明#2020011	资料站完整物品说明
+A tasty ice cream pop.\nRecovers around 1500 HP.	美味的冰棒。恢复约1500 HP。	怀旧服-物品说明#2020012	资料站完整物品说明
+Definitely lets you forget about the hot hot summer. \nRecovers around 1500 MP.	绝对能让你忘记炎热的夏天。恢复约1500 MP。	怀旧服-物品说明#2020013	资料站完整物品说明
+Very clean water.\nRecovers up to 800 MP.	只要一滴纯净之水，就可将已经被污染的水质加以净化。	怀旧服-物品说明#2022000	资料站完整物品说明
+A hot steamy porridge made out of red beans. At an HP-decreasing map, whenever such map damage is dealt, 10 HP will be protected.	用红豆熬成的热腾腾的粥。在会减少HP的地图中，每次受到地图伤害时可保护10 HP。	怀旧服-物品说明#2022001	资料站完整物品说明
+A cold softdrink.\nAttack Power +15 for 5 min.\nAccuracy -5 for 5 min., though.	冰凉的汽水。5分钟内攻击力 +15，但命中率 -5。	怀旧服-物品说明#2022002	资料站完整物品说明
+Well-seasoned eel.\nRecovers 1000 HP.	冒险岛周末集市中，丽娜出售的好吃的烤鳗鱼。可以出售给阿得拉，获得差价收益。	怀旧服-物品说明#2022003	资料站完整物品说明
+How much Meso is in this pouch, anyway?	無法得知內有多少楓幣的小袋子。	怀旧服-物品说明#2028000	资料站完整物品说明
+A Meso Pouch containing 10000 Mesos.	装有10000金币的金币袋。	怀旧服-物品说明#2028001	资料站完整物品说明
+A Meso Pouch containing 50000 Mesos.	装有50000金币的金币袋。	怀旧服-物品说明#2028002	资料站完整物品说明
+Returns you to the nearest town.	返回最近的城镇。	怀旧服-物品说明#2030000	资料站完整物品说明
+Returns you to Lith Harbor.	返回明珠港。	怀旧服-物品说明#2030001	资料站完整物品说明
+Returns you to Ellinia.	返回魔法密林。	怀旧服-物品说明#2030002	资料站完整物品说明
+Returns you to Perion.	返回勇士部落。	怀旧服-物品说明#2030003	资料站完整物品说明
+Returns you to Henesys.	返回射手村。	怀旧服-物品说明#2030004	资料站完整物品说明
+Returns you to the dark Kerning City.	返回阴暗的废弃都市。	怀旧服-物品说明#2030005	资料站完整物品说明
+Returns you to Sleepywood, a quiet and dark forest-town.	返回林中之城，一座安静而阴暗的森林小镇。	怀旧服-物品说明#2030006	资料站完整物品说明
+Returns you to Forgotten Hollow.	返回遗忘幽谷。	怀旧服-物品说明#2030007	资料站完整物品说明
+Improves Accuracy on hats.\nSuccess rate: 100%, Accuracy+1	可提升头盔的命中率。 成功率：100%，命中率+1	怀旧服-物品说明#2040000	资料站完整物品说明
+Improves Accuracy on hats.\nSuccess rate: 60%, Accuracy+2	可提升头盔的命中率。 成功率：60%，命中率+2	怀旧服-物品说明#2040001	资料站完整物品说明
+Improves Accuracy on hats.\nSuccess rate: 10%, Accuracy+3	可提升头盔的命中率。 成功率：10%，命中率+3	怀旧服-物品说明#2040002	资料站完整物品说明
+Improves Accuracy on hats.\nSuccess rate: 10%, Accuracy+5\nIf failed, the item will be destroyed at a 100% rate.	可提升头盔的命中率。 成功率：10%，命中率+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040003	资料站完整物品说明
+Improves Max HP on hats.\nSuccess rate: 100%, Max HP+10	可提升头盔的最大生命值。 成功率：100%，最大生命值+10	怀旧服-物品说明#2040004	资料站完整物品说明
+Improves Max HP on hats.\nSuccess rate: 60%, Max HP+15	可提升头盔的最大生命值。 成功率：60%，最大生命值+15	怀旧服-物品说明#2040005	资料站完整物品说明
+Improves Max HP on hats.\nSuccess rate: 10%, Max HP+20	可提升头盔的最大生命值。 成功率：10%，最大生命值+20	怀旧服-物品说明#2040006	资料站完整物品说明
+Improves Max HP on hats.\nSuccess rate: 10%, Max HP+30\nIf failed, the item will be destroyed at a 100% rate.	可提升头盔的最大生命值。 成功率：10%，最大生命值+30 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040007	资料站完整物品说明
+Improves Max MP on hats.\nSuccess rate: 100%, Max MP+10	可提升头盔的最大魔法值。 成功率：100%，最大魔法值+10	怀旧服-物品说明#2040008	资料站完整物品说明
+Improves Max MP on hats.\nSuccess rate: 60%, Max MP+15	可提升头盔的最大魔法值。 成功率：60%，最大魔法值+15	怀旧服-物品说明#2040009	资料站完整物品说明
+Improves Max MPon hats.\nSuccess rate: 10%, Max MP+20	可提升头盔的最大魔法值。 成功率：10%，最大魔法值+20	怀旧服-物品说明#2040010	资料站完整物品说明
+Improves Max MP on hats.\nSuccess rate: 10%, Max MP+30\nIf failed, the item will be destroyed at a 100% rate.	可提升头盔的最大魔法值。 成功率：10%，最大魔法值+30 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040011	资料站完整物品说明
+Improves Strength on earrings.\nSuccess rate: 100%, STR+1	可提升耳环的力量。 成功率：100%，力量+1	怀旧服-物品说明#2040300	资料站完整物品说明
+Improves Strength on earrings.\nSuccess rate: 60%, STR+2	可提升耳环的力量。 成功率：60%，力量+2	怀旧服-物品说明#2040301	资料站完整物品说明
+Improves Strength on earrings.\nSuccess rate: 10%, STR+3	可提升耳环的力量。 成功率：10%，力量+3	怀旧服-物品说明#2040302	资料站完整物品说明
+Improves Strength on earrings.\nSuccess rate: 10%, STR+5\nIf failed, the item will be destroyed at a 100% rate.	可提升耳环的力量。 成功率：10%，力量+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040303	资料站完整物品说明
+Improves Dexterity on earrings.\nSuccess rate: 100%, DEX+1	可提升耳环的敏捷。 成功率：100%，敏捷+1	怀旧服-物品说明#2040304	资料站完整物品说明
+Improves Dexterity on earrings.\nSuccess rate: 60%, DEX+2	可提升耳环的敏捷。 成功率：60%，敏捷+2	怀旧服-物品说明#2040305	资料站完整物品说明
+Improves Dexterity on earrings.\nSuccess rate: 10%, DEX+3	可提升耳环的敏捷。 成功率：10%，敏捷+3	怀旧服-物品说明#2040306	资料站完整物品说明
+Improves Dexterity on earrings.\nSuccess rate: 10%, DEX+5\nIf failed, the item will be destroyed at a 100% rate.	可提升耳环的敏捷。 成功率：10%，敏捷+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040307	资料站完整物品说明
+Improves Intelligence on earrings.\nSuccess rate: 100%, INT+1	可提升耳环的智力。 成功率：100%，智力+1	怀旧服-物品说明#2040308	资料站完整物品说明
+Improves Intelligence on earrings.\nSuccess rate: 60%, INT+2	可提升耳环的智力。 成功率：60%，智力+2	怀旧服-物品说明#2040309	资料站完整物品说明
+Improves Intelligence on earrings.\nSuccess rate: 10%, INT+3	可提升耳环的智力。 成功率：10%，智力+3	怀旧服-物品说明#2040310	资料站完整物品说明
+Improves Intelligence on earrings.\nSuccess rate: 10%, INT+5\nIf failed, the item will be destroyed at a 100% rate.	可提升耳环的智力。 成功率：10%，智力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040311	资料站完整物品说明
+Improves Luck on earrings.\nSuccess rate: 100%, LUK+1	可提升耳环的幸运。 成功率：100%，幸运+1	怀旧服-物品说明#2040312	资料站完整物品说明
+Improves Luck on earrings.\nSuccess rate: 60%, LUK+2	可提升耳环的幸运。 成功率：60%，幸运+2	怀旧服-物品说明#2040313	资料站完整物品说明
+Improves Luck on earrings.\nSuccess rate: 10%, LUK+3	可提升耳环的幸运。 成功率：10%，幸运+3	怀旧服-物品说明#2040314	资料站完整物品说明
+Improves Luck on earrings.\nSuccess rate: 10%, LUK+5\nIf failed, the item will be destroyed at a 100% rate.	可提升耳环的幸运。 成功率：10%，幸运+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040315	资料站完整物品说明
+Improves Crit. Damage on earrings.\nSuccess rate: 100%, Crit. Damage+1	可提升耳环的暴击伤害。 成功率：100%，暴击伤害+1	怀旧服-物品说明#2040316	资料站完整物品说明
+Improves Crit. Damage on earrings.\nSuccess rate: 60%, Crit. Damage+2	可提升耳环的暴击伤害。 成功率：60%，暴击伤害+2	怀旧服-物品说明#2040317	资料站完整物品说明
+Improves Crit. Damage on earrings.\nSuccess rate: 10%, Crit. Damage+3	可提升耳环的暴击伤害。 成功率：10%，暴击伤害+3	怀旧服-物品说明#2040318	资料站完整物品说明
+Improves Crit. Damage on earrings.\nSuccess rate: 10%, Crit. Damage+5\nIf failed, the item will be destroyed at a 100% rate.	可提升耳环的暴击伤害。 成功率：10%，暴击伤害+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040319	资料站完整物品说明
+Improves Avoidability on earrings.\nSuccess rate: 100%, Avoidability+1	可提升耳环的回避率。 成功率：100%，回避率+1	怀旧服-物品说明#2040320	资料站完整物品说明
+Improves Avoidability on earrings.\nSuccess rate: 60%, Avoidability+2	可提升耳环的回避率。 成功率：60%，回避率+2	怀旧服-物品说明#2040321	资料站完整物品说明
+Improves Avoidability on earrings.\nSuccess rate: 10%, Avoidability+3	可提升耳环的回避率。 成功率：10%，回避率+3	怀旧服-物品说明#2040322	资料站完整物品说明
+Improves Avoidability on earrings.\nSuccess rate: 10%, Avoidability+5\nIf failed, the item will be destroyed at a 100% rate.	可提升耳环的回避率。 成功率：10%，回避率+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040323	资料站完整物品说明
+Improves Defense on topwear.\nSuccess rate: 100%, Weapon Def.+2	可提升上衣的防御力。 成功率：100%，物理防御力+2	怀旧服-物品说明#2040400	资料站完整物品说明
+Improves Defense on topwear.\nSuccess rate: 60%, Weapon Def.+3, Magic Def.+1	可提升上衣的防御力。 成功率：60%，物理防御力+3，魔法防御力+1	怀旧服-物品说明#2040401	资料站完整物品说明
+Improves Defense on topwear.\nSuccess rate: 10%, Weapon Def.+5, Magic Def.+3	可提升上衣的防御力。 成功率：10%，物理防御力+5，魔法防御力+3	怀旧服-物品说明#2040402	资料站完整物品说明
+Improves Defense on topwear.\nSuccess rate: 10%, Weapon Def.+7, Magic Def.+5\nIf failed, the item will be destroyed at a 100% rate.	可提升上衣的防御力。 成功率：10%，物理防御力+7，魔法防御力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040403	资料站完整物品说明
+Improves Max HP on topwear.\nSuccess rate: 100%, Max HP+10	可提升上衣的最大生命值。 成功率：100%，最大生命值+10	怀旧服-物品说明#2040404	资料站完整物品说明
+Improves Max HP on topwear.\nSuccess rate: 60%, Max HP+15	可提升上衣的最大生命值。 成功率：60%，最大生命值+15	怀旧服-物品说明#2040405	资料站完整物品说明
+Improves Max HP on topwear.\nSuccess rate: 10%, Max HP+20	可提升上衣的最大生命值。 成功率：10%，最大生命值+20	怀旧服-物品说明#2040406	资料站完整物品说明
+Improves Max HP on topwear.\nSuccess rate: 10%, Max HP+30\nIf failed, the item will be destroyed at a 100% rate.	可提升上衣的最大生命值。 成功率：10%，最大生命值+30 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040407	资料站完整物品说明
+Improves Max MP on topwear.\nSuccess rate: 100%, Max MP+10	可提升上衣的最大魔法值。 成功率：100%，最大魔法值+10	怀旧服-物品说明#2040408	资料站完整物品说明
+Improves Max MP on topwear.\nSuccess rate: 60%, Max MP+15	可提升上衣的最大魔法值。 成功率：60%，最大魔法值+15	怀旧服-物品说明#2040409	资料站完整物品说明
+Improves Max MP on topwear.\nSuccess rate: 10%, Max MP+20	可提升上衣的最大魔法值。 成功率：10%，最大魔法值+20	怀旧服-物品说明#2040410	资料站完整物品说明
+Improves Max MP on topwear.\nSuccess rate: 10%, Max MP+30\nIf failed, the item will be destroyed at a 100% rate.	可提升上衣的最大魔法值。 成功率：10%，最大魔法值+30 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040411	资料站完整物品说明
+Improves Defense on overalls.\nSuccess rate: 100%, Weapon Def.+2	可提升套服的防御力。 成功率：100%，物理防御力+2	怀旧服-物品说明#2040500	资料站完整物品说明
+Improves Defense on overalls.\nSuccess rate: 60%, Weapon Def.+3, Magic Def.+1	可提升套服的防御力。 成功率：60%，物理防御力+3，魔法防御力+1	怀旧服-物品说明#2040501	资料站完整物品说明
+Improves Defense on overalls.\nSuccess rate: 10%, Weapon Def.+5, Magic Def.+3	可提升套服的防御力。 成功率：10%，物理防御力+5，魔法防御力+3	怀旧服-物品说明#2040502	资料站完整物品说明
+Improves Defense on overalls.\nSuccess rate: 10%, Weapon Def.+7, Magic Def.+5\nIf failed, the item will be destroyed at a 100% rate.	可提升套服的防御力。 成功率：10%，物理防御力+7，魔法防御力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040503	资料站完整物品说明
+Improves Strength on overalls.\nSuccess rate: 100%, STR+1	可提升套服的力量。 成功率：100%，力量+1	怀旧服-物品说明#2040504	资料站完整物品说明
+Improves Strength on overalls.\nSuccess rate: 60%, STR+2	可提升套服的力量。 成功率：60%，力量+2	怀旧服-物品说明#2040505	资料站完整物品说明
+Improves Strength on overalls.\nSuccess rate: 10%, STR+3	可提升套服的力量。 成功率：10%，力量+3	怀旧服-物品说明#2040506	资料站完整物品说明
+Improves Strength on overalls.\nSuccess rate: 10%, STR+5\nIf failed, the item will be destroyed at a 100% rate.	可提升套服的力量。 成功率：10%，力量+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040507	资料站完整物品说明
+Improves Dexterity on overalls.\nSuccess rate: 100%, DEX+1	可提升套服的敏捷。 成功率：100%，敏捷+1	怀旧服-物品说明#2040508	资料站完整物品说明
+Improves Dexterity on overalls.\nSuccess rate: 60%, DEX+2	可提升套服的敏捷。 成功率：60%，敏捷+2	怀旧服-物品说明#2040509	资料站完整物品说明
+Improves Dexterity on overalls.\nSuccess rate: 10%, DEX+3	可提升套服的敏捷。 成功率：10%，敏捷+3	怀旧服-物品说明#2040510	资料站完整物品说明
+Improves Dexterity on overalls.\nSuccess rate: 10%, DEX+5\nIf failed, the item will be destroyed at a 100% rate.	可提升套服的敏捷。 成功率：10%，敏捷+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040511	资料站完整物品说明
+Improves Intelligence on overalls.\nSuccess rate: 100%, INT+1	可提升套服的智力。 成功率：100%，智力+1	怀旧服-物品说明#2040512	资料站完整物品说明
+Improves Intelligence on overalls.\nSuccess rate: 60%, INT+2	可提升套服的智力。 成功率：60%，智力+2	怀旧服-物品说明#2040513	资料站完整物品说明
+Improves Intelligence on overalls.\nSuccess rate: 10%, INT+3	可提升套服的智力。 成功率：10%，智力+3	怀旧服-物品说明#2040514	资料站完整物品说明
+Improves Intelligence on overalls.\nSuccess rate: 10%, INT+5\nIf failed, the item will be destroyed at a 100% rate.	可提升套服的智力。 成功率：10%，智力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040515	资料站完整物品说明
+Improves Luck on overalls.\nSuccess rate: 100%, LUK+1	可提升套服的幸运。 成功率：100%，幸运+1	怀旧服-物品说明#2040516	资料站完整物品说明
+Improves Luck on overalls.\nSuccess rate: 60%, LUK+2	可提升套服的幸运。 成功率：60%，幸运+2	怀旧服-物品说明#2040517	资料站完整物品说明
+Improves Luck on overalls.\nSuccess rate: 10%, LUK+3	可提升套服的幸运。 成功率：10%，幸运+3	怀旧服-物品说明#2040518	资料站完整物品说明
+Improves Luck on overalls.\nSuccess rate: 10%, LUK+5\nIf failed, the item will be destroyed at a 100% rate.	可提升套服的幸运。 成功率：10%，幸运+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040519	资料站完整物品说明
+Improves Defense on bottomwear.\nSuccess rate: 100%, Weapon Def.+2	可提升下装的防御力。 成功率：100%，物理防御力+2	怀旧服-物品说明#2040600	资料站完整物品说明
+Improves Defense on bottomwear.\nSuccess rate: 60%, Weapon Def.+3, Magic Def.+1	可提升下装的防御力。 成功率：60%，物理防御力+3，魔法防御力+1	怀旧服-物品说明#2040601	资料站完整物品说明
+Improves Defense on bottomwear.\nSuccess rate: 10%, Weapon Def.+5, Magic Def.+3	可提升下装的防御力。 成功率：10%，物理防御力+5，魔法防御力+3	怀旧服-物品说明#2040602	资料站完整物品说明
+Improves Defense on bottomwear.\nSuccess rate: 10%, Weapon Def.+7, Magic Def.+5\nIf failed, the item will be destroyed at a 100% rate.	可提升下装的防御力。 成功率：10%，物理防御力+7，魔法防御力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040603	资料站完整物品说明
+Improves Max HP on bottomwear.\nSuccess rate: 100%, Max HP+10	可提升下装的最大生命值。 成功率：100%，最大生命值+10	怀旧服-物品说明#2040604	资料站完整物品说明
+Improves Max HP on bottomwear.\nSuccess rate: 60%, Max HP+15	可提升下装的最大生命值。 成功率：60%，最大生命值+15	怀旧服-物品说明#2040605	资料站完整物品说明
+Improves Max HP on bottomwear.\nSuccess rate: 10%, Max HP+20	可提升下装的最大生命值。 成功率：10%，最大生命值+20	怀旧服-物品说明#2040606	资料站完整物品说明
+Improves Max HP on bottomwear.\nSuccess rate: 10%, Max HP+30\nIf failed, the item will be destroyed at a 100% rate.	可提升下装的最大生命值。 成功率：10%，最大生命值+30 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040607	资料站完整物品说明
+Improves Max MP on bottomwear.\nSuccess rate: 100%, Max MP+10	可提升下装的最大魔法值。 成功率：100%，最大魔法值+10	怀旧服-物品说明#2040608	资料站完整物品说明
+Improves Max MP on bottomwear.\nSuccess rate: 60%, Max MP+15	可提升下装的最大魔法值。 成功率：60%，最大魔法值+15	怀旧服-物品说明#2040609	资料站完整物品说明
+Improves Max MP on bottomwear.\nSuccess rate: 10%, Max MP+20	可提升下装的最大魔法值。 成功率：10%，最大魔法值+20	怀旧服-物品说明#2040610	资料站完整物品说明
+Improves Max MP on bottomwear.\nSuccess rate: 10%, Max MP+30\nIf failed, the item will be destroyed at a 100% rate.	可提升下装的最大魔法值。 成功率：10%，最大魔法值+30 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040611	资料站完整物品说明
+Improves Jump on shoes.\nSuccess rate: 100%, Jump+1	可提升鞋子的跳跃力。 成功率：100%，跳跃力+1	怀旧服-物品说明#2040700	资料站完整物品说明
+Improves Jump on shoes.\nSuccess rate: 60%, Jump+2	可提升鞋子的跳跃力。 成功率：60%，跳跃力+2	怀旧服-物品说明#2040701	资料站完整物品说明
+Improves Jump on shoes.\nSuccess rate: 10%, Jump+3	可提升鞋子的跳跃力。 成功率：10%，跳跃力+3	怀旧服-物品说明#2040702	资料站完整物品说明
+Improves Jump on shoes.\nSuccess rate: 10%, Jump+5\nIf failed, the item will be destroyed at a 100% rate.	可提升鞋子的跳跃力。 成功率：10%，跳跃力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040703	资料站完整物品说明
+Improves Speed on shoes.\nSuccess rate: 100%, Speed+1	可提升鞋子的移动速度。 成功率：100%，移动速度+1	怀旧服-物品说明#2040704	资料站完整物品说明
+Improves Speed on shoes.\nSuccess rate: 60%, Speed+2	可提升鞋子的移动速度。 成功率：60%，移动速度+2	怀旧服-物品说明#2040705	资料站完整物品说明
+Improves Speed on shoes.\nSuccess rate: 10%, Speed+3	可提升鞋子的移动速度。 成功率：10%，移动速度+3	怀旧服-物品说明#2040706	资料站完整物品说明
+Improves Speed on shoes.\nSuccess rate: 10%, Speed+5\nIf failed, the item will be destroyed at a 100% rate.	可提升鞋子的移动速度。 成功率：10%，移动速度+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040707	资料站完整物品说明
+Improves Avoidability on shoes.\nSuccess rate: 100%, Avoidability+1	可提升鞋子的回避率。 成功率：100%，回避率+1	怀旧服-物品说明#2040708	资料站完整物品说明
+Improves Avoidability on shoes.\nSuccess rate: 60%, Avoidability+2	可提升鞋子的回避率。 成功率：60%，回避率+2	怀旧服-物品说明#2040709	资料站完整物品说明
+Improves Avoidability on shoes.\nSuccess rate: 10%, Avoidability+3	可提升鞋子的回避率。 成功率：10%，回避率+3	怀旧服-物品说明#2040710	资料站完整物品说明
+Improves Avoidability on shoes.\nSuccess rate: 10%, Avoidability+5\nIf failed, the item will be destroyed at a 100% rate.	可提升鞋子的回避率。 成功率：10%，回避率+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040711	资料站完整物品说明
+Improves Weapon Attack on gloves.\nSuccess rate: 100%, Weapon Attack +1	可提升手套的攻击力。 成功率：100%，攻击力+1	怀旧服-物品说明#2040800	资料站完整物品说明
+Improves Weapon Attack on gloves.\nSuccess rate: 60%, Weapon Attack +2	可提升手套的攻击力。 成功率：60%，攻击力+2	怀旧服-物品说明#2040801	资料站完整物品说明
+Improves Weapon Attack on gloves.\nSuccess rate: 10%, Weapon Attack +3	可提升手套的攻击力。 成功率：10%，攻击力+3	怀旧服-物品说明#2040802	资料站完整物品说明
+Improves Weapon Attack on gloves.\nSuccess rate: 10%, Weapon Attack +5\nIf failed, the item will be destroyed at a 100% rate.	可提升手套的攻击力。 成功率：10%，攻击力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040803	资料站完整物品说明
+Improves Magic Attack on gloves.\nSuccess rate: 100%, Magic Attack +1	可提升手套的魔法攻击力。 成功率：100%，魔法攻击力+1	怀旧服-物品说明#2040804	资料站完整物品说明
+Improves Magic Attack on gloves.\nSuccess rate: 60%, Magic Attack +2	可提升手套的魔法攻击力。 成功率：60%，魔法攻击力+2	怀旧服-物品说明#2040805	资料站完整物品说明
+Improves Magic Attack on gloves.\nSuccess rate: 10%, Magic Attack +3	可提升手套的魔法攻击力。 成功率：10%，魔法攻击力+3	怀旧服-物品说明#2040806	资料站完整物品说明
+Improves Magic Attack on gloves.\nSuccess rate: 10%, Magic Attack +5\nIf failed, the item will be destroyed at a 100% rate.	可提升手套的魔法攻击力。 成功率：10%，魔法攻击力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040807	资料站完整物品说明
+Improves Accuracy on gloves.\nSuccess rate: 100%, Accuracy+1	可提升手套的命中率。 成功率：100%，命中率+1	怀旧服-物品说明#2040808	资料站完整物品说明
+Improves Accuracy on gloves.\nSuccess rate: 60%, Accuracy+2	可提升手套的命中率。 成功率：60%，命中率+2	怀旧服-物品说明#2040809	资料站完整物品说明
+Improves Accuracy on gloves.\nSuccess rate: 10%, Accuracy+3	可提升手套的命中率。 成功率：10%，命中率+3	怀旧服-物品说明#2040810	资料站完整物品说明
+Improves Accuracy on gloves.\nSuccess rate: 10%, Accuracy+5\nIf failed, the item will be destroyed at a 100% rate.	可提升手套的命中率。 成功率：10%，命中率+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040811	资料站完整物品说明
+Improves Crit. Rate on gloves.\nSuccess rate: 100%, Crit. Rate+1	可提升手套的暴击率。 成功率：100%，暴击率+1	怀旧服-物品说明#2040812	资料站完整物品说明
+Improves Crit. Rate on gloves.\nSuccess rate: 60%, Crit. Rate +2	可提升手套的暴击率。 成功率：60%，暴击率+2	怀旧服-物品说明#2040813	资料站完整物品说明
+Improves Crit. Rate on gloves.\nSuccess rate: 10%, Crit. Rate+3	可提升手套的暴击率。 成功率：10%，暴击率+3	怀旧服-物品说明#2040814	资料站完整物品说明
+Improves Crit. Rate on gloves.\nSuccess rate: 10%, Crit. Rate+5\nIf failed, the item will be destroyed at a 100% rate.	可提升手套的暴击率。 成功率：10%，暴击率+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040815	资料站完整物品说明
+Improves Defense on shields.\nSuccess rate: 100%, Weapon Def.+2	可提升盾牌的防御力。 成功率：100%，物理防御力+2	怀旧服-物品说明#2040900	资料站完整物品说明
+Improves Defense on shields.\nSuccess rate: 60%, Weapon Def.+3, Magic Def.+1	可提升盾牌的防御力。 成功率：60%，物理防御力+3，魔法防御力+1	怀旧服-物品说明#2040901	资料站完整物品说明
+Improves Defense on shields.\nSuccess rate:10%, Weapon Def.+5, Magic Def.+3	可提升盾牌的防御力。 成功率：10%，物理防御力+5，魔法防御力+3	怀旧服-物品说明#2040902	资料站完整物品说明
+Improves Defense on shields.\nSuccess rate: 10%, Weapon Def.+7, Magic Def.+5\nIf failed, the item will be destroyed at a 100% rate.	可提升盾牌的防御力。 成功率：10%，物理防御力+7，魔法防御力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040903	资料站完整物品说明
+Improves Accuracy on shields.\nSuccess rate: 100%, Accuracy+1	可提升盾牌的命中率。 成功率：100%，命中率+1	怀旧服-物品说明#2040904	资料站完整物品说明
+Improves Accuracy on shields.\nSuccess rate: 60%, Accuracy+2	可提升盾牌的命中率。 成功率：60%，命中率+2	怀旧服-物品说明#2040905	资料站完整物品说明
+Improves Accuracy on shields.\nSuccess rate: 10%, Accuracy+3	可提升盾牌的命中率。 成功率：10%，命中率+3	怀旧服-物品说明#2040906	资料站完整物品说明
+Improves Accuracy on shields.\nSuccess rate: 10%, Accuracy+5\nIf failed, the item will be destroyed at a 100% rate.	可提升盾牌的命中率。 成功率：10%，命中率+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2040907	资料站完整物品说明
+Improves Weapon Def. on capes.\nSuccess rate: 100%, Weapon Def.+2	可提升披风的物理防御力。 成功率：100%，物理防御力+2	怀旧服-物品说明#2041000	资料站完整物品说明
+Improves Weapon Def. on capes.\nSuccess rate: 60%, Weapon Def.+3, Magic Def.+1	可提升披风的物理防御力。 成功率：60%，物理防御力+3，魔法防御力+1	怀旧服-物品说明#2041001	资料站完整物品说明
+Improves Weapon Def. on capes.\nSuccess rate: 10%, Weapon Def.+5, Magic Def.+3	可提升披风的物理防御力。 成功率：10%，物理防御力+5，魔法防御力+3	怀旧服-物品说明#2041002	资料站完整物品说明
+Improves Weapon Def. on capes.\nSuccess rate: 10%, Weapon Def.+7, Magic Def.+5\nIf failed, the item will be destroyed at a 100% rate.	可提升披风的物理防御力。 成功率：10%，物理防御力+7，魔法防御力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2041003	资料站完整物品说明
+Improves Magic Def. on capes.\nSuccess rate: 100%, Magic Def.+2	可提升披风的魔法防御力。 成功率：100%，魔法防御力+2	怀旧服-物品说明#2041004	资料站完整物品说明
+Improves Magic Def. on capes.\nSuccess rate: 60%, Magic Def.+3, Weapon Def.+1	可提升披风的魔法防御力。 成功率：60%，魔法防御力+3，物理防御力+1	怀旧服-物品说明#2041005	资料站完整物品说明
+Improves Magic Def. on capes.\nSuccess rate: 10%, Magic Def.+5, Weapon Def.+3	可提升披风的魔法防御力。 成功率：10%，魔法防御力+5，物理防御力+3	怀旧服-物品说明#2041006	资料站完整物品说明
+Improves Magic Def. on capes.\nSuccess rate: 10%, Magic Def.+7, Weapon Def.+5\nIf failed, the item will be destroyed at a 100% rate.	可提升披风的魔法防御力。 成功率：10%，魔法防御力+7，物理防御力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2041007	资料站完整物品说明
+Improves Strength on capes.\nSuccess rate: 100%, STR+1	可提升披风的力量。 成功率：100%，力量+1	怀旧服-物品说明#2041008	资料站完整物品说明
+Improves Strength on capes.\nSuccess rate: 60%, STR+2	可提升披风的力量。 成功率：60%，力量+2	怀旧服-物品说明#2041009	资料站完整物品说明
+Improves Strength on capes.\nSuccess rate: 10%, STR+3	可提升披风的力量。 成功率：10%，力量+3	怀旧服-物品说明#2041010	资料站完整物品说明
+Improves Strength on capes.\nSuccess rate: 10%, STR+5\nIf failed, the item will be destroyed at a 100% rate.	可提升披风的力量。 成功率：10%，力量+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2041011	资料站完整物品说明
+Improves Dexterity on capes.\nSuccess rate :100%, DEX+1	可提升披风的敏捷。 成功率：100%，敏捷+1	怀旧服-物品说明#2041012	资料站完整物品说明
+Improves Dexterity on capes.\nSuccess rate: 60%, DEX+2	可提升披风的敏捷。 成功率：60%，敏捷+2	怀旧服-物品说明#2041013	资料站完整物品说明
+Improves Dexterity on capes.\nSuccess rate: 10%, DEX+3	可提升披风的敏捷。 成功率：10%，敏捷+3	怀旧服-物品说明#2041014	资料站完整物品说明
+Improves Dexterity on capes.\nSuccess rate: 10%, DEX+5\nIf failed, the item will be destroyed at a 100% rate.	可提升披风的敏捷。 成功率：10%，敏捷+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2041015	资料站完整物品说明
+Improves Intelligence on capes.\nSuccess rate: 100%, INT+1	可提升披风的智力。 成功率：100%，智力+1	怀旧服-物品说明#2041016	资料站完整物品说明
+Improves Intelligence on capes.\nSuccess rate: 60%, INT+2	可提升披风的智力。 成功率：60%，智力+2	怀旧服-物品说明#2041017	资料站完整物品说明
+Improves Intelligence on capes.\nSuccess rate: 10%, INT+3	可提升披风的智力。 成功率：10%，智力+3	怀旧服-物品说明#2041018	资料站完整物品说明
+Improves Intelligence on capes.\nSuccess rate: 10%, INT+5\nIf failed, the item will be destroyed at a 100% rate.	可提升披风的智力。 成功率：10%，智力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2041019	资料站完整物品说明
+Improves Luck on capes.\nSuccess rate: 100%, LUK+1	可提升披风的幸运。 成功率：100%，幸运+1	怀旧服-物品说明#2041020	资料站完整物品说明
+Improves Luck on capes.\nSuccess rate: 60%, LUK+2	可提升披风的幸运。 成功率：60%，幸运+2	怀旧服-物品说明#2041021	资料站完整物品说明
+Improves Luck on capes.\nSuccess rate: 10%, LUK+3	可提升披风的幸运。 成功率：10%，幸运+3	怀旧服-物品说明#2041022	资料站完整物品说明
+Improves Luck on capes.\nSuccess rate: 10%, LUK+5\nIf failed, the item will be destroyed at a 100% rate.	可提升披风的幸运。 成功率：10%，幸运+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2041023	资料站完整物品说明
+Improves Accuracy on capes.\nSuccess rate: 100%, Accuracy +1	可提升披风的命中率。 成功率：100%，命中率+1	怀旧服-物品说明#2041024	资料站完整物品说明
+Improves Accuracy on capes.\nSuccess rate: 60%, Accuracy +2	可提升披风的命中率。 成功率：60%，命中率+2	怀旧服-物品说明#2041025	资料站完整物品说明
+Improves Accuracy on capes.\nSuccess rate: 10%, Accuracy +3	可提升披风的命中率。 成功率：10%，命中率+3	怀旧服-物品说明#2041026	资料站完整物品说明
+Improves Accuracy on capes.\nSuccess rate: 10%, Accuracy +5\nIf failed, the item will be destroyed at a 100% rate.	可提升披风的命中率。 成功率：10%，命中率+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2041027	资料站完整物品说明
+Improves Weapon Attack on one-handed swords.\nSuccess rate: 100%, Weapon Attack +1	可提升单手剑的攻击力。 成功率：100%，攻击力+1	怀旧服-物品说明#2043000	资料站完整物品说明
+Improves Weapon Attack on one-handed swords.\nSuccess rate: 60%, Weapon Attack +2	可提升单手剑的攻击力。 成功率：60%，攻击力+2	怀旧服-物品说明#2043001	资料站完整物品说明
+Improves Weapon Attack on one-handed swords.\nSuccess rate: 10%, Weapon Attack +3	可提升单手剑的攻击力。 成功率：10%，攻击力+3	怀旧服-物品说明#2043002	资料站完整物品说明
+Improves Weapon Attack on one-handed swords.\nSuccess rate: 10%, Weapon Attack +5\nIf failed, the item will be destroyed at a 100% rate.	可提升单手剑的攻击力。 成功率：10%，攻击力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2043003	资料站完整物品说明
+Improves Weapon Attack on one-handed axes.\nSuccess rate: 100%, Weapon Attack +1	可提升单手斧的攻击力。 成功率：100%，攻击力+1	怀旧服-物品说明#2043100	资料站完整物品说明
+Improves Weapon Attack on one-handed axes.\nSuccess rate: 60%, Weapon Attack +2	可提升单手斧的攻击力。 成功率：60%，攻击力+2	怀旧服-物品说明#2043101	资料站完整物品说明
+Improves Weapon Attack on one-handed axes.\nSuccess rate: 10%, Weapon Attack +3	可提升单手斧的攻击力。 成功率：10%，攻击力+3	怀旧服-物品说明#2043102	资料站完整物品说明
+Improves Weapon Attack on one-handed axes.\nSuccess rate: 10%, Weapon Attack +5\nIf failed, the item will be destroyed at a 100% rate.	可提升单手斧的攻击力。 成功率：10%，攻击力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2043103	资料站完整物品说明
+Improves Weapon Attack on one-handed blunt weapons.\nSuccess rate: 100%, Weapon Attack +1	可提升单手钝器的攻击力。 成功率：100%，攻击力+1	怀旧服-物品说明#2043200	资料站完整物品说明
+Improves Weapon Attack on one-handed blunt weapons.\nSuccess rate: 60%, Weapon Attack +2	可提升单手钝器的攻击力。 成功率：60%，攻击力+2	怀旧服-物品说明#2043201	资料站完整物品说明
+Improves Weapon Attack on one-handed blunt weapons.\nSuccess rate: 10%, Weapon Attack +3	可提升单手钝器的攻击力。 成功率：10%，攻击力+3	怀旧服-物品说明#2043202	资料站完整物品说明
+Improves Weapon Attack on one-handed blunt weapons.\nSuccess rate: 10%, Weapon Attack +5\nIf failed, the item will be destroyed at a 100% rate.	可提升单手钝器的攻击力。 成功率：10%，攻击力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2043203	资料站完整物品说明
+Improves Weapon Attack on daggers.\nSuccess rate: 100%, Weapon Attack +1	可提升短剑的攻击力。 成功率：100%，攻击力+1	怀旧服-物品说明#2043300	资料站完整物品说明
+Improves Weapon Attack on daggers.\nSuccess rate: 60%, Weapon Attack +2	可提升短剑的攻击力。 成功率：60%，攻击力+2	怀旧服-物品说明#2043301	资料站完整物品说明
+Improves Weapon Attack on daggers.\nSuccess rate: 10%, Weapon Attack +3	可提升短剑的攻击力。 成功率：10%，攻击力+3	怀旧服-物品说明#2043302	资料站完整物品说明
+Improves Weapon Attack on daggers.\nSuccess rate: 10%, Weapon Attack +5\nIf failed, the item will be destroyed at a 100% rate.	可提升短剑的攻击力。 成功率：10%，攻击力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2043303	资料站完整物品说明
+Improves Magic Attack on wands.\nSuccess rate: 100%, Magic Attack +1	可提升短杖的魔法攻击力。 成功率：100%，魔法攻击力+1	怀旧服-物品说明#2043700	资料站完整物品说明
+Improves Magic Attack on wands.\nSuccess rate: 60%, Magic Attack +2	可提升短杖的魔法攻击力。 成功率：60%，魔法攻击力+2	怀旧服-物品说明#2043701	资料站完整物品说明
+Improves Magic Attack on wands.\nSuccess rate: 10%, Magic Attack +3	可提升短杖的魔法攻击力。 成功率：10%，魔法攻击力+3	怀旧服-物品说明#2043702	资料站完整物品说明
+Improves Magic Attack on wands.\nSuccess rate: 10%, Magic Attack +5\nIf failed, the item will be destroyed at a 100% rate.	可提升短杖的魔法攻击力。 成功率：10%，魔法攻击力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2043703	资料站完整物品说明
+Improves Magic Attack on staves.\nSuccess rate: 100%, Magic Attack +1	可提升长杖的魔法攻击力。 成功率：100%，魔法攻击力+1	怀旧服-物品说明#2043800	资料站完整物品说明
+Improves Magic Attack on staves.\nSuccess rate: 60%, Magic Attack +2	可提升长杖的魔法攻击力。 成功率：60%，魔法攻击力+2	怀旧服-物品说明#2043801	资料站完整物品说明
+Improves Magic Attack on staves.\nSuccess rate: 10%, Magic Attack +3	可提升长杖的魔法攻击力。 成功率：10%，魔法攻击力+3	怀旧服-物品说明#2043802	资料站完整物品说明
+Improves Magic Attack on staves.\nSuccess rate: 10%, Magic Attack +5\nIf failed, the item will be destroyed at a 100% rate.	可提升长杖的魔法攻击力。 成功率：10%，魔法攻击力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2043803	资料站完整物品说明
+Improves Weapon Attack on two-handed swords.\nSuccess rate: 100%, Weapon Attack +1	可提升双手剑的攻击力。 成功率：100%，攻击力+1	怀旧服-物品说明#2044000	资料站完整物品说明
+Improves Weapon Attack on two-handed swords.\nSuccess rate: 60%, Weapon Attack +2	可提升双手剑的攻击力。 成功率：60%，攻击力+2	怀旧服-物品说明#2044001	资料站完整物品说明
+Improves Weapon Attack on two-handed swords.\nSuccess rate: 10%, Weapon Attack +3	可提升双手剑的攻击力。 成功率：10%，攻击力+3	怀旧服-物品说明#2044002	资料站完整物品说明
+Improves Weapon Attack on two-handed swords.\nSuccess rate: 10%, Weapon Attack +5\nIf failed, the item will be destroyed at a 100% rate.	可提升双手剑的攻击力。 成功率：10%，攻击力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2044003	资料站完整物品说明
+Improves Weapon Attack on two-handed axes.\nSuccess rate: 100%, Weapon Attack +1	可提升双手斧的攻击力。 成功率：100%，攻击力+1	怀旧服-物品说明#2044100	资料站完整物品说明
+Improves Weapon Attack on two-handed axes.\nSuccess rate: 60%, Weapon Attack +2	可提升双手斧的攻击力。 成功率：60%，攻击力+2	怀旧服-物品说明#2044101	资料站完整物品说明
+Improves Weapon Attack on two-handed axes.\nSuccess rate: 10%, Weapon Attack +3	可提升双手斧的攻击力。 成功率：10%，攻击力+3	怀旧服-物品说明#2044102	资料站完整物品说明
+Improves Weapon Attack on two-handed axes.\nSuccess rate: 10%, Weapon Attack +5\nIf failed, the item will be destroyed at a 100% rate.	可提升双手斧的攻击力。 成功率：10%，攻击力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2044103	资料站完整物品说明
+Improves Weapon Attack on two-handed blunt weapons.\nSuccess rate: 100%, Weapon Attack +1	可提升双手钝器的攻击力。 成功率：100%，攻击力+1	怀旧服-物品说明#2044200	资料站完整物品说明
+Improves Weapon Attack on two-handed blunt weapons.\nSuccess rate: 60%, Weapon Attack +2	可提升双手钝器的攻击力。 成功率：60%，攻击力+2	怀旧服-物品说明#2044201	资料站完整物品说明
+Improves Weapon Attack on two-handed blunt weapons.\nSuccess rate: 10%, Weapon Attack +3	可提升双手钝器的攻击力。 成功率：10%，攻击力+3	怀旧服-物品说明#2044202	资料站完整物品说明
+Improves Weapon Attack on two-handed blunt weapons.\nSuccess rate: 10%, Weapon Attack +5\nIf failed, the item will be destroyed at a 100% rate.	可提升双手钝器的攻击力。 成功率：10%，攻击力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2044203	资料站完整物品说明
+Improves Weapon Attack on spears.\nSuccess rate: 100%, Weapon Attack +1	可提升枪的攻击力。 成功率：100%，攻击力+1	怀旧服-物品说明#2044300	资料站完整物品说明
+Improves Weapon Attack on spears.\nSuccess rate: 60%, Weapon Attack +2	可提升枪的攻击力。 成功率：60%，攻击力+2	怀旧服-物品说明#2044301	资料站完整物品说明
+Improves Weapon Attack on spears.\nSuccess rate:10%, Weapon Attack +3	可提升枪的攻击力。 成功率：10%，攻击力+3	怀旧服-物品说明#2044302	资料站完整物品说明
+Improves Weapon Attack on spears.\nSuccess rate: 10%, Weapon Attack +5\nIf failed, the item will be destroyed at a 100% rate.	可提升枪的攻击力。 成功率：10%，攻击力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2044303	资料站完整物品说明
+Improves Weapon Attack on polearms.\nSuccess rate: 100%, Weapon Attack +1	可提升矛的攻击力。 成功率：100%，攻击力+1	怀旧服-物品说明#2044400	资料站完整物品说明
+Improves Weapon Attack on polearms.\nSuccess rate: 60%, Weapon Attack +2	可提升矛的攻击力。 成功率：60%，攻击力+2	怀旧服-物品说明#2044401	资料站完整物品说明
+Improves Weapon Attack on polearms.\nSuccess rate: 10%, Weapon Attack +3	可提升矛的攻击力。 成功率：10%，攻击力+3	怀旧服-物品说明#2044402	资料站完整物品说明
+Improves Weapon Attack on polearms.\nSuccess rate: 10%, Weapon Attack +5\nIf failed, the item will be destroyed at a 100% rate.	可提升矛的攻击力。 成功率：10%，攻击力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2044403	资料站完整物品说明
+Improves Weapon Attack on bows.\nSuccess rate: 100%, Weapon Attack +1	可提升弓的攻击力。 成功率：100%，攻击力+1	怀旧服-物品说明#2044500	资料站完整物品说明
+Improves Weapon Attack on bows.\nSuccess rate: 60%, Weapon Attack +2	可提升弓的攻击力。 成功率：60%，攻击力+2	怀旧服-物品说明#2044501	资料站完整物品说明
+Improves Weapon Attack on bows.\nSuccess rate: 10%, Weapon Attack +3	可提升弓的攻击力。 成功率：10%，攻击力+3	怀旧服-物品说明#2044502	资料站完整物品说明
+Improves Weapon Attack on bows.\nSuccess rate: 10%, Weapon Attack +5\nIf failed, the item will be destroyed at a 100% rate.	可提升弓的攻击力。 成功率：10%，攻击力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2044503	资料站完整物品说明
+Improves Weapon Attack on crossbows.\nSuccess rate: 100%, Weapon Attack +1	可提升弩的攻击力。 成功率：100%，攻击力+1	怀旧服-物品说明#2044600	资料站完整物品说明
+Improves Weapon Attack on crossbows.\nSuccess rate: 60%, Weapon Attack +2	可提升弩的攻击力。 成功率：60%，攻击力+2	怀旧服-物品说明#2044601	资料站完整物品说明
+Improves Weapon Attack on crossbows.\nSuccess rate: 10%, Weapon Attack +3	可提升弩的攻击力。 成功率：10%，攻击力+3	怀旧服-物品说明#2044602	资料站完整物品说明
+Improves Weapon Attack on crossbows.\nSuccess rate: 10%, Weapon Attack +5\nIf failed, the item will be destroyed at a 100% rate.	可提升弩的攻击力。 成功率：10%，攻击力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2044603	资料站完整物品说明
+Improves Weapon Attack on claws.\nSuccess rate: 100%, Weapon Attack +1	可提升拳套的攻击力。 成功率：100%，攻击力+1	怀旧服-物品说明#2044700	资料站完整物品说明
+Improves Weapon Attack on claws.\nSuccess rate: 60%, Weapon Attack +2	可提升拳套的攻击力。 成功率：60%，攻击力+2	怀旧服-物品说明#2044701	资料站完整物品说明
+Improves Weapon Attack on claws.\nSuccess rate: 10%, Weapon Attack +3	可提升拳套的攻击力。 成功率：10%，攻击力+3	怀旧服-物品说明#2044702	资料站完整物品说明
+Improves Weapon Attack on claws.\nSuccess rate: 10%, Weapon Attack +5\nIf failed, the item will be destroyed at a 100% rate.	可提升拳套的攻击力。 成功率：10%，攻击力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2044703	资料站完整物品说明
+Improves Speed on pet equip.\nSuccess rate:100%, Speed+1	可提升宠物装备的移动速度。 成功率：100%，移动速度+1	怀旧服-物品说明#2048000	资料站完整物品说明
+Improves Speed on pet equip.\nSuccess rate:60%, Speed+2	可提升宠物装备的移动速度。 成功率：60%，移动速度+2	怀旧服-物品说明#2048001	资料站完整物品说明
+Improves Speed on pet equip.\nSuccess rate:10%, Speed+3	可提升宠物装备的移动速度。 成功率：10%，移动速度+3	怀旧服-物品说明#2048002	资料站完整物品说明
+Improves Speed on pet equip.\nSuccess rate:10%, Speed+5\nIf failed, the item will be destroyed at a 100% rate.	可提升宠物装备的移动速度。 成功率：10%，移动速度+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2048003	资料站完整物品说明
+Improves Jump on pet equip.\nSuccess rate:100%, Jump+1	可提升宠物装备的跳跃力。 成功率：100%，跳跃力+1	怀旧服-物品说明#2048004	资料站完整物品说明
+Improves Jump on pet equip.\nSuccess rate:60%, Jump+2	可提升宠物装备的跳跃力。 成功率：60%，跳跃力+2	怀旧服-物品说明#2048005	资料站完整物品说明
+Improves Jump on pet equip.\nSuccess rate:10%, Jump+3	可提升宠物装备的跳跃力。 成功率：10%，跳跃力+3	怀旧服-物品说明#2048006	资料站完整物品说明
+Improves Jump on pet equip.\nSuccess rate:10%, Jump+5\nIf failed, the item will be destroyed at a 100% rate.	可提升宠物装备的跳跃力。 成功率：10%，跳跃力+5 失败时，道具将以 100% 的概率被摧毁。	怀旧服-物品说明#2048007	资料站完整物品说明
+A barrel full of arrows. Only usable with bows.	装满箭矢的箭筒。只能与弓一起使用。	怀旧服-物品说明#2060000	资料站完整物品说明
+A barrel full of bronze arrows. Only usable with bows.\nWeapon Attack +1.	装满青铜箭矢的箭筒。只能与弓一起使用。武器攻击力 +1。	怀旧服-物品说明#2060001	资料站完整物品说明
+A barrel full of iron arrows. Only usable with bows.\nWeapon Attack +2.	装满铁箭矢的箭筒。只能与弓一起使用。武器攻击力 +2。	怀旧服-物品说明#2060002	资料站完整物品说明
+A barrel full of adamantium arrows. Only usable with bows.\nWeapon Attack +3.	装满金刚箭矢的箭筒。只能与弓一起使用。武器攻击力 +3。	怀旧服-物品说明#2060003	资料站完整物品说明
+A barrel full of arrows. Only usable with crossbows.	装满箭矢的箭筒。只能与弩一起使用。	怀旧服-物品说明#2061000	资料站完整物品说明
+A barrel full of bronze arrows. Only usable with crossbows.\nWeapon Attack +1.	装满青铜箭矢的箭筒。只能与弩一起使用。武器攻击力 +1。	怀旧服-物品说明#2061001	资料站完整物品说明
+A barrel full of iron arrows. Only usable with crossbows.\nWeapon Attack +2.	装满铁箭矢的箭筒。只能与弩一起使用。武器攻击力 +2。	怀旧服-物品说明#2061002	资料站完整物品说明
+A case full of mithril arrows. Only usable with crossbows.\nWeapon Attack +3.	装满秘银箭矢的箭盒。只能与弩一起使用。武器攻击力 +3。	怀旧服-物品说明#2061003	资料站完整物品说明
+A throwing-star made out of steel. Once they run out, they need to be recharged.\r\nLevel Limit : 10, Weapon Attack +15	钢制飞镖。全部用完后需要进行充值。等级限制：10，武器攻击力 +15	怀旧服-物品说明#2070000	资料站完整物品说明
+A throwing-star made out of steel. Once they run out, they need to be recharged.\r\nLevel Limit : 10, Weapon Attack +17	钢制飞镖。全部用完后需要进行充值。等级限制：10，武器攻击力 +17	怀旧服-物品说明#2070001	资料站完整物品说明
+A throwing-star made out of steel. Once they run out, they need to be recharged.\r\nLevel Limit : 10, Weapon Attack +19	钢制飞镖。全部用完后需要进行充值。等级限制：10，武器攻击力 +19	怀旧服-物品说明#2070002	资料站完整物品说明
+A throwing-star made out of steel. Once they run out, they need to be recharged.\r\nLevel Limit : 10, Weapon Attack +21	钢制飞镖。全部用完后需要进行充值。等级限制：10，武器攻击力 +21	怀旧服-物品说明#2070003	资料站完整物品说明
+A throwing-star made out of steel. Once they run out, they need to be recharged.\r\nLevel Limit : 10, Weapon Attack +23	钢制飞镖。全部用完后需要进行充值。等级限制：10，武器攻击力 +23	怀旧服-物品说明#2070004	资料站完整物品说明
+A throwing-star made out of steel. Once they run out, they need to be recharged.\r\nLevel Limit : 10, Weapon Attack +25	钢制飞刀。全部用完后需要进行充值。等级限制：10，武器攻击力 +25	怀旧服-物品说明#2070005	资料站完整物品说明
+A throwing-star made out of steel. Once they run out, they need to be recharged.\r\nLevel Limit : 10, Weapon Attack +27	钢制飞镖。全部用完后需要进行充值。等级限制：10，武器攻击力 +27	怀旧服-物品说明#2070006	资料站完整物品说明
+A throwing-star made out of steel. Once they run out, they need to be recharged.\r\nLevel Limit : 10, Weapon Attack +29	钢制飞镖。全部用完后需要进行充值。等级限制：10，武器攻击力 +29	怀旧服-物品说明#2070007	资料站完整物品说明
+A well-packed snowball. Once they run out, they need to be recharged.\r\nLevel Limit : 10, Weapon Attack +17	从天而降的雪球，可用来进行攻击。	怀旧服-物品说明#2070008	资料站完整物品说明
+When thrown, it spins fast and flies at great speed. Once they are all used up, they need to be recharged.\r\nLevel Limit : 10, Weapon Attack +19	投掷后会快速旋转并高速飞出。全部用完后需要进行充值。等级限制：10，武器攻击力 +19	怀旧服-物品说明#2070009	资料站完整物品说明
+Sharp icicles. Once they run out, they need to be recharged.\r\nLevel Limit : 10, Weapon Attack +21	锋利的冰柱。全部用完后需要进行充值。等级限制：10，武器攻击力 +21	怀旧服-物品说明#2070010	资料站完整物品说明
+If you think your level's too low, don't bother opening it.	如果你觉得等级太低，就别打开它。	怀旧服-物品说明#2100000	资料站完整物品说明
+Small pets love them. Restores 30 Fullness. Can be purchased in town #cGeneral Stores# or some town #cPet Food Merchants#. NOT for human consumption!	小型宠物很喜欢的食物。恢复30饱食度。可在城镇杂货店或部分城镇宠物食品商人处购买。请勿给人食用！	怀旧服-物品说明#2120000	资料站完整物品说明
+Can be used on suspected botters. Usable only when a suspect is hunting.	可用于疑似挂机玩家。只有在嫌疑对象正在打怪时才能使用。	怀旧服-物品说明#2190000	资料站完整物品说明
+A special shell only found through Mano. Apparently it's powerful enough to grant a wish...	只有通过蜗牛王才能获得的特殊外壳。据说强大到足以实现一个愿望……	怀旧服-物品说明#2210000	资料站完整物品说明
+An ancient collection of poems and life lessons from various elders, sages and warriors in the Maple World. Reading this allows one to gain their collective experience (EXP) in a single second. This edition provides 500 EXP.	只要读取，就可获得经验值的兵法书；可获得经验值100000。全等级都可以使用	怀旧服-物品说明#2375000	资料站完整物品说明
+A box locked away with a powerful magical lock. Apparently there are jewels inside.	被强大魔法锁封住的箱子。里面似乎装着宝石。	怀旧服-物品说明#2430000	资料站完整物品说明
+A box with a variety of outfits recommended by Natalia.	装有娜塔莉推荐的多种服装的箱子。	怀旧服-物品说明#2430001	资料站完整物品说明
+A box with a variety of outfits recommended by Natalia.	装有娜塔莉推荐的多种服装的箱子。	怀旧服-物品说明#2430002	资料站完整物品说明
+#cDouble-click# to obtain the below items.\n\n- Leaf Points 1,000 Exchange Coupon x5\n- Regular Store Permit x1\n- Megaphone x10\n- Super Megaphone x5\n- Red Potion x30\n- Blue Potion x30	双击可获得以下道具。- 枫叶点数10,000兑换券 x5 - 普通商店许可证 x1 - 喇叭 x10 - 超级喇叭 x5 - 红药水 x30 - 蓝药水 x30	怀旧服-物品说明#2430003	资料站完整物品说明
+#c Double-click# to get #c1,000 Leaf Points#.	双击可获得1,000枫叶点数。	怀旧服-物品说明#2430004	资料站完整物品说明
+#cDouble-click# to receive a #c2x EXP# buff for #c30 minutes#.\r\n\r\n#cEffect does not stack with similar event buffs.#	双击可获得持续30分钟的2倍EXP增益。效果不会与类似活动增益叠加。	怀旧服-物品说明#2450000	资料站完整物品说明
+#cDouble-click# to receive a #c3x EXP# buff for #c15 minutes.\r\n\r\nEffect does not stack with similar event buffs.	#c15分鐘#內獲得#c經驗值3倍#的Buff效果。\r\n\r\n#c若相同效果的活動已啟動，效果不會重疊。#	怀旧服-物品说明#2450001	资料站完整物品说明
+Catch your breath and relax by sitting on this chair to recover an additional 30 HP every 10 seconds.	坐在这把椅子上喘口气、放松一下，每10秒额外恢复30 HP。	怀旧服-物品说明#3010000	资料站完整物品说明
+Catch your breath and relax by sitting on this chair to recover an additional 30 HP every 10 seconds.	坐在休闲椅上，每10秒可恢复血量 50。	怀旧服-物品说明#3010001	资料站完整物品说明
+Catch your breath and relax by sitting on this chair to recover an additional 30 HP every 10 seconds.	坐在这把椅子上喘口气、放松一下，每10秒额外恢复30 HP。	怀旧服-物品说明#3010002	资料站完整物品说明
+A specially-made sky-blue wooden chair that's only available in Lith Harbor. Recover an additional 30 HP every 10 seconds.	只有明珠港才有的特制天蓝色木椅。每10秒额外恢复30 HP。	怀旧服-物品说明#3010003	资料站完整物品说明
+A comfortable, plush green chair, complete with armrests. Recover an additional 30 HP every 10 seconds.	非常舒服的转椅，每10秒可恢复血量50.	怀旧服-物品说明#3010004	资料站完整物品说明
+A comfortable, plush red chair, complete with armrests.. Recover an additional 30 HP every 10 seconds.	非常舒服的转椅，每10秒可恢复血量50.	怀旧服-物品说明#3010005	资料站完整物品说明
+A comfortable, plush yellow chair, complete with armrests. Recover an additional 30 HP every 10 seconds.	非常舒服的转椅，每10秒可恢复血量50.	怀旧服-物品说明#3010006	资料站完整物品说明
+An adorable pink cushion that resembles a seal. Recover an additional 30 HP every 10 seconds.	像海豹一样可爱的粉色坐垫。每10秒额外恢复30 HP。	怀旧服-物品说明#3010007	资料站完整物品说明
+An adorable blue cushion that resembles a seal. Recover an additional 30 MP every 10 seconds.	像海豹一样可爱的蓝色坐垫。每10秒额外恢复30 MP。	怀旧服-物品说明#3010008	资料站完整物品说明
+The letter L made of leaves. If gathered with other letters to make a specific word...?	由树叶做成的字母 L。如果和其他字母一起收集并拼成特定单词……	怀旧服-物品说明#3994000	资料站完整物品说明
+The letter E made of leaves. If gathered with other letters to make a specific word...?	收集末日风暴的E.后，组成末日风暴，去找运营员索要礼物吧。	怀旧服-物品说明#3994001	资料站完整物品说明
+The letter A made of leaves. If gathered with other letters to make a specific word...?	由树叶做成的字母 A。如果和其他字母一起收集并拼成特定单词……	怀旧服-物品说明#3994002	资料站完整物品说明
+The letter F made of leaves. If gathered with other letters to make a specific word...?	由树叶做成的字母 F。如果和其他字母一起收集并拼成特定单词……	怀旧服-物品说明#3994003	资料站完整物品说明
+The letter P made of leaves. If gathered with other letters to make a specific word...?	收集末日风暴的P.后，组成末日风暴，去找运营员索要礼物吧。	怀旧服-物品说明#3994004	资料站完整物品说明
+The letter O made of leaves. If gathered with other letters to make a specific word...?	由树叶做成的字母 O。如果和其他字母一起收集并拼成特定单词……	怀旧服-物品说明#3994005	资料站完整物品说明
+The letter I made of leaves. If gathered with other letters to make a specific word...?	由树叶做成的字母 I。如果和其他字母一起收集并拼成特定单词……	怀旧服-物品说明#3994006	资料站完整物品说明
+The letter N made of leaves. If gathered with other letters to make a specific word...?	由树叶做成的字母 N。如果和其他字母一起收集并拼成特定单词……	怀旧服-物品说明#3994007	资料站完整物品说明
+The letter T made of leaves. If gathered with other letters to make a specific word...?	收集末日风暴的T.后，组成末日风暴，去找运营员索要礼物吧。	怀旧服-物品说明#3994008	资料站完整物品说明
+The letter S made of leaves. If gathered with other letters to make a specific word...?	收集末日风暴的S.后，组成末日风暴，去找运营员索要礼物吧。	怀旧服-物品说明#3994009	资料站完整物品说明
+A hard piece of rock that forms the body of a Jr. Sentinel.	构成小石球身体的一块坚硬石头。	怀旧服-物品说明#4000000	资料站完整物品说明
+A shell removed from a snail.	从蜗牛身上取下的壳。	怀旧服-物品说明#4000001	资料站完整物品说明
+A shell removed from a snail.	蓝蜗牛的壳。	怀旧服-物品说明#4000002	资料站完整物品说明
+The spore of a mushroom.	蘑菇的孢子。	怀旧服-物品说明#4000003	资料站完整物品说明
+A shell removed from a snail.	从蜗牛身上取下的壳。	怀旧服-物品说明#4000004	资料站完整物品说明
+A branch bent away from a tree.	从树上折下来的树枝。	怀旧服-物品说明#4000005	资料站完整物品说明
+Very thick and sticky liquid.	非常浓稠又黏滑的液体。	怀旧服-物品说明#4000006	资料站完整物品说明
+A bubble removed from a Slime.	从绿水灵身上取下的泡泡。	怀旧服-物品说明#4000007	资料站完整物品说明
+A head of a pig.	猪的头。	怀旧服-物品说明#4000008	资料站完整物品说明
+A cap removed from a mushroom.	从蘑菇身上取下的蘑菇盖。	怀旧服-物品说明#4000009	资料站完整物品说明
+Taken from a pig with a ribbon.	从缎带猪身上取得的缎带。	怀旧服-物品说明#4000010	资料站完整物品说明
+A leaf that's taken out of a tree.	从树上摘下的叶子。	怀旧服-物品说明#4000011	资料站完整物品说明
+A leg removed from an octopus.	从章鱼身上取下的腿。	怀旧服-物品说明#4000012	资料站完整物品说明
+A cap removed from a mushroom.	从蘑菇身上取下的蘑菇盖。	怀旧服-物品说明#4000013	资料站完整物品说明
+A huge bubble removed from a Bubbling.	从蓝水灵身上取下的巨大泡泡。	怀旧服-物品说明#4000014	资料站完整物品说明
+A high quality piece of firewood from an Axe Stump.	从斧木妖身上取得的高品质木柴。	怀旧服-物品说明#4000015	资料站完整物品说明
+A cap removed from a mushroom.	从蘑菇身上取下的蘑菇盖。	怀旧服-物品说明#4000016	资料站完整物品说明
+A wing cut off of a Stirge.	从蝙蝠怪身上切下的翅膀。	怀旧服-物品说明#4000017	资料站完整物品说明
+A piece of skin from a Jr. Necki.	从小青蛇身上取得的一片皮。	怀旧服-物品说明#4000018	资料站完整物品说明
+A cap removed from a mushroom.	从蘑菇身上取下的蘑菇盖。	怀旧服-物品说明#4000019	资料站完整物品说明
+A charm taken from an undead monster.	玩家#c孤风术师#设计的道符镖. 可装备在 #c飞镖#上,使用时会有诅咒效果. \n\n飞镖类道具无法抵当给系统。	怀旧服-物品说明#4000020	资料站完整物品说明
+A canine tooth taken from a Wild Boar.	从野猪身上取得的犬齿。	怀旧服-物品说明#4000021	资料站完整物品说明
+A tail removed from a lizard.	不知道是怪物哪个部位的触手,虽看起来恶心,但听说意外的好吃?\r\n\r\n好吃便当的材料, #c不分种类,收集3个后双击即可挑战制作好吃便当,#别怕失败,快来做做看吧!	怀旧服-物品说明#4000022	资料站完整物品说明
+A metal hoof that covered the legs of an Iron Hog.	覆盖在钢铁猪腿上的金属蹄。	怀旧服-物品说明#4000023	资料站完整物品说明
+A tentacle removed from a Fairy. Very small and delicate, so it should be handled with care.	从妖精身上取下的触须。非常细小又脆弱，需要小心处理。	怀旧服-物品说明#4000024	资料站完整物品说明
+A very solid and tough piece of skin from a Ligator.	从鳄鱼身上取得的一块非常结实坚韧的皮。	怀旧服-物品说明#4000025	资料站完整物品说明
+A canine tooth taken from a Fire Boar.	从火野猪身上取得的犬齿。	怀旧服-物品说明#4000026	资料站完整物品说明
+A tail removed from a lizard.	从蜥蜴身上取下的尾巴。	怀旧服-物品说明#4000027	资料站完整物品说明
+A tablecloth donned by a Jr. Wraith.	小幽灵身上披着的桌布。	怀旧服-物品说明#4000028	资料站完整物品说明
+A horn removed from a Jr. Boogie. Small, dense, and hard to break.	从小幽灵怪身上取下的角。小而紧实，不容易折断。	怀旧服-物品说明#4000029	资料站完整物品说明
+A miniature figure of a Lupin.	鲁莽猴的迷你人偶。	怀旧服-物品说明#4000030	资料站完整物品说明
+It's a Lupin's favorite: a tasty banana.	鲁莽猴最喜欢的美味香蕉。	怀旧服-物品说明#4000031	资料站完整物品说明
+A huge piece of claw cut off of a Lorang.	从洛朗身上切下的一大块钳子。	怀旧服-物品说明#4000032	资料站完整物品说明
+A cursed doll possessed by a Zombie Lupin.	附着在僵尸猴身上的被诅咒娃娃。	怀旧服-物品说明#4000033	资料站完整物品说明
+A tail removed from a lizard.	从蜥蜴身上取下的尾巴。	怀旧服-物品说明#4000034	资料站完整物品说明
+A seed cut out of a Nependeath. It's poisonous, so it shouldn't be taken lightly.	从食人花身上取出的种子。有毒，不可掉以轻心。	怀旧服-物品说明#4000035	资料站完整物品说明
+It's the skull of a Drake.	龙的头骨。	怀旧服-物品说明#4000036	资料站完整物品说明
+A shell cut off of a Tortie's back.	从乌龟背上切下的壳。	怀旧服-物品说明#4000037	资料站完整物品说明
+A seed cut out of a Dark Nependeath. It's poisonous and covered with thorns, so it should be handled with care.	从黑暗食人花身上取出的种子。有毒并长满尖刺，需要小心处理。	怀旧服-物品说明#4000038	资料站完整物品说明
+A medicine with weird vibes left by a Wraith.	幽灵留下的带着怪异气息的药。	怀旧服-物品说明#4000039	资料站完整物品说明
+A huge piece of claw cut off of a Clang.	从克朗身上切下的一大块钳子。	怀旧服-物品说明#4000040	资料站完整物品说明
+A very solid and tough piece of skin from a Croco.	从克罗克身上取得的一块非常结实坚韧的皮。	怀旧服-物品说明#4000041	资料站完整物品说明
+A bottle containing frogs that a Malady had for various experiments.	装着玛勒迪用于各种实验的青蛙的瓶子。	怀旧服-物品说明#4000042	资料站完整物品说明
+Mystic rubble that was a part of a Stone Golem.	曾是石巨人身体一部分的神秘碎石。	怀旧服-物品说明#4000043	资料站完整物品说明
+Mystic rubble that was a part of a Dark Stone Golem.	曾是黑暗石巨人身体一部分的神秘碎石。	怀旧服-物品说明#4000044	资料站完整物品说明
+An eye removed from a Wild Kargo.	从野生卡戈身上取下的眼睛。	怀旧服-物品说明#4000045	资料站完整物品说明
+A very solid and heavy piece of horn from a Tauromacis.	从牛魔王身上取得的一块非常坚硬沉重的角。	怀旧服-物品说明#4000046	资料站完整物品说明
+A very tough and heavy piece of horn from a Taurospear.	从长枪牛魔王身上取得的一块非常坚韧沉重的角。	怀旧服-物品说明#4000047	资料站完整物品说明
+A spore from Mushmom, a humongous mushroom.	巨大蘑菇蘑菇王的孢子。	怀旧服-物品说明#4000048	资料站完整物品说明
+An animal's skin that's been cut away.	剥下来的动物皮。	怀旧服-物品说明#4000049	资料站完整物品说明
+A solid piece of dragon's skin that gives off a mysterious light.	散发神秘光芒的坚硬龙皮。	怀旧服-物品说明#4000050	资料站完整物品说明
+The spore of a glowing mushroom.	发光蘑菇的孢子。	怀旧服-物品说明#4000051	资料站完整物品说明
+A small petal taken from the bud of a parasitic flower.	从寄生花花苞上取下的小花瓣。	怀旧服-物品说明#4000052	资料站完整物品说明
+A wing cut off of a Golden Stirge, a small bat glowing with golden light.	从金色蝙蝠怪身上切下的翅膀，这是一种闪着金光的小蝙蝠。	怀旧服-物品说明#4000053	资料站完整物品说明
+A tail removed from an Aqumander.	从水蜥蜴身上取下的尾巴。	怀旧服-物品说明#4000054	资料站完整物品说明
+A leg removed from a glowing octopus.	从发光章鱼身上取下的腿。	怀旧服-物品说明#4000055	资料站完整物品说明
+A large petal taken from a fully bloomed parasitic flower.	从完全盛开的寄生花上取下的大花瓣。	怀旧服-物品说明#4000056	资料站完整物品说明
+A tail removed from a Duskmander.	从黄昏蜥蜴身上取下的尾巴。	怀旧服-物品说明#4000057	资料站完整物品说明
+A bough broken off of a huge tree.	从巨大树木上折下的大树枝。	怀旧服-物品说明#4000058	资料站完整物品说明
+An old and putrid charm taken from a rotting undead monster.	从腐烂的不死怪物身上取得的古旧腐臭符咒。	怀旧服-物品说明#4000059	资料站完整物品说明
+A bough broken off of a huge, decaying tree.	从腐朽的巨大树木上折下的大树枝。	怀旧服-物品说明#4000060	资料站完整物品说明
+A fresh coconut made in Florina Beach.	来自黄金海滩的新鲜椰子。	怀旧服-物品说明#4000061	资料站完整物品说明
+A small bundle of animal fur. Soft and light, it looks like it could drift away at any moment.	一小束动物毛。柔软又轻盈，看起来随时都会飘走。	怀旧服-物品说明#4000062	资料站完整物品说明
+The source of magical power once possessed by a monster. A mysterious energy can be felt.	怪物曾拥有的魔力源泉。可以感受到一股神秘能量。	怀旧服-物品说明#4000063	资料站完整物品说明
+A poisonous mushroom that lives on the humongous Zombie Mushroom.	据说是超级好吃的菇菇!不过看起来好像有毒.\r\n\r\n好吃便当的材料, #c不分种类,收集3个后双击即可挑战制作好吃便当,#别怕失败,快来做做看吧!	怀旧服-物品说明#4000064	资料站完整物品说明
+A cap removed from a Rotten Mushmom.	从腐烂蘑菇王身上取下的蘑菇盖。	怀旧服-物品说明#4000065	资料站完整物品说明
+A shiny glass shoes for women only.	只适合女性穿戴的闪亮玻璃鞋。	怀旧服-物品说明#4001000	资料站完整物品说明
+A coupon earned by taking down a monster. Can be traded for a pass.	打倒怪物后获得的优惠券。可交换通行证。	怀旧服-物品说明#4001001	资料站完整物品说明
+A pass earned by trading with a coupon. Can only advance to the next stage with a pass.	用优惠券交换获得的通行证。只有持有通行证才能进入下一阶段。	怀旧服-物品说明#4001002	资料站完整物品说明
+A fancily decorated mirror.	装饰华丽的镜子。	怀旧服-物品说明#4001003	资料站完整物品说明
+A book with a dangerous content.	一本内容危险的书。	怀旧服-物品说明#4001004	资料站完整物品说明
+An old gold watch. An article left by Alex's late mother.	一块旧金表。亚勒克斯已故母亲留下的遗物。	怀旧服-物品说明#4001005	资料站完整物品说明
+"A lost deed to the land for ""Blackbull"" of Perion."	勇士部落“黑牛”丢失的土地契约。	怀旧服-物品说明#4001006	资料站完整物品说明
+A scroll from long ago that contains powerful, mysterious magic from then.	来自很久以前的卷轴，蕴含着当时强大而神秘的魔法。	怀旧服-物品说明#4001007	资料站完整物品说明
+A flame with the look of a feather. It never stops burning.	形似羽毛的火焰。永远不会停止燃烧。	怀旧服-物品说明#4001008	资料站完整物品说明
+A souvenir for entering the event. Made out of gold, so you can sell it for a high price.	参加活动的纪念品。由黄金制成，因此能卖出高价。	怀旧服-物品说明#4001009	资料站完整物品说明
+A small screw made out of steel. Used as a material for crafting various items.	用钢铁制成的小螺丝。可作为制作各种道具的材料。	怀旧服-物品说明#4003000	资料站完整物品说明
+Processed wood made out of tree branches. Used as a material for crafting various items.	用树枝加工而成的木材。可作为制作各种道具的材料。	怀旧服-物品说明#4003001	资料站完整物品说明
+A feather that's stiff and rough. Used as a material for crafting various items.	又硬又粗糙的羽毛。可作为制作各种道具的材料。	怀旧服-物品说明#4003002	资料站完整物品说明
+A soft and light feather. Used as a material for crafting various items.	柔软轻盈的羽毛。可作为制作各种道具的材料。	怀旧服-物品说明#4003003	资料站完整物品说明
+Water frozen through the power of magic. Doesn't melt easily.	通过魔力冻结而成的水。不容易融化。	怀旧服-物品说明#4003004	资料站完整物品说明
+A piece of wing from a fairy. It's soft and brittle, so it should be handled with care.	妖精翅膀的一部分。柔软且易碎，需要小心处理。	怀旧服-物品说明#4003005	资料站完整物品说明
+Finely processed leather. Used as a material for crafting various items.	精细加工过的皮革。可作为制作各种道具的材料。	怀旧服-物品说明#4003006	资料站完整物品说明
+A thin but durable spool of thread. Used as a material for crafting various items.	又细又耐用的一卷线。可作为制作各种道具的材料。	怀旧服-物品说明#4003007	资料站完整物品说明
+Softly processed cloth. Used as a material for crafting various items.	柔软加工过的布料。可作为制作各种道具的材料。	怀旧服-物品说明#4003008	资料站完整物品说明
+Finely crafted parchment. It is used as a material when creating magic-infused scrolls.	精细制作的羊皮纸。用于制作注入魔力的卷轴。	怀旧服-物品说明#4003009	资料站完整物品说明
+A black dye used to dye items black when crafting certain items.	用于在制作某些道具时将其染成黑色的黑色染料。	怀旧服-物品说明#4003010	资料站完整物品说明
+A white dye used to dye items white when crafting certain items.	用于在制作某些道具时将其染成白色的白色染料。	怀旧服-物品说明#4003011	资料站完整物品说明
+A red dye used to dye items red when crafting certain items.	用于在制作某些道具时将其染成红色的红色染料。	怀旧服-物品说明#4003012	资料站完整物品说明
+A yellow dye used to dye items yellow when crafting certain items.	用于在制作某些道具时将其染成黄色的黄色染料。	怀旧服-物品说明#4003013	资料站完整物品说明
+A blue dye used to dye items blue when crafting certain items.	用于在制作某些道具时将其染成蓝色的蓝色染料。	怀旧服-物品说明#4003014	资料站完整物品说明
+The ore of a light and weak bronze.	轻且较脆弱的青铜矿石。	怀旧服-物品说明#4010000	资料站完整物品说明
+The ore of a tough iron.	坚韧铁矿的矿石。	怀旧服-物品说明#4010001	资料站完整物品说明
+The ore of a light, solid mithril.	轻而坚固的秘银矿石。	怀旧服-物品说明#4010002	资料站完整物品说明
+The ore of a heavy, strong adamantium.	沉重而坚硬的金刚石矿石。	怀旧服-物品说明#4010003	资料站完整物品说明
+The ore of a shiny silver.	闪亮的银矿石。	怀旧服-物品说明#4010004	资料站完整物品说明
+The ore of orihalcon, a very rare mineral.	非常稀有的锂矿石。	怀旧服-物品说明#4010005	资料站完整物品说明
+The ore of gold, a very rare mineral.	非常稀有的金矿石。	怀旧服-物品说明#4010006	资料站完整物品说明
+A light, weak, refined bronze.	轻且较脆弱的精炼青铜。	怀旧服-物品说明#4010100	资料站完整物品说明
+A tough, refined iron.	坚韧的精炼铁。	怀旧服-物品说明#4010101	资料站完整物品说明
+A solid, light, refined mithril.	坚固轻盈的精炼秘银。	怀旧服-物品说明#4010102	资料站完整物品说明
+A heavy, strong, refined adamantium.	沉重而坚硬的精炼金刚石。	怀旧服-物品说明#4010103	资料站完整物品说明
+A shiny, refined silver.	闪亮的精炼银。	怀旧服-物品说明#4010104	资料站完整物品说明
+A very rare, refined orihalcon.	非常稀有的精炼锂。	怀旧服-物品说明#4010105	资料站完整物品说明
+A very rare, refined gold.	非常稀有的精炼金。	怀旧服-物品说明#4010106	资料站完整物品说明
+A glittering mineral that possesses the mysterious power of the moon.	蕴含月亮神秘力量的闪耀矿物。	怀旧服-物品说明#4010107	资料站完整物品说明
+The ore of a red jewel.	红色宝石的矿石。	怀旧服-物品说明#4020000	资料站完整物品说明
+The ore of a purple jewel.	紫色宝石的矿石。	怀旧服-物品说明#4020001	资料站完整物品说明
+The ore of a blue jewel.	蓝色宝石的矿石。	怀旧服-物品说明#4020002	资料站完整物品说明
+The ore of a green jewel.	绿色宝石的矿石。	怀旧服-物品说明#4020003	资料站完整物品说明
+The ore of a jewel with many colors.	拥有多种颜色的宝石矿石。	怀旧服-物品说明#4020004	资料站完整物品说明
+The ore of a blue, transparent jewel.	蓝色透明宝石的矿石。	怀旧服-物品说明#4020005	资料站完整物品说明
+The ore of a yellow jewel.	黄色宝石的矿石。	怀旧服-物品说明#4020006	资料站完整物品说明
+The ore of a transparent jewel.	透明宝石的矿石。	怀旧服-物品说明#4020007	资料站完整物品说明
+An ore of a crystal that has dark powers stored in it.	蕴藏黑暗力量的水晶矿石。	怀旧服-物品说明#4020008	资料站完整物品说明
+A red jewel.	红色宝石。	怀旧服-物品说明#4020100	资料站完整物品说明
+A purple jewel.	紫色宝石。	怀旧服-物品说明#4020101	资料站完整物品说明
+A blue jewel.	蓝色宝石。	怀旧服-物品说明#4020102	资料站完整物品说明
+A green jewel.	绿色宝石。	怀旧服-物品说明#4020103	资料站完整物品说明
+A jewel with many colors.	拥有多种颜色的宝石。	怀旧服-物品说明#4020104	资料站完整物品说明
+A blue, transparent jewel.	蓝色透明宝石。	怀旧服-物品说明#4020105	资料站完整物品说明
+A yellow jewel.	黄色宝石。	怀旧服-物品说明#4020106	资料站完整物品说明
+A transparent jewel.	透明宝石。	怀旧服-物品说明#4020107	资料站完整物品说明
+A very rare crystal that has dark powers stored in it.	蕴藏黑暗力量的非常稀有的水晶。	怀旧服-物品说明#4020108	资料站完整物品说明
+A glittering jewel that possesses the mysterious power of a star.	蕴含星星神秘力量的闪耀宝石。	怀旧服-物品说明#4020109	资料站完整物品说明
+Sera's mirror. Has lots of decorations on it.	莎丽的镜子。上面有许多装饰。	怀旧服-物品说明#4031000	资料站完整物品说明
+A letter written by Maria. Needs to be delivered to Lucas of Amherst.	玛利亚写的信。需要送给阿姆赫斯特的卢卡斯。	怀旧服-物品说明#4031001	资料站完整物品说明
+A letter written by Lucas. Needs to be delivered to Mushroom Town's Maria.	卢卡斯写的信。需要送给蘑菇镇的玛利亚。	怀旧服-物品说明#4031002	资料站完整物品说明
+A rusty screw from an old, unusable box that has been broken down. Can this be recycled?	从被拆开的旧废弃箱子中取出的生锈螺丝。这个能回收吗？	怀旧服-物品说明#4031003	资料站完整物品说明
+An old wooden board from an old, unusable box that has been broken down. Can this be recycled?	[制作] 这种材料用于在厨神的厨房中制作物品。\n#c工具#安装完成后即可购买。	怀旧服-物品说明#4031004	资料站完整物品说明
+A special sauce from Estelle of Ellinia. Its ingredients and formulas are all kept secret.	魔法密林的艾斯特尔制作的特制酱料。材料和配方都被保密。	怀旧服-物品说明#4031005	资料站完整物品说明
+An old gold watch. An article left by Alex's late mother.	一块旧金表。亚勒克斯已故母亲留下的遗物。	怀旧服-物品说明#4031006	资料站完整物品说明
+A piece of a shattered mirror.	[制作] 这种材料用于在厨神的厨房中制作物品。\n#c工具#安装完成后即可购买。	怀旧服-物品说明#4031007	资料站完整物品说明
+"A huge glass marble that is transparent and radiates in multiple colors. At the corner of it says ""To My Friend Utah."""	一颗巨大的玻璃珠，透明并散发多彩光芒。角落里写着“送给我的朋友犹他”。	怀旧服-物品说明#4031008	资料站完整物品说明
+No telling the power of this mysterious, weird medicine.	无法得知这种神秘怪药的力量。	怀旧服-物品说明#4031009	资料站完整物品说明
+A bottle full of Arcon's blood.	装满阿尔康之血的瓶子。	怀旧服-物品说明#4031010	资料站完整物品说明
+A sparking rock that shines by itself.	会自行发光的闪耀石头。	怀旧服-物品说明#4031011	资料站完整物品说明
+Leaves of the Witchgrass growing in the swamps. Laden with incredible magical powers, it is used as a primary source for herbal medicine.	生长在沼泽中的魔女草叶。蕴含惊人的魔力，被用作草药的主要原料。	怀旧服-物品说明#4031012	资料站完整物品说明
+A letter from Dances with Balrog of Perion. Needs to be shown to the Warrior Job Instructor somewhere around the highland.	勇士部落的武术教练写来的信。需要拿给高地附近的战士转职教官看。	怀旧服-物品说明#4031013	资料站完整物品说明
+A letter from Grendel the Really Old of Ellinia. Needs to be shown to the Magician Job Instructor somewhere around the forest.	魔法密林的汉斯写来的信。需要拿给森林附近的魔法师转职教官看。	怀旧服-物品说明#4031014	资料站完整物品说明
+A letter from Athena Pierce of Henesys. Needs to be shown to the Bowman Job Instructor somewhere around the entrance to the Dungeon.	射手村的赫丽娜写来的信。需要拿给迷宫入口附近的弓箭手转职教官看。	怀旧服-物品说明#4031015	资料站完整物品说明
+A letter from Dark Lord of Kerning City. Needs to be shown to the Thief Job Instructor somewhere around the city.	废弃都市的达克鲁写来的信。需要拿给城市附近的飞侠转职教官看。	怀旧服-物品说明#4031016	资料站完整物品说明
+A mysterious marble that possesses the dark, ugly nature of the monster.	蕴含怪物黑暗丑恶本性的神秘珠子。	怀旧服-物品说明#4031017	资料站完整物品说明
+A proof from the instructor that you have passed the test for the 2nd job advancement. Once possessed, you'll be recognized as a hero.	教官给予的证明，表示你已通过二转测试。持有后会被认可为英雄。	怀旧服-物品说明#4031018	资料站完整物品说明
+A mysterious marble that possesses the dark, ugly nature of the monster.	蕴含怪物黑暗丑恶本性的神秘珠子。	怀旧服-物品说明#4031019	资料站完整物品说明
+A proof from the instructor that you have passed the test for the 2nd job advancement. Once possessed, you'll be recognized as a hero.	教官给予的证明，表示你已通过二转测试。持有后会被认可为英雄。	怀旧服-物品说明#4031020	资料站完整物品说明
+A mysterious marble that possesses the dark, ugly nature of the monster.	蕴含怪物黑暗丑恶本性的神秘珠子。	怀旧服-物品说明#4031021	资料站完整物品说明
+A proof from the instructor that you have passed the test for the 2nd job advancement. Once possessed, you'll be recognized as a hero.	教官给予的证明，表示你已通过二转测试。持有后会被认可为英雄。	怀旧服-物品说明#4031022	资料站完整物品说明
+A mysterious marble that possesses the dark, ugly nature of the monster.	蕴含怪物黑暗丑恶本性的神秘珠子。	怀旧服-物品说明#4031023	资料站完整物品说明
+A proof from the instructor that you have passed the test for the 2nd job advancement. Once possessed, you'll be recognized as a hero.	教官给予的证明，表示你已通过二转测试。持有后会被认可为英雄。	怀旧服-物品说明#4031024	资料站完整物品说明
+A pile of flowers that give off pink, mystical colors.	一束散发粉色神秘光彩的花。	怀旧服-物品说明#4031025	资料站完整物品说明
+A double-rooted Red Ginseng.	双根红参。	怀旧服-物品说明#4031026	资料站完整物品说明
+A fully reawaken Gladius that a hero has used.	英雄曾使用过的、完全重新觉醒的古剑。	怀旧服-物品说明#4031027	资料站完整物品说明
+A fragment of the map that Zelya lost.	泽莉娅遗失地图的一块碎片。	怀旧服-物品说明#4031028	资料站完整物品说明
+A bough broken off a huge, decaying tree. It gives off a foreboding aura.	从腐朽的巨大树木上折下的树枝。散发着不祥的气息。	怀旧服-物品说明#4031029	资料站完整物品说明
+A special Unagi consisting of the tails of Curse Eye...and pig's head. Needs to be delivered to Ronnie.	由风独眼兽的尾巴……和猪头做成的特制烤鳗鱼。需要送给罗尼。	怀旧服-物品说明#4031030	资料站完整物品说明
+A fresh milk from the fairies. Needs to be delivered to Ronnie.	看上去很新鲜的牛奶，是一种营养丰富的健康食品。	怀旧服-物品说明#4031031	资料站完整物品说明
+No one knows what's in this book.	没人知道这本书里写着什么。	怀旧服-物品说明#4031032	资料站完整物品说明
+A feather burning in black. So light, it feels like it's going to fly away.	燃烧着黑色火焰的羽毛。非常轻，仿佛随时都会飞走。	怀旧服-物品说明#4031033	资料站完整物品说明
+A scroll with unrecognizable ancient characters on it.	写着无法辨认的古代文字的卷轴。	怀旧服-物品说明#4031034	资料站完整物品说明
+A letter from Bartos the instructor. Needs to be delivered to Frod.	教官巴托斯写来的信。需要送给弗罗德。	怀旧服-物品说明#4031035	资料站完整物品说明
+The ticket that allows you to enter Construction Site B1 of Kerning City Subway.	可以进入废弃都市地铁工地B1的门票。	怀旧服-物品说明#4031036	资料站完整物品说明
+The ticket that allows you to enter Construction Site B2 of Kerning City Subway.	可以进入废弃都市地铁工地B2的门票。	怀旧服-物品说明#4031037	资料站完整物品说明
+The ticket that allows you to enter Construction Site B3 of Kerning City Subway.	可以进入废弃都市地铁工地B3的门票。	怀旧服-物品说明#4031038	资料站完整物品说明
+The coin that Shumi lost.	休咪遗失的硬币。	怀旧服-物品说明#4031039	资料站完整物品说明
+The roll of cash that Shumi lost.	休咪遗失的一卷现金。	怀旧服-物品说明#4031040	资料站完整物品说明
+The sack of money that Shumi lost.	休咪遗失的钱袋。	怀旧服-物品说明#4031041	资料站完整物品说明
+A pink flower with a huge flower bud.	花苞很大的粉色花朵。	怀旧服-物品说明#4031042	资料站完整物品说明
+A blue flower with a huge flower bud.	花苞很大的蓝色花朵。	怀旧服-物品说明#4031043	资料站完整物品说明
+A white flower with a huge flower bud.	花苞很大的白色花朵。	怀旧服-物品说明#4031044	资料站完整物品说明
+The monster cards needed for the game of Match Cards. Need to have plenty of cards.	玩记忆卡游戏所需的怪物卡片。需要准备大量卡片。	怀旧服-物品说明#4031045	资料站完整物品说明
+A wooden table that allows you to play Omok.	可以用来玩五子棋的木桌。	怀旧服-物品说明#4031046	资料站完整物品说明
+A slime-shaped Omok piece to play Omok.	用于玩五子棋的绿水灵形棋子。	怀旧服-物品说明#4031047	资料站完整物品说明
+A mushroom-shaped Omok piece to play Omok.	用于玩五子棋的蘑菇形棋子。	怀旧服-物品说明#4031048	资料站完整物品说明
+A wooden table that allows you to play Omok.	可以用来玩五子棋的木桌。	怀旧服-物品说明#4031049	资料站完整物品说明
+A slime-shaped Omok piece to play Omok.	用于玩五子棋的绿水灵形棋子。	怀旧服-物品说明#4031050	资料站完整物品说明
+A pig-shaped Omok piece to play Omok.	用于玩五子棋的猪形棋子。	怀旧服-物品说明#4031051	资料站完整物品说明
+A wooden table that allows you to play Omok.	可以用来玩五子棋的木桌。	怀旧服-物品说明#4031052	资料站完整物品说明
+A slime-shaped Omok piece to play Omok.	用于玩五子棋的绿水灵形棋子。	怀旧服-物品说明#4031053	资料站完整物品说明
+An octopus-shaped Omok piece to play Omok.	用于玩五子棋的章鱼形棋子。	怀旧服-物品说明#4031054	资料站完整物品说明
+A wooden table that allows you to play Omok.	可以用来玩五子棋的木桌。	怀旧服-物品说明#4031055	资料站完整物品说明
+A pig-shaped Omok piece to play Omok.	用于玩五子棋的猪形棋子。	怀旧服-物品说明#4031056	资料站完整物品说明
+A mushroom-shaped Omok piece to play Omok.	用于玩五子棋的蘑菇形棋子。	怀旧服-物品说明#4031057	资料站完整物品说明
+A wooden table that allows you to play Omok.	可以用来玩五子棋的木桌。	怀旧服-物品说明#4031058	资料站完整物品说明
+An octopus-shaped Omok piece to play Omok.	用于玩五子棋的章鱼形棋子。	怀旧服-物品说明#4031059	资料站完整物品说明
+A mushroom-shaped Omok piece to play Omok.	用于玩五子棋的蘑菇形棋子。	怀旧服-物品说明#4031060	资料站完整物品说明
+A wooden table that allows you to play Omok.	可以用来玩五子棋的木桌。	怀旧服-物品说明#4031061	资料站完整物品说明
+A pig-shaped Omok piece to play Omok.	用于玩五子棋的猪形棋子。	怀旧服-物品说明#4031062	资料站完整物品说明
+An octopus-shaped Omok piece to play Omok.	用于玩五子棋的章鱼形棋子。	怀旧服-物品说明#4031063	资料站完整物品说明
+A red cape for women-only. Looks like it's going to be very warm.	女性专用的红色披风。看起来会很暖和。	怀旧服-物品说明#4031064	资料站完整物品说明
+A mystical scroll written in a lost ancient language.	用失传的古代语言写成的神秘卷轴。	怀旧服-物品说明#4031065	资料站完整物品说明
+A map that shows where the jewels are hidden away.	标示宝石藏匿地点的地图。	怀旧服-物品说明#4031066	资料站完整物品说明
+A box locked away with a powerful magical lock. Apparently there are jewels inside.	被强大魔法锁封住的箱子。里面似乎装着宝石。	怀旧服-物品说明#4031067	资料站完整物品说明
+A fossil of an animal from thousands of years ago.	数千年前动物的化石。	怀旧服-物品说明#4031068	资料站完整物品说明
+A fossil of a leaf of a plant from thousands and thousands of years ago.	数千年前植物叶子的化石。	怀旧服-物品说明#4031069	资料站完整物品说明
+A letter of recommendation from Winston the Archeologist. Need to deliver this to Dr. Betty of Ellinia.	考古学家温斯顿写的推荐信。需要交给魔法密林的贝蒂博士。	怀旧服-物品说明#4031070	资料站完整物品说明
+A wooden box that contains fossils. The cover on the box reads 'WARNING: Handle with CARE.'	装有化石的木箱。箱盖上写着“警告：小心搬运”。	怀旧服-物品说明#4031071	资料站完整物品说明
+A plant that's been dug out and kept with everything in tact,	连同根部等完整挖出并保存下来的植物。	怀旧服-物品说明#4031072	资料站完整物品说明
+Drake Skull kept in its original state through chemicals.	通过药剂保持原貌的龙头骨。	怀旧服-物品说明#4031073	资料站完整物品说明
+Dr. Betty's final report on the studies of fossils.	贝蒂博士关于化石研究的最终报告。	怀旧服-物品说明#4031074	资料站完整物品说明
+Very rarely found on Dark Axe Stump's. A hardened liquid from Stump.	在黑斧木妖身上极少发现。木妖身上硬化的液体。	怀旧服-物品说明#4031075	资料站完整物品说明
+A toy sword that Ayan played with growing up.	阿燕小时候玩过的玩具剑。	怀旧服-物品说明#4031076	资料站完整物品说明
+A letter from Ayan. Must be delievered to Bruce of Henesys.	阿燕写的信。必须送给射手村的布鲁斯。	怀旧服-物品说明#4031077	资料站完整物品说明
+A pouch made out of alligator skin. Looks sturdy enough to hold on to most anything.	用鳄鱼皮制成的小袋。看起来结实到几乎什么都能装。	怀旧服-物品说明#4031078	资料站完整物品说明
+A fairy medicine made with a collection of rare, hard-to-find ingredients. There's a legend that anyone that takes pill can fly, but it's only been passed around from generations to generations.	由稀有且难以找到的材料调制而成的妖精药。据传吃下这颗药丸的人就能飞翔，但这只是世代相传的传说。	怀旧服-物品说明#4031079	资料站完整物品说明
+A mushroom spore given by Arwen the Fairy. Must take it to Grendel the Really Old for analysis.	妖精艾温交给你的奇怪蘑菇孢子。必须拿给汉斯进行分析。	怀旧服-物品说明#4031080	资料站完整物品说明
+A mushroom gathered near the strange cave entrance.	在奇怪洞穴入口附近采集到的蘑菇。	怀旧服-物品说明#4031081	资料站完整物品说明
+A set that allows you to play Omok. Uses slime and mushroom-shaped figures for the game.	可以用来玩五子棋的套组。游戏使用绿水灵和蘑菇形棋子。	怀旧服-物品说明#4080000	资料站完整物品说明
+A set that allows you to play Omok. Uses pig and slime-shaped figures for the game.	可以用来玩五子棋的套组。游戏使用猪和绿水灵形棋子。	怀旧服-物品说明#4080001	资料站完整物品说明
+A set that allows you to play Omok. Uses slime and octopus-shaped figures for the game.	可以用来玩五子棋的套组。游戏使用绿水灵和章鱼形棋子。	怀旧服-物品说明#4080002	资料站完整物品说明
+A set that allows you to play Omok. Uses pig and mushroom-shaped figures for the game.	可以用来玩五子棋的套组。游戏使用猪和蘑菇形棋子。	怀旧服-物品说明#4080003	资料站完整物品说明
+A set that allows you to play Omok. Uses octopus and mushroom-shaped figures for the game.	可以用来玩五子棋的套组。游戏使用章鱼和蘑菇形棋子。	怀旧服-物品说明#4080004	资料站完整物品说明
+A set that allows you to play Omok. Uses pig and octopus-shaped figures for the game.	可以用来玩五子棋的套组。游戏使用猪和章鱼形棋子。	怀旧服-物品说明#4080005	资料站完整物品说明
+A set that allows you to play Match Cards.	可以用来玩记忆卡游戏的套组。	怀旧服-物品说明#4080100	资料站完整物品说明
+When used while crafting equipment, there is a chance to randomize the item's bonus stats.	制作装备时使用后，有机会使道具的追加属性随机变化。	怀旧服-物品说明#4130000	资料站完整物品说明
+When used while crafting scrolls, there is a chance to produce an Intermediate, Greater, or Chaos scroll of the same category.	制作卷轴时使用后，有机会制作出同类别的中级、高级或混沌卷轴。	怀旧服-物品说明#4130001	资料站完整物品说明
+A scroll required for transferring a pet’s level. Bring this scroll to Mar the Fairy in Mar’s Forest in Ellinia, and you can transfer a pet’s level and closeness to another pet.\n#cDouble-click on the item for more information.#	转移宠物等级时所需的卷轴。将此卷轴带给魔法密林玛尔森林的妖精玛尔，即可将宠物的等级和亲密度转移到另一只宠物身上。双击道具可查看更多信息。	怀旧服-物品说明#4160000	资料站完整物品说明
+They are quiet and gentle in nature, so they don't go craving for food too often. They don't seem to be too obedient of their owners.	性格安静温顺，因此不太容易感到饥饿。似乎不太会听从主人的命令。	怀旧服-物品说明#5000000	资料站完整物品说明
+They are outgoing and active in nature, so they can't sit still for a period of time, which makes them hungry often. They are very obedient of their owners.	性格外向活泼，无法长时间安静待着，所以经常会饿。非常听从主人的命令。	怀旧服-物品说明#5000001	资料站完整物品说明
+They are well-behaved and quiet, so they don't need to be fed more than the usual amount. They are smart and obedient, but also stubborn.	乖巧安静，因此不需要比平常喂更多食物。聪明又听话，但也有点固执。	怀旧服-物品说明#5000002	资料站完整物品说明
+They are very very active, so they get hungry pretty often. Very intelligent, they are quite obedient of their owners.	非常非常活跃，所以很容易饿。十分聪明，也很听从主人的命令。	怀旧服-物品说明#5000003	资料站完整物品说明
+They are quiet and gentle in nature, so they don't go craving for food too often. They don't seem to be too obedient of their owners.	性格安静温顺，因此不太容易感到饥饿。似乎不太会听从主人的命令。	怀旧服-物品说明#5000004	资料站完整物品说明
+They are well-behaved and quiet, so they don't need to be fed more than the usual amount. They are smart and obedient, but also stubborn.	飘飘白兔。 虽然是飘飘白兔，但由于生命水全部枯竭而回归了玩偶形态。使用特定魔法可以重新赋予其生命。	怀旧服-物品说明#5000005	资料站完整物品说明
+Active, yet calm at times. Can be moderately fed. Very smart in general.	活泼，但有时也很沉稳。喂食频率适中即可。总体来说非常聪明。	怀旧服-物品说明#5000006	资料站完整物品说明
+Very active and hungry at all times. Need to be fed often. Very friendly in nature, so it's easy to increase the level of closeness with them.	非常活跃，总是很饿。需要经常喂食。性格十分友好，因此很容易提升亲密度。	怀旧服-物品说明#5000007	资料站完整物品说明
+Calm, relaxed, and gentle. A very rare creature.	沉稳、悠闲又温顺。是非常稀有的生物。	怀旧服-物品说明#5000008	资料站完整物品说明
+A very adorable male baby dinosaur that is both active and unpredictable.	非常可爱的雄性小恐龙，活泼又难以预测。	怀旧服-物品说明#5000009	资料站完整物品说明
+A very adorable female baby dinosaur that is both active and unpredictable.	非常可爱的雌性小恐龙，活泼又难以预测。	怀旧服-物品说明#5000010	资料站完整物品说明
+A snail that is really hard to figure out. The pet's skills will disappear once the magic duration ends.	一只让人摸不透的蜗牛。魔法持续时间结束后，宠物技能会消失。	怀旧服-物品说明#5000054	资料站完整物品说明
+A special effect in which you'll see a brightly smiling sun floating over you. On the KeyConfig, configure this on a button of your choice to turn the effect on/off.	一种特殊效果，会在你头顶看到一轮灿烂微笑的太阳漂浮着。在按键设置中将它设置到你选择的按键上，即可开启/关闭效果。	怀旧服-物品说明#5010000	资料站完整物品说明
+A special effect in which you'll see a brightly smiling moon floating around in a sea of stars over you. On the KeyConfig, configure this on a button of your choice to turn the effect on/off.	一种特殊效果，会在你头顶看到一轮灿烂微笑的月亮漂浮在星海中。在按键设置中将它设置到你选择的按键上，即可开启/关闭效果。	怀旧服-物品说明#5010001	资料站完整物品说明
+A special effect in which you'll see a rainbow in its full 7 colors floating next to you. Designate a HotKey to turn the effect on/off.	一种特殊效果，会在你身边看到完整七色的彩虹漂浮着。指定快捷键即可开启/关闭效果。	怀旧服-物品说明#5010002	资料站完整物品说明
+A special effect in which you'll see Lilly the cute little devil floating around next to you. Designate a HotKey to turn the effect on/off.	一种特殊效果，会在你身边看到可爱的小恶魔莉莉漂浮着。指定快捷键即可开启/关闭效果。	怀旧服-物品说明#5010003	资料站完整物品说明
+A special effect that shows a submarine under the water. Designate a HotKey to turn the effect on/off.	一种显示水下潜水艇的特殊效果。指定快捷键即可开启/关闭效果。	怀旧服-物品说明#5010004	资料站完整物品说明
+Set up this special store on the Free Market, and this Elf, working as the Hired Merchant, will sell the items for the owner, even if the owner does not log on to the game.	在自由市场设置这个特殊商店后，该精灵会作为雇佣商人替主人出售道具，即使主人没有登录游戏也可以。	怀旧服-物品说明#5030000	资料站完整物品说明
+Set up this special store on the Free Market, and this Teddy Bear, working as the Hired Merchant, will sell the items for the owner, even if the owner does not log on to the game.	在自由市场设置这个特殊商店后，该泰迪熊会作为雇佣商人替主人出售道具，即使主人没有登录游戏也可以。	怀旧服-物品说明#5030001	资料站完整物品说明
+Set up this special store on the Free Market, and this Robot, working as the Hired Merchant, will sell the items for the owner, even if the owner does not log on to the game.	在自由市场设置这个特殊商店后，该机器人会作为雇佣商人替主人出售道具，即使主人没有登录游戏也可以。	怀旧服-物品说明#5030002	资料站完整物品说明
+Set up this special store on the Free Market, and this Coffeehouse, doubling as the Hired Merchant, will be a place that sells the items for the owner, even if the owner does not log on to the game. #cIf an item is sold, the owner will be notified through the chat box.#	在自由市场设置这个特殊商店后，这间咖啡屋会兼作雇佣商人，为主人出售道具，即使主人没有登录游戏也可以。若有道具售出，主人会通过聊天框收到通知。	怀旧服-物品说明#5030003	资料站完整物品说明
+Set up this special store on the Free Market, and this Granny, working as the Hired Merchant, will sell the items for the owner, even if the owner does not log on to the game. #cIf an item is sold, the owner will be notified through the chat box.#	在自由市场设置这个特殊商店后，这位老婆婆会作为雇佣商人替主人出售道具，即使主人没有登录游戏也可以。若有道具售出，主人会通过聊天框收到通知。	怀旧服-物品说明#5030004	资料站完整物品说明
+#cResets all stats#, excluding the #cAP invested in HP/MP#.	重置除投入HP/MP以外的所有属性点。	怀旧服-物品说明#5050100	资料站完整物品说明
+When used, #call skills except for beginner skills will be reset#.	使用后，除新手技能外的所有技能都会被重置。	怀旧服-物品说明#5051001	资料站完整物品说明
+Shout to everyone in the channel your character is on with this megaphone. Only available for characters that are over Level 10.	使用这个喇叭，可向角色所在频道的所有人喊话。仅限10级以上角色使用。	怀旧服-物品说明#5070000	资料站完整物品说明
+Shout to everyone in the world your character is on with this megaphone. Only available for characters that are over Level 10.	从守护者的礼物中获得的道具。只有#c林之灵#才能获得。	怀旧服-物品说明#5070001	资料站完整物品说明
+Sprinkles snow on the map where your character is for 30 seconds. Enter a message of your choice.	在角色所在地图飘雪30秒。可输入你想显示的信息。	怀旧服-物品说明#5120000	资料站完整物品说明
+Sprinkles flower on the map where your character is for 30 seconds. Enter a message of your choice.	在角色所在地图撒落鲜花30秒。可输入你想显示的信息。	怀旧服-物品说明#5120001	资料站完整物品说明
+Sprinkles bubbles on the map where your character is for 30 seconds. Enter a message of your choice.	在角色所在地图撒落泡泡30秒。可输入你想显示的信息。	怀旧服-物品说明#5120002	资料站完整物品说明
+Sprinkles icy snow on the map where your character is for 30 seconds. Enter a message of your choice.	在角色所在地图撒落冰雪30秒。可输入你想显示的信息。	怀旧服-物品说明#5120003	资料站完整物品说明
+Sprinkles presents on the map where your character is for 30 seconds. Enter a message of your choice.	在角色所在地图撒落礼物30秒。可输入你想显示的信息。	怀旧服-物品说明#5120004	资料站完整物品说明
+Sprinkles chocolate on the map where your character is for 30 seconds. Enter a message of your choice.	在角色所在地图撒落巧克力30秒。可输入你想显示的信息。	怀旧服-物品说明#5120005	资料站完整物品说明
+Sprinkle flower petals on the map where your character is for 30 seconds. Enter a message of your choice.	在角色所在地图撒落花瓣30秒。可输入你想显示的信息。	怀旧服-物品说明#5120006	资料站完整物品说明
+Rains a sweet shower of candy sprinkles all over the map and displays a message of your choosing for 30 seconds!	让甜甜的糖果雨洒满整个地图，并显示你选择的信息，持续30秒！	怀旧服-物品说明#5120007	资料站完整物品说明
+Sprinkles maple leaves on the map where your character is for 30 sec. Enter a message of your choice.	在角色所在地图撒落枫叶30秒。可输入你想显示的信息。	怀旧服-物品说明#5120008	资料站完整物品说明
+Ignites fireworks on the map where your character is for 30 sec. Enter a message of your choice.	在角色所在地图燃放烟花30秒。可输入你想显示的信息。	怀旧服-物品说明#5120009	资料站完整物品说明
+Opens a regular store. Can be used in towns or the Free Market. Allows selling up to 16 items at once.	开设普通商店。可在城镇或自由市场使用。一次最多可出售16件道具。	怀旧服-物品说明#5140000	资料站完整物品说明
+A special-edition coupon that opens a sky blue tree store. Can be used in towns or the Free Market and sell up to 24 items at once. Available for a limited time only.	可开设天蓝色树形商店的特别版券。可在城镇或自由市场使用，一次最多可出售24件道具。限时提供。	怀旧服-物品说明#5140001	资料站完整物品说明
+A special-edition coupon that opens a pink tree store. Can be used in towns or the Free Market and sell up to 24 items at once. Available for a limited time only.	可开设粉色树形商店的特别版券。可在城镇或自由市场使用，一次最多可出售24件道具。限时提供。	怀旧服-物品说明#5140002	资料站完整物品说明
+A special-edition coupon that opens a orange tree store. Can be used in towns or the Free Market and sell up to 24 items at once. Available for a limited time only.	可开设橙色树形商店的特别版券。可在城镇或自由市场使用，一次最多可出售24件道具。限时提供。	怀旧服-物品说明#5140003	资料站完整物品说明
+A special-edition coupon that opens a green tree store. Can be used in towns or the Free Market and sell up to 24 items at once. Available for a limited time only.	可开设绿色树形商店的特别版券。可在城镇或自由市场使用，一次最多可出售24件道具。限时提供。	怀旧服-物品说明#5140004	资料站完整物品说明
+Use it at #cHenesys Hair Salon# to change your hair style #crandomly#. (one-time use)	在射手村美发店使用，可随机更换发型。（一次性使用）	怀旧服-物品说明#5150000	资料站完整物品说明
+Use it at #cKerning City Hair Salon# to change your hair style #crandomly#. (one-time use)	在废弃都市美发店使用，可随机更换发型。（一次性使用）	怀旧服-物品说明#5150001	资料站完整物品说明
+Use it at #cHenesys Hair Salon# to change your hair to a style of #cyour choice#. (one-time use)	#c双击使用#就能拥有#c随机#一款经典皇家发型哦。	怀旧服-物品说明#5150100	资料站完整物品说明
+Use it at #cKerning City Hair Salon# to change your hair to a style of #cyour choice#. (one-time use)	在废弃都市美发店使用，可将发型更换为你选择的样式。（一次性使用）	怀旧服-物品说明#5150101	资料站完整物品说明
+Use it at #cHenesys Hair Salon# to change your hair color #crandomly#. (one-time use)	在射手村美发店使用，可随机更换发色。（一次性使用）	怀旧服-物品说明#5151000	资料站完整物品说明
+Use it at #cKerning City Hair Salon# to change your hair color #crandomly#. (one-time use)	在废弃都市美发店使用，可随机更换发色。（一次性使用）	怀旧服-物品说明#5151001	资料站完整物品说明
+Use it on #cHenesys Hair Salon# to change your hair to a color of #cyour choice#. (one-time use)	在射手村美发店使用，可将发色更换为你选择的颜色。（一次性使用）	怀旧服-物品说明#5151100	资料站完整物品说明
+Use it at #cKerning City Hair Salon# to change your hair color of #cyour choice#. (one-time use)	在废弃都市美发店使用，可将发色更换为你选择的颜色。（一次性使用）	怀旧服-物品说明#5151101	资料站完整物品说明
+Use it at #cHenesys Plastic Surgery# to change your face #crandomly#. (one-time use)	在射手村整形外科使用，可随机更换脸型。（一次性使用）	怀旧服-物品说明#5152000	资料站完整物品说明
+Use it at #cHenesys Plastic Surgery# to change your face to a style of #cyour choice#. (one-time use)	驚奇的閃亮整型卷,從9種驚奇整型中獲得1個.\r\n雙點擊話可以閱覽可能獲得的整型	怀旧服-物品说明#5152200	资料站完整物品说明
+Use it at #cHenesys Skin-Care# to change your skin to a color of #cyour choice#. (one-time use)	在射手村皮肤护理店使用，可将肤色更换为你选择的颜色。（一次性使用）	怀旧服-物品说明#5153000	资料站完整物品说明
+Use this item to name your pet. If you call its name before making an order, your pet will respond much better to your command. \n ex. Lucky, sit! \r\nOnly #cletters and numbers# can be used in names, and #conly 1 blank space is allowed in the text of the name.#	使用此道具可为宠物命名。如果在下达命令前先叫它的名字，宠物会更好地回应你的指令。例如：Lucky，坐下！名字只能使用字母和数字，且名称文本中最多允许1个空格。	怀旧服-物品说明#5170000	资料站完整物品说明
+A mysterious water gathered from the deepest valleys of Ellinia. It can extend a living pet’s active time, and if you bring it to Mar the fairy in Ellinia, she can restore a pet that has turned into a doll.	从魔法密林最深处山谷采集到的神秘之水。可延长活体宠物的活动时间；如果把它交给魔法密林的妖精玛尔，她可以让变成玩偶的宠物恢复。	怀旧服-物品说明#5180000	资料站完整物品说明
+Allows your pet to use HP potions on you when you're hurting. \n#cAvailable to all pets that do not have this skill.#	当你受伤时，允许宠物为你使用HP药水。适用于所有尚未拥有此技能的宠物。	怀旧服-物品说明#5190000	资料站完整物品说明
+Allows your pet to use MP potions on you when you're running dry. \n#cAvailable to all pets that do not have this skill.#	当你的MP不足时，允许宠物为你使用MP药水。适用于所有尚未拥有此技能的宠物。	怀旧服-物品说明#5190001	资料站完整物品说明
+Adds a skill that automatically picks up nearby items and mesos without having to move.\n#cCan be used on pets with Meso Magnet or Item Pouch.	添加可自动拾取附近道具和金币、无需移动的技能。可用于拥有金币磁铁或道具袋的宠物。	怀旧服-物品说明#5190002	资料站完整物品说明
+This scroll expands the pet's auto move by 3x.\n#cCan only be used on pets with the Auto Move Skill. Cannot be stacked for use.	此卷轴可将宠物的自动移动范围扩大3倍。只能用于拥有自动移动技能的宠物。无法叠加使用。	怀旧服-物品说明#5190003	资料站完整物品说明
+Double-click to expand your Storage Room by 5 slots. You may have up to 150 slots.	双击可将仓库扩充5格。最多可拥有150格。	怀旧服-物品说明#5680000	资料站完整物品说明
+Double-click to expand your Equip tab by 5 slots. You may have up to 150 slots.	双击可将装备栏扩充5格。最多可拥有150格。	怀旧服-物品说明#5680001	资料站完整物品说明
+Double-click to expand your Use tab by 5 slots. You may have up to 150 slots.	双击可将消耗栏扩充5格。最多可拥有150格。	怀旧服-物品说明#5680002	资料站完整物品说明
+Double-click to expand your Set-up tab by 5 slots. You may have up to 150 slots.	双击可将设置栏扩充5格。最多可拥有150格。	怀旧服-物品说明#5680003	资料站完整物品说明
+Double-click to expand your Etc tab by 5 slots. You may have up to 150 slots.	双击可将其他栏扩充5格。最多可拥有150格。	怀旧服-物品说明#5680004	资料站完整物品说明
+牛气冲天的牛年福袋，装满了饱含祝福和好运的礼物。\n内含一件免费赠送的神秘礼物箱，打开后可以获得其中一份特别制作的惊喜哟。\n礼包内包含的突破之石为绑定道具不可交易。	牛气冲天的牛年福袋，装满了饱含祝福和好运的礼物。\n内含一件免费赠送的神秘礼物箱，打开后可以获得其中一份特别制作的惊喜哟。\n礼包内包含的突破之石为绑定道具不可交易。	怀旧服-物品说明#9100001	资料站完整物品说明
+In-game currency amount: 100	游戏内货币面额：100	怀旧服-物品说明#980000100	资料站完整物品说明
+In-game currency amount: 200	游戏内货币面额：200	怀旧服-物品说明#980000200	资料站完整物品说明
+In-game currency amount: 300	游戏内货币面额：300	怀旧服-物品说明#980000300	资料站完整物品说明
+In-game currency amount: 400	游戏内货币面额：400	怀旧服-物品说明#980000400	资料站完整物品说明
+In-game currency amount: 500	游戏内货币面额：500	怀旧服-物品说明#980000500	资料站完整物品说明
+In-game currency amount: 600	游戏内货币面额：600	怀旧服-物品说明#980000600	资料站完整物品说明
+In-game currency amount: 700	游戏内货币面额：700	怀旧服-物品说明#980000700	资料站完整物品说明
+In-game currency amount: 800	游戏内货币面额：800	怀旧服-物品说明#980000800	资料站完整物品说明
+In-game currency amount: 900	游戏内货币面额：900	怀旧服-物品说明#980000900	资料站完整物品说明
+In-game currency amount: 1000	游戏内货币面额：1000	怀旧服-物品说明#980001000	资料站完整物品说明
+In-game currency amount: 2000	游戏内货币面额：2000	怀旧服-物品说明#980002000	资料站完整物品说明
+In-game currency amount: 3000	游戏内货币面额：3000	怀旧服-物品说明#980003000	资料站完整物品说明
+In-game currency amount: 4000	游戏内货币面额：4000	怀旧服-物品说明#980004000	资料站完整物品说明
+In-game currency amount: 5000	游戏内货币面额：5000	怀旧服-物品说明#980005000	资料站完整物品说明
+In-game currency amount: 6000	游戏内货币面额：6000	怀旧服-物品说明#980006000	资料站完整物品说明
+In-game currency amount: 7000	游戏内货币面额：7000	怀旧服-物品说明#980007000	资料站完整物品说明
+In-game currency amount: 8000	游戏内货币面额：8000	怀旧服-物品说明#980008000	资料站完整物品说明
+In-game currency amount: 9000	游戏内货币面额：9000	怀旧服-物品说明#980009000	资料站完整物品说明
+In-game currency amount: 10000	游戏内货币面额：10000	怀旧服-物品说明#980010000	资料站完整物品说明
+In-game currency amount: 15000	游戏内货币面额：15000	怀旧服-物品说明#980015000	资料站完整物品说明
+In-game currency amount: 20000	游戏内货币面额：20000	怀旧服-物品说明#980020000	资料站完整物品说明
+In-game currency amount: 25000	游戏内货币面额：25000	怀旧服-物品说明#980025000	资料站完整物品说明
+In-game currency amount: 30000	游戏内货币面额：30000	怀旧服-物品说明#980030000	资料站完整物品说明
+In-game currency amount: 35000	游戏内货币面额：35000	怀旧服-物品说明#980035000	资料站完整物品说明
+In-game currency amount: 40000	游戏内货币面额：40000	怀旧服-物品说明#980040000	资料站完整物品说明
+In-game currency amount: 45000	游戏内货币面额：45000	怀旧服-物品说明#980045000	资料站完整物品说明
+In-game currency amount: 50000	游戏内货币面额：50000	怀旧服-物品说明#980050000	资料站完整物品说明
+In-game currency amount: 55000	游戏内货币面额：55000	怀旧服-物品说明#980055000	资料站完整物品说明
+In-game currency amount: 60000	游戏内货币面额：60000	怀旧服-物品说明#980060000	资料站完整物品说明
+In-game currency amount: 65000	游戏内货币面额：65000	怀旧服-物品说明#980065000	资料站完整物品说明
+In-game currency amount: 70000	游戏内货币面额：70000	怀旧服-物品说明#980070000	资料站完整物品说明
+In-game currency amount: 75000	游戏内货币面额：75000	怀旧服-物品说明#980075000	资料站完整物品说明
+In-game currency amount: 80000	游戏内货币面额：80000	怀旧服-物品说明#980080000	资料站完整物品说明
+In-game currency amount: 85000	游戏内货币面额：85000	怀旧服-物品说明#980085000	资料站完整物品说明
+In-game currency amount: 90000	游戏内货币面额：90000	怀旧服-物品说明#980090000	资料站完整物品说明
+In-game currency amount: 95000	游戏内货币面额：95000	怀旧服-物品说明#980095000	资料站完整物品说明
+In-game currency amount: 100000	游戏内货币面额：100000	怀旧服-物品说明#980100000	资料站完整物品说明
+STAT	角色属性	怀旧服-界面
+WEAPON DEE	物理防御力	怀旧服-界面
+MAGIC DEE	魔法防御力	怀旧服-界面
+MRGIC DEF.	魔法防御力	怀旧服-界面
+ABILITYTOIHT	能力值点数	怀旧服-界面
+SKILL POIHT	技能点数	怀旧服-界面
+INVENT0RY	背包	怀旧服-界面
+#c注意！穿戴尺寸较大的头套形态的帽子时，部分动作的输出顺序可能不自然。#	#c注意！穿戴尺寸较大的头套形态的帽子时，部分动作的输出顺序可能不自然。#	怀旧服-装备说明#1007025	资料站完整物品说明
+#c答应林中之城的泰素夫的请求后获得的浴袍。#在酒店的桑拿房穿上时，血量和魔量的恢复量为桑拿房恢复量的1.5倍。	#c答应林中之城的泰素夫的请求后获得的浴袍。#在酒店的桑拿房穿上时，血量和魔量的恢复量为桑拿房恢复量的1.5倍。	怀旧服-装备说明#1051017	资料站完整物品说明
+#cDouble-click# to obtain the below items.\n\n- Leaf Points 1,000 Exchange Coupon x5\n- Regular Store Permit x1\n- Megaphone x10\n- Super Megaphone x5\n- Red Potion x30\n- Blue Potion x30	双击可获得以下道具。- 枫叶点数10,000兑换券 x5 - 普通商店许可证 x1 - 喇叭 x10 - 超级喇叭 x5 - 红药水 x30 - 蓝药水 x30	怀旧服-物品说明#2430003	资料站完整物品说明
+#c Double-click# to get #c1,000 Leaf Points#.	双击可获得1,000枫叶点数。	怀旧服-物品说明#2430004	资料站完整物品说明
+#cDouble-click# to receive a #c2x EXP# buff for #c30 minutes#.\r\n\r\n#cEffect does not stack with similar event buffs.#	双击可获得持续30分钟的2倍EXP增益。效果不会与类似活动增益叠加。	怀旧服-物品说明#2450000	资料站完整物品说明
+#cDouble-click# to receive a #c3x EXP# buff for #c15 minutes.\r\n\r\nEffect does not stack with similar event buffs.	#c15分鐘#內獲得#c經驗值3倍#的Buff效果。\r\n\r\n#c若相同效果的活動已啟動，效果不會重疊。#	怀旧服-物品说明#2450001	资料站完整物品说明
+#cResets all stats#, excluding the #cAP invested in HP/MP#.	重置除投入HP/MP以外的所有属性点。	怀旧服-物品说明#5050100	资料站完整物品说明

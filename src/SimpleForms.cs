@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -97,6 +98,8 @@ namespace MapleOverlay
         private readonly DataGridView grid = new DataGridView();
         private readonly TextBox search = new TextBox();
         private readonly Label status = new Label();
+        private readonly TabControl categoryPages = new TabControl();
+        private readonly ComboBox skillJobFilter = new ComboBox();
         private readonly DataGridView taskGrid = new DataGridView();
         private readonly TextBox taskSearch = new TextBox();
         private readonly ComboBox taskMapFilter = new ComboBox();
@@ -118,8 +121,9 @@ namespace MapleOverlay
 
         private void BuildUi()
         {
-            TableLayoutPanel root = new TableLayoutPanel { Dock = DockStyle.Fill, Padding = new Padding(10), ColumnCount = 1, RowCount = 3 };
+            TableLayoutPanel root = new TableLayoutPanel { Dock = DockStyle.Fill, Padding = new Padding(10), ColumnCount = 1, RowCount = 4 };
             root.RowStyles.Add(new RowStyle(SizeType.Absolute, 45));
+            root.RowStyles.Add(new RowStyle(SizeType.Absolute, 35));
             root.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
             root.RowStyles.Add(new RowStyle(SizeType.Absolute, 58));
             TabControl tabs = new TabControl { Dock = DockStyle.Fill };
@@ -164,6 +168,20 @@ namespace MapleOverlay
             status.AutoSize = true; status.Padding = new Padding(10, 8, 0, 0); status.ForeColor = Color.DarkGreen; top.Controls.Add(status);
             root.Controls.Add(top, 0, 0);
 
+            categoryPages.Dock = DockStyle.Fill;
+            string[] pageNames = { "全部", "界面", "地图/NPC", "怪物", "职业技能", "装备", "消耗品", "任务/其他物品", "详情说明", "图标/其他" };
+            foreach (string pageName in pageNames) categoryPages.TabPages.Add(new TabPage(pageName));
+            categoryPages.SelectedIndexChanged += delegate { UpdateSkillJobFilter(); FilterRows(); };
+            root.Controls.Add(categoryPages, 0, 1);
+
+            skillJobFilter.DropDownStyle = ComboBoxStyle.DropDownList;
+            skillJobFilter.Width = 130;
+            skillJobFilter.Items.AddRange(new object[] { "全部职业", "新手", "战士", "剑客", "准骑士", "枪战士", "魔法师", "火毒法师", "冰雷法师", "牧师", "弓箭手", "猎人", "弩弓手", "飞侠", "刺客", "侠客" });
+            skillJobFilter.SelectedIndex = 0;
+            skillJobFilter.SelectedIndexChanged += delegate { FilterRows(); };
+            top.Controls.Add(skillJobFilter);
+            UpdateSkillJobFilter();
+
             grid.Dock = DockStyle.Fill;
             grid.AllowUserToAddRows = true;
             grid.AllowUserToDeleteRows = true;
@@ -176,7 +194,7 @@ namespace MapleOverlay
             grid.Columns.Add("IconHash", "图标指纹");
             grid.Columns[3].Visible = false;
             grid.Columns[0].FillWeight = 42; grid.Columns[1].FillWeight = 38; grid.Columns[2].FillWeight = 20;
-            root.Controls.Add(grid, 0, 1);
+            root.Controls.Add(grid, 0, 2);
 
             GroupBox qq = new GroupBox { Text = "QQ群共享", Dock = DockStyle.Fill };
             FlowLayoutPanel share = new FlowLayoutPanel { Dock = DockStyle.Fill, Padding = new Padding(6), WrapContents = false };
@@ -186,7 +204,7 @@ namespace MapleOverlay
             export.Click += delegate { ExportRows(); };
             share.Controls.Add(import); share.Controls.Add(export);
             share.Controls.Add(new Label { Text = "导入后先检查，点击上方“保存并载入内存”才会生效。", AutoSize = true, Padding = new Padding(12, 7, 0, 0), ForeColor = Color.DimGray });
-            qq.Controls.Add(share); root.Controls.Add(qq, 0, 2);
+            qq.Controls.Add(share); root.Controls.Add(qq, 0, 3);
 
             taskGrid.Dock = DockStyle.Fill;
             taskGrid.AllowUserToAddRows = false;
@@ -339,13 +357,97 @@ namespace MapleOverlay
         private void FilterRows()
         {
             string q = search.Text.Trim(); grid.CurrentCell = null;
+            string page = categoryPages.SelectedTab == null ? "全部" : categoryPages.SelectedTab.Text;
+            string job = skillJobFilter.SelectedItem == null ? "全部职业" : Convert.ToString(skillJobFilter.SelectedItem);
+            int visibleCount = 0;
             foreach (DataGridViewRow row in grid.Rows)
             {
                 if (row.IsNewRow) continue;
                 bool visible = q.Length == 0;
                 for (int i = 0; !visible && i < 3; i++) visible = Convert.ToString(row.Cells[i].Value).IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0;
+                string category = Convert.ToString(row.Cells[2].Value);
+                if (!MatchesCategoryPage(category, page)) visible = false;
+                if (visible && page == "图标/其他" && !HasIconHash(Convert.ToString(row.Cells[3].Value))) visible = false;
+                if (visible && page == "职业技能" && job != "全部职业" && SkillJob(category) != job) visible = false;
                 row.Visible = visible;
+                if (visible) visibleCount++;
             }
+            status.Text = "当前分类 " + visibleCount + " 条；全部常规 " + Math.Max(0, grid.Rows.Count - 1) + " 条";
+        }
+
+        private void UpdateSkillJobFilter()
+        {
+            skillJobFilter.Visible = categoryPages.SelectedTab != null && categoryPages.SelectedTab.Text == "职业技能";
+        }
+
+        private static string CategoryId(string category)
+        {
+            int marker = category.LastIndexOf('#');
+            return marker >= 0 && marker + 1 < category.Length ? category.Substring(marker + 1) : "";
+        }
+
+        private static bool HasIconHash(string value)
+        {
+            UInt64 parsed;
+            return !String.IsNullOrWhiteSpace(value) && value.Trim().Length <= 16 &&
+                UInt64.TryParse(value.Trim(), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out parsed);
+        }
+
+        private static bool MatchesCategoryPage(string category, string page)
+        {
+            if (page == "全部") return true;
+            if (page == "界面") return category.StartsWith("怀旧服-界面", StringComparison.Ordinal);
+            if (page == "地图/NPC") return category.StartsWith("怀旧服-地图", StringComparison.Ordinal) || category.StartsWith("怀旧服-NPC", StringComparison.Ordinal) || category.StartsWith("怀旧服-地区", StringComparison.Ordinal);
+            if (page == "怪物") return category.StartsWith("怀旧服-怪物", StringComparison.Ordinal);
+            if (page == "职业技能") return category.StartsWith("怀旧服-技能#", StringComparison.Ordinal) || category.StartsWith("怀旧服-职业", StringComparison.Ordinal);
+            if (page == "详情说明") return category.IndexOf("说明#", StringComparison.Ordinal) >= 0;
+            if (category.StartsWith("怀旧服-道具#", StringComparison.Ordinal))
+            {
+                string id = CategoryId(category);
+                if (page == "装备") return id.StartsWith("1", StringComparison.Ordinal);
+                if (page == "消耗品") return id.StartsWith("2", StringComparison.Ordinal);
+                if (page == "任务/其他物品") return id.StartsWith("3", StringComparison.Ordinal) || id.StartsWith("4", StringComparison.Ordinal) || id.StartsWith("5", StringComparison.Ordinal);
+            }
+            if (page == "图标/其他") return true;
+            return false;
+        }
+
+        private static string SkillJob(string category)
+        {
+            long id;
+            if (!Int64.TryParse(CategoryId(category), out id) || id < 1000000) return "新手";
+            int job = (int)(id / 10000);
+            if (job == 100) return "战士"; if (job == 110 || job == 111) return "剑客";
+            if (job == 120 || job == 121) return "准骑士"; if (job == 130 || job == 131) return "枪战士";
+            if (job == 200) return "魔法师"; if (job == 210 || job == 211) return "火毒法师";
+            if (job == 220 || job == 221) return "冰雷法师"; if (job == 230 || job == 231) return "牧师";
+            if (job == 300) return "弓箭手"; if (job == 310 || job == 311) return "猎人";
+            if (job == 320 || job == 321) return "弩弓手"; if (job == 400) return "飞侠";
+            if (job == 410 || job == 411) return "刺客"; if (job == 420 || job == 421) return "侠客";
+            return "全部职业";
+        }
+
+        internal string RunCategorySelfTest()
+        {
+            StringBuilder report = new StringBuilder();
+            foreach (TabPage page in categoryPages.TabPages)
+            {
+                categoryPages.SelectedTab = page;
+                FilterRows();
+                int visible = 0;
+                foreach (DataGridViewRow row in grid.Rows) if (!row.IsNewRow && row.Visible) visible++;
+                report.Append(page.Text).Append('=').Append(visible).AppendLine();
+            }
+            categoryPages.SelectedIndex = 4;
+            foreach (object item in skillJobFilter.Items)
+            {
+                skillJobFilter.SelectedItem = item;
+                FilterRows();
+                int visible = 0;
+                foreach (DataGridViewRow row in grid.Rows) if (!row.IsNewRow && row.Visible) visible++;
+                report.Append("职业/").Append(Convert.ToString(item)).Append('=').Append(visible).AppendLine();
+            }
+            return report.ToString();
         }
 
         private static string Clean(object value)
@@ -363,7 +465,7 @@ namespace MapleOverlay
                 if (row.IsNewRow) continue;
                 string en = Clean(row.Cells[0].Value), zh = Clean(row.Cells[1].Value), cat = Clean(row.Cells[2].Value);
                 string iconHash = Clean(row.Cells[3].Value);
-                if (en.Length == 0 || zh.Length == 0 || !seen.Add(en)) continue;
+                if (en.Length == 0 || zh.Length == 0 || !seen.Add(en + "\t" + cat)) continue;
                 b.Append(en).Append('\t').Append(zh).Append('\t').Append(cat);
                 if (iconHash.Length > 0) b.Append('\t').Append(iconHash);
                 b.AppendLine();
@@ -404,8 +506,12 @@ namespace MapleOverlay
         private void Merge(string text)
         {
             Dictionary<string, string[]> all = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
-            foreach (DataGridViewRow row in grid.Rows) if (!row.IsNewRow) all[Clean(row.Cells[0].Value)] = new string[] {
-                Clean(row.Cells[1].Value), Clean(row.Cells[2].Value), Clean(row.Cells[3].Value) };
+            foreach (DataGridViewRow row in grid.Rows) if (!row.IsNewRow)
+            {
+                string english = Clean(row.Cells[0].Value), category = Clean(row.Cells[2].Value);
+                all[english + "\t" + category] = new string[] { english,
+                    Clean(row.Cells[1].Value), category, Clean(row.Cells[3].Value) };
+            }
             int count = 0;
             foreach (string raw in text.Replace("\r", "").Split('\n'))
             {
@@ -433,12 +539,13 @@ namespace MapleOverlay
                     count++;
                     continue;
                 }
-                string preservedHash = all.ContainsKey(key) && all[key].Length > 2 ? all[key][2] : "";
-                all[key] = new string[] { Clean(p[1]), category,
+                string identity = key + "\t" + category;
+                string preservedHash = all.ContainsKey(identity) && all[identity].Length > 3 ? all[identity][3] : "";
+                all[identity] = new string[] { key, Clean(p[1]), category,
                     p.Length > 3 ? Clean(p[3]) : preservedHash }; count++;
             }
             grid.Rows.Clear(); foreach (KeyValuePair<string, string[]> p in all)
-                grid.Rows.Add(p.Key, p.Value[0], p.Value[1], p.Value.Length > 2 ? p.Value[2] : "");
+                grid.Rows.Add(p.Value[0], p.Value[1], p.Value[2], p.Value.Length > 3 ? p.Value[3] : "");
             RefreshTaskGrid();
             status.Text = "已合并 " + count + " 条，尚未保存";
         }
