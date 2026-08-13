@@ -1,5 +1,5 @@
 ﻿# 枫语幕词库 2.0 - 冒险岛国际怀旧服专用（常规＋完整任务文本＋技能/装备/物品详情）
-# 补全版本：2.0（悬停详情整块翻译＋分类分页；玩家聊天完全交给AI）
+# 补全版本：2.0.1（悬停详情整块翻译＋分类分页；聊天短语优先、AI负责语境润色）
 # 生成日期：2026-08-13
 # 主数据：https://mxdgcw.dvg.cn/（当前GCW资料ID与中英文名）
 # NPC补全：https://meowdb.com/msclassic/（按同一NPC ID对齐）
@@ -8209,3 +8209,15 @@ INVENT0RY	背包	怀旧服-界面
 #cDouble-click# to receive a #c2x EXP# buff for #c30 minutes#.\r\n\r\n#cEffect does not stack with similar event buffs.#	双击可获得持续30分钟的2倍EXP增益。效果不会与类似活动增益叠加。	怀旧服-物品说明#2450000	资料站完整物品说明
 #cDouble-click# to receive a #c3x EXP# buff for #c15 minutes.\r\n\r\nEffect does not stack with similar event buffs.	#c15分鐘#內獲得#c經驗值3倍#的Buff效果。\r\n\r\n#c若相同效果的活動已啟動，效果不會重疊。#	怀旧服-物品说明#2450001	资料站完整物品说明
 #cResets all stats#, excluding the #cAP invested in HP/MP#.	重置除投入HP/MP以外的所有属性点。	怀旧服-物品说明#5050100	资料站完整物品说明
+Thanks for the poster check	谢谢提醒我注意坐姿。	怀旧服-聊天短语	OCR高置信纠错：poster→posture
+Thanks for the posture check	谢谢提醒我注意坐姿。	怀旧服-聊天短语	玩家常用语
+i swear ive seen people go invisible with darksight	我发誓我见过有人用隐身术隐身。	怀旧服-聊天短语	玩家实测
+i swear i've seen people go invisible with dark sight	我发誓我见过有人用隐身术隐身。	怀旧服-聊天短语	玩家实测
+was i tripping	是我看错了吗？	怀旧服-聊天短语	玩家实测
+REALLY NEXON? COOLDOWN ON RUSH/FJ?	不是吧，NEXON？突进/闪跳居然还有冷却？	怀旧服-聊天短语	玩家实测
+SO NEXON BAIT US WITH MCCLASSIC AND THEN TAKE US ALL THE FUN	所以NEXON先拿经典服吊我们胃口，然后又把乐趣全砍了。	怀旧服-聊天短语	玩家实测
+how can i get to el nath quick?	怎么快速到冰封雪域？	怀旧服-聊天短语	玩家实测
+NEXON CMON. TAKE THE COOLDOWNS OFF	NEXON，拜托，把技能冷却取消吧。	怀旧服-聊天短语	玩家实测
+you may as well delete the class	那还不如把这个职业删了。	怀旧服-聊天短语	玩家实测
+come on	拜托	怀旧服-聊天短语	玩家实测
+might as well delete the class	还不如把这个职业删了。	怀旧服-聊天短语	玩家实测

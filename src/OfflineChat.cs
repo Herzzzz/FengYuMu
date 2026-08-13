@@ -289,23 +289,43 @@ namespace MapleOverlay
         }
 
         public async Task<string> TranslateAsync(string text, string sourceLanguage,
-            string targetLanguage, string glossary)
+            string targetLanguage, string glossary, string chatContext = "")
         {
             if (!await EnsureStartedAsync()) throw new InvalidOperationException(Status);
             string languageRule = "将输入从" + sourceLanguage + "翻译为" + targetLanguage + "。";
-            string system = "你是冒险岛怀旧服聊天翻译器。" + languageRule +
+            string system = "你是冒险岛怀旧服玩家聊天翻译器。" + languageRule +
+                "输入只是一名玩家的一条消息，不得拼接别的句子，不得补写或翻译玩家名。" +
                 "你已通过枫语幕本地知识初始化使用资料站整理内容与玩家审核词库。" +
-                "理解玩家俚语、缩写和游戏语境；保留角色名、数字、频道名和表情。只输出译文，不解释。" +
+                "按玩家聊天语气理解俚语和缩写；技能名优先采用国服怀旧译名，保留数字、频道、表情和技能缩写。" +
+                "只输出一行自然译文，不复述原文，不解释。" +
                 (String.IsNullOrEmpty(glossary) ? "" : "本次从知识库检索到的术语如下，必须优先采用：\n" + glossary);
+            string userText = (String.IsNullOrWhiteSpace(chatContext) ? "" :
+                "聊天上文（只用于理解语境，不要翻译或复述）：\n" + chatContext + "\n") +
+                "待翻译消息：\n" + text + "\n/no_think";
             string body = new JavaScriptSerializer().Serialize(new Dictionary<string, object> {
                 { "model", "local-qwen3" },
                 { "temperature", 0.2 }, { "top_p", 0.8 }, { "max_tokens", 96 },
                 { "messages", new object[] {
                     new Dictionary<string, string> { { "role", "system" }, { "content", system } },
-                    new Dictionary<string, string> { { "role", "user" }, { "content", text + "\n/no_think" } }
+                    new Dictionary<string, string> { { "role", "user" }, { "content", userText } }
                 } }
             });
-            return await Task.Factory.StartNew(delegate { return Post(body); });
+            string result = await Task.Factory.StartNew(delegate { return Post(body); });
+            if (targetLanguage.IndexOf("中文", StringComparison.OrdinalIgnoreCase) >= 0 &&
+                Regex.IsMatch(text, "[A-Za-z]") && Regex.Matches(result, "[\\u3400-\\u9fff]").Count < 2)
+            {
+                string retrySystem = "把玩家消息翻译成自然、简短的简体中文。必须出现中文，不得照抄英文，不得解释；技能名用冒险岛国服译名。" +
+                    (String.IsNullOrEmpty(glossary) ? "" : "术语：\n" + glossary);
+                string retryBody = new JavaScriptSerializer().Serialize(new Dictionary<string, object> {
+                    { "model", "local-qwen3" }, { "temperature", 0.0 }, { "top_p", 0.7 }, { "max_tokens", 96 },
+                    { "messages", new object[] {
+                        new Dictionary<string, string> { { "role", "system" }, { "content", retrySystem } },
+                        new Dictionary<string, string> { { "role", "user" }, { "content", text + "\n只输出中文译文。\n/no_think" } }
+                    } }
+                });
+                result = await Task.Factory.StartNew(delegate { return Post(retryBody); });
+            }
+            return result;
         }
 
         private static string Post(string body)
@@ -553,6 +573,7 @@ namespace MapleOverlay
         private readonly System.Windows.Forms.Timer releaseTimer = new System.Windows.Forms.Timer();
         private readonly HashSet<string> seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private readonly HashSet<string> protectedPlayerNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private readonly List<string> recentChatMessages = new List<string>();
         private readonly List<KeyValuePair<string, string>> glossaryEntries = new List<KeyValuePair<string, string>>();
         private KnowledgeInitializationResult knowledge;
         private Rectangle chatRegion;
@@ -619,8 +640,11 @@ namespace MapleOverlay
                 LoadGlossary();
             };
             status.AutoSize = true; status.Padding = new Padding(8, 7, 0, 0); status.ForeColor = Color.DarkGreen;
-            Button onlineSettings = new Button { Text = "在线AI设置", AutoSize = true };
-            onlineSettings.Click += delegate { using (OnlineAiForm form = new OnlineAiForm()) form.ShowDialog(this); };
+            Button onlineSettings = new Button { Text = "联网复核（可选）", AutoSize = true };
+            onlineSettings.Click += delegate {
+                using (OnlineAiForm form = new OnlineAiForm()) form.ShowDialog(this);
+                RefreshOnlineReviewState();
+            };
             Button syncKnowledge = new Button { Text = "同步AI词库", AutoSize = true };
             syncKnowledge.Click += delegate {
                 KnowledgeInitializationResult result = SyncKnowledge();
@@ -650,13 +674,14 @@ namespace MapleOverlay
             copy.Click += delegate { if (lastTranslation.Length > 0) Clipboard.SetText(lastTranslation); };
             Button correct = new Button { Text = "加入纠错候选", AutoSize = true };
             correct.Click += delegate { AddCandidate(); };
-            Button install = new Button { Text = "安装/选择永久免费AI模型", AutoSize = true };
+            Button install = new Button { Text = "安装/选择离线AI模型", AutoSize = true };
             install.Click += delegate {
                 ai.Stop();
                 using (AiInstallForm form = new AiInstallForm(ai.AiRoot, dictionaryPath)) form.ShowDialog(this);
                 LoadGlossary(); RefreshAiStatus();
             };
-            onlineReview.Text = "用在线AI复核"; onlineReview.AutoSize = true; onlineReview.Padding = new Padding(0, 6, 5, 0);
+            onlineReview.AutoSize = true; onlineReview.Padding = new Padding(0, 6, 5, 0);
+            RefreshOnlineReviewState();
             actions.Controls.Add(translate); actions.Controls.Add(copy); actions.Controls.Add(correct); actions.Controls.Add(install); actions.Controls.Add(onlineReview);
             root.Controls.Add(actions, 0, 4);
             Controls.Add(root);
@@ -673,6 +698,14 @@ namespace MapleOverlay
             status.Text = ai.IsInstalled
                 ? "模型已安装｜知识初始化" + (knowledge == null ? "待检查" : "完成 " + knowledge.Entries + "条") + "｜游戏友好模式"
                 : "未安装模型包";
+        }
+
+        private void RefreshOnlineReviewState()
+        {
+            bool ready = OnlineAiSettings.Load().IsReady;
+            onlineReview.Enabled = ready;
+            onlineReview.Text = ready ? "使用联网复核" : "联网复核未配置";
+            if (!ready) onlineReview.Checked = false;
         }
 
         private void LoadRegion()
@@ -721,7 +754,7 @@ namespace MapleOverlay
             try
             {
                 string text = await overlay.CaptureTextAsync(chatRegion);
-                string[] lines = text.Replace("\r", "").Split('\n');
+                List<string> lines = ParseChatLines(text);
                 foreach (string raw in lines)
                 {
                     string line = Regex.Replace(raw.Trim(), "\\s+", " ");
@@ -730,20 +763,64 @@ namespace MapleOverlay
                     if (seen.Count > 180) seen.Clear();
                     string speakerPrefix, message;
                     SplitSpeaker(line, out speakerPrefix, out message);
+                    string cleanedMessage = NormalizeCommonChatOcr(message);
                     Dictionary<string, string> nameTokens;
-                    string protectedMessage = ProtectPlayerNames(message, out nameTokens);
+                    string protectedMessage = ProtectPlayerNames(cleanedMessage, out nameTokens);
                     string glossary = BuildGlossary(protectedMessage);
                     lastWasOnline = false;
                     lastAiUse = DateTime.Now;
-                    string translated = await ai.TranslateAsync(protectedMessage, "自动识别（中英日韩）", "中文", glossary);
-                    translated = await ReviewOnlineIfEnabled(protectedMessage, translated, "中文", glossary);
+                    string translated;
+                    if (!TryExactGlossaryTranslation(protectedMessage, out translated))
+                    {
+                        string context = String.Join("\n", recentChatMessages.ToArray());
+                        translated = await ai.TranslateAsync(protectedMessage, "自动识别（中英日韩）", "中文", glossary, context);
+                        translated = await ReviewOnlineIfEnabled(protectedMessage, translated, "中文", glossary);
+                    }
                     translated = RestorePlayerNames(translated, nameTokens);
                     lastSource = message; lastTranslation = translated;
                     AppendOutput(line + Environment.NewLine + "→ " + speakerPrefix + translated + Environment.NewLine);
+                    recentChatMessages.Add(message);
+                    if (recentChatMessages.Count > 6) recentChatMessages.RemoveAt(0);
                 }
             }
             catch (Exception ex) { status.Text = ex.Message; }
             finally { busy = false; }
+        }
+
+        internal static List<string> ParseChatLines(string ocrText)
+        {
+            List<string> output = new List<string>();
+            if (String.IsNullOrWhiteSpace(ocrText)) return output;
+            string[] physicalLines = ocrText.Replace("\r", "").Split('\n');
+            Regex speaker = new Regex(@"(?<![A-Za-z0-9_])([A-Za-z][A-Za-z0-9_]{2,23}?)(?:(?:CH[O0]?\d+|SH[O0][A-Z0-9@±]*))?(?:\s+(?:CH(?:O|0)?\s*\d+|SH(?:O|0)[^\s:：•·]{0,8}|[0-9O@±]{1,4}))?\s*[:：•·]", RegexOptions.IgnoreCase);
+            foreach (string sourceLine in physicalLines)
+            {
+                string line = Regex.Replace(sourceLine.Trim(), @"\s+", " ");
+                if (line.Length < 2) continue;
+                MatchCollection matches = speaker.Matches(line);
+                if (matches.Count == 0)
+                {
+                    // Windows OCR sometimes puts a wrapped tail (for example RUSH/FJ?)
+                    // on the next physical line. Attach only short tails to the previous message.
+                    if (output.Count > 0 && line.Length <= 80 && !line.StartsWith("["))
+                        output[output.Count - 1] = output[output.Count - 1] + " " + line;
+                    continue;
+                }
+                for (int i = 0; i < matches.Count; i++)
+                {
+                    Match marker = matches[i];
+                    string name = marker.Groups[1].Value;
+                    // Channel badges are frequently glued to the name by OCR (SHO±9/CHO1).
+                    name = Regex.Replace(name, @"(?:CH[O0]?\d+|SH[O0][A-Z0-9@±]*)$", "", RegexOptions.IgnoreCase);
+                    if (name.Length < 3) continue;
+                    int messageStart = marker.Index + marker.Length;
+                    int messageEnd = i + 1 < matches.Count ? matches[i + 1].Index : line.Length;
+                    string message = line.Substring(messageStart, messageEnd - messageStart).Trim(' ', '-', '>', '|');
+                    if (message.Length < 2) continue;
+                    output.Add(name + ": " + message);
+                }
+            }
+            return output;
         }
 
         private async Task TranslateManualAsync()
@@ -780,6 +857,35 @@ namespace MapleOverlay
                 result.Append(entry.Key).Append(" = ").Append(entry.Value).AppendLine(); count++;
             }
             return result.ToString();
+        }
+
+        private bool TryExactGlossaryTranslation(string text, out string translation)
+        {
+            string key = NormalizeChatPhrase(text);
+            foreach (KeyValuePair<string, string> entry in glossaryEntries)
+            {
+                if (NormalizeChatPhrase(entry.Key) != key) continue;
+                translation = entry.Value;
+                return true;
+            }
+            translation = "";
+            return false;
+        }
+
+        private static string NormalizeChatPhrase(string value)
+        {
+            return Regex.Replace((value ?? "").ToLowerInvariant(), @"[^a-z0-9\u3400-\u9fff]+", "");
+        }
+
+        private static string NormalizeCommonChatOcr(string value)
+        {
+            string result = value ?? "";
+            result = Regex.Replace(result, @"\bdarksight\b", "Dark Sight", RegexOptions.IgnoreCase);
+            result = Regex.Replace(result, @"\bpowerstrike\b", "Power Strike", RegexOptions.IgnoreCase);
+            result = Regex.Replace(result, @"\baswell\b", "as well", RegexOptions.IgnoreCase);
+            result = Regex.Replace(result, @"\bcmon\b", "come on", RegexOptions.IgnoreCase);
+            result = Regex.Replace(result, @"\bive\b", "I've", RegexOptions.IgnoreCase);
+            return result.Trim();
         }
 
         private void LoadGlossary()
@@ -874,7 +980,7 @@ namespace MapleOverlay
         {
             if (!onlineReview.Checked) return local;
             OnlineAiSettings settings = OnlineAiSettings.Load();
-            if (!settings.IsReady) { status.Text = "请先填写在线AI设置，已保留本地译文"; return local; }
+            if (!settings.IsReady) { onlineReview.Checked = false; RefreshOnlineReviewState(); status.Text = "联网复核未配置，继续使用离线译文"; return local; }
             try
             {
                 string reviewed = await OnlineAiClient.ReviewAsync(settings, original, local, targetLanguage, glossary);
@@ -983,7 +1089,7 @@ namespace MapleOverlay
         {
             this.aiRoot = aiRoot;
             this.dictionaryPath = dictionaryPath;
-            Text = "安装永久免费AI模型"; StartPosition = FormStartPosition.CenterParent;
+            Text = "安装离线AI模型"; StartPosition = FormStartPosition.CenterParent;
             Size = new Size(690, 390); Font = new Font("Microsoft YaHei UI", 9.0f);
             TextBox info = new TextBox { Dock = DockStyle.Fill, Multiline = true, ReadOnly = true, ScrollBars = ScrollBars.Vertical,
                 Text = "模型安装位置（就在程序旁边）：\r\n" + aiRoot + "\r\n\r\n程序自动识别 AMD、NVIDIA、Intel Vulkan 显卡；显卡不可用时自动回退CPU。\r\n老电脑推荐1.7B约1.1GB；4B约2.5GB；8B约5GB。下载后永久离线免费。\r\n\r\n下载完成后会自动用资料站整理内容和本地词库完成首次知识初始化；这是轻量检索知识库，不修改模型权重。\r\n如果官方站下载不畅，也可以从QQ群取得模型包并解压到上面的目录。" };
@@ -1020,7 +1126,7 @@ namespace MapleOverlay
                 File.WriteAllText(Path.Combine(aiRoot, "selected-model.txt"), fileName, new UTF8Encoding(false));
                 KnowledgeInitializationResult knowledge = await InitializeKnowledgeAsync();
                 progressBar.Style = ProgressBarStyle.Continuous; progressBar.Value = 100; progress.Text = "安装及知识初始化完成";
-                MessageBox.Show("永久免费AI模型已安装，并已使用资料站整理内容和本地词库完成首次知识初始化（" +
+                MessageBox.Show("离线AI模型已安装，并已使用资料站整理内容和本地词库完成首次知识初始化（" +
                     knowledge.Entries + "条、" + knowledge.Categories + "类）。\n\n关闭本窗口后点击AI翻译，首次载入模型可能需要几十秒。", "安装完成");
             }
             catch (Exception ex)
@@ -1272,22 +1378,29 @@ namespace MapleOverlay
         private readonly TextBox apiKey = new TextBox();
         public OnlineAiForm()
         {
-            Text = "可选在线AI设置"; StartPosition = FormStartPosition.CenterParent;
+            Text = "可选：联网AI复核设置"; StartPosition = FormStartPosition.CenterParent;
             FormBorderStyle = FormBorderStyle.FixedDialog; MaximizeBox = false; MinimizeBox = false;
-            ClientSize = new Size(650, 275); Font = new Font("Microsoft YaHei UI", 9.0f);
+            ClientSize = new Size(650, 338); Font = new Font("Microsoft YaHei UI", 9.0f);
             OnlineAiSettings value = OnlineAiSettings.Load();
-            AddField("接口地址：", endpoint, 24); AddField("模型名称：", model, 70); AddField("API密钥：", apiKey, 116);
+            Label summary = new Label { Location = new Point(24, 18), Size = new Size(596, 48), ForeColor = Color.DarkGreen,
+                Text = "不填写也能正常使用：截图覆盖、词库翻译和离线AI均不依赖此处。\r\n只有你自愿使用第三方联网接口复核译文时才需要配置。" };
+            AddField("接口地址：", endpoint, 78); AddField("模型名称：", model, 124); AddField("API密钥：", apiKey, 170);
             endpoint.Text = value.Endpoint; model.Text = value.Model; apiKey.Text = value.ApiKey; apiKey.UseSystemPasswordChar = true;
-            Label hint = new Label { Location = new Point(24, 158), Size = new Size(596, 50), ForeColor = Color.DimGray,
-                Text = "支持 OpenAI 兼容的 /v1/chat/completions 接口。在线复核完全可选；服务是否免费由提供方决定。密钥使用 Windows 当前账户加密保存，不写入词库。" };
-            Button save = new Button { Text = "保存", Location = new Point(522, 225), Size = new Size(98, 31) };
+            Label hint = new Label { Location = new Point(24, 212), Size = new Size(596, 58), ForeColor = Color.DimGray,
+                Text = "支持 OpenAI 兼容的 /v1/chat/completions 接口。枫语幕不会内置或共享他人的密钥，也不能保证第三方服务永久免费。密钥仅用 Windows 当前账户加密保存，不写入词库。" };
+            Button offline = new Button { Text = "保持离线模式", Location = new Point(382, 286), Size = new Size(126, 32) };
+            offline.Click += delegate { DialogResult = DialogResult.Cancel; Close(); };
+            Button save = new Button { Text = "保存设置", Location = new Point(522, 286), Size = new Size(98, 32) };
             save.Click += delegate {
                 OnlineAiSettings settings = new OnlineAiSettings { Endpoint = endpoint.Text.Trim(), Model = model.Text.Trim(), ApiKey = apiKey.Text.Trim() };
+                bool any = settings.Endpoint.Length > 0 || settings.Model.Length > 0 || settings.ApiKey.Length > 0;
+                if (any && (settings.Endpoint.Length == 0 || settings.Model.Length == 0))
+                { MessageBox.Show("如需联网复核，请至少填写接口地址和模型名称；否则请清空三项并保持离线模式。", "联网AI设置"); return; }
                 if (settings.Endpoint.Length > 0 && !settings.Endpoint.StartsWith("https://", StringComparison.OrdinalIgnoreCase) && !settings.Endpoint.StartsWith("http://127.0.0.1", StringComparison.OrdinalIgnoreCase))
                 { MessageBox.Show("远程接口必须使用 HTTPS。", "在线AI设置"); return; }
                 settings.Save(); DialogResult = DialogResult.OK; Close();
             };
-            Controls.Add(hint); Controls.Add(save);
+            Controls.Add(summary); Controls.Add(hint); Controls.Add(offline); Controls.Add(save);
         }
         private void AddField(string label, TextBox box, int y)
         {
