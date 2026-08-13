@@ -701,7 +701,7 @@ namespace MapleOverlay
                 await InstallRuntimeAsync(false);
 
                 string fileName = "Qwen3-" + size + "-Q4_K_M.gguf";
-                string modelUrl = "https://huggingface.co/Qwen/Qwen3-" + size + "-GGUF/resolve/main/" + fileName + "?download=true";
+                string modelUrl = await Task.Factory.StartNew(delegate { return FindModelUrl(size, fileName); });
                 await InstallModelAsync(modelUrl, Path.Combine(aiRoot, fileName), "下载" + size + "模型", false);
                 File.WriteAllText(Path.Combine(aiRoot, "selected-model.txt"), fileName, new UTF8Encoding(false));
                 progressBar.Style = ProgressBarStyle.Continuous; progressBar.Value = 100; progress.Text = "安装完成";
@@ -729,7 +729,7 @@ namespace MapleOverlay
                     string fileName = Path.GetFileName(modelPath);
                     string size = fileName.IndexOf("1.7B", StringComparison.OrdinalIgnoreCase) >= 0 ? "1.7B" :
                         (fileName.IndexOf("8B", StringComparison.OrdinalIgnoreCase) >= 0 ? "8B" : "4B");
-                    string url = "https://huggingface.co/Qwen/Qwen3-" + size + "-GGUF/resolve/main/" + fileName + "?download=true";
+                    string url = await Task.Factory.StartNew(delegate { return FindModelUrl(size, fileName); });
                     changed = await InstallModelAsync(url, modelPath, "更新" + size + "模型", true) || changed;
                 }
                 progressBar.Style = ProgressBarStyle.Continuous; progressBar.Value = 100;
@@ -752,9 +752,12 @@ namespace MapleOverlay
         private async Task<bool> InstallRuntimeAsync(bool updateOnly)
         {
             progressBar.Style = ProgressBarStyle.Marquee; progress.Text = "检查官方运行库…";
-            string runtimeUrl = await Task.Factory.StartNew(delegate { return FindRuntimeUrl(); });
             string marker = Path.Combine(aiRoot, "runtime.url.txt");
             string server = Directory.Exists(aiRoot) ? FindFile(aiRoot, "llama-server.exe") : null;
+            // The normal release includes a ready-to-use Vulkan runtime, so first
+            // installation does not depend on GitHub being reachable in China.
+            if (!updateOnly && server != null) { progress.Text = "已使用随程序提供的显卡运行库"; return false; }
+            string runtimeUrl = await Task.Factory.StartNew(delegate { return FindRuntimeUrl(); });
             if (updateOnly && server != null && File.Exists(marker) && File.ReadAllText(marker).Trim() == runtimeUrl) return false;
             string zipPath = Path.Combine(aiRoot, "llama-vulkan.zip.download");
             await DownloadAsync(runtimeUrl, zipPath, "下载显卡运行库");
@@ -808,6 +811,23 @@ namespace MapleOverlay
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                     return new RemoteFileInfo { Length = response.ContentLength, ETag = (response.Headers["ETag"] ?? "").Trim() };
             });
+        }
+
+        private static string FindModelUrl(string size, string fileName)
+        {
+            string repo = "Qwen/Qwen3-" + size + "-GGUF";
+            string[] urls = new string[] {
+                "https://modelscope.cn/models/" + repo + "/resolve/master/" + fileName,
+                "https://hf-mirror.com/" + repo + "/resolve/main/" + fileName + "?download=true",
+                "https://huggingface.co/" + repo + "/resolve/main/" + fileName + "?download=true"
+            };
+            Exception last = null;
+            foreach (string url in urls)
+            {
+                try { GetRemoteInfo(url); return url; }
+                catch (Exception ex) { last = ex; }
+            }
+            throw new InvalidOperationException("国内模型源和海外备用源均无法连接。无需强制开启VPN；请先确认浏览器能打开 ModelScope（魔搭社区），或从QQ群取得离线模型放入‘模型’文件夹。", last);
         }
 
         private static string FindRuntimeUrl()
