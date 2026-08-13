@@ -562,7 +562,9 @@ namespace MapleOverlay
         private readonly string dictionaryPath;
         private readonly string candidatesPath;
         private readonly OfflineAiClient ai;
-        private readonly TextBox output = new TextBox();
+        private readonly RichTextBox output = new RichTextBox();
+        private readonly Font outputOriginalFont = new Font("Microsoft YaHei UI", 9.0f, FontStyle.Regular);
+        private readonly Font outputTranslationFont = new Font("Microsoft YaHei UI", 10.5f, FontStyle.Bold);
         private readonly TextBox input = new TextBox();
         private readonly ComboBox source = new ComboBox();
         private readonly ComboBox target = new ComboBox();
@@ -571,14 +573,17 @@ namespace MapleOverlay
         private readonly CheckBox onlineReview = new CheckBox();
         private readonly System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
         private readonly System.Windows.Forms.Timer releaseTimer = new System.Windows.Forms.Timer();
-        private readonly HashSet<string> seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private readonly HashSet<string> protectedPlayerNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private readonly List<string> recentChatMessages = new List<string>();
+        private readonly Queue<string> pendingChatLines = new Queue<string>();
+        private List<string> previousChatFrame = new List<string>();
         private readonly List<KeyValuePair<string, string>> glossaryEntries = new List<KeyValuePair<string, string>>();
         private KnowledgeInitializationResult knowledge;
         private Rectangle chatRegion;
         private bool live;
         private bool busy;
+        private bool captureBusy;
+        private bool translateBusy;
         private string lastSource = "";
         private string lastTranslation = "";
         private bool lastWasOnline;
@@ -597,7 +602,7 @@ namespace MapleOverlay
             Size = new Size(600, 560); MinimumSize = new Size(520, 480);
             Font = new Font("Microsoft YaHei UI", 9.0f);
             BuildUi(); LoadRegion();
-            timer.Interval = 1000;
+            timer.Interval = 650;
             timer.Tick += async delegate { await PollChatAsync(); };
             releaseTimer.Interval = 30000;
             releaseTimer.Tick += delegate {
@@ -616,6 +621,7 @@ namespace MapleOverlay
             FormClosing += delegate(object sender, FormClosingEventArgs e) {
                 if (e.CloseReason == CloseReason.UserClosing) { e.Cancel = true; Hide(); live = false; timer.Stop(); }
             };
+            Disposed += delegate { outputOriginalFont.Dispose(); outputTranslationFont.Dispose(); };
         }
 
         private void BuildUi()
@@ -654,9 +660,10 @@ namespace MapleOverlay
             tools.Controls.Add(liveButton); tools.Controls.Add(once); tools.Controls.Add(bind); tools.Controls.Add(review); tools.Controls.Add(onlineSettings); tools.Controls.Add(syncKnowledge); tools.Controls.Add(status);
             root.Controls.Add(tools, 0, 0);
 
-            output.Dock = DockStyle.Fill; output.Multiline = true; output.ReadOnly = true;
-            output.ScrollBars = ScrollBars.Vertical; output.BackColor = Color.FromArgb(24, 27, 32); output.ForeColor = Color.White;
-            output.Text = "实时AI翻译功能来自 @奇怪小鸭" + Environment.NewLine;
+            output.Dock = DockStyle.Fill; output.ReadOnly = true; output.BorderStyle = BorderStyle.FixedSingle;
+            output.ScrollBars = RichTextBoxScrollBars.Vertical; output.BackColor = Color.FromArgb(24, 27, 32); output.ForeColor = Color.White;
+            output.DetectUrls = false; output.Font = outputOriginalFont;
+            output.Text = "实时AI翻译功能来自 @奇怪小鸭\r\n\r\n";
             root.Controls.Add(output, 0, 1);
 
             FlowLayoutPanel languages = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = false };
@@ -731,7 +738,7 @@ namespace MapleOverlay
                 {
                     chatRegion = selector.SelectedScreenRegion;
                     ChatRegionSettings.Save(chatRegion, game);
-                    seen.Clear();
+                    previousChatFrame.Clear(); pendingChatLines.Clear();
                     status.Text = "聊天区已统一绑定 " + chatRegion.Width + "×" + chatRegion.Height +
                         "｜框内AI翻译，F8跳过";
                 }
@@ -749,26 +756,39 @@ namespace MapleOverlay
 
         private async Task PollChatAsync(bool forceOnce = false)
         {
-            if ((!live && !forceOnce) || busy) return;
-            busy = true;
+            if ((!live && !forceOnce) || captureBusy) return;
+            captureBusy = true;
             try
             {
                 string text = await overlay.CaptureTextAsync(chatRegion);
                 List<string> lines = ParseChatLines(text);
-                foreach (string raw in lines)
+                List<string> newLines = GetNewChatLines(previousChatFrame, lines);
+                previousChatFrame = lines;
+                foreach (string line in newLines)
+                    if (line.Length >= 3 && !pendingChatLines.Contains(line)) pendingChatLines.Enqueue(line);
+                status.Text = pendingChatLines.Count > 0 ? "检测到新消息，待翻译 " + pendingChatLines.Count + " 条" : status.Text;
+            }
+            catch (Exception ex) { status.Text = ex.Message; }
+            finally { captureBusy = false; }
+            if (!translateBusy) await ProcessPendingChatAsync();
+        }
+
+        private async Task ProcessPendingChatAsync()
+        {
+            if (translateBusy) return;
+            translateBusy = true;
+            try
+            {
+                while (pendingChatLines.Count > 0)
                 {
-                    string line = Regex.Replace(raw.Trim(), "\\s+", " ");
-                    if (line.Length < 3 || seen.Contains(line)) continue;
-                    seen.Add(line);
-                    if (seen.Count > 180) seen.Clear();
+                    string line = pendingChatLines.Dequeue();
                     string speakerPrefix, message;
                     SplitSpeaker(line, out speakerPrefix, out message);
                     string cleanedMessage = NormalizeCommonChatOcr(message);
                     Dictionary<string, string> nameTokens;
                     string protectedMessage = ProtectPlayerNames(cleanedMessage, out nameTokens);
                     string glossary = BuildGlossary(protectedMessage);
-                    lastWasOnline = false;
-                    lastAiUse = DateTime.Now;
+                    lastWasOnline = false; lastAiUse = DateTime.Now;
                     string translated;
                     if (!TryExactGlossaryTranslation(protectedMessage, out translated))
                     {
@@ -778,13 +798,49 @@ namespace MapleOverlay
                     }
                     translated = RestorePlayerNames(translated, nameTokens);
                     lastSource = message; lastTranslation = translated;
-                    AppendOutput(line + Environment.NewLine + "→ " + speakerPrefix + translated + Environment.NewLine);
-                    recentChatMessages.Add(message);
+                    AppendTranslation(line, speakerPrefix + translated);
+                    recentChatMessages.Add(cleanedMessage);
                     if (recentChatMessages.Count > 6) recentChatMessages.RemoveAt(0);
+                    status.Text = pendingChatLines.Count == 0 ? "新消息已翻译" : "正在翻译，剩余 " + pendingChatLines.Count + " 条";
                 }
             }
             catch (Exception ex) { status.Text = ex.Message; }
-            finally { busy = false; }
+            finally { translateBusy = false; }
+        }
+
+        internal static List<string> GetNewChatLines(List<string> previous, List<string> current)
+        {
+            List<string> added = new List<string>();
+            if (current == null || current.Count == 0) return added;
+            if (previous == null || previous.Count == 0) { added.AddRange(current); return added; }
+            int bestOverlap = 0;
+            int maximum = Math.Min(previous.Count, current.Count);
+            for (int overlap = maximum; overlap >= 1; overlap--)
+            {
+                bool same = true;
+                for (int i = 0; i < overlap; i++)
+                    if (ChatIdentity(previous[previous.Count - overlap + i]) != ChatIdentity(current[i])) { same = false; break; }
+                if (same) { bestOverlap = overlap; break; }
+            }
+            if (bestOverlap > 0)
+            {
+                for (int i = bestOverlap; i < current.Count; i++) added.Add(current[i]);
+                return added;
+            }
+            // OCR may alter one old character between frames. Use the newest stable anchor,
+            // then enqueue only the suffix after it instead of waiting for many later lines.
+            int anchor = -1;
+            HashSet<string> oldIds = new HashSet<string>(StringComparer.Ordinal);
+            foreach (string line in previous) oldIds.Add(ChatIdentity(line));
+            for (int i = 0; i < current.Count; i++) if (oldIds.Contains(ChatIdentity(current[i]))) anchor = i;
+            if (anchor >= 0) for (int i = anchor + 1; i < current.Count; i++) added.Add(current[i]);
+            else added.Add(current[current.Count - 1]);
+            return added;
+        }
+
+        private static string ChatIdentity(string value)
+        {
+            return Regex.Replace((value ?? "").ToLowerInvariant(), @"[^a-z0-9\u3400-\u9fff]+", "");
         }
 
         internal static List<string> ParseChatLines(string ocrText)
@@ -840,7 +896,7 @@ namespace MapleOverlay
                 translated = await ReviewOnlineIfEnabled(protectedMessage, translated, Convert.ToString(target.SelectedItem), glossary);
                 translated = RestorePlayerNames(translated, nameTokens);
                 lastSource = message; lastTranslation = translated;
-                AppendOutput(value + Environment.NewLine + "→ " + speakerPrefix + translated + Environment.NewLine);
+                AppendTranslation(value, speakerPrefix + translated);
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, "AI翻译失败"); }
             finally { busy = false; }
@@ -852,11 +908,18 @@ namespace MapleOverlay
             foreach (KeyValuePair<string, string> entry in glossaryEntries)
             {
                 if (count >= 16) break;
-                if (text.IndexOf(entry.Key, StringComparison.OrdinalIgnoreCase) < 0 &&
-                    text.IndexOf(entry.Value, StringComparison.OrdinalIgnoreCase) < 0) continue;
+                if (!ContainsGlossaryTerm(text, entry.Key) && !ContainsGlossaryTerm(text, entry.Value)) continue;
                 result.Append(entry.Key).Append(" = ").Append(entry.Value).AppendLine(); count++;
             }
             return result.ToString();
+        }
+
+        private static bool ContainsGlossaryTerm(string text, string term)
+        {
+            if (String.IsNullOrWhiteSpace(text) || String.IsNullOrWhiteSpace(term)) return false;
+            if (Regex.IsMatch(term, @"^[A-Za-z0-9_ ]+$"))
+                return Regex.IsMatch(text, @"(?<![A-Za-z0-9_])" + Regex.Escape(term) + @"(?![A-Za-z0-9_])", RegexOptions.IgnoreCase);
+            return text.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private bool TryExactGlossaryTranslation(string text, out string translation)
@@ -900,7 +963,7 @@ namespace MapleOverlay
             {
                 if (raw.StartsWith("#")) continue;
                 string[] parts = raw.Split('\t');
-                if (parts.Length < 2 || parts[0].Length < 3 || parts[1].Length == 0) continue;
+                if (parts.Length < 2 || parts[0].Length < 2 || parts[1].Length == 0) continue;
                 string english = parts[0].Trim(), chinese = parts[1].Trim();
                 loaded.Add(new KeyValuePair<string, string>(english, chinese));
                 HashSet<string> values;
@@ -991,10 +1054,27 @@ namespace MapleOverlay
             catch (Exception ex) { status.Text = "在线复核失败，保留本地译文：" + ex.Message; return local; }
         }
 
-        private void AppendOutput(string value)
+        private void AppendTranslation(string original, string translation)
         {
-            output.AppendText((output.TextLength == 0 ? "" : Environment.NewLine) + value);
-            if (output.TextLength > 16000) output.Text = output.Text.Substring(output.TextLength - 12000);
+            if (output.TextLength > 24000)
+            {
+                output.Select(0, Math.Min(8000, output.TextLength));
+                output.SelectedText = "";
+            }
+            output.SelectionStart = output.TextLength;
+            output.SelectionColor = Color.FromArgb(132, 142, 154);
+            output.SelectionFont = outputOriginalFont;
+            output.AppendText("原文  " + original.Trim() + Environment.NewLine);
+            output.SelectionStart = output.TextLength;
+            output.SelectionColor = Color.FromArgb(255, 183, 77);
+            output.SelectionFont = outputTranslationFont;
+            output.AppendText("中文  ");
+            output.SelectionColor = Color.FromArgb(132, 255, 170);
+            output.SelectionFont = outputTranslationFont;
+            output.AppendText(translation.Trim() + Environment.NewLine);
+            output.SelectionColor = Color.FromArgb(62, 70, 82);
+            output.SelectionFont = outputOriginalFont;
+            output.AppendText("────────────────────────" + Environment.NewLine);
             output.SelectionStart = output.TextLength; output.ScrollToCaret();
         }
 
