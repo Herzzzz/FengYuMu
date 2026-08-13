@@ -15,6 +15,85 @@ using Microsoft.Win32;
 
 namespace MapleOverlay
 {
+    internal sealed class KnowledgeInitializationResult
+    {
+        public int Entries;
+        public int Categories;
+        public string Fingerprint;
+        public bool Changed;
+    }
+
+    internal static class MapleKnowledgeInitializer
+    {
+        private const string ManifestName = "枫语幕知识初始化.json";
+
+        public static KnowledgeInitializationResult Initialize(string aiRoot, string dictionaryPath)
+        {
+            if (!File.Exists(dictionaryPath)) throw new FileNotFoundException("找不到枫语幕词库", dictionaryPath);
+            Directory.CreateDirectory(aiRoot);
+            byte[] bytes = File.ReadAllBytes(dictionaryPath);
+            string fingerprint;
+            using (SHA256 sha = SHA256.Create())
+            {
+                byte[] hash = sha.ComputeHash(bytes);
+                StringBuilder value = new StringBuilder(hash.Length * 2);
+                foreach (byte item in hash) value.Append(item.ToString("x2"));
+                fingerprint = value.ToString();
+            }
+
+            int entries = 0;
+            HashSet<string> categories = new HashSet<string>(StringComparer.Ordinal);
+            foreach (string raw in File.ReadLines(dictionaryPath, Encoding.UTF8))
+            {
+                if (String.IsNullOrWhiteSpace(raw) || raw.TrimStart().StartsWith("#")) continue;
+                string[] parts = raw.Split('\t');
+                if (parts.Length < 2 || String.IsNullOrWhiteSpace(parts[0]) || String.IsNullOrWhiteSpace(parts[1])) continue;
+                entries++;
+                if (parts.Length > 2)
+                {
+                    string category = parts[2]; int separator = category.LastIndexOf('#');
+                    if (separator > 0) category = category.Substring(0, separator);
+                    if (category.Length > 0) categories.Add(category);
+                }
+            }
+
+            string path = Path.Combine(aiRoot, ManifestName);
+            string previousFingerprint = "";
+            if (File.Exists(path))
+            {
+                try
+                {
+                    Dictionary<string, object> old = new JavaScriptSerializer().Deserialize<Dictionary<string, object>>(File.ReadAllText(path, Encoding.UTF8));
+                    object oldValue; if (old.TryGetValue("dictionarySha256", out oldValue)) previousFingerprint = Convert.ToString(oldValue);
+                }
+                catch { }
+            }
+            bool changed = !String.Equals(previousFingerprint, fingerprint, StringComparison.OrdinalIgnoreCase);
+            if (changed)
+            {
+                Dictionary<string, object> manifest = new Dictionary<string, object> {
+                    { "format", 1 },
+                    { "initializedAt", DateTime.Now.ToString("s") },
+                    { "dictionarySha256", fingerprint },
+                    { "entries", entries },
+                    { "categories", categories.Count },
+                    { "mode", "local-retrieval-knowledge-initialization" },
+                    { "sources", new string[] {
+                        "https://mscw-guidebook.com/", "https://mxdgcw.dvg.cn/",
+                        "https://meowdb.com/msclassic/", "https://mxd079.dvg.cn/"
+                    } },
+                    { "note", "资料站已整理内容通过枫语幕词库按需检索；不修改GGUF模型权重。" }
+                };
+                string temp = path + ".new";
+                File.WriteAllText(temp, new JavaScriptSerializer().Serialize(manifest), new UTF8Encoding(false));
+                if (File.Exists(path)) File.Replace(temp, path, null); else File.Move(temp, path);
+            }
+            return new KnowledgeInitializationResult {
+                Entries = entries, Categories = categories.Count, Fingerprint = fingerprint, Changed = changed
+            };
+        }
+    }
+
     internal sealed class OnlineAiSettings
     {
         public string Endpoint = "";
@@ -215,8 +294,9 @@ namespace MapleOverlay
             if (!await EnsureStartedAsync()) throw new InvalidOperationException(Status);
             string languageRule = "将输入从" + sourceLanguage + "翻译为" + targetLanguage + "。";
             string system = "你是冒险岛怀旧服聊天翻译器。" + languageRule +
+                "你已通过枫语幕本地知识初始化使用资料站整理内容与玩家审核词库。" +
                 "理解玩家俚语、缩写和游戏语境；保留角色名、数字、频道名和表情。只输出译文，不解释。" +
-                (String.IsNullOrEmpty(glossary) ? "" : "必须优先采用以下术语：\n" + glossary);
+                (String.IsNullOrEmpty(glossary) ? "" : "本次从知识库检索到的术语如下，必须优先采用：\n" + glossary);
             string body = new JavaScriptSerializer().Serialize(new Dictionary<string, object> {
                 { "model", "local-qwen3" },
                 { "temperature", 0.2 }, { "top_p", 0.8 }, { "max_tokens", 96 },
@@ -282,6 +362,7 @@ namespace MapleOverlay
         private readonly HashSet<string> seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private readonly HashSet<string> protectedPlayerNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private readonly List<KeyValuePair<string, string>> glossaryEntries = new List<KeyValuePair<string, string>>();
+        private KnowledgeInitializationResult knowledge;
         private Rectangle chatRegion;
         private bool live;
         private bool busy;
@@ -348,7 +429,13 @@ namespace MapleOverlay
             status.AutoSize = true; status.Padding = new Padding(8, 7, 0, 0); status.ForeColor = Color.DarkGreen;
             Button onlineSettings = new Button { Text = "在线AI设置", AutoSize = true };
             onlineSettings.Click += delegate { using (OnlineAiForm form = new OnlineAiForm()) form.ShowDialog(this); };
-            tools.Controls.Add(liveButton); tools.Controls.Add(once); tools.Controls.Add(bind); tools.Controls.Add(review); tools.Controls.Add(onlineSettings); tools.Controls.Add(status);
+            Button syncKnowledge = new Button { Text = "同步AI词库", AutoSize = true };
+            syncKnowledge.Click += delegate {
+                KnowledgeInitializationResult result = SyncKnowledge();
+                status.Text = result == null ? "请先安装AI模型" :
+                    (result.Changed ? "AI已切换到新词库 " : "AI词库已是最新版 ") + result.Entries + "条";
+            };
+            tools.Controls.Add(liveButton); tools.Controls.Add(once); tools.Controls.Add(bind); tools.Controls.Add(review); tools.Controls.Add(onlineSettings); tools.Controls.Add(syncKnowledge); tools.Controls.Add(status);
             root.Controls.Add(tools, 0, 0);
 
             output.Dock = DockStyle.Fill; output.Multiline = true; output.ReadOnly = true;
@@ -372,7 +459,11 @@ namespace MapleOverlay
             Button correct = new Button { Text = "加入纠错候选", AutoSize = true };
             correct.Click += delegate { AddCandidate(); };
             Button install = new Button { Text = "安装/选择永久免费AI模型", AutoSize = true };
-            install.Click += delegate { ai.Stop(); using (AiInstallForm form = new AiInstallForm(ai.AiRoot)) form.ShowDialog(this); };
+            install.Click += delegate {
+                ai.Stop();
+                using (AiInstallForm form = new AiInstallForm(ai.AiRoot, dictionaryPath)) form.ShowDialog(this);
+                LoadGlossary(); RefreshAiStatus();
+            };
             onlineReview.Text = "用在线AI复核"; onlineReview.AutoSize = true; onlineReview.Padding = new Padding(0, 6, 5, 0);
             actions.Controls.Add(translate); actions.Controls.Add(copy); actions.Controls.Add(correct); actions.Controls.Add(install); actions.Controls.Add(onlineReview);
             root.Controls.Add(actions, 0, 4);
@@ -388,7 +479,7 @@ namespace MapleOverlay
         private void RefreshAiStatus()
         {
             status.Text = ai.IsInstalled
-                ? "模型已安装｜首次翻译时自动载入｜游戏友好模式"
+                ? "模型已安装｜知识初始化" + (knowledge == null ? "待检查" : "完成 " + knowledge.Entries + "条") + "｜游戏友好模式"
                 : "未安装模型包";
         }
 
@@ -499,14 +590,40 @@ namespace MapleOverlay
         private void LoadGlossary()
         {
             glossaryEntries.Clear();
+            knowledge = null;
             if (!File.Exists(dictionaryPath)) return;
+            Dictionary<string, HashSet<string>> valuesByEnglish =
+                new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
+            List<KeyValuePair<string, string>> loaded = new List<KeyValuePair<string, string>>();
             foreach (string raw in File.ReadLines(dictionaryPath, Encoding.UTF8))
             {
                 if (raw.StartsWith("#")) continue;
                 string[] parts = raw.Split('\t');
                 if (parts.Length < 2 || parts[0].Length < 3 || parts[1].Length == 0) continue;
-                glossaryEntries.Add(new KeyValuePair<string, string>(parts[0], parts[1]));
+                string english = parts[0].Trim(), chinese = parts[1].Trim();
+                loaded.Add(new KeyValuePair<string, string>(english, chinese));
+                HashSet<string> values;
+                if (!valuesByEnglish.TryGetValue(english, out values))
+                {
+                    values = new HashSet<string>(StringComparer.Ordinal); valuesByEnglish.Add(english, values);
+                }
+                values.Add(chinese);
             }
+            foreach (KeyValuePair<string, string> entry in loaded)
+                if (valuesByEnglish[entry.Key].Count == 1) glossaryEntries.Add(entry);
+            glossaryEntries.Sort(delegate(KeyValuePair<string, string> left, KeyValuePair<string, string> right) {
+                return right.Key.Length.CompareTo(left.Key.Length);
+            });
+            if (ai.IsInstalled)
+            {
+                try { knowledge = MapleKnowledgeInitializer.Initialize(ai.AiRoot, dictionaryPath); }
+                catch { knowledge = null; }
+            }
+        }
+
+        internal KnowledgeInitializationResult SyncKnowledge()
+        {
+            LoadGlossary(); RefreshAiStatus(); return knowledge;
         }
 
         private void SplitSpeaker(string line, out string prefix, out string message)
@@ -653,6 +770,7 @@ namespace MapleOverlay
     internal sealed class AiInstallForm : Form
     {
         private readonly string aiRoot;
+        private readonly string dictionaryPath;
         private readonly Label progress = new Label();
         private readonly ProgressBar progressBar = new ProgressBar();
         private readonly Button install17 = new Button();
@@ -666,13 +784,14 @@ namespace MapleOverlay
             public string ETag;
         }
 
-        public AiInstallForm(string aiRoot)
+        public AiInstallForm(string aiRoot, string dictionaryPath)
         {
             this.aiRoot = aiRoot;
+            this.dictionaryPath = dictionaryPath;
             Text = "安装永久免费AI模型"; StartPosition = FormStartPosition.CenterParent;
             Size = new Size(690, 390); Font = new Font("Microsoft YaHei UI", 9.0f);
             TextBox info = new TextBox { Dock = DockStyle.Fill, Multiline = true, ReadOnly = true, ScrollBars = ScrollBars.Vertical,
-                Text = "模型安装位置（就在程序旁边）：\r\n" + aiRoot + "\r\n\r\n程序自动识别 AMD、NVIDIA、Intel Vulkan 显卡；显卡不可用时自动回退CPU。\r\n老电脑推荐1.7B约1.1GB；4B约2.5GB；8B约5GB。下载后永久离线免费。\r\n\r\n如果官方站下载不畅，也可以从QQ群取得模型包并解压到上面的目录。" };
+                Text = "模型安装位置（就在程序旁边）：\r\n" + aiRoot + "\r\n\r\n程序自动识别 AMD、NVIDIA、Intel Vulkan 显卡；显卡不可用时自动回退CPU。\r\n老电脑推荐1.7B约1.1GB；4B约2.5GB；8B约5GB。下载后永久离线免费。\r\n\r\n下载完成后会自动用资料站整理内容和本地词库完成首次知识初始化；这是轻量检索知识库，不修改模型权重。\r\n如果官方站下载不畅，也可以从QQ群取得模型包并解压到上面的目录。" };
             Panel bottom = new Panel { Dock = DockStyle.Bottom, Height = 145 };
             FlowLayoutPanel buttons = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 82, WrapContents = true };
             install17.Text = "安装超轻1.7B（老电脑推荐）"; install17.AutoSize = true;
@@ -704,8 +823,10 @@ namespace MapleOverlay
                 string modelUrl = await Task.Factory.StartNew(delegate { return FindModelUrl(size, fileName); });
                 await InstallModelAsync(modelUrl, Path.Combine(aiRoot, fileName), "下载" + size + "模型", false);
                 File.WriteAllText(Path.Combine(aiRoot, "selected-model.txt"), fileName, new UTF8Encoding(false));
-                progressBar.Style = ProgressBarStyle.Continuous; progressBar.Value = 100; progress.Text = "安装完成";
-                MessageBox.Show("永久免费AI模型已安装。关闭本窗口后点击AI翻译，首次载入可能需要几十秒。", "安装完成");
+                KnowledgeInitializationResult knowledge = await InitializeKnowledgeAsync();
+                progressBar.Style = ProgressBarStyle.Continuous; progressBar.Value = 100; progress.Text = "安装及知识初始化完成";
+                MessageBox.Show("永久免费AI模型已安装，并已使用资料站整理内容和本地词库完成首次知识初始化（" +
+                    knowledge.Entries + "条、" + knowledge.Categories + "类）。\n\n关闭本窗口后点击AI翻译，首次载入模型可能需要几十秒。", "安装完成");
             }
             catch (Exception ex)
             {
@@ -732,9 +853,11 @@ namespace MapleOverlay
                     string url = await Task.Factory.StartNew(delegate { return FindModelUrl(size, fileName); });
                     changed = await InstallModelAsync(url, modelPath, "更新" + size + "模型", true) || changed;
                 }
+                KnowledgeInitializationResult knowledge = await InitializeKnowledgeAsync();
                 progressBar.Style = ProgressBarStyle.Continuous; progressBar.Value = 100;
-                progress.Text = changed ? "更新完成" : "已经是最新版";
-                MessageBox.Show(changed ? "模型和运行库检查完成，已安装可用更新。" : "当前模型和运行库已经是最新版。", "检查更新");
+                progress.Text = changed ? "更新及知识初始化完成" : "模型与知识库已是最新版";
+                MessageBox.Show((changed ? "模型和运行库检查完成，已安装可用更新。" : "当前模型和运行库已经是最新版。") +
+                    "\n知识初始化：" + knowledge.Entries + "条、" + knowledge.Categories + "类。", "检查更新");
             }
             catch (Exception ex)
             {
@@ -747,6 +870,12 @@ namespace MapleOverlay
         private void SetButtons(bool enabled)
         {
             install17.Enabled = enabled; install4.Enabled = enabled; install8.Enabled = enabled; update.Enabled = enabled;
+        }
+
+        private Task<KnowledgeInitializationResult> InitializeKnowledgeAsync()
+        {
+            progressBar.Style = ProgressBarStyle.Marquee; progress.Text = "首次知识初始化…";
+            return Task.Factory.StartNew(delegate { return MapleKnowledgeInitializer.Initialize(aiRoot, dictionaryPath); });
         }
 
         private async Task<bool> InstallRuntimeAsync(bool updateOnly)

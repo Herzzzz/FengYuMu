@@ -512,6 +512,7 @@ namespace MapleOverlay
                     HotkeyText(showKey, showModifiers) + " 呼出，" +
                     HotkeyText(hideKey, hideModifiers) + " 缩回后台。双击托盘图标打开AI实时聊天翻译。" +
                     ((!h1 || !h2) ? "（有快捷键注册失败）" : ""), ToolTipIcon.Info);
+                SyncAiKnowledge(false);
                 if (Program.Benchmark)
                 {
                     await Task.Delay(350);
@@ -598,7 +599,33 @@ namespace MapleOverlay
         internal void ReloadDictionary()
         {
             translations.Load();
-            tray.ShowBalloonTip(1200, "词库已载入内存", translations.Count + " 条", ToolTipIcon.Info);
+            SyncAiKnowledge(false);
+            tray.ShowBalloonTip(1200, "词库与AI知识已同步", translations.Count + " 条", ToolTipIcon.Info);
+        }
+
+        internal void SyncAiKnowledge(bool showNotice)
+        {
+            try
+            {
+                string aiRoot = Path.Combine(baseDir, "模型");
+                bool hasModel = Directory.Exists(aiRoot) &&
+                    Directory.GetFiles(aiRoot, "Qwen3-*.gguf", SearchOption.AllDirectories).Length > 0;
+                if (!hasModel)
+                {
+                    if (showNotice) tray.ShowBalloonTip(1800, "AI词库同步", "尚未安装AI模型；正式词库已经载入。", ToolTipIcon.Info);
+                    return;
+                }
+                KnowledgeInitializationResult result = MapleKnowledgeInitializer.Initialize(aiRoot,
+                    Path.Combine(baseDir, "枫语幕词库.tsv"));
+                if (chatTranslator != null && !chatTranslator.IsDisposed) chatTranslator.SyncKnowledge();
+                if (showNotice) tray.ShowBalloonTip(2200, "AI词库同步完成",
+                    result.Entries + " 条、" + result.Categories + " 类" +
+                    (result.Changed ? "，已切换到新词库。" : "，当前已经是最新版。"), ToolTipIcon.Info);
+            }
+            catch (Exception ex)
+            {
+                if (showNotice) MessageBox.Show("AI词库同步失败：\n\n" + ex.Message, "枫语幕");
+            }
         }
 
         private void ShowDictionaryEditor()
@@ -629,7 +656,7 @@ namespace MapleOverlay
         private void BuildTray()
         {
             tray.Icon = SystemIcons.Information;
-            tray.Text = "枫语幕 v1.4.1";
+            tray.Text = "枫语幕 v1.5.2";
             tray.Visible = true;
             ContextMenuStrip menu = new ContextMenuStrip();
             ToolStripMenuItem dictionary = new ToolStripMenuItem("打开并更改词库");
@@ -639,11 +666,14 @@ namespace MapleOverlay
             ToolStripMenuItem chat = new ToolStripMenuItem("AI实时聊天翻译");
             chat.Font = new Font(chat.Font, FontStyle.Bold);
             chat.Click += delegate { ShowChatTranslator(); };
+            ToolStripMenuItem syncAi = new ToolStripMenuItem("同步AI词库");
+            syncAi.Click += delegate { SyncAiKnowledge(true); };
             ToolStripMenuItem exit = new ToolStripMenuItem("退出");
             exit.Click += delegate { Close(); };
             menu.Items.Add(dictionary);
             menu.Items.Add(hotkeys);
             menu.Items.Add(chat);
+            menu.Items.Add(syncAi);
             menu.Items.Add(exit);
             tray.ContextMenuStrip = menu;
             tray.DoubleClick += delegate { ShowChatTranslator(); };
@@ -656,7 +686,7 @@ namespace MapleOverlay
                 visibleTranslation = false;
                 labels.Clear();
                 Invalidate();
-                tray.Text = "枫语幕 v1.4.1（内存待机）";
+                tray.Text = "枫语幕 v1.5.2（内存待机）";
             }
             else await ShowTranslationAsync();
         }
@@ -677,7 +707,7 @@ namespace MapleOverlay
             visibleTranslation = false;
             labels.Clear();
             Invalidate();
-            tray.Text = "枫语幕 v1.4.1（低配置优化）";
+            tray.Text = "枫语幕 v1.5.2（低配置优化）";
         }
 
         private async Task ShowTranslationAsync()
@@ -772,7 +802,7 @@ namespace MapleOverlay
                 visibleTranslation = true;
                 Invalidate();
                 stopwatch.Stop();
-                tray.Text = "枫语幕 v1.4.1（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
+                tray.Text = "枫语幕 v1.5.2（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
                 if (Program.Benchmark)
                     File.WriteAllText(Path.Combine(baseDir, "last_run.txt"),
                         "耗时毫秒=" + stopwatch.ElapsedMilliseconds + Environment.NewLine +
