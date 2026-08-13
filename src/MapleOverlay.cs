@@ -656,7 +656,7 @@ namespace MapleOverlay
         private void BuildTray()
         {
             tray.Icon = SystemIcons.Information;
-            tray.Text = "枫语幕 v1.5.2";
+            tray.Text = "枫语幕 v1.5.3";
             tray.Visible = true;
             ContextMenuStrip menu = new ContextMenuStrip();
             ToolStripMenuItem dictionary = new ToolStripMenuItem("打开并更改词库");
@@ -686,7 +686,7 @@ namespace MapleOverlay
                 visibleTranslation = false;
                 labels.Clear();
                 Invalidate();
-                tray.Text = "枫语幕 v1.5.2（内存待机）";
+                tray.Text = "枫语幕 v1.5.3（内存待机）";
             }
             else await ShowTranslationAsync();
         }
@@ -707,7 +707,7 @@ namespace MapleOverlay
             visibleTranslation = false;
             labels.Clear();
             Invalidate();
-            tray.Text = "枫语幕 v1.5.2（低配置优化）";
+            tray.Text = "枫语幕 v1.5.3（低配置优化）";
         }
 
         private async Task ShowTranslationAsync()
@@ -802,7 +802,7 @@ namespace MapleOverlay
                 visibleTranslation = true;
                 Invalidate();
                 stopwatch.Stop();
-                tray.Text = "枫语幕 v1.5.2（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
+                tray.Text = "枫语幕 v1.5.3（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
                 if (Program.Benchmark)
                     File.WriteAllText(Path.Combine(baseDir, "last_run.txt"),
                         "耗时毫秒=" + stopwatch.ElapsedMilliseconds + Environment.NewLine +
@@ -967,9 +967,18 @@ namespace MapleOverlay
         private List<OverlayLabel> BuildLabels(OcrResult result, float ocrScale, Bitmap prepared)
         {
             List<OverlayLabel> output = new List<OverlayLabel>();
-            List<OcrLine> allLines = new List<OcrLine>(result.Lines);
-            bool questInterface = translations.LooksLikeQuestInterface(result.Text);
-            string activeTaskId = questInterface ? translations.DetectTaskId(result.Text) : "";
+            Rectangle chatExclusion = GetChatExclusionBounds();
+            List<OcrLine> allLines = new List<OcrLine>();
+            StringBuilder visibleText = new StringBuilder();
+            foreach (OcrLine candidate in result.Lines)
+            {
+                if (IsChatLine(candidate, ocrScale, chatExclusion)) continue;
+                allLines.Add(candidate);
+                if (visibleText.Length > 0) visibleText.AppendLine();
+                visibleText.Append(candidate.Text);
+            }
+            bool questInterface = translations.LooksLikeQuestInterface(visibleText.ToString());
+            string activeTaskId = questInterface ? translations.DetectTaskId(visibleText.ToString()) : "";
             for (int lineIndex = 0; lineIndex < allLines.Count; lineIndex++)
             {
                 OcrLine line = allLines[lineIndex];
@@ -1012,6 +1021,69 @@ namespace MapleOverlay
                 AddExactLabels(output, new List<OcrLine> { line }, line.Text, matches, ocrScale);
             }
             return output;
+        }
+
+        private Rectangle GetChatExclusionBounds()
+        {
+            Rectangle configured = Rectangle.Empty;
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\FengYuMu"))
+                {
+                    if (key != null)
+                        configured = new Rectangle(Convert.ToInt32(key.GetValue("ChatX", 0)),
+                            Convert.ToInt32(key.GetValue("ChatY", 0)),
+                            Convert.ToInt32(key.GetValue("ChatW", 0)),
+                            Convert.ToInt32(key.GetValue("ChatH", 0)));
+                }
+            }
+            catch { configured = Rectangle.Empty; }
+
+            if (configured.Width >= 80 && configured.Height >= 30)
+            {
+                Rectangle overlap = Rectangle.Intersect(configured, captureBounds);
+                long configuredArea = (long)configured.Width * configured.Height;
+                long overlapArea = (long)overlap.Width * overlap.Height;
+                bool mostlyInsideCurrentWindow = configuredArea > 0 && overlapArea * 10 >= configuredArea * 7;
+                bool stillNearGameBottom = configured.Top + configured.Height / 2 >=
+                    captureBounds.Top + captureBounds.Height * 55 / 100;
+                if (overlap.Width >= 80 && overlap.Height >= 30 && mostlyInsideCurrentWindow && stillNearGameBottom)
+                    return overlap;
+            }
+
+            // Default MapleStory chat strip. Once the player binds the AI chat region,
+            // the exact saved rectangle above replaces this resolution-independent fallback.
+            return new Rectangle(captureBounds.Left + captureBounds.Width * 10 / 100,
+                captureBounds.Top + captureBounds.Height * 76 / 100,
+                captureBounds.Width * 55 / 100, captureBounds.Height * 21 / 100);
+        }
+
+        private bool IsChatLine(OcrLine line, float ocrScale, Rectangle exclusion)
+        {
+            if (exclusion.Width <= 0 || exclusion.Height <= 0 || line.Words.Count == 0) return false;
+            float left = Single.MaxValue, top = Single.MaxValue;
+            float right = Single.MinValue, bottom = Single.MinValue;
+            foreach (OcrWord word in line.Words)
+            {
+                left = Math.Min(left, (float)word.BoundingRect.X / ocrScale + captureBounds.Left);
+                top = Math.Min(top, (float)word.BoundingRect.Y / ocrScale + captureBounds.Top);
+                right = Math.Max(right, (float)(word.BoundingRect.X + word.BoundingRect.Width) / ocrScale + captureBounds.Left);
+                bottom = Math.Max(bottom, (float)(word.BoundingRect.Y + word.BoundingRect.Height) / ocrScale + captureBounds.Top);
+            }
+            if (left == Single.MaxValue) return false;
+            RectangleF lineBounds = RectangleF.FromLTRB(left, top, right, bottom);
+            return IsInsideChatBounds(lineBounds, exclusion);
+        }
+
+        private static bool IsInsideChatBounds(RectangleF lineBounds, Rectangle exclusion)
+        {
+            float centerX = lineBounds.Left + lineBounds.Width / 2.0f;
+            float centerY = lineBounds.Top + lineBounds.Height / 2.0f;
+            if (centerX >= exclusion.Left && centerX <= exclusion.Right &&
+                centerY >= exclusion.Top && centerY <= exclusion.Bottom) return true;
+            RectangleF overlap = RectangleF.Intersect(lineBounds, exclusion);
+            float area = lineBounds.Width * lineBounds.Height;
+            return area > 0 && overlap.Width * overlap.Height / area >= 0.35f;
         }
 
         private void AddExactLabels(List<OverlayLabel> output, List<OcrLine> lines,
