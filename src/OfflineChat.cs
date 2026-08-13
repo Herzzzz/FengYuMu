@@ -102,6 +102,11 @@ namespace MapleOverlay
 
         public string AiRoot
         {
+            get { return Path.Combine(baseDir, "模型"); }
+        }
+
+        private string LegacyAiRoot
+        {
             get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FengYuMu", "AI"); }
         }
 
@@ -112,7 +117,7 @@ namespace MapleOverlay
 
         private string FindServer()
         {
-            string[] roots = new string[] { AiRoot, Path.Combine(baseDir, "AI") };
+            string[] roots = new string[] { AiRoot, Path.Combine(baseDir, "AI"), LegacyAiRoot };
             foreach (string root in roots)
             {
                 if (!Directory.Exists(root)) continue;
@@ -126,17 +131,21 @@ namespace MapleOverlay
 
         private string FindModel()
         {
-            string[] roots = new string[] { AiRoot, Path.Combine(baseDir, "AI") };
+            string[] roots = new string[] { AiRoot, Path.Combine(baseDir, "AI"), LegacyAiRoot };
             foreach (string root in roots)
             {
                 if (!Directory.Exists(root)) continue;
+                string selected = Path.Combine(root, "selected-model.txt");
+                if (File.Exists(selected))
+                {
+                    string selectedPath = Path.Combine(root, File.ReadAllText(selected).Trim());
+                    if (File.Exists(selectedPath)) return selectedPath;
+                }
                 string[] found = Directory.GetFiles(root, "Qwen3-*.gguf", SearchOption.AllDirectories);
                 if (found.Length > 0)
                 {
                     Array.Sort(found, delegate(string left, string right) {
-                        bool left8 = Path.GetFileName(left).IndexOf("8B", StringComparison.OrdinalIgnoreCase) >= 0;
-                        bool right8 = Path.GetFileName(right).IndexOf("8B", StringComparison.OrdinalIgnoreCase) >= 0;
-                        return right8.CompareTo(left8);
+                        return new FileInfo(left).Length.CompareTo(new FileInfo(right).Length);
                     });
                     return found[0];
                 }
@@ -153,27 +162,36 @@ namespace MapleOverlay
                 Status = "未安装AI模型包";
                 return false;
             }
-            try
+            int[] gpuLayers = new int[] { 12, 4, 0 };
+            foreach (int layers in gpuLayers)
             {
-                ProcessStartInfo info = new ProcessStartInfo(server,
-                    "-m \"" + model + "\" --host 127.0.0.1 --port " + Port +
-                    " -ngl 99 -c 4096 --parallel 1 --no-webui");
-                info.WorkingDirectory = Path.GetDirectoryName(server);
-                info.UseShellExecute = false;
-                info.CreateNoWindow = true;
-                info.RedirectStandardOutput = false;
-                info.RedirectStandardError = false;
-                process = Process.Start(info);
-                Status = "正在载入本地AI模型…";
-                for (int i = 0; i < 90; i++)
+                try
                 {
-                    await Task.Delay(500);
-                    if (await PingAsync()) { Status = "本地AI已就绪（显卡优先）"; return true; }
-                    if (process.HasExited) break;
+                    int threads = Math.Max(1, Math.Min(2, Environment.ProcessorCount - 1));
+                    ProcessStartInfo info = new ProcessStartInfo(server,
+                        "-m \"" + model + "\" --host 127.0.0.1 --port " + Port +
+                        " -ngl " + layers + " -c 1024 -b 64 -ub 32 -t " + threads + " -tb " + threads +
+                        " --parallel 1 --prio -1 --poll 0 --poll-batch 0 --no-webui");
+                    info.WorkingDirectory = Path.GetDirectoryName(server);
+                    info.UseShellExecute = false;
+                    info.CreateNoWindow = true;
+                    info.RedirectStandardOutput = false;
+                    info.RedirectStandardError = false;
+                    process = Process.Start(info);
+                    try { process.PriorityClass = ProcessPriorityClass.BelowNormal; } catch { }
+                    string mode = layers > 0 ? "Vulkan显卡（" + layers + "层）" : "CPU兼容模式";
+                    Status = "正在载入本地AI模型：" + mode + "…";
+                    for (int i = 0; i < 120; i++)
+                    {
+                        await Task.Delay(500);
+                        if (await PingAsync()) { Status = "本地AI已就绪｜" + mode + "｜游戏友好限载"; return true; }
+                        if (process.HasExited) break;
+                    }
+                    Stop();
                 }
-                Status = "AI启动失败，请检查模型包";
+                catch { Stop(); }
             }
-            catch (Exception ex) { Status = "AI启动失败：" + ex.Message; }
+            Status = "AI启动失败：显卡和CPU兼容模式均未能载入";
             return false;
         }
 
@@ -201,7 +219,7 @@ namespace MapleOverlay
                 (String.IsNullOrEmpty(glossary) ? "" : "必须优先采用以下术语：\n" + glossary);
             string body = new JavaScriptSerializer().Serialize(new Dictionary<string, object> {
                 { "model", "local-qwen3" },
-                { "temperature", 0.2 }, { "top_p", 0.8 }, { "max_tokens", 256 },
+                { "temperature", 0.2 }, { "top_p", 0.8 }, { "max_tokens", 96 },
                 { "messages", new object[] {
                     new Dictionary<string, string> { { "role", "system" }, { "content", system } },
                     new Dictionary<string, string> { { "role", "user" }, { "content", text + "\n/no_think" } }
@@ -241,6 +259,8 @@ namespace MapleOverlay
         {
             try { if (process != null && !process.HasExited) { process.Kill(); process.WaitForExit(5000); } }
             catch { }
+            process = null;
+            Status = "本地AI已释放内存";
         }
     }
 
@@ -258,14 +278,17 @@ namespace MapleOverlay
         private readonly Button liveButton = new Button();
         private readonly CheckBox onlineReview = new CheckBox();
         private readonly System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
+        private readonly System.Windows.Forms.Timer releaseTimer = new System.Windows.Forms.Timer();
         private readonly HashSet<string> seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private readonly HashSet<string> protectedPlayerNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private readonly List<KeyValuePair<string, string>> glossaryEntries = new List<KeyValuePair<string, string>>();
         private Rectangle chatRegion;
         private bool live;
         private bool busy;
         private string lastSource = "";
         private string lastTranslation = "";
         private bool lastWasOnline;
+        private DateTime lastAiUse = DateTime.MinValue;
 
         public OfflineChatForm(OverlayForm owner, string baseDir)
         {
@@ -273,18 +296,28 @@ namespace MapleOverlay
             dictionaryPath = Path.Combine(baseDir, "枫语幕词库.tsv");
             candidatesPath = Path.Combine(baseDir, "枫语幕纠错候选.tsv");
             ai = new OfflineAiClient(baseDir);
+            LoadGlossary();
             Text = "枫语幕｜AI实时聊天翻译｜@奇怪小鸭";
             Icon = SystemIcons.Information; TopMost = true;
             StartPosition = FormStartPosition.Manual;
             Size = new Size(600, 560); MinimumSize = new Size(520, 480);
             Font = new Font("Microsoft YaHei UI", 9.0f);
             BuildUi(); LoadRegion();
-            timer.Interval = 1250;
+            timer.Interval = 1000;
             timer.Tick += async delegate { await PollChatAsync(); };
-            Shown += async delegate {
+            releaseTimer.Interval = 30000;
+            releaseTimer.Tick += delegate {
+                if (!live && lastAiUse != DateTime.MinValue && DateTime.Now - lastAiUse > TimeSpan.FromMinutes(5))
+                {
+                    ai.Stop(); lastAiUse = DateTime.MinValue;
+                    status.Text = "空闲5分钟，已释放AI模型内存";
+                }
+            };
+            releaseTimer.Start();
+            Shown += delegate {
                 Rectangle work = Screen.FromControl(this).WorkingArea;
                 Location = new Point(Math.Max(work.Left, work.Right - Width - 18), work.Top + 55);
-                await RefreshAiStatusAsync();
+                RefreshAiStatus();
             };
             FormClosing += delegate(object sender, FormClosingEventArgs e) {
                 if (e.CloseReason == CloseReason.UserClosing) { e.Cancel = true; Hide(); live = false; timer.Stop(); }
@@ -294,25 +327,28 @@ namespace MapleOverlay
         private void BuildUi()
         {
             TableLayoutPanel root = new TableLayoutPanel { Dock = DockStyle.Fill, Padding = new Padding(10), RowCount = 5, ColumnCount = 1 };
-            root.RowStyles.Add(new RowStyle(SizeType.Absolute, 38));
+            root.RowStyles.Add(new RowStyle(SizeType.Absolute, 76));
             root.RowStyles.Add(new RowStyle(SizeType.Percent, 62));
             root.RowStyles.Add(new RowStyle(SizeType.Absolute, 38));
             root.RowStyles.Add(new RowStyle(SizeType.Percent, 38));
             root.RowStyles.Add(new RowStyle(SizeType.Absolute, 45));
-            FlowLayoutPanel tools = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = false };
+            FlowLayoutPanel tools = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = true };
             liveButton.Text = "开始实时翻译"; liveButton.AutoSize = true;
             liveButton.Click += delegate { ToggleLive(); };
+            Button once = new Button { Text = "单次识别翻译（兼容模式）", AutoSize = true };
+            once.Click += async delegate { await PollChatAsync(true); };
             Button bind = new Button { Text = "3秒后绑定游戏聊天区", AutoSize = true };
             bind.Click += async delegate { await BindRegionAsync(); };
             Button review = new Button { Text = "审核AI纠错", AutoSize = true };
             review.Click += delegate {
                 using (CorrectionReviewForm form = new CorrectionReviewForm(dictionaryPath, candidatesPath)) form.ShowDialog(this);
                 overlay.ReloadDictionary();
+                LoadGlossary();
             };
             status.AutoSize = true; status.Padding = new Padding(8, 7, 0, 0); status.ForeColor = Color.DarkGreen;
             Button onlineSettings = new Button { Text = "在线AI设置", AutoSize = true };
             onlineSettings.Click += delegate { using (OnlineAiForm form = new OnlineAiForm()) form.ShowDialog(this); };
-            tools.Controls.Add(liveButton); tools.Controls.Add(bind); tools.Controls.Add(review); tools.Controls.Add(onlineSettings); tools.Controls.Add(status);
+            tools.Controls.Add(liveButton); tools.Controls.Add(once); tools.Controls.Add(bind); tools.Controls.Add(review); tools.Controls.Add(onlineSettings); tools.Controls.Add(status);
             root.Controls.Add(tools, 0, 0);
 
             output.Dock = DockStyle.Fill; output.Multiline = true; output.ReadOnly = true;
@@ -349,10 +385,11 @@ namespace MapleOverlay
             box.Items.AddRange(new object[] { "自动识别", "中文", "英语", "日语", "韩语" });
         }
 
-        private async Task RefreshAiStatusAsync()
+        private void RefreshAiStatus()
         {
-            bool ready = await ai.EnsureStartedAsync();
-            status.Text = ready ? ai.Status : "未安装模型包";
+            status.Text = ai.IsInstalled
+                ? "模型已安装｜首次翻译时自动载入｜游戏友好模式"
+                : "未安装模型包";
         }
 
         private void LoadRegion()
@@ -391,9 +428,9 @@ namespace MapleOverlay
             if (live) timer.Start(); else timer.Stop();
         }
 
-        private async Task PollChatAsync()
+        private async Task PollChatAsync(bool forceOnce = false)
         {
-            if (!live || busy) return;
+            if ((!live && !forceOnce) || busy) return;
             busy = true;
             try
             {
@@ -411,6 +448,7 @@ namespace MapleOverlay
                     string protectedMessage = ProtectPlayerNames(message, out nameTokens);
                     string glossary = BuildGlossary(protectedMessage);
                     lastWasOnline = false;
+                    lastAiUse = DateTime.Now;
                     string translated = await ai.TranslateAsync(protectedMessage, "自动识别（中英日韩）", "中文", glossary);
                     translated = await ReviewOnlineIfEnabled(protectedMessage, translated, "中文", glossary);
                     translated = RestorePlayerNames(translated, nameTokens);
@@ -434,6 +472,7 @@ namespace MapleOverlay
                 string protectedMessage = ProtectPlayerNames(message, out nameTokens);
                 string glossary = BuildGlossary(protectedMessage);
                 lastWasOnline = false;
+                lastAiUse = DateTime.Now;
                 string translated = await ai.TranslateAsync(protectedMessage, Convert.ToString(source.SelectedItem), Convert.ToString(target.SelectedItem), glossary);
                 translated = await ReviewOnlineIfEnabled(protectedMessage, translated, Convert.ToString(target.SelectedItem), glossary);
                 translated = RestorePlayerNames(translated, nameTokens);
@@ -446,16 +485,28 @@ namespace MapleOverlay
 
         private string BuildGlossary(string text)
         {
-            if (!File.Exists(dictionaryPath)) return "";
             StringBuilder result = new StringBuilder(); int count = 0;
-            foreach (string raw in File.ReadLines(dictionaryPath, Encoding.UTF8))
+            foreach (KeyValuePair<string, string> entry in glossaryEntries)
             {
-                if (count >= 16 || raw.StartsWith("#")) continue;
-                string[] p = raw.Split('\t'); if (p.Length < 2 || p[0].Length < 3) continue;
-                if (text.IndexOf(p[0], StringComparison.OrdinalIgnoreCase) < 0 && text.IndexOf(p[1], StringComparison.OrdinalIgnoreCase) < 0) continue;
-                result.Append(p[0]).Append(" = ").Append(p[1]).AppendLine(); count++;
+                if (count >= 16) break;
+                if (text.IndexOf(entry.Key, StringComparison.OrdinalIgnoreCase) < 0 &&
+                    text.IndexOf(entry.Value, StringComparison.OrdinalIgnoreCase) < 0) continue;
+                result.Append(entry.Key).Append(" = ").Append(entry.Value).AppendLine(); count++;
             }
             return result.ToString();
+        }
+
+        private void LoadGlossary()
+        {
+            glossaryEntries.Clear();
+            if (!File.Exists(dictionaryPath)) return;
+            foreach (string raw in File.ReadLines(dictionaryPath, Encoding.UTF8))
+            {
+                if (raw.StartsWith("#")) continue;
+                string[] parts = raw.Split('\t');
+                if (parts.Length < 2 || parts[0].Length < 3 || parts[1].Length == 0) continue;
+                glossaryEntries.Add(new KeyValuePair<string, string>(parts[0], parts[1]));
+            }
         }
 
         private void SplitSpeaker(string line, out string prefix, out string message)
@@ -539,7 +590,7 @@ namespace MapleOverlay
         }
 
         private static string Clean(string value) { return (value ?? "").Replace('\t', ' ').Replace('\r', ' ').Replace('\n', ' ').Trim(); }
-        public void StopService() { timer.Stop(); ai.Stop(); }
+        public void StopService() { timer.Stop(); releaseTimer.Stop(); ai.Stop(); }
     }
 
     internal sealed class CorrectionReviewForm : Form
@@ -604,6 +655,7 @@ namespace MapleOverlay
         private readonly string aiRoot;
         private readonly Label progress = new Label();
         private readonly ProgressBar progressBar = new ProgressBar();
+        private readonly Button install17 = new Button();
         private readonly Button install4 = new Button();
         private readonly Button install8 = new Button();
         private readonly Button update = new Button();
@@ -620,25 +672,27 @@ namespace MapleOverlay
             Text = "安装永久免费AI模型"; StartPosition = FormStartPosition.CenterParent;
             Size = new Size(690, 390); Font = new Font("Microsoft YaHei UI", 9.0f);
             TextBox info = new TextBox { Dock = DockStyle.Fill, Multiline = true, ReadOnly = true, ScrollBars = ScrollBars.Vertical,
-                Text = "模型安装位置：\r\n" + aiRoot + "\r\n\r\n推荐直接点击下面的一键安装。程序只从 Qwen 和 llama.cpp 官方发布页下载。\r\n轻量版约2.5GB；高质量版约5GB。下载完成后永久离线免费，不需要账号、API或Python。\r\n\r\n如果官方站下载不畅，也可以从QQ群取得模型包并解压到上面的目录。" };
-            Panel bottom = new Panel { Dock = DockStyle.Bottom, Height = 105 };
-            FlowLayoutPanel buttons = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 44 };
+                Text = "模型安装位置（就在程序旁边）：\r\n" + aiRoot + "\r\n\r\n程序自动识别 AMD、NVIDIA、Intel Vulkan 显卡；显卡不可用时自动回退CPU。\r\n老电脑推荐1.7B约1.1GB；4B约2.5GB；8B约5GB。下载后永久离线免费。\r\n\r\n如果官方站下载不畅，也可以从QQ群取得模型包并解压到上面的目录。" };
+            Panel bottom = new Panel { Dock = DockStyle.Bottom, Height = 145 };
+            FlowLayoutPanel buttons = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 82, WrapContents = true };
+            install17.Text = "安装超轻1.7B（老电脑推荐）"; install17.AutoSize = true;
+            install17.Click += async delegate { await InstallAsync("1.7B"); };
             install4.Text = "一键安装轻量4B"; install4.AutoSize = true;
-            install4.Click += async delegate { await InstallAsync(false); };
+            install4.Click += async delegate { await InstallAsync("4B"); };
             install8.Text = "一键安装高质量8B"; install8.AutoSize = true;
-            install8.Click += async delegate { await InstallAsync(true); };
+            install8.Click += async delegate { await InstallAsync("8B"); };
             update.Text = "检查并更新现有模型"; update.AutoSize = true;
             update.Click += async delegate { await UpdateExistingAsync(); };
             Button folder = new Button { Text = "打开模型文件夹", AutoSize = true };
             folder.Click += delegate { Directory.CreateDirectory(aiRoot); Process.Start("explorer.exe", aiRoot); };
-            buttons.Controls.Add(install4); buttons.Controls.Add(install8); buttons.Controls.Add(update); buttons.Controls.Add(folder);
-            progressBar.Location = new Point(8, 49); progressBar.Size = new Size(430, 20);
-            progress.Location = new Point(447, 51); progress.AutoSize = true; progress.Text = "尚未开始";
+            buttons.Controls.Add(install17); buttons.Controls.Add(install4); buttons.Controls.Add(install8); buttons.Controls.Add(update); buttons.Controls.Add(folder);
+            progressBar.Location = new Point(8, 92); progressBar.Size = new Size(430, 20);
+            progress.Location = new Point(447, 94); progress.AutoSize = true; progress.Text = "尚未开始";
             bottom.Controls.Add(buttons); bottom.Controls.Add(progressBar); bottom.Controls.Add(progress);
             Controls.Add(info); Controls.Add(bottom);
         }
 
-        private async Task InstallAsync(bool highQuality)
+        private async Task InstallAsync(string size)
         {
             SetButtons(false);
             try
@@ -646,10 +700,10 @@ namespace MapleOverlay
                 Directory.CreateDirectory(aiRoot);
                 await InstallRuntimeAsync(false);
 
-                string size = highQuality ? "8B" : "4B";
                 string fileName = "Qwen3-" + size + "-Q4_K_M.gguf";
                 string modelUrl = "https://huggingface.co/Qwen/Qwen3-" + size + "-GGUF/resolve/main/" + fileName + "?download=true";
-                await InstallModelAsync(modelUrl, Path.Combine(aiRoot, fileName), "下载" + (highQuality ? "高质量8B" : "轻量4B") + "模型", false);
+                await InstallModelAsync(modelUrl, Path.Combine(aiRoot, fileName), "下载" + size + "模型", false);
+                File.WriteAllText(Path.Combine(aiRoot, "selected-model.txt"), fileName, new UTF8Encoding(false));
                 progressBar.Style = ProgressBarStyle.Continuous; progressBar.Value = 100; progress.Text = "安装完成";
                 MessageBox.Show("永久免费AI模型已安装。关闭本窗口后点击AI翻译，首次载入可能需要几十秒。", "安装完成");
             }
@@ -668,12 +722,13 @@ namespace MapleOverlay
             {
                 Directory.CreateDirectory(aiRoot);
                 string[] models = Directory.GetFiles(aiRoot, "Qwen3-*-Q4_K_M.gguf", SearchOption.AllDirectories);
-                if (models.Length == 0) { MessageBox.Show("没有发现已安装模型，请先选择4B或8B安装。", "检查更新"); return; }
+                if (models.Length == 0) { MessageBox.Show("没有发现已安装模型，请先选择1.7B、4B或8B安装。", "检查更新"); return; }
                 bool changed = await InstallRuntimeAsync(true);
                 foreach (string modelPath in models)
                 {
                     string fileName = Path.GetFileName(modelPath);
-                    string size = fileName.IndexOf("8B", StringComparison.OrdinalIgnoreCase) >= 0 ? "8B" : "4B";
+                    string size = fileName.IndexOf("1.7B", StringComparison.OrdinalIgnoreCase) >= 0 ? "1.7B" :
+                        (fileName.IndexOf("8B", StringComparison.OrdinalIgnoreCase) >= 0 ? "8B" : "4B");
                     string url = "https://huggingface.co/Qwen/Qwen3-" + size + "-GGUF/resolve/main/" + fileName + "?download=true";
                     changed = await InstallModelAsync(url, modelPath, "更新" + size + "模型", true) || changed;
                 }
@@ -691,7 +746,7 @@ namespace MapleOverlay
 
         private void SetButtons(bool enabled)
         {
-            install4.Enabled = enabled; install8.Enabled = enabled; update.Enabled = enabled;
+            install17.Enabled = enabled; install4.Enabled = enabled; install8.Enabled = enabled; update.Enabled = enabled;
         }
 
         private async Task<bool> InstallRuntimeAsync(bool updateOnly)

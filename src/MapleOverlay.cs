@@ -406,7 +406,6 @@ namespace MapleOverlay
         private const int WS_EX_TRANSPARENT = 0x20;
         private const int WS_EX_TOOLWINDOW = 0x80;
         private const int WS_EX_NOACTIVATE = 0x08000000;
-        private const uint WDA_EXCLUDEFROMCAPTURE = 0x11;
         private readonly string baseDir = AppDomain.CurrentDomain.BaseDirectory;
         private readonly TranslationStore translations;
         private readonly List<OverlayLabel> labels = new List<OverlayLabel>();
@@ -427,7 +426,6 @@ namespace MapleOverlay
         [DllImport("user32.dll")] private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
         [DllImport("user32.dll")] private static extern int GetWindowLong(IntPtr hWnd, int index);
         [DllImport("user32.dll")] private static extern int SetWindowLong(IntPtr hWnd, int index, int value);
-        [DllImport("user32.dll")] private static extern bool SetWindowDisplayAffinity(IntPtr hWnd, uint affinity);
         [DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
         [DllImport("user32.dll")] private static extern bool GetClientRect(IntPtr hwnd, out RECT rect);
         [DllImport("user32.dll")] private static extern bool ClientToScreen(IntPtr hwnd, ref POINT point);
@@ -473,7 +471,6 @@ namespace MapleOverlay
             Shown += async delegate {
                 SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) |
                     WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE);
-                SetWindowDisplayAffinity(Handle, WDA_EXCLUDEFROMCAPTURE);
                 bool h1 = RegisterHotKey(Handle, HOTKEY_SHOW, showModifiers, (uint)showKey);
                 bool h2 = RegisterHotKey(Handle, HOTKEY_HIDE, hideModifiers, (uint)hideKey);
                 tray.ShowBalloonTip(2500, "枫语幕已启动",
@@ -599,7 +596,7 @@ namespace MapleOverlay
         private void BuildTray()
         {
             tray.Icon = SystemIcons.Information;
-            tray.Text = "枫语幕 v1.4";
+            tray.Text = "枫语幕 v1.4.1";
             tray.Visible = true;
             ContextMenuStrip menu = new ContextMenuStrip();
             ToolStripMenuItem dictionary = new ToolStripMenuItem("打开并更改词库");
@@ -626,7 +623,7 @@ namespace MapleOverlay
                 visibleTranslation = false;
                 labels.Clear();
                 Invalidate();
-                tray.Text = "枫语幕 v1.4（内存待机）";
+                tray.Text = "枫语幕 v1.4.1（内存待机）";
             }
             else await ShowTranslationAsync();
         }
@@ -647,7 +644,7 @@ namespace MapleOverlay
             visibleTranslation = false;
             labels.Clear();
             Invalidate();
-            tray.Text = "枫语幕 v1.4（内存待机）";
+            tray.Text = "枫语幕 v1.4.1（低配置优化）";
         }
 
         private async Task ShowTranslationAsync()
@@ -706,11 +703,12 @@ namespace MapleOverlay
                         OcrResult result = await RecognizeAsync(prepared);
                         List<OverlayLabel> next = BuildLabels(result, ocrScale, prepared);
                         benchmarkOcrText = result.Text;
+                        bool needsMoreOcr = next.Count < 3 || result.Lines.Count > next.Count + 1;
 
                         // Use the spare time budget for a second, grayscale/high-contrast OCR pass.
                         // Exact dictionary hits unique to either pass are merged; overlapping results
                         // keep the colour pass. Slow machines skip the second pass before one second.
-                        if (stopwatch.ElapsedMilliseconds < 450)
+                        if (needsMoreOcr && stopwatch.ElapsedMilliseconds < 450)
                         {
                             float secondScale;
                             using (Bitmap contrastPrepared = PrepareForOcr(bitmap, out secondScale, true))
@@ -718,12 +716,13 @@ namespace MapleOverlay
                                 OcrResult secondResult = await RecognizeAsync(contrastPrepared);
                                 List<OverlayLabel> second = BuildLabels(secondResult, secondScale, prepared);
                                 MergeLabels(next, second);
+                                needsMoreOcr = next.Count < 3 || secondResult.Lines.Count > next.Count + 1;
                                 if (Program.Benchmark)
                                     benchmarkOcrText += " || 二次=" + secondResult.Text;
                             }
                         }
                         // A higher-resolution colour pass improves very small item and quest text.
-                        if (stopwatch.ElapsedMilliseconds < 650)
+                        if (needsMoreOcr && stopwatch.ElapsedMilliseconds < 650)
                         {
                             float thirdScale;
                             using (Bitmap largePrepared = PrepareForOcr(bitmap, out thirdScale, false, 3000.0f))
@@ -740,7 +739,7 @@ namespace MapleOverlay
                 visibleTranslation = true;
                 Invalidate();
                 stopwatch.Stop();
-                tray.Text = "枫语幕 v1.4（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
+                tray.Text = "枫语幕 v1.4.1（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
                 if (Program.Benchmark)
                     File.WriteAllText(Path.Combine(baseDir, "last_run.txt"),
                         "耗时毫秒=" + stopwatch.ElapsedMilliseconds + Environment.NewLine +
@@ -795,7 +794,7 @@ namespace MapleOverlay
                 using (Graphics graphics = Graphics.FromImage(bitmap))
                     graphics.CopyFromScreen(screen.Left, screen.Top, 0, 0, screen.Size, CopyPixelOperation.SourceCopy);
                 float scale;
-                using (Bitmap prepared = PrepareForOcr(bitmap, out scale, false))
+                using (Bitmap prepared = PrepareForOcr(bitmap, out scale, false, 1800.0f))
                 {
                     OcrResult result = await RecognizeAsync(prepared);
                     return result.Text ?? "";
