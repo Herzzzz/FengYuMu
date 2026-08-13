@@ -1,5 +1,6 @@
-# 枫语幕词库 1.5 - 冒险岛国际怀旧服专用（常规＋完整任务文本＋接取地图分类）
-# 生成日期：2026-08-12
+﻿# 枫语幕词库 1.5 - 冒险岛国际怀旧服专用（常规＋完整任务文本＋接取地图分类）
+# 补全版本：1.5.1（同名资料ID与对应图标全部保留）
+# 生成日期：2026-08-13
 # 主数据：https://mxdgcw.dvg.cn/（当前GCW资料ID与中英文名）
 # NPC补全：https://meowdb.com/msclassic/（按同一NPC ID对齐）
 # 技能中文：https://mxd079.dvg.cn/（仅对GCW当前技能ID进行中文名匹配）
@@ -6589,3 +6590,355 @@ At this rate, I cannot complete my research.	按照这个速度，我无法完�
 It appears you have not defeated all the monsters I mentioned.	看来你还没有打败我提到的所有怪物。	怀旧服-任务对白#80025	英文对白语境翻译（分句）
 You should speak with Manji.	你应该和万吉谈谈。	怀旧服-任务对白#500002	英文对白语境翻译（分句）
 But do not expect too much, as he is an incredibly taciturn man.	但不要期望太多，因为他是一个非常沉默寡言的人。	怀旧服-任务对白#500002	英文对白语境翻译（分句）
+Ligator	鳄鱼	怀旧服-怪物#800000	d8dad3c8c8785859
+Jr. Necki	小青蛇	怀旧服-怪物#800001	d9ed59b12c7abab8
+Curse Eye	风独眼兽	怀旧服-怪物#800002	6c6c72784c5cd899
+Evil Eye	火独眼兽	怀旧服-怪物#800010	ec7878784c58d899
+Zombie Mushroom	僵尸蘑菇	怀旧服-怪物#800011	7cfcece4719bf870
+Curse Eye	风独眼兽	怀旧服-怪物#800012	6c6c72784c5cd899
+Horny Mushroom	刺蘑菇	怀旧服-怪物#800013	71e8e4c8d3dce4f0
+Cold Eye	冰独眼兽	怀旧服-怪物#800014	ecf8f2f24c58d899
+Blue Mushroom	蓝蘑菇	怀旧服-怪物#800015	7cfceae4f8d3ec70
+Fire Boar	火野猪	怀旧服-怪物#800016	dc746d6864f0b066
+Lupin	猴子	怀旧服-怪物#800017	b4d8c848fab2b038
+Defiant Face	最初冒险(萌)-男脸	怀旧服-道具#20000	31ceae25afca1864
+Prudent Face	最初冒险(柔)-男脸	怀旧服-道具#20002	248a51a6a50bb819
+Babyface Pout	性感嘴唇-男脸	怀旧服-道具#20006	59995ba4264a1939
+Defiant Face	最初冒险(酷)-女脸	怀旧服-道具#21000	4433ec84aa8a5931
+Prudent Face	最初冒险(萌)-女脸	怀旧服-道具#21001	a54ac6a5b5ea7919
+Babyface Pout	嘟嘴小眼-女脸	怀旧服-道具#21005	599959a68a793431
+Wisdom Glance	滴溜溜-女脸	怀旧服-道具#21010	a45ba4a4d439841b
+Toben Hair	黑色短中分	怀旧服-道具#30000	8090b07c69e6d40c
+Toben Hair	红色短中分	怀旧服-道具#30001	819088c9a7f6e464
+Toben Hair	橙色短中分	怀旧服-道具#30002	919088c9a7f6e4e4
+Toben Hair	黄色短中分	怀旧服-道具#30003	81928ac9e7f6e4e4
+Toben Hair	绿色短中分	怀旧服-道具#30004	919088c9e7f6e4e4
+Toben Hair	蓝色短中分	怀旧服-道具#30005	819088c9e7f6e464
+Toben Hair	紫色短中分	怀旧服-道具#30006	919088c9a7f6e464
+Toben Hair	褐色短中分	怀旧服-道具#30007	919088c9e7f6e4e4
+Unkempt Hair	黑色酷型侧分	怀旧服-道具#30020	51507aebaaa6e433
+Unkempt Hair	红色酷型侧分	怀旧服-道具#30021	51b2aaaba2a6e471
+Unkempt Hair	橙色酷型侧分	怀旧服-道具#30022	51b68aaba2a6e471
+Unkempt Hair	黄色酷型侧分	怀旧服-道具#30023	94a68a83a2a6e471
+Unkempt Hair	绿色酷型侧分	怀旧服-道具#30024	51b68aaba2a6e471
+Unkempt Hair	蓝色酷型侧分	怀旧服-道具#30025	51968aaba2a6e471
+Unkempt Hair	紫色酷型侧分	怀旧服-道具#30026	51b2aaaba2a6e471
+Unkempt Hair	褐色酷型侧分	怀旧服-道具#30027	51b68aaba2a6e471
+Shaved Hair	黑色短光头	怀旧服-道具#30030	0022939998def871
+Shaved Hair	红色短光头	怀旧服-道具#30031	0122939998cef871
+Shaved Hair	橙色短光头	怀旧服-道具#30032	2020979998cef879
+Shaved Hair	黄色短光头	怀旧服-道具#30033	2028179998def871
+Shaved Hair	绿色短光头	怀旧服-道具#30034	2020979998def871
+Shaved Hair	蓝色短光头	怀旧服-道具#30035	0122939998cef871
+Shaved Hair	紫色短光头	怀旧服-道具#30036	0122939998def871
+Shaved Hair	褐色短光头	怀旧服-道具#30037	2020979998cef879
+Medium Cornrows	黑色侠客头	怀旧服-道具#30150	834340d14962b8c9
+Medium Cornrows	红色侠客头	怀旧服-道具#30151	834340d149e2b8c9
+Medium Cornrows	橙色侠客头	怀旧服-道具#30152	834b40d5c9e2b8c9
+Medium Cornrows	黄色侠客头	怀旧服-道具#30153	834b40d1cde2b8c9
+Medium Cornrows	绿色侠客头	怀旧服-道具#30154	834340d1c9e2b8c9
+Medium Cornrows	蓝色侠客头	怀旧服-道具#30155	834b40d5c962b8c9
+Medium Cornrows	紫色侠客头	怀旧服-道具#30156	834b40d1cd62b8c9
+Medium Cornrows	褐色侠客头	怀旧服-道具#30157	834340d14962b8c9
+Trip Scratch	黑色板寸	怀旧服-道具#30160	8022978994b4ec69
+Trip Scratch	红色板寸	怀旧服-道具#30161	8022978994f6ec79
+Trip Scratch	橙色板寸	怀旧服-道具#30162	0020978994b6ec79
+Trip Scratch	黄色板寸	怀旧服-道具#30163	2020979994b4ec79
+Trip Scratch	绿色板寸	怀旧服-道具#30164	0022978994f6ec79
+Trip Scratch	蓝色板寸	怀旧服-道具#30165	8022938b94f6ec79
+Trip Scratch	紫色板寸	怀旧服-道具#30166	8022978994f6ec79
+Trip Scratch	褐色板寸	怀旧服-道具#30167	0022878994f6ec79
+Line Scratch Hair	黑色中板寸	怀旧服-道具#30170	8022938b99dae469
+Line Scratch Hair	红色中板寸	怀旧服-道具#30171	8022938b99daf469
+Line Scratch Hair	橙色中板寸	怀旧服-道具#30172	0020939999dae469
+Line Scratch Hair	黄色中板寸	怀旧服-道具#30173	2020979999d2e469
+Line Scratch Hair	绿色中板寸	怀旧服-道具#30174	0022939999dae469
+Line Scratch Hair	蓝色中板寸	怀旧服-道具#30175	8022838b99dae469
+Line Scratch Hair	紫色中板寸	怀旧服-道具#30176	8022938b99dae469
+Line Scratch Hair	褐色中板寸	怀旧服-道具#30177	0022838999dae469
+Afro	黑色花菜头	怀旧服-道具#30250	9292aad3dab4f871
+Afro	红色花菜头	怀旧服-道具#30251	969a8ab2dab6f871
+Afro	橙色花菜头	怀旧服-道具#30252	969a8af2dab4e871
+Afro	黄色花菜头	怀旧服-道具#30253	969a8af2dab4e871
+Afro	绿色花菜头	怀旧服-道具#30254	969a8af2dab4e871
+Afro	蓝色花菜头	怀旧服-道具#30255	969a8af2dab4f871
+Afro	紫色花菜头	怀旧服-道具#30256	969a8af2dab6f871
+Afro	褐色花菜头	怀旧服-道具#30257	969a2ad3dab4f871
+Caspia Hair	黑色边分1	怀旧服-道具#30260	4c969e9e9a94d8f1
+Caspia Hair	红色边分1	怀旧服-道具#30261	4c969e9e9a94d8f1
+Caspia Hair	橙色边分1	怀旧服-道具#30262	4c969e9e9a94d8f1
+Caspia Hair	黄色边分1	怀旧服-道具#30263	4c969e9e9a94d8f1
+Caspia Hair	绿色边分1	怀旧服-道具#30264	4c969e9e9a94d8f1
+Caspia Hair	蓝色边分1	怀旧服-道具#30265	4c969e9e9a94d8f1
+Caspia Hair	紫色边分1	怀旧服-道具#30266	4c969e9e9a94d8f1
+Caspia Hair	褐色边分1	怀旧服-道具#30267	4c969e9e9a94d8f1
+Old Man 'Do	黑色绅士头	怀旧服-道具#30290	80a0a983bebc7833
+Old Man 'Do	红色绅士头	怀旧服-道具#30291	a0a3a383bebc7833
+Old Man 'Do	橙色绅士头	怀旧服-道具#30292	a0a3ab9bbebcf831
+Old Man 'Do	黄色绅士头	怀旧服-道具#30293	a0a3a39bbebcf871
+Old Man 'Do	绿色绅士头	怀旧服-道具#30294	a0a3a39bbefcf871
+Old Man 'Do	蓝色绅士头	怀旧服-道具#30295	a0a3a39bbefcf871
+Old Man 'Do	紫色绅士头	怀旧服-道具#30296	a0a3a383bebc7833
+Old Man 'Do	褐色绅士头	怀旧服-道具#30297	a0a3ab9bbebcf871
+Cabana Boy Hair	黑色蓬松发型	怀旧服-道具#30330	6965a994b4b9b872
+Cabana Boy Hair	红色蓬松发型	怀旧服-道具#30331	a1869292e4f8f873
+Cabana Boy Hair	橙色蓬松发型	怀旧服-道具#30332	a6969296f4f8f873
+Cabana Boy Hair	黄色蓬松发型	怀旧服-道具#30333	b6969290f4f8f061
+Cabana Boy Hair	绿色蓬松发型	怀旧服-道具#30334	a6969294f4f8f073
+Cabana Boy Hair	蓝色蓬松发型	怀旧服-道具#30335	a0969294f4f8f873
+Cabana Boy Hair	紫色蓬松发型	怀旧服-道具#30336	a2969294f4f8f073
+Cabana Boy Hair	褐色蓬松发型	怀旧服-道具#30337	a0969a94f4f8f073
+Tristan Hair	黑色中分披肩发	怀旧服-道具#30340	212142dbd3726429
+Tristan Hair	红色中分披肩发	怀旧服-道具#30341	d2d09393dbd2e469
+Tristan Hair	橙色中分披肩发	怀旧服-道具#30342	d2d29393dad2e069
+Tristan Hair	黄色中分披肩发	怀旧服-道具#30343	d2d293939ad2f069
+Tristan Hair	绿色中分披肩发	怀旧服-道具#30344	d6d29393dad2f069
+Tristan Hair	蓝色中分披肩发	怀旧服-道具#30345	d2d29393dbd2f069
+Tristan Hair	紫色中分披肩发	怀旧服-道具#30346	92d09393dbd2e469
+Tristan Hair	褐色中分披肩发	怀旧服-道具#30347	d6d29393dad2f069
+Spiky Tail	黑色火隐鹿丸头	怀旧服-道具#30360	24a12736bcc9c698
+Spiky Tail	红色火隐鹿丸头	怀旧服-道具#30361	64216776ece9c698
+Spiky Tail	橙色火隐鹿丸头	怀旧服-道具#30362	686967b6fce9c698
+Spiky Tail	黄色火隐鹿丸头	怀旧服-道具#30363	686967b6bcc9c798
+Spiky Tail	绿色火隐鹿丸头	怀旧服-道具#30364	686967f6fce9c798
+Spiky Tail	蓝色火隐鹿丸头	怀旧服-道具#30365	686967f6fce9c698
+Spiky Tail	紫色火隐鹿丸头	怀旧服-道具#30366	6c216776fce9c698
+Spiky Tail	褐色火隐鹿丸头	怀旧服-道具#30367	686967f6fce9c698
+Dragon Layered Hair	黑色龙孩发型	怀旧服-道具#30380	808288fcfcf461aa
+Dragon Layered Hair	红色龙孩发型	怀旧服-道具#30381	a0a6989cfef461aa
+Dragon Layered Hair	橙色龙孩发型	怀旧服-道具#30382	2826999cfcd461aa
+Dragon Layered Hair	黄色龙孩发型	怀旧服-道具#30383	282699bcfcd461ab
+Dragon Layered Hair	绿色龙孩发型	怀旧服-道具#30384	28261998fed461ab
+Dragon Layered Hair	蓝色龙孩发型	怀旧服-道具#30385	282699bcfef461ab
+Dragon Layered Hair	紫色龙孩发型	怀旧服-道具#30386	a022999cfef461aa
+Dragon Layered Hair	褐色龙孩发型	怀旧服-道具#30387	a02699bcfcd461aa
+Cutie Hair	黑色羊角辫	怀旧服-道具#31000	9de03b79bcac9199
+Cutie Hair	红色羊角辫	怀旧服-道具#31001	1d60e3b8bccc919b
+Cutie Hair	橙色羊角辫	怀旧服-道具#31002	9d60abb8bcac999b
+Cutie Hair	黄色羊角辫	怀旧服-道具#31003	4d60a3b8b8ac999b
+Cutie Hair	绿色羊角辫	怀旧服-道具#31004	5d60a3f8bcac919b
+Cutie Hair	蓝色羊角辫	怀旧服-道具#31005	1d60a3b8bcac919b
+Cutie Hair	紫色羊角辫	怀旧服-道具#31006	9d60abf9bcac919b
+Cutie Hair	褐色羊角辫	怀旧服-道具#31007	1d60abb8bcac919b
+Edgy Hair	红色边分翘发	怀旧服-道具#31041	91182e36b2d2e869
+Edgy Hair	橙色边分翘发	怀旧服-道具#31042	912aa676b2d2e869
+Edgy Hair	黄色边分翘发	怀旧服-道具#31043	916aa6f6b2d2e879
+Edgy Hair	绿色边分翘发	怀旧服-道具#31044	916aa6f6b2d2e879
+Edgy Hair	蓝色边分翘发	怀旧服-道具#31045	9138a636b6d2e869
+Edgy Hair	紫色边分翘发	怀旧服-道具#31046	91182e36b2d2e869
+Edgy Hair	褐色边分翘发	怀旧服-道具#31047	912aa6f6b6d2e869
+Rockstar Hair	黑色直发	怀旧服-道具#31050	e9694a4350586ab4
+Rockstar Hair	红色直发	怀旧服-道具#31051	294b4a4350586a34
+Rockstar Hair	橙色直发	怀旧服-道具#31052	2b4bcac2d0d86a34
+Rockstar Hair	黄色直发	怀旧服-道具#31053	2b4bcac2d0d86a34
+Rockstar Hair	绿色直发	怀旧服-道具#31054	294b4ac350586a34
+Rockstar Hair	蓝色直发	怀旧服-道具#31055	e9694a4350586a34
+Rockstar Hair	紫色直发	怀旧服-道具#31056	e96b4a4350586a34
+Rockstar Hair	褐色直发	怀旧服-道具#31057	294b4ac250d86a34
+Mary Hair	黑色短发	怀旧服-道具#31100	6827b3c9cdecf879
+Mary Hair	红色短发	怀旧服-道具#31101	6825b3c9cde47879
+Mary Hair	橙色短发	怀旧服-道具#31102	a827b3d9dcf4f879
+Mary Hair	黄色短发	怀旧服-道具#31103	a827b3f9dcf4f879
+Mary Hair	绿色短发	怀旧服-道具#31104	a827b3f9dcf4f879
+Mary Hair	蓝色短发	怀旧服-道具#31105	a827b3c9cce4f879
+Mary Hair	紫色短发	怀旧服-道具#31106	2827b3c9cde4f879
+Mary Hair	褐色短发	怀旧服-道具#31107	a827b3d9dcf4f879
+Monica Hair	黑色淑女头	怀旧服-道具#31110	80a13849a2b2e172
+Monica Hair	红色淑女头	怀旧服-道具#31111	a0a11c41a2b2e172
+Monica Hair	橙色淑女头	怀旧服-道具#31112	a0a21c43a2b2d962
+Monica Hair	黄色淑女头	怀旧服-道具#31113	a0a21c43a2b2d9e2
+Monica Hair	绿色淑女头	怀旧服-道具#31114	a0a21c43a2b2d962
+Monica Hair	蓝色淑女头	怀旧服-道具#31115	a0a21c43a2b2d962
+Monica Hair	紫色淑女头	怀旧服-道具#31116	a0a21443a2b2d172
+Monica Hair	褐色淑女头	怀旧服-道具#31117	a0a21443a2b2d172
+Miru Hair	黑色中学女生	怀旧服-道具#31120	b01010358bac36b2
+Miru Hair	红色中学女生	怀旧服-道具#31121	b0903029cbac36b2
+Miru Hair	橙色中学女生	怀旧服-道具#31122	9090320989ee76b2
+Miru Hair	黄色中学女生	怀旧服-道具#31123	909030098d6e76b0
+Miru Hair	绿色中学女生	怀旧服-道具#31124	90903209896e76b2
+Miru Hair	蓝色中学女生	怀旧服-道具#31125	90903005cbac76b2
+Miru Hair	紫色中学女生	怀旧服-道具#31126	90903025cbac76b2
+Miru Hair	褐色中学女生	怀旧服-道具#31127	9090320989ee76b2
+Angelica Hair	黑色长发	怀旧服-道具#31150	249acdd1dae86172
+Angelica Hair	红色长发	怀旧服-道具#31151	259bcdd1dae8e172
+Angelica Hair	橙色长发	怀旧服-道具#31152	2593c9d1dac8e171
+Angelica Hair	黄色长发	怀旧服-道具#31153	a593c9d5dac8e171
+Angelica Hair	绿色长发	怀旧服-道具#31154	2593c9d1dac8e173
+Angelica Hair	蓝色长发	怀旧服-道具#31155	2593c9d1dae8e173
+Angelica Hair	紫色长发	怀旧服-道具#31156	259bcdd1dae8e172
+Angelica Hair	褐色长发	怀旧服-道具#31157	2d93c9d1dac8e173
+Rastafari Hair	黑色栗米发	怀旧服-道具#31170	82969692c6e6f471
+Rastafari Hair	红色栗米发	怀旧服-道具#31171	82969692c6e6f071
+Rastafari Hair	橙色栗米发	怀旧服-道具#31172	92969692c6e6f071
+Rastafari Hair	黄色栗米发	怀旧服-道具#31173	92969792c6e6f071
+Rastafari Hair	绿色栗米发	怀旧服-道具#31174	92969692c6e6f471
+Rastafari Hair	蓝色栗米发	怀旧服-道具#31175	92969692c6e6f071
+Rastafari Hair	紫色栗米发	怀旧服-道具#31176	92969692c6e6f071
+Rastafari Hair	褐色栗米发	怀旧服-道具#31177	92969692c6e6f071
+Cutie Hair	黑色公主头	怀旧服-道具#31180	82969a86919ab4a4
+Cutie Hair	红色公主头	怀旧服-道具#31181	82969a86919ab0a4
+Cutie Hair	橙色公主头	怀旧服-道具#31182	96969a86919ab0a4
+Cutie Hair	黄色公主头	怀旧服-道具#31183	92969a8691999aa4
+Cutie Hair	绿色公主头	怀旧服-道具#31184	92969a869199b8a4
+Cutie Hair	蓝色公主头	怀旧服-道具#31185	92969a86919ab0a4
+Cutie Hair	紫色公主头	怀旧服-道具#31186	c2969a86919ab8a4
+Cutie Hair	褐色公主头	怀旧服-道具#31187	92969a86919ab0a4
+Celeb Hair	黑色辣妹头	怀旧服-道具#31190	86828296969ab0d4
+Celeb Hair	红色辣妹头	怀旧服-道具#31191	86869296969af0d0
+Celeb Hair	橙色辣妹头	怀旧服-道具#31192	86969296969af0d0
+Celeb Hair	黄色辣妹头	怀旧服-道具#31193	86969296969af0d0
+Celeb Hair	绿色辣妹头	怀旧服-道具#31194	8e969296969af0d0
+Celeb Hair	蓝色辣妹头	怀旧服-道具#31195	86869296969af0d0
+Celeb Hair	紫色辣妹头	怀旧服-道具#31196	86869296969af0d0
+Celeb Hair	褐色辣妹头	怀旧服-道具#31197	86969296969af0d0
+Caspia Hair	黑色分边2	怀旧服-道具#31220	4c969e9e9a94d8f1
+Caspia Hair	红色分边2	怀旧服-道具#31221	4c969e9e9a94d8f1
+Caspia Hair	橙色分边2	怀旧服-道具#31222	4c969e9e9a94d8f1
+Caspia Hair	黄色分边2	怀旧服-道具#31223	4c969e9e9a94d8f1
+Caspia Hair	绿色分边2	怀旧服-道具#31224	4c969e9e9a94d8f1
+Caspia Hair	蓝色分边2	怀旧服-道具#31225	4c969e9e9a94d8f1
+Caspia Hair	紫色分边2	怀旧服-道具#31226	4c969e9e9a94d8f1
+Caspia Hair	褐色分边2	怀旧服-道具#31227	4c969e9e9a94d8f1
+Rose	黑色俏丽麻花辫	怀旧服-道具#31230	62939995cbccdcf0
+Rose	红色俏丽麻花辫	怀旧服-道具#31231	629399959bccdcf0
+Rose	橙色俏丽麻花辫	怀旧服-道具#31232	629399959bccdcf0
+Rose	黄色俏丽麻花辫	怀旧服-道具#31233	6a9b99959bd8dcf0
+Rose	绿色俏丽麻花辫	怀旧服-道具#31234	629399959bdcdcf0
+Rose	蓝色俏丽麻花辫	怀旧服-道具#31235	62939d959bccdcf0
+Rose	紫色俏丽麻花辫	怀旧服-道具#31236	629399959bccdcf0
+Rose	褐色俏丽麻花辫	怀旧服-道具#31237	62939d959bccdcf0
+Daisy Do Hair	黑色2046之王靖雯头	怀旧服-道具#31260	042b56cca8f4783b
+Daisy Do Hair	红色2046之王靖雯头	怀旧服-道具#31261	242396dce8f0783b
+Daisy Do Hair	橙色2046之王靖雯头	怀旧服-道具#31262	242b96cce8f4783b
+Daisy Do Hair	黄色2046之王靖雯头	怀旧服-道具#31263	242b96cce8d4783b
+Daisy Do Hair	绿色2046之王靖雯头	怀旧服-道具#31264	242b96cce8f4783b
+Daisy Do Hair	蓝色2046之王靖雯头	怀旧服-道具#31265	242396cce8f4783b
+Daisy Do Hair	紫色2046之王靖雯头	怀旧服-道具#31266	a42396dce8f0783b
+Daisy Do Hair	褐色2046之王靖雯头	怀旧服-道具#31267	242396cce8f4783b
+Chantelle Hair	黑色辫辫发型	怀旧服-道具#31300	212174a7a2b29992
+Chantelle Hair	红色辫辫发型	怀旧服-道具#31301	6060603122ba9993
+Chantelle Hair	橙色辫辫发型	怀旧服-道具#31302	212174a7a2b29992
+Chantelle Hair	黄色辫辫发型	怀旧服-道具#31303	a1a17187a2929996
+Chantelle Hair	绿色辫辫发型	怀旧服-道具#31304	a1a1d18fa39299b6
+Chantelle Hair	蓝色辫辫发型	怀旧服-道具#31305	21a174a722b29992
+Chantelle Hair	紫色辫辫发型	怀旧服-道具#31306	20206031a2b29992
+Chantelle Hair	褐色辫辫发型	怀旧服-道具#31307	2121742722b29992
+Penelope Hair	黑色清纯学生发型	怀旧服-道具#31330	206469b6cccccc19
+Penelope Hair	红色清纯学生发型	怀旧服-道具#31331	206469b2cccc4c1d
+Penelope Hair	橙色清纯学生发型	怀旧服-道具#31332	206469b2cccccc19
+Penelope Hair	黄色清纯学生发型	怀旧服-道具#31333	202469b6cccccc19
+Penelope Hair	绿色清纯学生发型	怀旧服-道具#31334	202469b6cccccc19
+Penelope Hair	蓝色清纯学生发型	怀旧服-道具#31335	206469b2cccccc19
+Penelope Hair	紫色清纯学生发型	怀旧服-道具#31336	206469b2cccc4c19
+Penelope Hair	褐色清纯学生发型	怀旧服-道具#31337	206469b6cccccc19
+Swooshy Ponytail Hair	黑色蓬松马尾发型	怀旧服-道具#31360	316089b6b6f2fc3c
+Swooshy Ponytail Hair	红色蓬松马尾发型	怀旧服-道具#31361	409283b6b2f2fc7c
+Swooshy Ponytail Hair	橙色蓬松马尾发型	怀旧服-道具#31362	469b93b6b2b2fcf0
+Swooshy Ponytail Hair	黄色蓬松马尾发型	怀旧服-道具#31363	469393b6b2b2fcf0
+Swooshy Ponytail Hair	绿色蓬松马尾发型	怀旧服-道具#31364	469b93b6b2b2fcf0
+Swooshy Ponytail Hair	蓝色蓬松马尾发型	怀旧服-道具#31365	469a8bb6f2b2fcf0
+Swooshy Ponytail Hair	紫色蓬松马尾发型	怀旧服-道具#31366	429a83b6b2f2fcfc
+Swooshy Ponytail Hair	褐色蓬松马尾发型	怀旧服-道具#31367	46928bb6b2f2fc70
+Mesoranger Black Helmet	金币战队黑色头盔	怀旧服-道具#1006006	64eeb31adcdcd4d6
+Rose	玫瑰	怀旧服-道具#1017006	2f9464635c9e5859
+Blue Moon	青月耳环	怀旧服-道具#1032011	3760d4b5a23aad94
+Red Cloth Vest	红梦	怀旧服-道具#1041011	0779f9717474bb0a
+Blue Cloth Vest	青梦	怀旧服-道具#1041012	0779f9717464b9aa
+Black Cloth Vest	黑梦	怀旧服-道具#1041013	0779f9337434bb4a
+Green Bennis Chainmail	绿打猎服	怀旧服-道具#1041040	1379bc9938d8ce64
+Blue Bennis Chainmail	蓝打猎服	怀旧服-道具#1041041	0779bc9bb8d8ce64
+Red Bennis Chainmail	红打猎服	怀旧服-道具#1041042	1779bc9bb8d8ce64
+Dark Shadow	黑色暗影之服	怀旧服-道具#1041073	29879298dc76b6ec
+Blue Moon	青月	怀旧服-道具#1041078	2772783c3c5cd9b9
+Pre-School Uniform Top	幼儿园制服上衣	怀旧服-道具#1046004	79b8bc98d8d8fce1
+Hawaiian Shirt	夏威夷衬衫	怀旧服-道具#1046012	071934eaeac46c71
+Heart Tanktop	爱心背心	怀旧服-道具#1046014	07e1e0f4e6e4e44d
+Fine Blue Hanbok	蓝色精致韩服	怀旧服-道具#1056004	29f4c678999be464
+Black M-Forcer	黑色M-Forcer套服	怀旧服-道具#1056016	cccc6dbdbba8f171
+Red Cloth Pants	红梦裤	怀旧服-道具#1061009	0f176ceeee6c7879
+Blue Cloth Pants	青梦裤	怀旧服-道具#1061010	0f136ceeee647879
+Black Cloth Pants	黑梦裤	怀旧服-道具#1061011	0f136caeae7c7839
+Dark Shadow Pants	黑色暗影裤	怀旧服-道具#1061068	4f31cece6d6c686c
+Hawaiian Skirt	夏威夷裙	怀旧服-道具#1066019	0fa2a4fdbafafcf8
+Blue Gomushin	花少女鞋子	怀旧服-道具#1076002	493e6ee6ca93a488
+Old Gladius	旧战剑	怀旧服-道具#1302009	0b364cb962649820
+Hero's Gladius	英雄战剑	怀旧服-道具#1302014	0b264cb972649820
+Lollipop	棒棒果	怀旧服-道具#1322012	1cb2b6b83c439420
+Lollipop	棒棒糖	怀旧服-道具#1702020	1c38b6ba3c639020
+Roger's Apple	罗杰的苹果	怀旧服-道具#2010000	077164d8cc6cbb20
+Estelle's Special Sauce	胡小姐的特制酱油	怀旧服-道具#4031005	78dcb4fcfcf87939
+Old Gold Watch	旧金表	怀旧服-道具#4031006	853c78f2e468616e
+Dark Marble	黑珠	怀旧服-道具#4031019	4b1661c8dcfc78b9
+The Proof of a Hero	英雄证书	怀旧服-道具#4031020	0c5e58c532f9c1f2
+Dark Marble	黑珠	怀旧服-道具#4031021	4b1661c8dcfc78b9
+The Proof of a Hero	英雄证书	怀旧服-道具#4031022	0c5e58c532f9c1f2
+Dark Marble	黑珠	怀旧服-道具#4031023	4b1661c8dcfc78b9
+The Proof of a Hero	英雄证书	怀旧服-道具#4031024	0c5e58c532f9c1f2
+Hero's Gladius	英雄战剑	怀旧服-道具#4031027	0b264cb972649820
+Rina's Unagi Special	丽娜的特制烤鳗鱼	怀旧服-道具#4031030	0b261978e49aa1e2
+Omok Table	围棋盘	怀旧服-道具#4031049	074d929686aaf4d4
+Omok Piece: Slime	绿水灵棋子	怀旧服-道具#4031050	0769cc9ecef8b19e
+Omok Table	围棋盘	怀旧服-道具#4031052	074d929686aaf4d4
+Omok Piece: Slime	绿水灵棋子	怀旧服-道具#4031053	0769cc9ecef8b19e
+Omok Table	围棋盘	怀旧服-道具#4031055	074d929686aaf4d4
+Omok Piece: Pig	猪猪棋子	怀旧服-道具#4031056	4d33dc96d6d4f4f0
+Omok Piece: Mushroom	蘑菇棋子	怀旧服-道具#4031057	0739f8f4b2e67831
+Omok Table	围棋盘	怀旧服-道具#4031058	074d929686aaf4d4
+Omok Piece: Octopus	章鱼棋子	怀旧服-道具#4031059	2749d670f2925838
+Omok Piece: Mushroom	蘑菇棋子	怀旧服-道具#4031060	0739f8f4b2e67831
+Omok Table	围棋盘	怀旧服-道具#4031061	074d929686aaf4d4
+Omok Piece: Pig	猪猪棋子	怀旧服-道具#4031062	4d33dc96d6d4f4f0
+Omok Piece: Octopus	章鱼棋子	怀旧服-道具#4031063	2749d670f2925838
+Snail	蜗牛	怀旧服-道具#5000054	9c9d94acb5063919
+Sword Mastery	精准剑	怀旧服-技能#1200000	b027333963c18ee2
+Final Attack: Sword	终极剑	怀旧服-技能#1201000	dad8ae999bb2d2ac
+Sword Booster	快速剑	怀旧服-技能#1201002	b672f4a583d2b49c
+Power Guard	伤害反击	怀旧服-技能#1201005	cc8e869a3b3baaea
+MP Eater	魔力吸收	怀旧服-技能#2200000	ae633614464b2ba6
+Meditation	精神力	怀旧服-技能#2201000	8ace8a993a26cce2
+Teleport	瞬间移动	怀旧服-技能#2201001	ae969a9a8c8c8e82
+Slow	缓速术	怀旧服-技能#2201002	dc9edac8ca17ced8
+MP Eater	魔力吸收	怀旧服-技能#2300000	ae633614464b2ba6
+Teleport	瞬间移动	怀旧服-技能#2301000	ae969a9a8c8c8e82
+Power Knockback	强弓	怀旧服-技能#3201002	e0ee86a6998e8ecc
+Haste	轻功	怀旧服-技能#4201001	868f9f2666a68eae
+Mushroom Town	蘑菇镇	怀旧服-地图#20
+Mushroom Garden	蘑菇花园	怀旧服-地图#10001021
+VIP Cab	高级出租车	怀旧服-NPC#104	96b63b36acade064
+Regular Cab	普通出租车	怀旧服-NPC#200	94b16bae9899d262
+Sam	萨姆	怀旧服-NPC#211	c9f2c1ccecc8fc78
+VIP Cab	高级出租车	怀旧服-NPC#302	96b63b36acade064
+Fully Bloomed Bluebell	盛开的蓝铃花	怀旧服-NPC#321	c890c14cd3ae3833
+Regular Cab	普通出租车	怀旧服-NPC#400	94b16bae9899d262
+Exit	出口	怀旧服-NPC#419	e166a4b5d69abc90
+Treasure Chest	宝箱	怀旧服-NPC#420	6269696a6b49d8da
+Treasure Chest	宝箱	怀旧服-NPC#421	6269696a6b49d8da
+Treasure Chest	宝箱	怀旧服-NPC#422	6269696a6b49d8da
+Regular Cab	普通出租车	怀旧服-NPC#500	94b16bae9899d262
+Regular Cab	普通出租车	怀旧服-NPC#600	94b16bae9899d262
+Bluebell Bud	蓝铃花苞	怀旧服-NPC#616	10125a9267cc3e32
+Cave Fairy’s Storage	洞穴妖精的仓库	怀旧服-NPC#704	39e4f6d6d2c8ccd3
+Fully Bloomed Bluebell	盛开的蓝铃花	怀旧服-NPC#705	c898c34cdab83933
+Bluebell Bud	蓝铃花苞	怀旧服-NPC#706	10125ab265cc3e30
+Nella	内拉	怀旧服-NPC#800002	7130b0b0d8f0f063
+Bowman Job Instructor	弓箭手转职教官	怀旧服-NPC#800003	7458f0f8c8f0eccd
+Magician Job Instructor	魔法师转职教官	怀旧服-NPC#800004	7161f9f8f0f07362
+Thief Job Instructor	飞侠转职教官	怀旧服-NPC#800005	d1c68694e661d972
+Warrior Job Instructor	战士转职教官	怀旧服-NPC#800006	d8ca93bba848cad0
+Free Market Maple TV	自由市场冒险岛TV	怀旧服-NPC#800007	8696928696ccd099
+Anvil	铁砧	怀旧服-NPC#800010	33327859c4dcf873
+Weaponcrafting Station	武器制作台	怀旧服-NPC#800011	46daeada5a69fe16
+Sewing Machine	缝纫机	怀旧服-NPC#800012	c2cab6b6b4cdc964
+Woodworking Station	木工台	怀旧服-NPC#800013	ecdbd2766a606524
+Leatherworking Station	皮革制作台	怀旧服-NPC#800014	f0e2646efcc84936
+Arcane Station	秘法制作台	怀旧服-NPC#800015	24b4bcf4f1b9f1e2
+Maple Administrator	冒险岛运营员	怀旧服-NPC#800016	c97979b09cd2c3f8
+Maple Administrator	冒险岛运营员	怀旧服-NPC#900001	c97979b09cd2c3f8
+VIP Cab	高级出租车	怀旧服-NPC#900002	96b63b36acade064
+Maya	玛雅	怀旧服-NPC#900003	e8f8f0ccd8daeee8
+Sabitrama	萨比特拉玛	怀旧服-NPC#900004	c6ca786c6838bc5c
+Grendel the Really Old	大魔法师汉斯	怀旧服-NPC#900005	72f0f1f07024b0b2
+Arwen the Fairy	妖精艾温	怀旧服-NPC#900006	d1e171f1b8bcda60
+Natalie	娜塔莉	怀旧服-NPC#900007	f8e161f1b09becf8
+Lakelis	拉克莉丝	怀旧服-NPC#900008	d87168f87870f873
+Maple Administrator	冒险岛运营员	怀旧服-NPC#9010000	c97979b09cd2c3f8

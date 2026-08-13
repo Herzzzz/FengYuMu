@@ -90,6 +90,25 @@ namespace MapleOverlay
         {
             List<TranslationEntry> entries = ReadTsv(sourcePath);
 
+            // The classic data contains legitimate same-English-name variants (hair colours,
+            // job-specific skills, duplicate transport NPCs, and so on).  If their Chinese
+            // translations differ, plain OCR cannot choose safely. Keep every variant in the
+            // icon index, but require icon + text matching instead of accepting an arbitrary
+            // text-only translation.
+            Dictionary<string, HashSet<string>> translationsByEnglish =
+                new Dictionary<string, HashSet<string>>();
+            foreach (TranslationEntry entry in entries)
+            {
+                if (entry.IsTaskName || entry.IsTaskText) continue;
+                HashSet<string> values;
+                if (!translationsByEnglish.TryGetValue(entry.Normalized, out values))
+                {
+                    values = new HashSet<string>(StringComparer.Ordinal);
+                    translationsByEnglish.Add(entry.Normalized, values);
+                }
+                values.Add(entry.Chinese);
+            }
+
             buckets.Clear();
             taskBuckets.Clear();
             taskNames.Clear();
@@ -108,7 +127,10 @@ namespace MapleOverlay
                 }
                 else
                 {
-                    AddToBucket(buckets, entry);
+                    HashSet<string> values;
+                    bool ambiguous = translationsByEnglish.TryGetValue(entry.Normalized, out values) &&
+                        values.Count > 1;
+                    if (!ambiguous) AddToBucket(buckets, entry);
                     if (entry.HasIcon) iconEntries.Add(entry);
                 }
             }
@@ -328,11 +350,16 @@ namespace MapleOverlay
                     category.StartsWith("怀旧服-任务对白#", StringComparison.Ordinal);
                 string taskId = (isTaskName || isTaskText) && category.LastIndexOf('#') >= 0
                     ? category.Substring(category.LastIndexOf('#') + 1) : "";
-                string dedupeKey = normalized + "\t" + ((isTaskName || isTaskText) ? taskId : "general");
-                if (normalized.Length == 0 || chinese.Length == 0 || !seen.Add(dedupeKey)) continue;
                 ulong iconHash = 0;
                 bool hasIcon = parts.Length > 3 && UInt64.TryParse(parts[3].Trim(),
                     NumberStyles.HexNumber, CultureInfo.InvariantCulture, out iconHash);
+                // Icon-backed entries are distinct by source category/ID even when their English
+                // names are identical. This preserves colour, appearance, job and duplicate-NPC
+                // variants for icon-assisted disambiguation.
+                string dedupeScope = (isTaskName || isTaskText) ? taskId :
+                    (hasIcon && category.Length > 0 ? category : "general");
+                string dedupeKey = normalized + "\t" + dedupeScope;
+                if (normalized.Length == 0 || chinese.Length == 0 || !seen.Add(dedupeKey)) continue;
                 result.Add(new TranslationEntry {
                     English = english, Chinese = chinese,
                     Category = category, Normalized = normalized,
