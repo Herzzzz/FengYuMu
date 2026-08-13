@@ -239,7 +239,7 @@ namespace MapleOverlay
 
         public void Stop()
         {
-            try { if (process != null && !process.HasExited) process.Kill(); }
+            try { if (process != null && !process.HasExited) { process.Kill(); process.WaitForExit(5000); } }
             catch { }
         }
     }
@@ -334,7 +334,7 @@ namespace MapleOverlay
             Button correct = new Button { Text = "加入纠错候选", AutoSize = true };
             correct.Click += delegate { AddCandidate(); };
             Button install = new Button { Text = "安装/选择永久免费AI模型", AutoSize = true };
-            install.Click += delegate { using (AiInstallForm form = new AiInstallForm(ai.AiRoot)) form.ShowDialog(this); };
+            install.Click += delegate { ai.Stop(); using (AiInstallForm form = new AiInstallForm(ai.AiRoot)) form.ShowDialog(this); };
             onlineReview.Text = "用在线AI复核"; onlineReview.AutoSize = true; onlineReview.Padding = new Padding(0, 6, 5, 0);
             actions.Controls.Add(translate); actions.Controls.Add(copy); actions.Controls.Add(correct); actions.Controls.Add(install); actions.Controls.Add(onlineReview);
             root.Controls.Add(actions, 0, 4);
@@ -543,6 +543,13 @@ namespace MapleOverlay
         private readonly ProgressBar progressBar = new ProgressBar();
         private readonly Button install4 = new Button();
         private readonly Button install8 = new Button();
+        private readonly Button update = new Button();
+
+        private sealed class RemoteFileInfo
+        {
+            public long Length;
+            public string ETag;
+        }
 
         public AiInstallForm(string aiRoot)
         {
@@ -557,9 +564,11 @@ namespace MapleOverlay
             install4.Click += async delegate { await InstallAsync(false); };
             install8.Text = "一键安装高质量8B"; install8.AutoSize = true;
             install8.Click += async delegate { await InstallAsync(true); };
+            update.Text = "检查并更新现有模型"; update.AutoSize = true;
+            update.Click += async delegate { await UpdateExistingAsync(); };
             Button folder = new Button { Text = "打开模型文件夹", AutoSize = true };
             folder.Click += delegate { Directory.CreateDirectory(aiRoot); Process.Start("explorer.exe", aiRoot); };
-            buttons.Controls.Add(install4); buttons.Controls.Add(install8); buttons.Controls.Add(folder);
+            buttons.Controls.Add(install4); buttons.Controls.Add(install8); buttons.Controls.Add(update); buttons.Controls.Add(folder);
             progressBar.Location = new Point(8, 49); progressBar.Size = new Size(430, 20);
             progress.Location = new Point(447, 51); progress.AutoSize = true; progress.Text = "尚未开始";
             bottom.Controls.Add(buttons); bottom.Controls.Add(progressBar); bottom.Controls.Add(progress);
@@ -568,22 +577,16 @@ namespace MapleOverlay
 
         private async Task InstallAsync(bool highQuality)
         {
-            install4.Enabled = false; install8.Enabled = false;
+            SetButtons(false);
             try
             {
                 Directory.CreateDirectory(aiRoot);
-                progressBar.Style = ProgressBarStyle.Marquee; progress.Text = "获取官方运行库…";
-                string runtimeUrl = await Task.Factory.StartNew(delegate { return FindRuntimeUrl(); });
-                string zipPath = Path.Combine(aiRoot, "llama-vulkan.zip");
-                await DownloadAsync(runtimeUrl, zipPath, "下载显卡运行库");
-                progressBar.Style = ProgressBarStyle.Marquee; progress.Text = "解压运行库…";
-                await Task.Factory.StartNew(delegate { ExtractSafe(zipPath, aiRoot); });
-                try { File.Delete(zipPath); } catch { }
+                await InstallRuntimeAsync(false);
 
                 string size = highQuality ? "8B" : "4B";
                 string fileName = "Qwen3-" + size + "-Q4_K_M.gguf";
                 string modelUrl = "https://huggingface.co/Qwen/Qwen3-" + size + "-GGUF/resolve/main/" + fileName + "?download=true";
-                await DownloadAsync(modelUrl, Path.Combine(aiRoot, fileName), "下载" + (highQuality ? "高质量8B" : "轻量4B") + "模型");
+                await InstallModelAsync(modelUrl, Path.Combine(aiRoot, fileName), "下载" + (highQuality ? "高质量8B" : "轻量4B") + "模型", false);
                 progressBar.Style = ProgressBarStyle.Continuous; progressBar.Value = 100; progress.Text = "安装完成";
                 MessageBox.Show("永久免费AI模型已安装。关闭本窗口后点击AI翻译，首次载入可能需要几十秒。", "安装完成");
             }
@@ -592,7 +595,99 @@ namespace MapleOverlay
                 progressBar.Style = ProgressBarStyle.Continuous; progressBar.Value = 0; progress.Text = "安装未完成";
                 MessageBox.Show(ex.Message + "\n\n已下载的完整文件会保留；也可以从QQ群获取离线模型包。", "安装失败");
             }
-            finally { install4.Enabled = true; install8.Enabled = true; }
+            finally { SetButtons(true); }
+        }
+
+        private async Task UpdateExistingAsync()
+        {
+            SetButtons(false);
+            try
+            {
+                Directory.CreateDirectory(aiRoot);
+                string[] models = Directory.GetFiles(aiRoot, "Qwen3-*-Q4_K_M.gguf", SearchOption.AllDirectories);
+                if (models.Length == 0) { MessageBox.Show("没有发现已安装模型，请先选择4B或8B安装。", "检查更新"); return; }
+                bool changed = await InstallRuntimeAsync(true);
+                foreach (string modelPath in models)
+                {
+                    string fileName = Path.GetFileName(modelPath);
+                    string size = fileName.IndexOf("8B", StringComparison.OrdinalIgnoreCase) >= 0 ? "8B" : "4B";
+                    string url = "https://huggingface.co/Qwen/Qwen3-" + size + "-GGUF/resolve/main/" + fileName + "?download=true";
+                    changed = await InstallModelAsync(url, modelPath, "更新" + size + "模型", true) || changed;
+                }
+                progressBar.Style = ProgressBarStyle.Continuous; progressBar.Value = 100;
+                progress.Text = changed ? "更新完成" : "已经是最新版";
+                MessageBox.Show(changed ? "模型和运行库检查完成，已安装可用更新。" : "当前模型和运行库已经是最新版。", "检查更新");
+            }
+            catch (Exception ex)
+            {
+                progress.Text = "更新失败，旧版仍保留";
+                MessageBox.Show(ex.Message + "\n\n更新使用临时文件，失败不会覆盖当前可用模型。", "更新失败");
+            }
+            finally { SetButtons(true); }
+        }
+
+        private void SetButtons(bool enabled)
+        {
+            install4.Enabled = enabled; install8.Enabled = enabled; update.Enabled = enabled;
+        }
+
+        private async Task<bool> InstallRuntimeAsync(bool updateOnly)
+        {
+            progressBar.Style = ProgressBarStyle.Marquee; progress.Text = "检查官方运行库…";
+            string runtimeUrl = await Task.Factory.StartNew(delegate { return FindRuntimeUrl(); });
+            string marker = Path.Combine(aiRoot, "runtime.url.txt");
+            string server = Directory.Exists(aiRoot) ? FindFile(aiRoot, "llama-server.exe") : null;
+            if (updateOnly && server != null && File.Exists(marker) && File.ReadAllText(marker).Trim() == runtimeUrl) return false;
+            string zipPath = Path.Combine(aiRoot, "llama-vulkan.zip.download");
+            await DownloadAsync(runtimeUrl, zipPath, "下载显卡运行库");
+            progressBar.Style = ProgressBarStyle.Marquee; progress.Text = "安全解压运行库…";
+            string staging = Path.Combine(aiRoot, "runtime-new");
+            string current = Path.Combine(aiRoot, "runtime-current");
+            if (Directory.Exists(staging)) Directory.Delete(staging, true);
+            Directory.CreateDirectory(staging);
+            await Task.Factory.StartNew(delegate { ExtractSafe(zipPath, staging); });
+            if (FindFile(staging, "llama-server.exe") == null) throw new InvalidDataException("运行包中没有 llama-server.exe");
+            try { File.Delete(zipPath); } catch { }
+            string old = Path.Combine(aiRoot, "runtime-old");
+            try { if (Directory.Exists(old)) Directory.Delete(old, true); } catch { }
+            if (Directory.Exists(current)) Directory.Move(current, old);
+            try { Directory.Move(staging, current); }
+            catch { if (Directory.Exists(old) && !Directory.Exists(current)) Directory.Move(old, current); throw; }
+            if (Directory.Exists(old)) Directory.Delete(old, true);
+            File.WriteAllText(marker, runtimeUrl, new UTF8Encoding(false));
+            return true;
+        }
+
+        private async Task<bool> InstallModelAsync(string url, string destination, string stage, bool updateOnly)
+        {
+            progressBar.Style = ProgressBarStyle.Marquee; progress.Text = "检查官方模型…";
+            RemoteFileInfo remote = await Task.Factory.StartNew(delegate { return GetRemoteInfo(url); });
+            string etagPath = destination + ".etag";
+            bool sameLength = File.Exists(destination) && remote.Length > 0 && new FileInfo(destination).Length == remote.Length;
+            bool sameEtag = !File.Exists(etagPath) || String.IsNullOrEmpty(remote.ETag) || File.ReadAllText(etagPath).Trim() == remote.ETag;
+            if (sameLength && sameEtag) { progress.Text = "模型已经是最新版"; return false; }
+            string temp = destination + ".download";
+            if (File.Exists(temp) && remote.Length > 0 && new FileInfo(temp).Length > remote.Length) File.Delete(temp);
+            if (!(File.Exists(temp) && remote.Length > 0 && new FileInfo(temp).Length == remote.Length))
+                await DownloadAsync(url, temp, stage);
+            if (remote.Length > 0 && new FileInfo(temp).Length != remote.Length) throw new InvalidDataException("模型下载大小不完整，可再次点击继续下载");
+            if (File.Exists(destination)) File.Replace(temp, destination, null); else File.Move(temp, destination);
+            if (!String.IsNullOrEmpty(remote.ETag)) File.WriteAllText(etagPath, remote.ETag, new UTF8Encoding(false));
+            return true;
+        }
+
+        private static string FindFile(string root, string name)
+        {
+            string[] files = Directory.GetFiles(root, name, SearchOption.AllDirectories);
+            return files.Length > 0 ? files[0] : null;
+        }
+
+        private static RemoteFileInfo GetRemoteInfo(string url)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = "HEAD"; request.UserAgent = "FengYuMu-ModelInstaller"; request.Timeout = 20000;
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                return new RemoteFileInfo { Length = response.ContentLength, ETag = (response.Headers["ETag"] ?? "").Trim() };
         }
 
         private static string FindRuntimeUrl()
