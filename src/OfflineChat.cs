@@ -327,14 +327,16 @@ namespace MapleOverlay
         private void BuildUi()
         {
             TableLayoutPanel root = new TableLayoutPanel { Dock = DockStyle.Fill, Padding = new Padding(10), RowCount = 5, ColumnCount = 1 };
-            root.RowStyles.Add(new RowStyle(SizeType.Absolute, 38));
+            root.RowStyles.Add(new RowStyle(SizeType.Absolute, 76));
             root.RowStyles.Add(new RowStyle(SizeType.Percent, 62));
             root.RowStyles.Add(new RowStyle(SizeType.Absolute, 38));
             root.RowStyles.Add(new RowStyle(SizeType.Percent, 38));
             root.RowStyles.Add(new RowStyle(SizeType.Absolute, 45));
-            FlowLayoutPanel tools = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = false };
+            FlowLayoutPanel tools = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = true };
             liveButton.Text = "开始实时翻译"; liveButton.AutoSize = true;
             liveButton.Click += delegate { ToggleLive(); };
+            Button once = new Button { Text = "单次识别翻译（兼容模式）", AutoSize = true };
+            once.Click += async delegate { await PollChatAsync(true); };
             Button bind = new Button { Text = "3秒后绑定游戏聊天区", AutoSize = true };
             bind.Click += async delegate { await BindRegionAsync(); };
             Button review = new Button { Text = "审核AI纠错", AutoSize = true };
@@ -346,7 +348,7 @@ namespace MapleOverlay
             status.AutoSize = true; status.Padding = new Padding(8, 7, 0, 0); status.ForeColor = Color.DarkGreen;
             Button onlineSettings = new Button { Text = "在线AI设置", AutoSize = true };
             onlineSettings.Click += delegate { using (OnlineAiForm form = new OnlineAiForm()) form.ShowDialog(this); };
-            tools.Controls.Add(liveButton); tools.Controls.Add(bind); tools.Controls.Add(review); tools.Controls.Add(onlineSettings); tools.Controls.Add(status);
+            tools.Controls.Add(liveButton); tools.Controls.Add(once); tools.Controls.Add(bind); tools.Controls.Add(review); tools.Controls.Add(onlineSettings); tools.Controls.Add(status);
             root.Controls.Add(tools, 0, 0);
 
             output.Dock = DockStyle.Fill; output.Multiline = true; output.ReadOnly = true;
@@ -426,9 +428,9 @@ namespace MapleOverlay
             if (live) timer.Start(); else timer.Stop();
         }
 
-        private async Task PollChatAsync()
+        private async Task PollChatAsync(bool forceOnce = false)
         {
-            if (!live || busy) return;
+            if ((!live && !forceOnce) || busy) return;
             busy = true;
             try
             {

@@ -406,7 +406,6 @@ namespace MapleOverlay
         private const int WS_EX_TRANSPARENT = 0x20;
         private const int WS_EX_TOOLWINDOW = 0x80;
         private const int WS_EX_NOACTIVATE = 0x08000000;
-        private const uint WDA_EXCLUDEFROMCAPTURE = 0x11;
         private readonly string baseDir = AppDomain.CurrentDomain.BaseDirectory;
         private readonly TranslationStore translations;
         private readonly List<OverlayLabel> labels = new List<OverlayLabel>();
@@ -427,7 +426,6 @@ namespace MapleOverlay
         [DllImport("user32.dll")] private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
         [DllImport("user32.dll")] private static extern int GetWindowLong(IntPtr hWnd, int index);
         [DllImport("user32.dll")] private static extern int SetWindowLong(IntPtr hWnd, int index, int value);
-        [DllImport("user32.dll")] private static extern bool SetWindowDisplayAffinity(IntPtr hWnd, uint affinity);
         [DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
         [DllImport("user32.dll")] private static extern bool GetClientRect(IntPtr hwnd, out RECT rect);
         [DllImport("user32.dll")] private static extern bool ClientToScreen(IntPtr hwnd, ref POINT point);
@@ -473,7 +471,6 @@ namespace MapleOverlay
             Shown += async delegate {
                 SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) |
                     WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE);
-                SetWindowDisplayAffinity(Handle, WDA_EXCLUDEFROMCAPTURE);
                 bool h1 = RegisterHotKey(Handle, HOTKEY_SHOW, showModifiers, (uint)showKey);
                 bool h2 = RegisterHotKey(Handle, HOTKEY_HIDE, hideModifiers, (uint)hideKey);
                 tray.ShowBalloonTip(2500, "枫语幕已启动",
