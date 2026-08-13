@@ -1,10 +1,10 @@
-﻿# 枫语幕词库 1.3 - 冒险岛国际怀旧服专用（常规＋完整任务文本独立索引）
+# 枫语幕词库 1.5 - 冒险岛国际怀旧服专用（常规＋完整任务文本＋接取地图分类）
 # 生成日期：2026-08-12
 # 主数据：https://mxdgcw.dvg.cn/（当前GCW资料ID与中英文名）
 # NPC补全：https://meowdb.com/msclassic/（按同一NPC ID对齐）
 # 技能中文：https://mxd079.dvg.cn/（仅对GCW当前技能ID进行中文名匹配）
-# 任务文本：按任务代码隔离；中文资料优先，其余英文对白经现有冒险岛词库统一术语后翻译；第四列标记来源
-# 格式：英文原文<Tab>中文翻译<Tab>分类#资料ID<Tab>可选的真实图标64位指纹
+# 任务文本：按任务代码隔离；中文资料优先，其余英文对白经现有冒险岛词库统一术语后翻译；第四列标记来源，第五列可标记任务接取地图/区域
+# 格式：英文原文<Tab>中文翻译<Tab>分类#资料ID<Tab>可选图标指纹或来源<Tab>任务接取地图/区域
 MapleStory Classic World	冒险岛怀旧世界	怀旧服-界面
 MapleStory	冒险岛	怀旧服-界面
 Level	等级	怀旧服-界面
@@ -159,171 +159,171 @@ Nimble Recovery	恢复术	怀旧服-技能#4200001	ba22635b6b6366ba
 Dagger Booster	快速短刀	怀旧服-技能#4201000	b476b3ab86829cda
 Steal	偷窃术	怀旧服-技能#4201002	9a8eb7b3b39382f8
 Savage Blow	六连斩	怀旧服-技能#4201003	ca55b72c25333bac
-Borrowing Sera's Mirror	借来莎丽的镜子	怀旧服-任务#1000
-Bringing a Mirror to Heena	给希娜弄来镜子	怀旧服-任务#1001
-Roger's Apple	罗杰和苹果	怀旧服-任务#1002
-What Sen wants to eat	珊想吃的是什么？	怀旧服-任务#1003
-Returning to Nina	回到妮娜的住所	怀旧服-任务#1004
-Todd's How-to-Hunt	透德的打猎方法	怀旧服-任务#1005
-Sam's Suggestion	叁的建议	怀旧服-任务#1006
-Letter for Lucas	传递信件	怀旧服-任务#1007
-Lucas' Reply	长老的回信	怀旧服-任务#1008
-Mai's Training	麦加的锻炼	怀旧服-任务#1009
-Mai's Final Training	麦加的最后锻炼	怀旧服-任务#1010
-Biggs's Collection of Items	瑞恩的冒险岛问答3	怀旧服-任务#1011
-Pio's Collecting Recycled Goods	皮奥的垃圾回收	怀旧服-任务#1012
-Rain's Maple Quiz 1	瑞恩的冒险岛问答1	怀旧服-任务#1013
-Rain's Maple Quiz 2	瑞恩的冒险岛问答2	怀旧服-任务#1014
-Rain's Maple Quiz 3	瑞恩的冒险岛问答3	怀旧服-任务#1015
-Rain's Maple Quiz 4	瑞恩的冒险岛问答4	怀旧服-任务#1016
-Rain's Maple Quiz 5	瑞恩的冒险岛问答5	怀旧服-任务#1017
-Rain's Maple Quiz 6	瑞恩的冒险岛问答6	怀旧服-任务#1018
-Rain's Maple Quiz 7	瑞恩的冒险岛问答7	怀旧服-任务#1019
-Olaf's First Training	奥拉夫的训练	怀旧服-任务#10000
-Phil’s Call	菲尔的召唤	怀旧服-任务#10001
-Jane and the Mushroom	珍和蘑菇	怀旧服-任务#10002
-Jane's First Challenge	简的第一次挑战	怀旧服-任务#10003
-Jane's Second Challenge	简的第二次挑战	怀旧服-任务#10004
-Jane's Final Challenge	简的最后挑战	怀旧服-任务#10005
-[Deep Forest of Patience] John's Pink Flower Basket	【忍耐之林】约翰的粉色花篮	怀旧服-任务#10006
-[Deep Forest of Patience] John's Present	【忍耐之林】约翰的礼物	怀旧服-任务#10007
-[Deep Forest of Patience] John's Last Present	【忍耐之林】约翰最后的礼物	怀旧服-任务#10008
-Olaf's Second Training	奥拉夫的第二次训练	怀旧服-任务#10009
-Teo's Weird Hobby	特奥奇怪的爱好	怀旧服-任务#10010
-Teo's Even Weirder Hobby	特奥更奇怪的爱好	怀旧服-任务#10011
-Mrs. Ming Ming's First Worry	明明女士的第一个担心	怀旧服-任务#10100
-Mrs. Ming Ming's Second Worry	明明女士的第二个担心	怀旧服-任务#10101
-Estelle's Request	胡小姐的拜托	怀旧服-任务#10102
-Estelle's Special Sauce	胡小姐的特制酱油	怀旧服-任务#10103
-Pia and the Blue Mushroom	皮亚和蓝蘑菇	怀旧服-任务#10104
-Camila's Gem	卡米拉的玻璃珠	怀旧服-任务#10105
-Maya of Henesys	射手村的玛雅	怀旧服-任务#10106
-Finding Sophia	找素菲亚	怀旧服-任务#10107
-Making a Sparkling Rock	闪耀石头的材料	怀旧服-任务#10108
-Arcon's Blood?	变异蘑菇的血1	怀旧服-任务#10109
-Getting Arcon's Blood	变异蘑菇的血2	怀旧服-任务#10110
-Making Sparkling Rock	制作闪耀的石头	怀旧服-任务#10111
-Delivering the Weird Medicine	送奇怪的药	怀旧服-任务#10112
-Luke the Security Guy	迷宫入口的守卫兵，鲁克	怀旧服-任务#10113
-Luke the Security Guy's Wish to Travel	警卫卢克想去旅行	怀旧服-任务#10114
-Maya's First Collection	玛雅的第一次收集	怀旧服-任务#10115
-Maya's Second Collection	玛雅的第二次收集	怀旧服-任务#10116
-Maya's Third Collection	玛雅的第三次收集	怀旧服-任务#10117
-Maya's Last Collection	玛雅最后的收集	怀旧服-任务#10118
-Pia's Present For a Friend	为朋友的礼物	怀旧服-任务#10119
-Looking for the Red Cape	找回红色披风	怀旧服-任务#10120
-What Pia has Borrowed	皮亚借的物品	怀旧服-任务#10121
-Pia’s Gift	皮亚的礼物	怀旧服-任务#10122
-The Reason Behind the Mushroom Studies	研究蘑菇怪物的理由	怀旧服-任务#10123
-I Need to Find My Daughter 1	寻找女儿1	怀旧服-任务#10124
-I Need to Find My Daughter 2	寻找女儿2	怀旧服-任务#10125
-Arwen and the Glass Shoe	艾温的玻璃鞋	怀旧服-任务#10200
-Collecting 50 Cursed Dolls	收集50个诅咒娃娃	怀旧服-任务#10201
-Collecting 70 Cursed Dolls	收集70个诅咒娃娃	怀旧服-任务#10202
-Collecting 100 Cursed Dolls	收集100个诅咒娃娃	怀旧服-任务#10203
-Collecting 150 Cursed Dolls	收集150个诅咒娃娃	怀旧服-任务#10204
-Collecting 200 Cursed Dolls	收集200个诅咒娃娃	怀旧服-任务#10205
-First Material for Building a New House	为盖房子需要的材料1	怀旧服-任务#10206
-Second Material for Building a New House	为盖房子需要的材料2	怀旧服-任务#10207
-Third Material for Building a New House	为盖房子需要的材料3	怀旧服-任务#10208
-Last Material for Building a New House	为盖房子需要的最后材料	怀旧服-任务#10209
-I Need Help on My Homework!	帮忙写作业	怀旧服-任务#10210
-How to Enjoy Mushrooms	蘑菇的美味吃法	怀旧服-任务#10211
-How to Enjoy Mushrooms Even More	蘑菇更美味的吃法	怀旧服-任务#10212
-Alex's Request	阿勒斯的拜托	怀旧服-任务#10300
-Talking to Stan	说服长老斯坦	怀旧服-任务#10301
-Mother's Gold Watch	母亲的金表	怀旧服-任务#10302
-Don Hwang's Request	防具店老板的拜托	怀旧服-任务#10303
-Shumi's Request	休咪的拜托	怀旧服-任务#10304
-Andre's Request	安德里亚的拜托	怀旧服-任务#10305
-Dr. Faymus's Request	药店老板的拜托	怀旧服-任务#10306
-Chris's Request	克利思	怀旧服-任务#10307
-Cutthroat Manny's Request	曼斯塔的拜托	怀旧服-任务#10308
-Stranger's Request	陌生女人的拜托	怀旧服-任务#10309
-Stranger's Identity	陌生女人的真相	怀旧服-任务#10310
-Proof of Companionship	同伴的证明	怀旧服-任务#10311
-[Construction Site B1] Shumi's Lost Coin	【工地B1】休咪丢失的硬币	怀旧服-任务#10312
-[Construction Site B2] Shumi's Lost Roll of Cash	【工地B2】休咪丢失的一卷现金	怀旧服-任务#10313
-[Construction Site B3] Shumi's Lost Sack of Cash	【工地B3】休咪丢失的钱袋	怀旧服-任务#10314
-I'm Bored 1	好无聊1	怀旧服-任务#10315
-I'm Bored 2	好无聊2	怀旧服-任务#10316
-Icarus's Hang Glider	伊卡路斯的滑翔翼	怀旧服-任务#10317
-Icarus and the Balloon	伊卡路斯的热气球	怀旧服-任务#10318
-In search of Wing the Fairy	寻找妖精维英…	怀旧服-任务#10319
-The Ingredients for the Flying Pill	飞天药水的材料	怀旧服-任务#10320
-Delivering the Flying Pill	传达飞天药水	怀旧服-任务#10321
-Fixing Blackbull's House	酋长的家修理	怀旧服-任务#10400
-Building a New House For Blackbull	酋长盖房子	怀旧服-任务#10401
-Old Gladius	旧军刀	怀旧服-任务#10402
-Reawakening the Gladius	军刀的重新觉醒	怀旧服-任务#10403
-Hero's Gladius	英雄的战剑	怀旧服-任务#10404
-Searching for Fossils	要找化石。。。	怀旧服-任务#10405
-Delivering a Box of Fossils	运送一箱化石	怀旧服-任务#10406
-Research on Plant Fossils	植物化石研究	怀旧服-任务#10407
-Research on Animal Fossils	动物化石研究	怀旧服-任务#10408
-Transporting Drake's Skull	运送龙之头骨	怀旧服-任务#10409
-Progress on Fossil Research	化石研究成果	怀旧服-任务#10410
-The Stump Horror Story	木妖好可怕	怀旧服-任务#10411
-Taking Out the Alligators 1	消灭鳄鱼1	怀旧服-任务#10412
-Taking Out the Alligators 2	消灭鳄鱼2	怀旧服-任务#10413
-A Clue to the Secret Book	秘密之书	怀旧服-任务#10500
-Hungry Ronnie	肚子饿得洛尼	怀旧服-任务#10501
-Still Hungry Ronnie	还是很饿的罗尼	怀旧服-任务#10502
-Secret to Unagi Special	特制烤鳗鱼的秘密	怀旧服-任务#10503
-Rina’s Unagi Special	丽娜的鳗鱼特餐	怀旧服-任务#10504
-Thirsty Ronnie	口渴的罗尼	怀旧服-任务#10505
-Cold Milk	牛奶	怀旧服-任务#10506
-Satisfied Ronnie	心满意足的罗尼	怀旧服-任务#10507
-Returned Secret Book	秘密之书回收	怀旧服-任务#10508
-[Forest of Patience] Sabitrama and the Diet Medicine	【忍耐之林】萨比特拉玛和减肥药	怀旧服-任务#10509
-[Forest of Patience] Sabitrama's Anti-Aging Medicine	【忍耐之林】萨比特拉玛的不老药	怀旧服-任务#10510
-Zelya's Map	泽莉娅的地图	怀旧服-任务#10600
-Natural Adhesive	天然黏合剂	怀旧服-任务#10601
-The Road Back Home	回家的路	怀旧服-任务#10602
-Old Friends	旧日朋友	怀旧服-任务#10603
-Myra’s Old Friend	米拉的老朋友	怀旧服-任务#10604
-Special Taste of Florina Beach I	黄金海岸的特别味道 I	怀旧服-任务#10700
-Special Taste of Florina Beach II	黄金海滩的特色菜Ⅱ	怀旧服-任务#10701
-Special Taste of Florina Beach III	黄金海滩的特色菜Ⅲ	怀旧服-任务#10702
-Special Taste of Florina Beach IV	黄金海岸的特别味道 IV	怀旧服-任务#10703
-The Warrior's Next Journey	战士的下一段旅程	怀旧服-任务#20000
-Finding the Instructor	寻找教官	怀旧服-任务#20001
-Test of Qualification	资格测试	怀旧服-任务#20002
-Proof of Qualification	资格证明	怀旧服-任务#20003
-The Magician's Next Journey	魔法师的下一段旅程	怀旧服-任务#20100
-The Bowman's Next Journey	弓箭手的下一段旅程	怀旧服-任务#20200
-The Thief's Next Journey	飞侠的下一段旅程	怀旧服-任务#20300
-"Mar" the Fairy and the Water of Life	妖精“玛尔”和生命之水	怀旧服-任务#80000
-Make a Match Cards Set	制作记忆卡套组	怀旧服-任务#80001
-Make a Slime & Mushroom Omok Set	制作绿水灵与蘑菇五子棋套组	怀旧服-任务#80002
-Make a Slime & Pig Omok Set	制作绿水灵与猪五子棋套组	怀旧服-任务#80003
-Make a Slime & Octopus Omok Set	制作绿水灵与章鱼五子棋套组	怀旧服-任务#80004
-Make a Pig & Mushroom Omok Set	制作猪与蘑菇五子棋套组	怀旧服-任务#80005
-Make a Octopus & Mushroom Omok Set	制作章鱼与蘑菇五子棋套组	怀旧服-任务#80006
-Make a Pig & Octopus Omok Set	制作猪与章鱼五子棋套组	怀旧服-任务#80007
-Silas Irons in Need of an Apprentice	西拉斯·艾恩斯需要学徒	怀旧服-任务#80008
-A Blacksmith in My Own Right!	我也是独当一面的铁匠了！	怀旧服-任务#80009
-Silas Irons in Need of Help	西拉斯·艾恩斯需要帮助	怀旧服-任务#80010
-Mr. Thunder in Need of an Apprentice	雷先生需要学徒	怀旧服-任务#80011
-A Weaponcrafter in My Own Right!	我也是独当一面的武器匠了！	怀旧服-任务#80012
-Mr. Thunder in Need of Help	雷先生需要帮助	怀旧服-任务#80013
-Francois in Need of an Apprentice	弗朗索瓦需要学徒	怀旧服-任务#80014
-A Tailor in My Own Right!	我也是独当一面的裁缝了！	怀旧服-任务#80015
-Francois in Need of Help	弗朗索瓦需要帮助	怀旧服-任务#80016
-Vicious in Need of an Apprentice	维西需要学徒	怀旧服-任务#80017
-A Carpenter in My Own Right!	我也是独当一面的木匠了！	怀旧服-任务#80018
-Vicious in Need of Help	维西需要帮助	怀旧服-任务#80019
-JM From tha Streetz Looking for a Partner	街头的JM正在寻找伙伴	怀旧服-任务#80020
-A Leatherworker in My Own Right!	我也是独当一面的皮革工匠了！	怀旧服-任务#80021
-JM From tha Streetz in Need of Help	街头的JM需要帮助	怀旧服-任务#80022
-Chrishrama in Need of an Apprentice	克里斯拉玛需要学徒	怀旧服-任务#80023
-An Arcforger in My Own Right!	我也是独当一面的秘法锻造师了！	怀旧服-任务#80024
-Chrishrama in Need of Help	克里斯拉玛需要帮助	怀旧服-任务#80025
-[Event] A Strange and Familiar Wood	【活动】陌生又熟悉的树林	怀旧服-任务#500000
-[Event] Beyond the Unknown	【活动】未知的彼端	怀旧服-任务#500001
-[Event] The One Who Sealed the Darkness	【活动】封印黑暗之人	怀旧服-任务#500002
-[Event] Gathering Leaves	【活动】收集枫叶	怀旧服-任务#500005
-[Event] Gift for the New Journey	【活动】新旅程的礼物	怀旧服-任务#500006
+Borrowing Sera's Mirror	借来莎丽的镜子	怀旧服-任务#1000		冒险岛 · 彩虹岛
+Bringing a Mirror to Heena	给希娜弄来镜子	怀旧服-任务#1001		冒险岛 · 彩虹岛
+Roger's Apple	罗杰和苹果	怀旧服-任务#1002		冒险岛 · 彩虹岛
+What Sen wants to eat	珊想吃的是什么？	怀旧服-任务#1003		冒险岛 · 彩虹岛
+Returning to Nina	回到妮娜的住所	怀旧服-任务#1004		冒险岛 · 彩虹岛
+Todd's How-to-Hunt	透德的打猎方法	怀旧服-任务#1005		冒险岛 · 彩虹岛
+Sam's Suggestion	叁的建议	怀旧服-任务#1006		冒险岛 · 彩虹岛
+Letter for Lucas	传递信件	怀旧服-任务#1007		冒险岛 · 彩虹岛
+Lucas' Reply	长老的回信	怀旧服-任务#1008		冒险岛 · 彩虹岛
+Mai's Training	麦加的锻炼	怀旧服-任务#1009		冒险岛 · 彩虹岛
+Mai's Final Training	麦加的最后锻炼	怀旧服-任务#1010		冒险岛 · 彩虹岛
+Biggs's Collection of Items	瑞恩的冒险岛问答3	怀旧服-任务#1011		冒险岛 · 彩虹岛
+Pio's Collecting Recycled Goods	皮奥的垃圾回收	怀旧服-任务#1012		冒险岛 · 彩虹岛
+Rain's Maple Quiz 1	瑞恩的冒险岛问答1	怀旧服-任务#1013		冒险岛 · 彩虹岛
+Rain's Maple Quiz 2	瑞恩的冒险岛问答2	怀旧服-任务#1014		冒险岛 · 彩虹岛
+Rain's Maple Quiz 3	瑞恩的冒险岛问答3	怀旧服-任务#1015		冒险岛 · 彩虹岛
+Rain's Maple Quiz 4	瑞恩的冒险岛问答4	怀旧服-任务#1016		冒险岛 · 彩虹岛
+Rain's Maple Quiz 5	瑞恩的冒险岛问答5	怀旧服-任务#1017		冒险岛 · 彩虹岛
+Rain's Maple Quiz 6	瑞恩的冒险岛问答6	怀旧服-任务#1018		冒险岛 · 彩虹岛
+Rain's Maple Quiz 7	瑞恩的冒险岛问答7	怀旧服-任务#1019		冒险岛 · 彩虹岛
+Olaf's First Training	奥拉夫的训练	怀旧服-任务#10000		维多利亚岛
+Phil’s Call	菲尔的召唤	怀旧服-任务#10001		维多利亚岛
+Jane and the Mushroom	珍和蘑菇	怀旧服-任务#10002		维多利亚岛
+Jane's First Challenge	简的第一次挑战	怀旧服-任务#10003		维多利亚岛
+Jane's Second Challenge	简的第二次挑战	怀旧服-任务#10004		维多利亚岛
+Jane's Final Challenge	简的最后挑战	怀旧服-任务#10005		维多利亚岛
+[Deep Forest of Patience] John's Pink Flower Basket	【忍耐之林】约翰的粉色花篮	怀旧服-任务#10006		维多利亚岛
+[Deep Forest of Patience] John's Present	【忍耐之林】约翰的礼物	怀旧服-任务#10007		维多利亚岛
+[Deep Forest of Patience] John's Last Present	【忍耐之林】约翰最后的礼物	怀旧服-任务#10008		维多利亚岛
+Olaf's Second Training	奥拉夫的第二次训练	怀旧服-任务#10009		维多利亚岛
+Teo's Weird Hobby	特奥奇怪的爱好	怀旧服-任务#10010		维多利亚岛
+Teo's Even Weirder Hobby	特奥更奇怪的爱好	怀旧服-任务#10011		维多利亚岛
+Mrs. Ming Ming's First Worry	明明女士的第一个担心	怀旧服-任务#10100		射手村
+Mrs. Ming Ming's Second Worry	明明女士的第二个担心	怀旧服-任务#10101		射手村
+Estelle's Request	胡小姐的拜托	怀旧服-任务#10102		射手村
+Estelle's Special Sauce	胡小姐的特制酱油	怀旧服-任务#10103		射手村
+Pia and the Blue Mushroom	皮亚和蓝蘑菇	怀旧服-任务#10104		射手村
+Camila's Gem	卡米拉的玻璃珠	怀旧服-任务#10105		射手村
+Maya of Henesys	射手村的玛雅	怀旧服-任务#10106		射手村
+Finding Sophia	找素菲亚	怀旧服-任务#10107		射手村
+Making a Sparkling Rock	闪耀石头的材料	怀旧服-任务#10108		射手村
+Arcon's Blood?	变异蘑菇的血1	怀旧服-任务#10109		射手村
+Getting Arcon's Blood	变异蘑菇的血2	怀旧服-任务#10110		射手村
+Making Sparkling Rock	制作闪耀的石头	怀旧服-任务#10111		射手村
+Delivering the Weird Medicine	送奇怪的药	怀旧服-任务#10112		射手村
+Luke the Security Guy	迷宫入口的守卫兵，鲁克	怀旧服-任务#10113		射手村
+Luke the Security Guy's Wish to Travel	警卫卢克想去旅行	怀旧服-任务#10114		射手村
+Maya's First Collection	玛雅的第一次收集	怀旧服-任务#10115		射手村
+Maya's Second Collection	玛雅的第二次收集	怀旧服-任务#10116		射手村
+Maya's Third Collection	玛雅的第三次收集	怀旧服-任务#10117		射手村
+Maya's Last Collection	玛雅最后的收集	怀旧服-任务#10118		射手村
+Pia's Present For a Friend	为朋友的礼物	怀旧服-任务#10119		射手村
+Looking for the Red Cape	找回红色披风	怀旧服-任务#10120		射手村
+What Pia has Borrowed	皮亚借的物品	怀旧服-任务#10121		射手村
+Pia’s Gift	皮亚的礼物	怀旧服-任务#10122		射手村
+The Reason Behind the Mushroom Studies	研究蘑菇怪物的理由	怀旧服-任务#10123		射手村
+I Need to Find My Daughter 1	寻找女儿1	怀旧服-任务#10124		射手村
+I Need to Find My Daughter 2	寻找女儿2	怀旧服-任务#10125		射手村
+Arwen and the Glass Shoe	艾温的玻璃鞋	怀旧服-任务#10200		魔法密林
+Collecting 50 Cursed Dolls	收集50个诅咒娃娃	怀旧服-任务#10201		魔法密林
+Collecting 70 Cursed Dolls	收集70个诅咒娃娃	怀旧服-任务#10202		魔法密林
+Collecting 100 Cursed Dolls	收集100个诅咒娃娃	怀旧服-任务#10203		魔法密林
+Collecting 150 Cursed Dolls	收集150个诅咒娃娃	怀旧服-任务#10204		魔法密林
+Collecting 200 Cursed Dolls	收集200个诅咒娃娃	怀旧服-任务#10205		魔法密林
+First Material for Building a New House	为盖房子需要的材料1	怀旧服-任务#10206		魔法密林
+Second Material for Building a New House	为盖房子需要的材料2	怀旧服-任务#10207		魔法密林
+Third Material for Building a New House	为盖房子需要的材料3	怀旧服-任务#10208		魔法密林
+Last Material for Building a New House	为盖房子需要的最后材料	怀旧服-任务#10209		魔法密林
+I Need Help on My Homework!	帮忙写作业	怀旧服-任务#10210		魔法密林
+How to Enjoy Mushrooms	蘑菇的美味吃法	怀旧服-任务#10211		魔法密林
+How to Enjoy Mushrooms Even More	蘑菇更美味的吃法	怀旧服-任务#10212		魔法密林
+Alex's Request	阿勒斯的拜托	怀旧服-任务#10300		废弃都市
+Talking to Stan	说服长老斯坦	怀旧服-任务#10301		废弃都市
+Mother's Gold Watch	母亲的金表	怀旧服-任务#10302		废弃都市
+Don Hwang's Request	防具店老板的拜托	怀旧服-任务#10303		废弃都市
+Shumi's Request	休咪的拜托	怀旧服-任务#10304		废弃都市
+Andre's Request	安德里亚的拜托	怀旧服-任务#10305		废弃都市
+Dr. Faymus's Request	药店老板的拜托	怀旧服-任务#10306		废弃都市
+Chris's Request	克利思	怀旧服-任务#10307		废弃都市
+Cutthroat Manny's Request	曼斯塔的拜托	怀旧服-任务#10308		废弃都市
+Stranger's Request	陌生女人的拜托	怀旧服-任务#10309		废弃都市
+Stranger's Identity	陌生女人的真相	怀旧服-任务#10310		废弃都市
+Proof of Companionship	同伴的证明	怀旧服-任务#10311		废弃都市
+[Construction Site B1] Shumi's Lost Coin	【工地B1】休咪丢失的硬币	怀旧服-任务#10312		废弃都市
+[Construction Site B2] Shumi's Lost Roll of Cash	【工地B2】休咪丢失的一卷现金	怀旧服-任务#10313		废弃都市
+[Construction Site B3] Shumi's Lost Sack of Cash	【工地B3】休咪丢失的钱袋	怀旧服-任务#10314		废弃都市
+I'm Bored 1	好无聊1	怀旧服-任务#10315		废弃都市
+I'm Bored 2	好无聊2	怀旧服-任务#10316		废弃都市
+Icarus's Hang Glider	伊卡路斯的滑翔翼	怀旧服-任务#10317		废弃都市
+Icarus and the Balloon	伊卡路斯的热气球	怀旧服-任务#10318		废弃都市
+In search of Wing the Fairy	寻找妖精维英…	怀旧服-任务#10319		废弃都市
+The Ingredients for the Flying Pill	飞天药水的材料	怀旧服-任务#10320		废弃都市
+Delivering the Flying Pill	传达飞天药水	怀旧服-任务#10321		废弃都市
+Fixing Blackbull's House	酋长的家修理	怀旧服-任务#10400		勇士部落
+Building a New House For Blackbull	酋长盖房子	怀旧服-任务#10401		勇士部落
+Old Gladius	旧军刀	怀旧服-任务#10402		勇士部落
+Reawakening the Gladius	军刀的重新觉醒	怀旧服-任务#10403		勇士部落
+Hero's Gladius	英雄的战剑	怀旧服-任务#10404		勇士部落
+Searching for Fossils	要找化石。。。	怀旧服-任务#10405		勇士部落
+Delivering a Box of Fossils	运送一箱化石	怀旧服-任务#10406		勇士部落
+Research on Plant Fossils	植物化石研究	怀旧服-任务#10407		勇士部落
+Research on Animal Fossils	动物化石研究	怀旧服-任务#10408		勇士部落
+Transporting Drake's Skull	运送龙之头骨	怀旧服-任务#10409		勇士部落
+Progress on Fossil Research	化石研究成果	怀旧服-任务#10410		勇士部落
+The Stump Horror Story	木妖好可怕	怀旧服-任务#10411		勇士部落
+Taking Out the Alligators 1	消灭鳄鱼1	怀旧服-任务#10412		勇士部落
+Taking Out the Alligators 2	消灭鳄鱼2	怀旧服-任务#10413		勇士部落
+A Clue to the Secret Book	秘密之书	怀旧服-任务#10500		林中之城
+Hungry Ronnie	肚子饿得洛尼	怀旧服-任务#10501		林中之城
+Still Hungry Ronnie	还是很饿的罗尼	怀旧服-任务#10502		林中之城
+Secret to Unagi Special	特制烤鳗鱼的秘密	怀旧服-任务#10503		林中之城
+Rina’s Unagi Special	丽娜的鳗鱼特餐	怀旧服-任务#10504		林中之城
+Thirsty Ronnie	口渴的罗尼	怀旧服-任务#10505		林中之城
+Cold Milk	牛奶	怀旧服-任务#10506		林中之城
+Satisfied Ronnie	心满意足的罗尼	怀旧服-任务#10507		林中之城
+Returned Secret Book	秘密之书回收	怀旧服-任务#10508		林中之城
+[Forest of Patience] Sabitrama and the Diet Medicine	【忍耐之林】萨比特拉玛和减肥药	怀旧服-任务#10509		林中之城
+[Forest of Patience] Sabitrama's Anti-Aging Medicine	【忍耐之林】萨比特拉玛的不老药	怀旧服-任务#10510		林中之城
+Zelya's Map	泽莉娅的地图	怀旧服-任务#10600		遗忘山谷
+Natural Adhesive	天然黏合剂	怀旧服-任务#10601		遗忘山谷
+The Road Back Home	回家的路	怀旧服-任务#10602		遗忘山谷
+Old Friends	旧日朋友	怀旧服-任务#10603		遗忘山谷
+Myra’s Old Friend	米拉的老朋友	怀旧服-任务#10604		遗忘山谷
+Special Taste of Florina Beach I	黄金海岸的特别味道 I	怀旧服-任务#10700		黄金海滩
+Special Taste of Florina Beach II	黄金海滩的特色菜Ⅱ	怀旧服-任务#10701		黄金海滩
+Special Taste of Florina Beach III	黄金海滩的特色菜Ⅲ	怀旧服-任务#10702		黄金海滩
+Special Taste of Florina Beach IV	黄金海岸的特别味道 IV	怀旧服-任务#10703		黄金海滩
+The Warrior's Next Journey	战士的下一段旅程	怀旧服-任务#20000		战士转职
+Finding the Instructor	寻找教官	怀旧服-任务#20001		战士转职
+Test of Qualification	资格测试	怀旧服-任务#20002		战士转职
+Proof of Qualification	资格证明	怀旧服-任务#20003		战士转职
+The Magician's Next Journey	魔法师的下一段旅程	怀旧服-任务#20100		魔法师转职
+The Bowman's Next Journey	弓箭手的下一段旅程	怀旧服-任务#20200		弓箭手转职
+The Thief's Next Journey	飞侠的下一段旅程	怀旧服-任务#20300		飞侠转职
+"Mar" the Fairy and the Water of Life	妖精“玛尔”和生命之水	怀旧服-任务#80000		魔法密林
+Make a Match Cards Set	制作记忆卡套组	怀旧服-任务#80001		射手村
+Make a Slime & Mushroom Omok Set	制作绿水灵与蘑菇五子棋套组	怀旧服-任务#80002		射手村
+Make a Slime & Pig Omok Set	制作绿水灵与猪五子棋套组	怀旧服-任务#80003		射手村
+Make a Slime & Octopus Omok Set	制作绿水灵与章鱼五子棋套组	怀旧服-任务#80004		射手村
+Make a Pig & Mushroom Omok Set	制作猪与蘑菇五子棋套组	怀旧服-任务#80005		射手村
+Make a Octopus & Mushroom Omok Set	制作章鱼与蘑菇五子棋套组	怀旧服-任务#80006		射手村
+Make a Pig & Octopus Omok Set	制作猪与章鱼五子棋套组	怀旧服-任务#80007		射手村
+Silas Irons in Need of an Apprentice	西拉斯·艾恩斯需要学徒	怀旧服-任务#80008		锻造任务
+A Blacksmith in My Own Right!	我也是独当一面的铁匠了！	怀旧服-任务#80009		锻造任务
+Silas Irons in Need of Help	西拉斯·艾恩斯需要帮助	怀旧服-任务#80010		锻造任务
+Mr. Thunder in Need of an Apprentice	雷先生需要学徒	怀旧服-任务#80011		锻造任务
+A Weaponcrafter in My Own Right!	我也是独当一面的武器匠了！	怀旧服-任务#80012		锻造任务
+Mr. Thunder in Need of Help	雷先生需要帮助	怀旧服-任务#80013		锻造任务
+Francois in Need of an Apprentice	弗朗索瓦需要学徒	怀旧服-任务#80014		锻造任务
+A Tailor in My Own Right!	我也是独当一面的裁缝了！	怀旧服-任务#80015		锻造任务
+Francois in Need of Help	弗朗索瓦需要帮助	怀旧服-任务#80016		锻造任务
+Vicious in Need of an Apprentice	维西需要学徒	怀旧服-任务#80017		锻造任务
+A Carpenter in My Own Right!	我也是独当一面的木匠了！	怀旧服-任务#80018		锻造任务
+Vicious in Need of Help	维西需要帮助	怀旧服-任务#80019		锻造任务
+JM From tha Streetz Looking for a Partner	街头的JM正在寻找伙伴	怀旧服-任务#80020		锻造任务
+A Leatherworker in My Own Right!	我也是独当一面的皮革工匠了！	怀旧服-任务#80021		锻造任务
+JM From tha Streetz in Need of Help	街头的JM需要帮助	怀旧服-任务#80022		锻造任务
+Chrishrama in Need of an Apprentice	克里斯拉玛需要学徒	怀旧服-任务#80023		锻造任务
+An Arcforger in My Own Right!	我也是独当一面的秘法锻造师了！	怀旧服-任务#80024		锻造任务
+Chrishrama in Need of Help	克里斯拉玛需要帮助	怀旧服-任务#80025		锻造任务
+[Event] A Strange and Familiar Wood	【活动】陌生又熟悉的树林	怀旧服-任务#500000		活动
+[Event] Beyond the Unknown	【活动】未知的彼端	怀旧服-任务#500001		活动
+[Event] The One Who Sealed the Darkness	【活动】封印黑暗之人	怀旧服-任务#500002		活动
+[Event] Gathering Leaves	【活动】收集枫叶	怀旧服-任务#500005		活动
+[Event] Gift for the New Journey	【活动】新旅程的礼物	怀旧服-任务#500006		活动
 Mushroom Town - West Entrance	蘑菇镇 - 西入口	怀旧服-地图#1
 Maple Road	冒险岛之路	怀旧服-地区#1
 Mushroom Town	蘑菇镇	怀旧服-地图#10
@@ -3384,15 +3384,15 @@ Maple Point 85000	枫叶点数 85000	怀旧服-道具#980085000	0f1deaca8aba8684
 Maple Point 90000	枫叶点数 90000	怀旧服-道具#980090000	0f1deaca8aaa8e84
 Maple Point 95000	枫叶点数 95000	怀旧服-道具#980095000	0f1deaca8aba8684
 Maple Point 100000	枫叶点数 100000	怀旧服-道具#980100000	0f1deaca8ea68c84
-Finding the Instructor	寻找教官	怀旧服-任务#20101
-Test of Qualification	资格测试	怀旧服-任务#20102
-Proof of Qualification	资格证明	怀旧服-任务#20103
-Finding the Instructor	寻找教官	怀旧服-任务#20201
-Test of Qualification	资格测试	怀旧服-任务#20202
-Proof of Qualification	资格证明	怀旧服-任务#20203
-Finding the Instructor	寻找教官	怀旧服-任务#20301
-Test of Qualification	资格测试	怀旧服-任务#20302
-Proof of Qualification	资格证明	怀旧服-任务#20303
+Finding the Instructor	寻找教官	怀旧服-任务#20101		魔法师转职
+Test of Qualification	资格测试	怀旧服-任务#20102		魔法师转职
+Proof of Qualification	资格证明	怀旧服-任务#20103		魔法师转职
+Finding the Instructor	寻找教官	怀旧服-任务#20201		弓箭手转职
+Test of Qualification	资格测试	怀旧服-任务#20202		弓箭手转职
+Proof of Qualification	资格证明	怀旧服-任务#20203		弓箭手转职
+Finding the Instructor	寻找教官	怀旧服-任务#20301		飞侠转职
+Test of Qualification	资格测试	怀旧服-任务#20302		飞侠转职
+Proof of Qualification	资格证明	怀旧服-任务#20303		飞侠转职
 You meet Heena, who was worried the sun would damage her skin. You should get a mirror from her sister, Sera, so she can check.	去和希娜说话。你遇到了担心阳光会晒伤皮肤的希娜。她想照照镜子，于是你需要去找她的妹妹莎丽借一面镜子。希娜拜托你从她妹妹那里拿镜子，所以你一路走到了莎丽那里。	怀旧服-任务说明#1000	GCW同任务代码中文
 You must be the new traveler. I'll be giving you important information, so listen up. First, if you want to talk to anyone, click that person with your mouse.	你一定是新来的旅行者。我将向您提供重要信息，所以请听好。首先，如果您想与任何人交谈，请用鼠标单击该人。	怀旧服-任务对白#1000	英文对白语境翻译
 The left and right arrows allow you to move. Press Alt to jump. Press a direction key and Alt at the same time to jump left or right.	左右箭头允许您移动。按Alt键跳跃。同时按下方向键和 Alt 可向左或向右跳跃。	怀旧服-任务对白#1000	英文对白语境翻译

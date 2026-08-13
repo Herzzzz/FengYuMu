@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Text;
@@ -15,6 +16,7 @@ namespace MapleOverlay
         public string Category;
         public string IconHash;
         public string TaskId;
+        public string StartMap;
     }
 
     internal sealed class HotkeyForm : Form
@@ -97,6 +99,7 @@ namespace MapleOverlay
         private readonly Label status = new Label();
         private readonly DataGridView taskGrid = new DataGridView();
         private readonly TextBox taskSearch = new TextBox();
+        private readonly ComboBox taskMapFilter = new ComboBox();
         private readonly List<TaskDictionaryRow> taskRows = new List<TaskDictionaryRow>();
 
         public DictionaryOnlyForm(OverlayForm owner, string baseDir)
@@ -122,10 +125,31 @@ namespace MapleOverlay
             TabControl tabs = new TabControl { Dock = DockStyle.Fill };
             TabPage normalTab = new TabPage("常规词库");
             TabPage taskTab = new TabPage("任务词库");
+            TabPage thanksTab = new TabPage("鸣谢与资料来源");
             normalTab.Controls.Add(root);
             tabs.TabPages.Add(normalTab);
             tabs.TabPages.Add(taskTab);
+            tabs.TabPages.Add(thanksTab);
             Controls.Add(tabs);
+
+            TableLayoutPanel thanks = new TableLayoutPanel { Dock = DockStyle.Fill, Padding = new Padding(28), ColumnCount = 1, RowCount = 3 };
+            thanks.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            thanks.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+            thanks.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            thanks.Controls.Add(new Label { Text = "鸣谢", Font = new Font("Microsoft YaHei UI", 17, FontStyle.Bold), AutoSize = true }, 0, 0);
+            TextBox thanksText = new TextBox { Dock = DockStyle.Fill, Multiline = true, ReadOnly = true, BorderStyle = BorderStyle.None,
+                BackColor = SystemColors.Window, Font = new Font("Microsoft YaHei UI", 10),
+                Text = "枫语幕的怀旧服任务、地图、道具和术语整理参考了玩家社区公开资料。\r\n\r\n" +
+                    "特别鸣谢 MSCW Guidebook（冒险岛怀旧服资料站）及其制作者/群主，为怀旧服玩家整理并维护资料。\r\n" +
+                    "资料站：https://mscw-guidebook.com/\r\n\r\n" +
+                    "同时感谢：冒险岛小册子、NiaMeowDB、参与校对词库的QQ群玩家。\r\n" +
+                    "实时AI翻译功能来自 @奇怪小鸭。\r\n\r\n" +
+                    "本站和社区资料仅用于查询、术语核对与翻译适配；若游戏实际内容发生变化，以当前客户端显示为准。" };
+            thanks.Controls.Add(thanksText, 0, 1);
+            LinkLabel guideLink = new LinkLabel { Text = "打开 MSCW Guidebook", AutoSize = true, Font = new Font("Microsoft YaHei UI", 10, FontStyle.Underline) };
+            guideLink.LinkClicked += delegate { try { Process.Start("https://mscw-guidebook.com/"); } catch { } };
+            thanks.Controls.Add(guideLink, 0, 2);
+            thanksTab.Controls.Add(thanks);
 
             FlowLayoutPanel top = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = false };
             top.Controls.Add(new Label { Text = "搜索：", AutoSize = true, Padding = new Padding(0, 8, 0, 0) });
@@ -171,26 +195,32 @@ namespace MapleOverlay
             taskGrid.RowHeadersVisible = false;
             taskGrid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             taskGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            taskGrid.Columns.Add("StartMap", "接取地图/区域");
             taskGrid.Columns.Add("TaskId", "任务代码");
             taskGrid.Columns.Add("English", "英文任务名");
             taskGrid.Columns.Add("Chinese", "中文任务名");
             taskGrid.Columns.Add("TextCount", "说明/对白数量");
-            taskGrid.Columns[0].FillWeight = 15;
-            taskGrid.Columns[1].FillWeight = 34;
-            taskGrid.Columns[2].FillWeight = 34;
-            taskGrid.Columns[3].FillWeight = 17;
+            taskGrid.Columns[0].FillWeight = 22;
+            taskGrid.Columns[1].FillWeight = 13;
+            taskGrid.Columns[2].FillWeight = 28;
+            taskGrid.Columns[3].FillWeight = 28;
+            taskGrid.Columns[4].FillWeight = 13;
             taskGrid.CellDoubleClick += delegate(object sender, DataGridViewCellEventArgs e) {
                 if (e.RowIndex < 0) return;
-                string taskId = Convert.ToString(taskGrid.Rows[e.RowIndex].Cells[0].Value);
+                string taskId = Convert.ToString(taskGrid.Rows[e.RowIndex].Cells[1].Value);
                 using (TaskEditorForm editor = new TaskEditorForm(taskId, taskRows)) editor.ShowDialog(this);
                 RefreshTaskGrid();
             };
             Panel taskPanel = new Panel { Dock = DockStyle.Fill, Padding = new Padding(10) };
             FlowLayoutPanel taskTop = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 42, WrapContents = false };
             taskTop.Controls.Add(new Label { Text = "搜索任务代码或名称：", AutoSize = true, Padding = new Padding(0, 8, 0, 0) });
-            taskSearch.Width = 280;
+            taskSearch.Width = 190;
             taskSearch.TextChanged += delegate { FilterTaskRows(); };
             taskTop.Controls.Add(taskSearch);
+            taskTop.Controls.Add(new Label { Text = "接取地图：", AutoSize = true, Padding = new Padding(12, 8, 0, 0) });
+            taskMapFilter.DropDownStyle = ComboBoxStyle.DropDownList; taskMapFilter.Width = 130;
+            taskMapFilter.SelectedIndexChanged += delegate { FilterTaskRows(); };
+            taskTop.Controls.Add(taskMapFilter);
             Button addTask = new Button { Text = "新增任务", AutoSize = true };
             addTask.Click += delegate { AddTask(); };
             taskTop.Controls.Add(addTask);
@@ -198,7 +228,7 @@ namespace MapleOverlay
             taskSave.Click += delegate { SaveRows(); };
             taskTop.Controls.Add(taskSave);
             Label taskHint = new Label { Dock = DockStyle.Bottom, Height = 32,
-                Text = "按任务名和任务代码查找。双击一项，单独编辑该任务名称、说明、短语和完整对白。",
+                Text = "任务按接取地图/区域分类。可选择地图筛选；双击任务可编辑地图、名称、说明和完整对白。",
                 ForeColor = Color.DimGray };
             taskPanel.Controls.Add(taskGrid);
             taskPanel.Controls.Add(taskHint);
@@ -218,7 +248,7 @@ namespace MapleOverlay
                 }
                 taskRows.Add(new TaskDictionaryRow { TaskId = dialog.TaskId,
                     English = dialog.EnglishName, Chinese = dialog.ChineseName,
-                    Category = "怀旧服-任务#" + dialog.TaskId, IconHash = "" });
+                    Category = "怀旧服-任务#" + dialog.TaskId, IconHash = "", StartMap = dialog.StartMap });
                 RefreshTaskGrid();
                 using (TaskEditorForm editor = new TaskEditorForm(dialog.TaskId, taskRows)) editor.ShowDialog(this);
                 RefreshTaskGrid();
@@ -241,7 +271,8 @@ namespace MapleOverlay
                     {
                         taskRows.Add(new TaskDictionaryRow { English = p[0].Trim(), Chinese = p[1].Trim(),
                             Category = category, IconHash = p.Length > 3 ? p[3].Trim() : "",
-                            TaskId = category.Substring(category.LastIndexOf('#') + 1) });
+                            TaskId = category.Substring(category.LastIndexOf('#') + 1),
+                            StartMap = p.Length > 4 ? p[4].Trim() : "" });
                     }
                     else grid.Rows.Add(p[0].Trim(), p[1].Trim(), category, p.Length > 3 ? p[3].Trim() : "");
                 }
@@ -260,30 +291,47 @@ namespace MapleOverlay
                 string[] value;
                 if (!tasks.TryGetValue(row.TaskId, out value))
                 {
-                    value = new string[] { "", "" };
+                    value = new string[] { "", "", "" };
                     tasks[row.TaskId] = value;
                     counts[row.TaskId] = 0;
                 }
                 if (row.Category.StartsWith("怀旧服-任务#", StringComparison.Ordinal))
                 {
-                    value[0] = row.English; value[1] = row.Chinese;
+                    value[0] = row.English; value[1] = row.Chinese; value[2] = row.StartMap;
                 }
                 else counts[row.TaskId] = counts[row.TaskId] + 1;
             }
-            foreach (KeyValuePair<string, string[]> task in tasks)
-                taskGrid.Rows.Add(task.Key, task.Value[0], task.Value[1], counts[task.Key]);
+            List<KeyValuePair<string, string[]>> ordered = new List<KeyValuePair<string, string[]>>(tasks);
+            ordered.Sort(delegate(KeyValuePair<string, string[]> a, KeyValuePair<string, string[]> b) {
+                int map = StringComparer.CurrentCultureIgnoreCase.Compare(a.Value[2], b.Value[2]);
+                return map != 0 ? map : StringComparer.OrdinalIgnoreCase.Compare(a.Key, b.Key);
+            });
+            string selectedMap = taskMapFilter.SelectedItem == null ? "全部地图" : Convert.ToString(taskMapFilter.SelectedItem);
+            SortedSet<string> maps = new SortedSet<string>(StringComparer.CurrentCultureIgnoreCase);
+            foreach (KeyValuePair<string, string[]> task in ordered)
+            {
+                string map = String.IsNullOrWhiteSpace(task.Value[2]) ? "未分类" : task.Value[2];
+                maps.Add(map);
+                taskGrid.Rows.Add(map, task.Key, task.Value[0], task.Value[1], counts[task.Key]);
+            }
+            taskMapFilter.BeginUpdate(); taskMapFilter.Items.Clear(); taskMapFilter.Items.Add("全部地图");
+            foreach (string map in maps) taskMapFilter.Items.Add(map);
+            taskMapFilter.SelectedItem = taskMapFilter.Items.Contains(selectedMap) ? selectedMap : "全部地图";
+            taskMapFilter.EndUpdate();
             FilterTaskRows();
         }
 
         private void FilterTaskRows()
         {
             string query = taskSearch.Text.Trim();
+            string selectedMap = taskMapFilter.SelectedItem == null ? "全部地图" : Convert.ToString(taskMapFilter.SelectedItem);
             taskGrid.CurrentCell = null;
             foreach (DataGridViewRow row in taskGrid.Rows)
             {
                 bool visible = query.Length == 0;
-                for (int i = 0; !visible && i < 3; i++)
+                for (int i = 0; !visible && i < 4; i++)
                     visible = Convert.ToString(row.Cells[i].Value).IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0;
+                if (selectedMap != "全部地图" && Convert.ToString(row.Cells[0].Value) != selectedMap) visible = false;
                 row.Visible = visible;
             }
         }
@@ -325,7 +373,9 @@ namespace MapleOverlay
                 string en = Clean(row.English), zh = Clean(row.Chinese), category = Clean(row.Category);
                 if (en.Length == 0 || zh.Length == 0 || category.Length == 0) continue;
                 b.Append(en).Append('\t').Append(zh).Append('\t').Append(category);
-                if (!String.IsNullOrWhiteSpace(row.IconHash)) b.Append('\t').Append(Clean(row.IconHash));
+                if (!String.IsNullOrWhiteSpace(row.IconHash) || !String.IsNullOrWhiteSpace(row.StartMap))
+                    b.Append('\t').Append(Clean(row.IconHash));
+                if (!String.IsNullOrWhiteSpace(row.StartMap)) b.Append('\t').Append(Clean(row.StartMap));
                 b.AppendLine();
             }
             return b.ToString();
@@ -372,11 +422,13 @@ namespace MapleOverlay
                     });
                     if (existing == null)
                         taskRows.Add(new TaskDictionaryRow { TaskId = taskId, English = key,
-                            Chinese = Clean(p[1]), Category = category, IconHash = p.Length > 3 ? Clean(p[3]) : "" });
+                            Chinese = Clean(p[1]), Category = category, IconHash = p.Length > 3 ? Clean(p[3]) : "",
+                            StartMap = p.Length > 4 ? Clean(p[4]) : "" });
                     else
                     {
                         existing.Chinese = Clean(p[1]); existing.Category = category;
                         if (p.Length > 3 && Clean(p[3]).Length > 0) existing.IconHash = Clean(p[3]);
+                        if (p.Length > 4 && Clean(p[4]).Length > 0) existing.StartMap = Clean(p[4]);
                     }
                     count++;
                     continue;
@@ -408,9 +460,11 @@ namespace MapleOverlay
         private readonly TextBox id = new TextBox();
         private readonly TextBox english = new TextBox();
         private readonly TextBox chinese = new TextBox();
+        private readonly TextBox startMap = new TextBox();
         public string TaskId { get; private set; }
         public string EnglishName { get; private set; }
         public string ChineseName { get; private set; }
+        public string StartMap { get; private set; }
 
         public NewTaskForm()
         {
@@ -418,12 +472,13 @@ namespace MapleOverlay
             StartPosition = FormStartPosition.CenterParent;
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false; MinimizeBox = false;
-            ClientSize = new Size(520, 205);
+            ClientSize = new Size(520, 250);
             Font = new Font("Microsoft YaHei UI", 9.0f);
             AddField("任务代码：", id, 24);
             AddField("英文任务名：", english, 68);
             AddField("中文任务名：", chinese, 112);
-            Button save = new Button { Text = "创建并编辑内容", Location = new Point(342, 158), Size = new Size(145, 31) };
+            AddField("接取地图/区域：", startMap, 156);
+            Button save = new Button { Text = "创建并编辑内容", Location = new Point(342, 202), Size = new Size(145, 31) };
             save.Click += delegate { AcceptTask(); };
             Controls.Add(save);
             AcceptButton = save;
@@ -443,10 +498,10 @@ namespace MapleOverlay
 
         private void AcceptTask()
         {
-            TaskId = Clean(id.Text); EnglishName = Clean(english.Text); ChineseName = Clean(chinese.Text);
-            if (TaskId.Length == 0 || EnglishName.Length == 0 || ChineseName.Length == 0)
+            TaskId = Clean(id.Text); EnglishName = Clean(english.Text); ChineseName = Clean(chinese.Text); StartMap = Clean(startMap.Text);
+            if (TaskId.Length == 0 || EnglishName.Length == 0 || ChineseName.Length == 0 || StartMap.Length == 0)
             {
-                MessageBox.Show("任务代码、英文任务名和中文任务名都必须填写。", "新增任务");
+                MessageBox.Show("任务代码、任务名和接取地图/区域都必须填写。", "新增任务");
                 return;
             }
             DialogResult = DialogResult.OK;
@@ -459,6 +514,7 @@ namespace MapleOverlay
         private readonly string taskId;
         private readonly List<TaskDictionaryRow> source;
         private readonly DataGridView grid = new DataGridView();
+        private readonly ToolStripTextBox startMap = new ToolStripTextBox();
 
         public TaskEditorForm(string id, List<TaskDictionaryRow> rows)
         {
@@ -475,6 +531,8 @@ namespace MapleOverlay
             ToolStripButton addDescription = new ToolStripButton("新增任务说明");
             ToolStripButton delete = new ToolStripButton("删除选中");
             ToolStripButton save = new ToolStripButton("保存本页并关闭");
+            tools.Items.Add(new ToolStripLabel("接取地图/区域："));
+            startMap.AutoSize = false; startMap.Width = 170; tools.Items.Add(startMap);
             addDialogue.Click += delegate { AddRow("怀旧服-任务对白#" + taskId); };
             addDescription.Click += delegate { AddRow("怀旧服-任务说明#" + taskId); };
             delete.Click += delegate {
@@ -511,7 +569,11 @@ namespace MapleOverlay
         private void LoadRows()
         {
             foreach (TaskDictionaryRow row in source)
-                if (row.TaskId == taskId) grid.Rows.Add(row.Category, row.English, row.Chinese, row.IconHash);
+                if (row.TaskId == taskId)
+                {
+                    grid.Rows.Add(row.Category, row.English, row.Chinese, row.IconHash);
+                    if (startMap.Text.Length == 0 && !String.IsNullOrWhiteSpace(row.StartMap)) startMap.Text = row.StartMap;
+                }
         }
 
         private void AddRow(string category)
@@ -537,7 +599,8 @@ namespace MapleOverlay
                 string sourceNote = CleanValue(row.Cells[3].Value);
                 if (category.Length == 0 || english.Length == 0 || chinese.Length == 0) continue;
                 source.Add(new TaskDictionaryRow { TaskId = taskId, Category = category,
-                    English = english, Chinese = chinese, IconHash = sourceNote });
+                    English = english, Chinese = chinese, IconHash = sourceNote,
+                    StartMap = category.StartsWith("怀旧服-任务#", StringComparison.Ordinal) ? CleanValue(startMap.Text) : "" });
             }
         }
     }
