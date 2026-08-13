@@ -802,19 +802,21 @@ namespace MapleOverlay
 
         private static RemoteFileInfo GetRemoteInfo(string url)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "HEAD"; request.UserAgent = "FengYuMu-ModelInstaller"; request.Timeout = 20000;
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                return new RemoteFileInfo { Length = response.ContentLength, ETag = (response.Headers["ETag"] ?? "").Trim() };
+            return WithNetworkRetry(delegate {
+                HttpWebRequest request = CreateRequest(url, 30000);
+                request.Method = "HEAD";
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                    return new RemoteFileInfo { Length = response.ContentLength, ETag = (response.Headers["ETag"] ?? "").Trim() };
+            });
         }
 
         private static string FindRuntimeUrl()
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.github.com/repos/ggml-org/llama.cpp/releases/latest");
-            request.UserAgent = "FengYuMu-ModelInstaller"; request.Timeout = 20000;
-            string json;
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            using (StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8)) json = reader.ReadToEnd();
+            string json = WithNetworkRetry(delegate {
+                HttpWebRequest request = CreateRequest("https://api.github.com/repos/ggml-org/llama.cpp/releases/latest", 30000);
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8)) return reader.ReadToEnd();
+            });
             Dictionary<string, object> root = new JavaScriptSerializer().Deserialize<Dictionary<string, object>>(json);
             object assetsValue = root["assets"];
             object[] assets = assetsValue as object[];
@@ -837,34 +839,68 @@ namespace MapleOverlay
         private async Task DownloadAsync(string url, string destination, string stage)
         {
             await Task.Factory.StartNew(delegate {
-                long existing = File.Exists(destination) ? new FileInfo(destination).Length : 0;
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                request.UserAgent = "FengYuMu-ModelInstaller"; request.Timeout = 30000; request.ReadWriteTimeout = 30000;
-                if (existing > 0) request.AddRange(existing);
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                {
-                    bool resumed = response.StatusCode == HttpStatusCode.PartialContent;
-                    if (!resumed) existing = 0;
-                    long total = response.ContentLength > 0 ? existing + response.ContentLength : 0;
-                    using (Stream input = response.GetResponseStream())
-                    using (FileStream output = new FileStream(destination, resumed ? FileMode.Append : FileMode.Create, FileAccess.Write, FileShare.Read))
+                WithNetworkRetry(delegate {
+                    long existing = File.Exists(destination) ? new FileInfo(destination).Length : 0;
+                    HttpWebRequest request = CreateRequest(url, 60000);
+                    request.ReadWriteTimeout = 60000;
+                    if (existing > 0) request.AddRange(existing);
+                    using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                     {
-                        byte[] buffer = new byte[1024 * 256]; int read; long done = existing; DateTime last = DateTime.MinValue;
-                        while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                        bool resumed = response.StatusCode == HttpStatusCode.PartialContent;
+                        if (!resumed) existing = 0;
+                        long total = response.ContentLength > 0 ? existing + response.ContentLength : 0;
+                        using (Stream input = response.GetResponseStream())
+                        using (FileStream output = new FileStream(destination, resumed ? FileMode.Append : FileMode.Create, FileAccess.Write, FileShare.Read))
                         {
-                            output.Write(buffer, 0, read); done += read;
-                            if ((DateTime.Now - last).TotalMilliseconds < 180) continue;
-                            last = DateTime.Now;
-                            int percent = total > 0 ? (int)Math.Min(100, done * 100 / total) : 0;
-                            BeginInvoke((MethodInvoker)delegate {
-                                progressBar.Style = total > 0 ? ProgressBarStyle.Continuous : ProgressBarStyle.Marquee;
-                                if (total > 0) progressBar.Value = percent;
-                                progress.Text = stage + " " + (done / 1024 / 1024) + "MB" + (total > 0 ? "/" + (total / 1024 / 1024) + "MB" : "");
-                            });
+                            byte[] buffer = new byte[1024 * 256]; int read; long done = existing; DateTime last = DateTime.MinValue;
+                            while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                            {
+                                output.Write(buffer, 0, read); done += read;
+                                if ((DateTime.Now - last).TotalMilliseconds < 180) continue;
+                                last = DateTime.Now;
+                                int percent = total > 0 ? (int)Math.Min(100, done * 100 / total) : 0;
+                                BeginInvoke((MethodInvoker)delegate {
+                                    progressBar.Style = total > 0 ? ProgressBarStyle.Continuous : ProgressBarStyle.Marquee;
+                                    if (total > 0) progressBar.Value = percent;
+                                    progress.Text = stage + " " + (done / 1024 / 1024) + "MB" + (total > 0 ? "/" + (total / 1024 / 1024) + "MB" : "");
+                                });
+                            }
                         }
                     }
-                }
+                    return true;
+                });
             });
+        }
+
+        private static HttpWebRequest CreateRequest(string url, int timeout)
+        {
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072; // TLS 1.2
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.UserAgent = "FengYuMu-ModelInstaller/1.4.2";
+            request.Timeout = timeout;
+            request.KeepAlive = false;
+            request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+            request.Proxy = WebRequest.GetSystemWebProxy();
+            if (request.Proxy != null) request.Proxy.Credentials = CredentialCache.DefaultCredentials;
+            return request;
+        }
+
+        private static T WithNetworkRetry<T>(Func<T> action)
+        {
+            Exception last = null;
+            for (int attempt = 0; attempt < 3; attempt++)
+            {
+                try { return action(); }
+                catch (WebException ex)
+                {
+                    last = ex;
+                    if (attempt < 2) System.Threading.Thread.Sleep(800 * (attempt + 1));
+                }
+            }
+            WebException web = last as WebException;
+            if (web != null && web.Status == WebExceptionStatus.SecureChannelFailure)
+                throw new InvalidOperationException("无法建立 TLS 1.2 安全连接。请确认 Windows 日期时间正确，并在系统的 Internet 选项→高级中启用‘使用 TLS 1.2’；如果使用代理，请先确认浏览器可以打开 GitHub 和 Hugging Face。", web);
+            throw last ?? new InvalidOperationException("网络连接失败");
         }
 
         private static void ExtractSafe(string zipPath, string destination)

@@ -7,6 +7,7 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -30,6 +31,11 @@ namespace MapleOverlay
         [STAThread]
         private static void Main(string[] args)
         {
+            // .NET Framework 4.x on older Windows may otherwise negotiate TLS 1.0,
+            // which GitHub and Hugging Face no longer accept.
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072; // TLS 1.2
+            ServicePointManager.Expect100Continue = false;
+            ServicePointManager.DefaultConnectionLimit = 4;
             Benchmark = args != null && Array.IndexOf(args, "--benchmark") >= 0;
             if (args != null) foreach (string arg in args)
                 if (arg.StartsWith("--benchmark-icon=", StringComparison.OrdinalIgnoreCase))
