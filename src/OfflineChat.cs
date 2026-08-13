@@ -273,7 +273,7 @@ namespace MapleOverlay
             dictionaryPath = Path.Combine(baseDir, "枫语幕词库.tsv");
             candidatesPath = Path.Combine(baseDir, "枫语幕纠错候选.tsv");
             ai = new OfflineAiClient(baseDir);
-            Text = "枫语幕｜AI实时聊天翻译";
+            Text = "枫语幕｜AI实时聊天翻译｜@奇怪小鸭";
             Icon = SystemIcons.Information; TopMost = true;
             StartPosition = FormStartPosition.Manual;
             Size = new Size(600, 560); MinimumSize = new Size(520, 480);
@@ -317,6 +317,7 @@ namespace MapleOverlay
 
             output.Dock = DockStyle.Fill; output.Multiline = true; output.ReadOnly = true;
             output.ScrollBars = ScrollBars.Vertical; output.BackColor = Color.FromArgb(24, 27, 32); output.ForeColor = Color.White;
+            output.Text = "实时AI翻译功能来自 @奇怪小鸭" + Environment.NewLine;
             root.Controls.Add(output, 0, 1);
 
             FlowLayoutPanel languages = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = false };
