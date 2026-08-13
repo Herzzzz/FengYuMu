@@ -421,6 +421,7 @@ namespace MapleOverlay
         private Rectangle captureBounds;
         private DictionaryOnlyForm dictionaryEditor;
         private HotkeyForm hotkeyEditor;
+        private OfflineChatForm chatTranslator;
 
         [DllImport("user32.dll")] private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint modifiers, uint key);
         [DllImport("user32.dll")] private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
@@ -585,6 +586,15 @@ namespace MapleOverlay
             hotkeyEditor.Activate();
         }
 
+        private void ShowChatTranslator()
+        {
+            HideTranslation();
+            if (chatTranslator == null || chatTranslator.IsDisposed)
+                chatTranslator = new OfflineChatForm(this, baseDir);
+            chatTranslator.Show();
+            chatTranslator.Activate();
+        }
+
         private void BuildTray()
         {
             tray.Icon = SystemIcons.Information;
@@ -595,10 +605,13 @@ namespace MapleOverlay
             dictionary.Click += delegate { ShowDictionaryEditor(); };
             ToolStripMenuItem hotkeys = new ToolStripMenuItem("更改快捷键");
             hotkeys.Click += delegate { ShowHotkeyEditor(); };
+            ToolStripMenuItem chat = new ToolStripMenuItem("AI实时聊天翻译");
+            chat.Click += delegate { ShowChatTranslator(); };
             ToolStripMenuItem exit = new ToolStripMenuItem("退出");
             exit.Click += delegate { Close(); };
             menu.Items.Add(dictionary);
             menu.Items.Add(hotkeys);
+            menu.Items.Add(chat);
             menu.Items.Add(exit);
             tray.ContextMenuStrip = menu;
             tray.DoubleClick += delegate { ShowDictionaryEditor(); };
@@ -748,7 +761,7 @@ namespace MapleOverlay
             finally { processing = false; }
         }
 
-        private static Rectangle GetForegroundCaptureBounds()
+        internal static Rectangle GetForegroundCaptureBounds()
         {
             IntPtr foreground = GetForegroundWindow();
             if (foreground != IntPtr.Zero && !IsIconic(foreground))
@@ -770,6 +783,22 @@ namespace MapleOverlay
             if (monitor != IntPtr.Zero && GetMonitorInfo(monitor, ref info))
                 return Rectangle.FromLTRB(info.Monitor.Left, info.Monitor.Top, info.Monitor.Right, info.Monitor.Bottom);
             return Screen.PrimaryScreen.Bounds;
+        }
+
+        internal async Task<string> CaptureTextAsync(Rectangle screen)
+        {
+            if (screen.Width < 80 || screen.Height < 40) return "";
+            using (Bitmap bitmap = new Bitmap(screen.Width, screen.Height, PixelFormat.Format32bppArgb))
+            {
+                using (Graphics graphics = Graphics.FromImage(bitmap))
+                    graphics.CopyFromScreen(screen.Left, screen.Top, 0, 0, screen.Size, CopyPixelOperation.SourceCopy);
+                float scale;
+                using (Bitmap prepared = PrepareForOcr(bitmap, out scale, false))
+                {
+                    OcrResult result = await RecognizeAsync(prepared);
+                    return result.Text ?? "";
+                }
+            }
         }
 
         private static Bitmap PrepareForOcr(Bitmap source, out float scale, bool grayscale,
@@ -1081,6 +1110,7 @@ namespace MapleOverlay
             UnregisterHotKey(Handle, HOTKEY_HIDE);
             tray.Visible = false;
             tray.Dispose();
+            if (chatTranslator != null && !chatTranslator.IsDisposed) chatTranslator.StopService();
             base.OnFormClosed(e);
         }
     }
