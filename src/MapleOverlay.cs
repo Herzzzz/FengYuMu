@@ -430,6 +430,93 @@ namespace MapleOverlay
         public string Text;
     }
 
+    internal static class ChatRegionSettings
+    {
+        private const int Scale = 10000;
+
+        public static void Save(Rectangle region, Rectangle gameBounds)
+        {
+            if (region.Width < 40 || region.Height < 20 || gameBounds.Width < 1 || gameBounds.Height < 1) return;
+            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu"))
+            {
+                key.SetValue("ChatX", region.X); key.SetValue("ChatY", region.Y);
+                key.SetValue("ChatW", region.Width); key.SetValue("ChatH", region.Height);
+                key.SetValue("ChatRelX", (region.X - gameBounds.X) * Scale / gameBounds.Width);
+                key.SetValue("ChatRelY", (region.Y - gameBounds.Y) * Scale / gameBounds.Height);
+                key.SetValue("ChatRelW", region.Width * Scale / gameBounds.Width);
+                key.SetValue("ChatRelH", region.Height * Scale / gameBounds.Height);
+                key.SetValue("ChatGameX", gameBounds.X); key.SetValue("ChatGameY", gameBounds.Y);
+                key.SetValue("ChatGameW", gameBounds.Width); key.SetValue("ChatGameH", gameBounds.Height);
+            }
+        }
+
+        public static Rectangle LoadAbsolute()
+        {
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\FengYuMu"))
+                {
+                    if (key == null) return Rectangle.Empty;
+                    return new Rectangle(Convert.ToInt32(key.GetValue("ChatX", 0)),
+                        Convert.ToInt32(key.GetValue("ChatY", 0)),
+                        Convert.ToInt32(key.GetValue("ChatW", 0)),
+                        Convert.ToInt32(key.GetValue("ChatH", 0)));
+                }
+            }
+            catch { return Rectangle.Empty; }
+        }
+
+        public static bool HasSelection()
+        {
+            Rectangle value = LoadAbsolute();
+            return value.Width >= 80 && value.Height >= 30;
+        }
+
+        public static Rectangle ResolveForGame(Rectangle gameBounds)
+        {
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\FengYuMu"))
+                {
+                    if (key != null)
+                    {
+                        int relX = Convert.ToInt32(key.GetValue("ChatRelX", -1));
+                        int relY = Convert.ToInt32(key.GetValue("ChatRelY", -1));
+                        int relW = Convert.ToInt32(key.GetValue("ChatRelW", -1));
+                        int relH = Convert.ToInt32(key.GetValue("ChatRelH", -1));
+                        if (relX >= 0 && relY >= 0 && relW >= 100 && relH >= 100 &&
+                            relX + relW <= Scale && relY + relH <= Scale)
+                        {
+                            Rectangle relative = new Rectangle(gameBounds.X + relX * gameBounds.Width / Scale,
+                                gameBounds.Y + relY * gameBounds.Height / Scale,
+                                Math.Max(40, relW * gameBounds.Width / Scale),
+                                Math.Max(20, relH * gameBounds.Height / Scale));
+                            return Rectangle.Intersect(relative, gameBounds);
+                        }
+                    }
+                }
+            }
+            catch { }
+
+            Rectangle absolute = LoadAbsolute();
+            if (absolute.Width >= 80 && absolute.Height >= 30)
+            {
+                Rectangle overlap = Rectangle.Intersect(absolute, gameBounds);
+                long sourceArea = (long)absolute.Width * absolute.Height;
+                long overlapArea = (long)overlap.Width * overlap.Height;
+                if (sourceArea > 0 && overlapArea * 10 >= sourceArea * 7) return overlap;
+            }
+            return DefaultForGame(gameBounds);
+        }
+
+        public static Rectangle DefaultForGame(Rectangle gameBounds)
+        {
+            return new Rectangle(gameBounds.Left + gameBounds.Width * 10 / 100,
+                gameBounds.Top + gameBounds.Height * 76 / 100,
+                gameBounds.Width * 55 / 100, gameBounds.Height * 21 / 100);
+        }
+    }
+
     internal sealed class OverlayForm : Form
     {
         private const int HOTKEY_SHOW = 1001;
@@ -656,7 +743,7 @@ namespace MapleOverlay
         private void BuildTray()
         {
             tray.Icon = SystemIcons.Information;
-            tray.Text = "枫语幕 v1.5.2";
+            tray.Text = "枫语幕 v1.5.3";
             tray.Visible = true;
             ContextMenuStrip menu = new ContextMenuStrip();
             ToolStripMenuItem dictionary = new ToolStripMenuItem("打开并更改词库");
@@ -686,7 +773,7 @@ namespace MapleOverlay
                 visibleTranslation = false;
                 labels.Clear();
                 Invalidate();
-                tray.Text = "枫语幕 v1.5.2（内存待机）";
+                tray.Text = "枫语幕 v1.5.3（内存待机）";
             }
             else await ShowTranslationAsync();
         }
@@ -707,7 +794,7 @@ namespace MapleOverlay
             visibleTranslation = false;
             labels.Clear();
             Invalidate();
-            tray.Text = "枫语幕 v1.5.2（低配置优化）";
+            tray.Text = "枫语幕 v1.5.3（低配置优化）";
         }
 
         private async Task ShowTranslationAsync()
@@ -802,7 +889,7 @@ namespace MapleOverlay
                 visibleTranslation = true;
                 Invalidate();
                 stopwatch.Stop();
-                tray.Text = "枫语幕 v1.5.2（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
+                tray.Text = "枫语幕 v1.5.3（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
                 if (Program.Benchmark)
                     File.WriteAllText(Path.Combine(baseDir, "last_run.txt"),
                         "耗时毫秒=" + stopwatch.ElapsedMilliseconds + Environment.NewLine +
@@ -967,9 +1054,18 @@ namespace MapleOverlay
         private List<OverlayLabel> BuildLabels(OcrResult result, float ocrScale, Bitmap prepared)
         {
             List<OverlayLabel> output = new List<OverlayLabel>();
-            List<OcrLine> allLines = new List<OcrLine>(result.Lines);
-            bool questInterface = translations.LooksLikeQuestInterface(result.Text);
-            string activeTaskId = questInterface ? translations.DetectTaskId(result.Text) : "";
+            Rectangle chatExclusion = GetChatExclusionBounds();
+            List<OcrLine> allLines = new List<OcrLine>();
+            StringBuilder visibleText = new StringBuilder();
+            foreach (OcrLine candidate in result.Lines)
+            {
+                if (IsChatLine(candidate, ocrScale, chatExclusion)) continue;
+                allLines.Add(candidate);
+                if (visibleText.Length > 0) visibleText.AppendLine();
+                visibleText.Append(candidate.Text);
+            }
+            bool questInterface = translations.LooksLikeQuestInterface(visibleText.ToString());
+            string activeTaskId = questInterface ? translations.DetectTaskId(visibleText.ToString()) : "";
             for (int lineIndex = 0; lineIndex < allLines.Count; lineIndex++)
             {
                 OcrLine line = allLines[lineIndex];
@@ -1012,6 +1108,49 @@ namespace MapleOverlay
                 AddExactLabels(output, new List<OcrLine> { line }, line.Text, matches, ocrScale);
             }
             return output;
+        }
+
+        private Rectangle GetChatExclusionBounds()
+        {
+            Rectangle resolved = ChatRegionSettings.ResolveForGame(captureBounds);
+            // If the game moved or changed resolution, an F8 capture is the reliable moment
+            // when its current client bounds are known. Refresh the same shared absolute box
+            // so the AI reader and the F8 exclusion continue to point at one region.
+            if (ChatRegionSettings.HasSelection() && ChatRegionSettings.LoadAbsolute() != resolved)
+            {
+                ChatRegionSettings.Save(resolved, captureBounds);
+                if (chatTranslator != null && !chatTranslator.IsDisposed)
+                    chatTranslator.UpdateChatRegion(resolved);
+            }
+            return resolved;
+        }
+
+        private bool IsChatLine(OcrLine line, float ocrScale, Rectangle exclusion)
+        {
+            if (exclusion.Width <= 0 || exclusion.Height <= 0 || line.Words.Count == 0) return false;
+            float left = Single.MaxValue, top = Single.MaxValue;
+            float right = Single.MinValue, bottom = Single.MinValue;
+            foreach (OcrWord word in line.Words)
+            {
+                left = Math.Min(left, (float)word.BoundingRect.X / ocrScale + captureBounds.Left);
+                top = Math.Min(top, (float)word.BoundingRect.Y / ocrScale + captureBounds.Top);
+                right = Math.Max(right, (float)(word.BoundingRect.X + word.BoundingRect.Width) / ocrScale + captureBounds.Left);
+                bottom = Math.Max(bottom, (float)(word.BoundingRect.Y + word.BoundingRect.Height) / ocrScale + captureBounds.Top);
+            }
+            if (left == Single.MaxValue) return false;
+            RectangleF lineBounds = RectangleF.FromLTRB(left, top, right, bottom);
+            return IsInsideChatBounds(lineBounds, exclusion);
+        }
+
+        private static bool IsInsideChatBounds(RectangleF lineBounds, Rectangle exclusion)
+        {
+            float centerX = lineBounds.Left + lineBounds.Width / 2.0f;
+            float centerY = lineBounds.Top + lineBounds.Height / 2.0f;
+            if (centerX >= exclusion.Left && centerX <= exclusion.Right &&
+                centerY >= exclusion.Top && centerY <= exclusion.Bottom) return true;
+            RectangleF overlap = RectangleF.Intersect(lineBounds, exclusion);
+            float area = lineBounds.Width * lineBounds.Height;
+            return area > 0 && overlap.Width * overlap.Height / area >= 0.35f;
         }
 
         private void AddExactLabels(List<OverlayLabel> output, List<OcrLine> lines,

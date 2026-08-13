@@ -344,6 +344,198 @@ namespace MapleOverlay
         }
     }
 
+    internal sealed class ChatRegionSelectorForm : Form
+    {
+        private const int LeftEdge = 1, RightEdge = 2, TopEdge = 4, BottomEdge = 8;
+        private const int MoveArea = 16, NewArea = 32;
+        private readonly Rectangle gameBounds;
+        private readonly Bitmap snapshot;
+        private readonly Panel toolbar = new Panel();
+        private Rectangle selection;
+        private Rectangle dragOriginal;
+        private System.Drawing.Point dragStart;
+        private int dragMode;
+        private bool dragging;
+
+        public Rectangle SelectedScreenRegion
+        {
+            get { return new Rectangle(gameBounds.X + selection.X, gameBounds.Y + selection.Y,
+                selection.Width, selection.Height); }
+        }
+
+        public ChatRegionSelectorForm(Rectangle game, Rectangle initialScreenRegion)
+        {
+            gameBounds = game;
+            snapshot = new Bitmap(Math.Max(1, game.Width), Math.Max(1, game.Height),
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            using (Graphics graphics = Graphics.FromImage(snapshot))
+            {
+                try { graphics.CopyFromScreen(game.Location, System.Drawing.Point.Empty, game.Size,
+                    CopyPixelOperation.SourceCopy); }
+                catch { graphics.Clear(Color.FromArgb(44, 48, 56)); }
+            }
+
+            Rectangle initial = Rectangle.Intersect(initialScreenRegion, game);
+            selection = initial.Width >= 80 && initial.Height >= 30
+                ? new Rectangle(initial.X - game.X, initial.Y - game.Y, initial.Width, initial.Height)
+                : new Rectangle(game.Width * 10 / 100, game.Height * 76 / 100,
+                    game.Width * 55 / 100, game.Height * 21 / 100);
+
+            FormBorderStyle = FormBorderStyle.None; ShowInTaskbar = false; TopMost = true;
+            StartPosition = FormStartPosition.Manual; Bounds = game; DoubleBuffered = true; KeyPreview = true;
+            Cursor = Cursors.Cross;
+
+            toolbar.Dock = DockStyle.Top; toolbar.Height = 46; toolbar.BackColor = Color.FromArgb(235, 20, 23, 28);
+            Label help = new Label { Text = "拖动框体移动｜拖边缘或四角调整大小｜框内仅由AI翻译，F8完全跳过",
+                ForeColor = Color.White, AutoSize = true, Location = new System.Drawing.Point(14, 14),
+                Font = new Font("Microsoft YaHei UI", 9.0f, FontStyle.Bold) };
+            Button confirm = new Button { Text = "确定区域", AutoSize = true, Anchor = AnchorStyles.Top | AnchorStyles.Right };
+            Button cancel = new Button { Text = "取消", AutoSize = true, Anchor = AnchorStyles.Top | AnchorStyles.Right };
+            confirm.Location = new System.Drawing.Point(Math.Max(420, game.Width - 176), 9);
+            cancel.Location = new System.Drawing.Point(Math.Max(510, game.Width - 88), 9);
+            confirm.Click += delegate { DialogResult = DialogResult.OK; Close(); };
+            cancel.Click += delegate { DialogResult = DialogResult.Cancel; Close(); };
+            toolbar.Controls.Add(help); toolbar.Controls.Add(confirm); toolbar.Controls.Add(cancel); Controls.Add(toolbar);
+            KeyDown += delegate(object sender, KeyEventArgs e) {
+                if (e.KeyCode == Keys.Enter) { DialogResult = DialogResult.OK; Close(); }
+                else if (e.KeyCode == Keys.Escape) { DialogResult = DialogResult.Cancel; Close(); }
+            };
+            MouseDown += SelectorMouseDown; MouseMove += SelectorMouseMove; MouseUp += SelectorMouseUp;
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            e.Graphics.DrawImageUnscaled(snapshot, 0, 0);
+            using (SolidBrush shade = new SolidBrush(Color.FromArgb(145, 0, 0, 0)))
+            {
+                e.Graphics.FillRectangle(shade, 0, toolbar.Height, Width, Math.Max(0, selection.Top - toolbar.Height));
+                e.Graphics.FillRectangle(shade, 0, selection.Bottom, Width, Math.Max(0, Height - selection.Bottom));
+                e.Graphics.FillRectangle(shade, 0, selection.Top, Math.Max(0, selection.Left), selection.Height);
+                e.Graphics.FillRectangle(shade, selection.Right, selection.Top, Math.Max(0, Width - selection.Right), selection.Height);
+            }
+            using (Pen border = new Pen(Color.FromArgb(255, 255, 170, 25), 3.0f))
+                e.Graphics.DrawRectangle(border, selection);
+            foreach (Rectangle handle in Handles())
+            {
+                e.Graphics.FillRectangle(Brushes.White, handle);
+                e.Graphics.DrawRectangle(Pens.DarkOrange, handle);
+            }
+            string size = selection.Width + " × " + selection.Height;
+            using (Font font = new Font("Microsoft YaHei UI", 10.0f, FontStyle.Bold))
+            using (SolidBrush background = new SolidBrush(Color.FromArgb(220, 18, 18, 20)))
+            {
+                SizeF measured = e.Graphics.MeasureString(size, font);
+                RectangleF label = new RectangleF(selection.Left, Math.Max(toolbar.Height, selection.Top - measured.Height - 8),
+                    measured.Width + 12, measured.Height + 5);
+                e.Graphics.FillRectangle(background, label);
+                e.Graphics.DrawString(size, font, Brushes.White, label.X + 6, label.Y + 2);
+            }
+            base.OnPaint(e);
+        }
+
+        private Rectangle[] Handles()
+        {
+            const int size = 10, half = size / 2;
+            int middleX = selection.Left + selection.Width / 2;
+            int middleY = selection.Top + selection.Height / 2;
+            return new Rectangle[] {
+                new Rectangle(selection.Left-half, selection.Top-half, size, size),
+                new Rectangle(middleX-half, selection.Top-half, size, size),
+                new Rectangle(selection.Right-half, selection.Top-half, size, size),
+                new Rectangle(selection.Left-half, middleY-half, size, size),
+                new Rectangle(selection.Right-half, middleY-half, size, size),
+                new Rectangle(selection.Left-half, selection.Bottom-half, size, size),
+                new Rectangle(middleX-half, selection.Bottom-half, size, size),
+                new Rectangle(selection.Right-half, selection.Bottom-half, size, size)
+            };
+        }
+
+        private int HitTest(System.Drawing.Point point)
+        {
+            const int margin = 11;
+            bool left = Math.Abs(point.X - selection.Left) <= margin;
+            bool right = Math.Abs(point.X - selection.Right) <= margin;
+            bool top = Math.Abs(point.Y - selection.Top) <= margin;
+            bool bottom = Math.Abs(point.Y - selection.Bottom) <= margin;
+            if (point.X >= selection.Left - margin && point.X <= selection.Right + margin &&
+                point.Y >= selection.Top - margin && point.Y <= selection.Bottom + margin)
+            {
+                int edges = (left ? LeftEdge : 0) | (right ? RightEdge : 0) |
+                    (top ? TopEdge : 0) | (bottom ? BottomEdge : 0);
+                return edges != 0 ? edges : (selection.Contains(point) ? MoveArea : 0);
+            }
+            return NewArea;
+        }
+
+        private void SelectorMouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left || e.Y < toolbar.Height) return;
+            dragging = true; dragStart = e.Location; dragOriginal = selection; dragMode = HitTest(e.Location);
+            if (dragMode == NewArea) selection = new Rectangle(e.X, e.Y, 1, 1);
+            Capture = true; Invalidate();
+        }
+
+        private void SelectorMouseMove(object sender, MouseEventArgs e)
+        {
+            if (!dragging)
+            {
+                int hit = HitTest(e.Location);
+                Cursor = CursorFor(hit); return;
+            }
+            int x = Math.Max(0, Math.Min(Width - 1, e.X));
+            int y = Math.Max(toolbar.Height, Math.Min(Height - 1, e.Y));
+            if (dragMode == NewArea)
+            {
+                selection = Rectangle.FromLTRB(Math.Min(dragStart.X, x), Math.Min(dragStart.Y, y),
+                    Math.Max(dragStart.X, x), Math.Max(dragStart.Y, y));
+            }
+            else if (dragMode == MoveArea)
+            {
+                int nx = Math.Max(0, Math.Min(Width - dragOriginal.Width, dragOriginal.X + x - dragStart.X));
+                int ny = Math.Max(toolbar.Height, Math.Min(Height - dragOriginal.Height, dragOriginal.Y + y - dragStart.Y));
+                selection = new Rectangle(nx, ny, dragOriginal.Width, dragOriginal.Height);
+            }
+            else
+            {
+                int left = dragOriginal.Left, right = dragOriginal.Right;
+                int top = dragOriginal.Top, bottom = dragOriginal.Bottom;
+                if ((dragMode & LeftEdge) != 0) left = Math.Min(x, right - 80);
+                if ((dragMode & RightEdge) != 0) right = Math.Max(x, left + 80);
+                if ((dragMode & TopEdge) != 0) top = Math.Min(y, bottom - 40);
+                if ((dragMode & BottomEdge) != 0) bottom = Math.Max(y, top + 40);
+                left = Math.Max(0, left); top = Math.Max(toolbar.Height, top);
+                right = Math.Min(Width - 1, right); bottom = Math.Min(Height - 1, bottom);
+                selection = Rectangle.FromLTRB(left, top, right, bottom);
+            }
+            Invalidate();
+        }
+
+        private void SelectorMouseUp(object sender, MouseEventArgs e)
+        {
+            if (!dragging) return;
+            dragging = false; Capture = false;
+            if (selection.Width < 80 || selection.Height < 40)
+                selection = dragOriginal.Width >= 80 ? dragOriginal :
+                    new Rectangle(Width * 10 / 100, Height * 76 / 100, Width * 55 / 100, Height * 21 / 100);
+            Invalidate();
+        }
+
+        private static Cursor CursorFor(int hit)
+        {
+            if ((hit & (LeftEdge | RightEdge)) != 0 && (hit & (TopEdge | BottomEdge)) != 0)
+                return ((hit & LeftEdge) != 0) == ((hit & TopEdge) != 0) ? Cursors.SizeNWSE : Cursors.SizeNESW;
+            if ((hit & (LeftEdge | RightEdge)) != 0) return Cursors.SizeWE;
+            if ((hit & (TopEdge | BottomEdge)) != 0) return Cursors.SizeNS;
+            return hit == MoveArea ? Cursors.SizeAll : Cursors.Cross;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && snapshot != null) snapshot.Dispose();
+            base.Dispose(disposing);
+        }
+    }
+
     internal sealed class OfflineChatForm : Form
     {
         private readonly OverlayForm overlay;
@@ -418,7 +610,7 @@ namespace MapleOverlay
             liveButton.Click += delegate { ToggleLive(); };
             Button once = new Button { Text = "单次识别翻译（兼容模式）", AutoSize = true };
             once.Click += async delegate { await PollChatAsync(true); };
-            Button bind = new Button { Text = "3秒后绑定游戏聊天区", AutoSize = true };
+            Button bind = new Button { Text = "框选/调整游戏聊天区", AutoSize = true };
             bind.Click += async delegate { await BindRegionAsync(); };
             Button review = new Button { Text = "审核AI纠错", AutoSize = true };
             review.Click += delegate {
@@ -485,12 +677,13 @@ namespace MapleOverlay
 
         private void LoadRegion()
         {
-            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\FengYuMu"))
-            {
-                if (key == null) return;
-                chatRegion = new Rectangle(Convert.ToInt32(key.GetValue("ChatX", 0)), Convert.ToInt32(key.GetValue("ChatY", 0)),
-                    Convert.ToInt32(key.GetValue("ChatW", 0)), Convert.ToInt32(key.GetValue("ChatH", 0)));
-            }
+            chatRegion = ChatRegionSettings.LoadAbsolute();
+        }
+
+        internal void UpdateChatRegion(Rectangle region)
+        {
+            chatRegion = region;
+            if (IsHandleCreated) status.Text = "聊天区已按当前游戏窗口同步 " + region.Width + "×" + region.Height;
         }
 
         private async Task BindRegionAsync()
@@ -498,22 +691,24 @@ namespace MapleOverlay
             live = false; timer.Stop(); Hide();
             await Task.Delay(3000);
             Rectangle game = OverlayForm.GetForegroundCaptureBounds();
-            // Classic MapleStory chat is a shallow strip at the bottom-left. Keeping this tight
-            // avoids OCR-ing character nameplates and NPC labels above the chat window.
-            chatRegion = new Rectangle(game.Left + game.Width * 10 / 100, game.Top + game.Height * 76 / 100,
-                game.Width * 55 / 100, game.Height * 21 / 100);
-            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu"))
+            Rectangle initial = ChatRegionSettings.ResolveForGame(game);
+            using (ChatRegionSelectorForm selector = new ChatRegionSelectorForm(game, initial))
             {
-                key.SetValue("ChatX", chatRegion.X); key.SetValue("ChatY", chatRegion.Y);
-                key.SetValue("ChatW", chatRegion.Width); key.SetValue("ChatH", chatRegion.Height);
+                if (selector.ShowDialog() == DialogResult.OK)
+                {
+                    chatRegion = selector.SelectedScreenRegion;
+                    ChatRegionSettings.Save(chatRegion, game);
+                    seen.Clear();
+                    status.Text = "聊天区已统一绑定 " + chatRegion.Width + "×" + chatRegion.Height +
+                        "｜框内AI翻译，F8跳过";
+                }
             }
-            seen.Clear(); Show(); Activate();
-            status.Text = "已绑定聊天区 " + chatRegion.Width + "×" + chatRegion.Height;
+            Show(); Activate();
         }
 
         private void ToggleLive()
         {
-            if (chatRegion.Width < 80) { MessageBox.Show("请先点击“3秒后绑定游戏聊天区”，倒计时内切回游戏。", "实时聊天翻译"); return; }
+            if (chatRegion.Width < 80) { MessageBox.Show("请先点击“框选/调整游戏聊天区”，倒计时内切回游戏后调整边框。", "实时聊天翻译"); return; }
             live = !live;
             liveButton.Text = live ? "停止实时翻译" : "开始实时翻译";
             if (live) timer.Start(); else timer.Stop();
