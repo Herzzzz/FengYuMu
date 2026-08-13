@@ -569,7 +569,7 @@ Sanctuary Entrance II	圣域入口 II	怀旧服-地图#10005102
 Sanctuary Entrance III	圣域入口 III	怀旧服-地图#10005103
 Sanctuary Entrance IV	圣域入口 IV	怀旧服-地图#10005104
 The Cursed Sanctuary	被诅咒的圣域	怀旧服-地图#10005105
-Forgotten Hollow	遗忘空洞	怀旧服-地图#10006000
+Forgotten Hollow	遗忘山谷	怀旧服-地图#10006000
 Shallow Passage	浅层通道	怀旧服-地区#10006000
 Cave Fairy Sanctuary	洞穴精灵圣域	怀旧服-地图#10006001
 Cave Fairy Department Store	洞穴精灵百货商店	怀旧服-地图#10006002
@@ -2820,7 +2820,7 @@ Return Scroll to Perion	勇士部落回城卷	怀旧服-道具#2030003	5b39edccc
 Return Scroll to Henesys	射手村回城卷	怀旧服-道具#2030004	5b39edccc4e66262
 Return Scroll to Kerning City	废弃都市回城卷	怀旧服-道具#2030005	5b39edc4e4e66262
 Return Scroll to Sleepywood	林中之城回城卷	怀旧服-道具#2030006	5b39edccc4e66262
-Return Scroll to Forgotten Hollow	遗忘幽谷回城卷	怀旧服-道具#2030007	5b31ecccc4d66262
+Return Scroll to Forgotten Hollow	遗忘山谷回城卷	怀旧服-道具#2030007	5b31ecccc4d66262
 Hat Accuracy Scroll: Lesser	头盔命中率卷轴：初级	怀旧服-道具#2040000	0f7ef0e9d96cf9e1
 Hat Accuracy Scroll: Intermediate	头盔命中率卷轴：中级	怀旧服-道具#2040001	0f6ef0e9d96cf9e1
 Hat Accuracy Scroll: Greater	头盔命中率卷轴：高级	怀旧服-道具#2040002	077ef8e9c96cf9e1
@@ -4312,7 +4312,7 @@ Really. You look like you'd just breeze through there... Please come back here w
 Ohhh... This is IT! With Double-Rooted Red Ginseng , I can finally make the anti-aging medicine!!! Hahaha, if you ever become old and weak, find me. By then, I may have a special medicine for just that!	哦……这就是它！有了双根红参，我终于可以做抗衰老的药了！！！哈哈哈，如果你老了，身体衰弱了，就来找我吧。到时候我可能就有特效药了！	怀旧服-任务对白#10510	英文对白语境翻译
 Oh, I almost forgot. Since you helped me out, I should thank you for your hard work... This Star Rock is something I found at the very bottom of a valley a long time ago, in the middle of a journey. It'll probably help you down the road. I also increased your Fame, and, from here on out, Shane will let you in for free. Well, so long.	哦，我差点忘了。既然你帮了我，我就应该感谢你的辛苦……这块星石是我很久以前，在一次旅途中，在山谷的最底下发现的。它可能会对您有所帮助。我还增加了你的名气，从现在开始，谢恩将免费让你进入。嗯，这么久了...	怀旧服-任务对白#10510	英文对白语境翻译
 You haven't gotten the herb yet. The herb you need to get is a Double-Rooted Red Ginseng . The roots should look like this: Double-Rooted Red Ginseng . Memorize this, and go to Shane in Ellinia to get there.	你还没有拿到草药。您需要获得的草药是双根红参。根应该是这样的：双根红参。记住这一点，然后去魔法密林的谢恩那里就可以到达那里。	怀旧服-任务对白#10510	英文对白语境翻译
-The cave fairy Zelya in the Forgotten Hollow explained that she once lived much deeper inside the cave. She longs to return to her old home, but while out on a walk she was attacked by Glowshrooms and dropped the map she had drawn to find her way back. The monsters may have already torn it to pieces, but if I defeat the Glowshrooms east of Forgotten Hollow and gather the fragments, she might be able to figure something out.	遗忘洞穴的洞穴妖精泽莉娅似乎有请求。但要找到遗忘洞穴的位置本身可能就是个挑战……遗忘洞穴的洞穴妖精泽莉娅解释说，她曾经住在洞穴更深处。她很想回到从前的家，但有次外出散步时遭到发光蘑菇袭击，弄丢了自己画好的回家地图。地图也许已经被怪物撕碎了，但如果我打倒遗忘洞穴东边的发光蘑菇并收集碎片，她也许还能想出办法。按照洞穴妖精泽莉娅的请求，你打倒怪物并把通往她原本家园的地图碎片带了回来。希望里面还能找到一些线索……	怀旧服-任务说明#10600	GCW同任务代码中文
+The cave fairy Zelya in the Forgotten Hollow explained that she once lived much deeper inside the cave. She longs to return to her old home, but while out on a walk she was attacked by Glowshrooms and dropped the map she had drawn to find her way back. The monsters may have already torn it to pieces, but if I defeat the Glowshrooms east of Forgotten Hollow and gather the fragments, she might be able to figure something out.	遗忘山谷的洞穴妖精泽莉娅似乎有请求。但要找到遗忘山谷的位置本身可能就是个挑战……遗忘山谷的洞穴妖精泽莉娅解释说，她曾经住在洞穴更深处。她很想回到从前的家，但有次外出散步时遭到发光蘑菇袭击，弄丢了自己画好的回家地图。地图也许已经被怪物撕碎了，但如果我打倒遗忘山谷东边的发光蘑菇并收集碎片，她也许还能想出办法。按照洞穴妖精泽莉娅的请求，你打倒怪物并把通往她原本家园的地图碎片带了回来。希望里面还能找到一些线索……	怀旧服-任务说明#10600	GCW同任务代码中文
 Oh my... It's been such a long time since I last saw a human in the Forgotten Hollow . How did you manage to find this place? An ordinary human could never stumble across it--you must have remarkable courage.	天啊……自从我上次在遗忘山谷见到人类以来已经过去了很长时间了。你是怎么找到这个地方的？一个普通人绝对不可能偶然发现它——你必须有非凡的勇气。	怀旧服-任务对白#10600	英文对白语境翻译
 Yes... Somehow, I feel I can trust you. We cave fairies once lived much deeper within the Forgotten Hollow , but after that sorrowful incident long ago, we had no choice but to leave our home.	是的……不知怎的，我觉得我可以信任你。我们洞穴仙子曾经生活在遗忘山谷的深处，但在很久以前那场悲伤的事件之后，我们别无选择，只能离开我们的家。	怀旧服-任务对白#10600	英文对白语境翻译
 Still, I believe I can return one day. That's why I drew a map when I left, so I would never forget the way home. But a few days ago, while walking around to refresh my memory, I was attacked by Glowshrooms and dropped my precious map.	不过，我相信有一天我可以回来。所以我离开的时候画了一张地图，这样我就永远不会忘记回家的路。但几天前，当我四处走动恢复记忆时，我遭到了萤火虫的攻击，并掉落了我珍贵的地图。	怀旧服-任务对白#10600	英文对白语境翻译
@@ -4322,7 +4322,7 @@ So, Luma was right after all... humans really are selfish.	所以说，卢玛说
 I knew I could count on you to help. Now I can show Luma that not all humans are selfish--that some really are righteous. Thank you, from the bottom of my heart!	我知道我可以依靠你的帮助。现在我可以向卢玛表明，并非所有人类都是自私的——有些人确实是正义的。谢谢您，从心底里感谢您！	怀旧服-任务对白#10600	英文对白语境翻译
 Now I have to piece these fragments together, one by one. It'll take some time, but if it leads me back home, I will endure anything.	现在我必须把这些碎片一点一点地拼凑起来。这需要一些时间，但如果它能让我回家，我会忍受一切。	怀旧服-任务对白#10600	英文对白语境翻译
 Please defeat Glowshrooms dwelling east of the village and bring back the map fragments. I'm counting on you.	请击败住在村庄东边的萤火虫并带回地图碎片。我指望你了。	怀旧服-任务对白#10600	英文对白语境翻译
-The cave fairy Zelya in the Forgotten Hollow was struggling to piece together the fragments of her map. To restore it, she asked me to bring her Raffle Petals, which can be obtained by defeating Raffles east of the village. Looks like that’s where I'll need to go.	遗忘洞穴的洞穴妖精泽莉娅似乎有新的请求。洞穴妖精泽莉娅正在努力拼回地图碎片。为了修复地图，她让我带来莱佛花瓣，这些可以从村子东边的莱佛身上获得。看来我得去那里了。按照泽莉娅的请求，你打倒了莱佛，并收集了足够的莱佛花瓣带回给她。	怀旧服-任务说明#10601	GCW同任务代码中文
+The cave fairy Zelya in the Forgotten Hollow was struggling to piece together the fragments of her map. To restore it, she asked me to bring her Raffle Petals, which can be obtained by defeating Raffles east of the village. Looks like that’s where I'll need to go.	遗忘山谷的洞穴妖精泽莉娅似乎有新的请求。洞穴妖精泽莉娅正在努力拼回地图碎片。为了修复地图，她让我带来莱佛花瓣，这些可以从村子东边的莱佛身上获得。看来我得去那里了。按照泽莉娅的请求，你打倒了莱佛，并收集了足够的莱佛花瓣带回给她。	怀旧服-任务说明#10601	GCW同任务代码中文
 Ah, it's you. Thank you again for collecting the fragments of my precious map last time. But what should I do now...? I'm having such a hard time trying to piece the map back together. Is there no good way to fix this...?	啊，是你。再次感谢您上次收集我珍贵地图的碎片。但我现在该怎么办……？我很难把地图拼凑起来。难道就没有什么好的办法解决这个问题吗？...	怀旧服-任务对白#10601	英文对白语境翻译
 Oh! Now that I think about it, the petals of young Raffles that dwell east of the village could serve as an excellent adhesive. They lure prey with their flowers, then trap them with the sticky substance coating their petals.	哦！现在我想起来，住在村东的年轻莱佛士的花瓣可以作为很好的粘合剂。它们用花朵引诱猎物，然后用花瓣上的粘性物质捕获猎物。	怀旧服-任务对白#10601	英文对白语境翻译
 I think someone as strong as you could easily defeat them. Would you be willing to help me once more?	我认为像你这样强大的人可以轻松击败他们。你愿意再帮我一次吗？	怀旧服-任务对白#10601	英文对白语境翻译
@@ -4332,7 +4332,7 @@ You're back already, and with the Raffle Petals I asked for!	你已经回来了�
 Thank you! Now I can finally restore my precious map.	谢谢！现在我终于可以恢复我珍贵的地图了。	怀旧服-任务对白#10601	英文对白语境翻译
 Please defeat the Raffles dwelling east of the village and bring back Raffle Petals . I'm counting on you.	请击败村庄东边的莱佛士住宅并带回莱佛士花瓣。我指望你了。	怀旧服-任务对白#10601	英文对白语境翻译
 Don't forget to take down the Raffles as well!	别忘了把莱佛士也拿下来！	怀旧服-任务对白#10601	英文对白语境翻译
-Zelya restored her precious map and tried to follow it back to her old home, but she could not make it past the fierce monsters blocking the way. She asked me to defeat the monsters west of the Forgotten Hollow to help her get home safely.	遗忘洞穴的洞穴妖精泽莉娅似乎又有请求。泽莉娅修复了珍贵的地图，并试着按照地图回到从前的家，但路上被凶猛的怪物挡住，无法通过。她拜托我打倒遗忘洞穴西边的怪物，帮她安全回家。按照泽莉娅的请求，你打倒了水蜥和回声章鱼。可感觉怪物仍不断从洞穴深处涌出。里面到底发生了什么？	怀旧服-任务说明#10602	GCW同任务代码中文
+Zelya restored her precious map and tried to follow it back to her old home, but she could not make it past the fierce monsters blocking the way. She asked me to defeat the monsters west of the Forgotten Hollow to help her get home safely.	遗忘山谷的洞穴妖精泽莉娅似乎又有请求。泽莉娅修复了珍贵的地图，并试着按照地图回到从前的家，但路上被凶猛的怪物挡住，无法通过。她拜托我打倒遗忘山谷西边的怪物，帮她安全回家。按照泽莉娅的请求，你打倒了水蜥和回声章鱼。可感觉怪物仍不断从洞穴深处涌出。里面到底发生了什么？	怀旧服-任务说明#10602	GCW同任务代码中文
 Ah, welcome back! I imagine you're wondering whether I was able to restore my map? Thanks to you, I did, but... there's a bigger problem now.	啊，欢迎回来！我想您想知道我是否能够恢复我的地图？多亏了你，我做到了，但是……现在有一个更大的问题。	怀旧服-任务对白#10602	英文对白语境翻译
 When I tried to follow the map back to my old home, the monsters became more savage the further I went. I had to retreat pretty quickly. Maybe it was too much for a small fairy like me from the start.	当我试图按照地图回到我的老家时，越往前走，怪物就越凶残。我不得不迅速撤退。也许对于我这样的小仙女来说，从一开始就太过分了……	怀旧服-任务对白#10602	英文对白语境翻译
 Still, I don't want to give up yet. If you could defeat the monsters west of the Forgotten Hollow and thin their numbers, perhaps the path home would become safe enough. Could you help me once more?	尽管如此，我还不想放弃。如果你能打败遗忘山谷西边的怪物并减少它们的数量，也许回家的路就会变得足够安全。你能再帮我一次吗？	怀旧服-任务对白#10602	英文对白语境翻译
