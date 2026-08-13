@@ -369,8 +369,10 @@ namespace MapleOverlay
             live = false; timer.Stop(); Hide();
             await Task.Delay(3000);
             Rectangle game = OverlayForm.GetForegroundCaptureBounds();
-            chatRegion = new Rectangle(game.Left + Math.Max(4, game.Width / 100), game.Top + game.Height * 58 / 100,
-                game.Width * 60 / 100, game.Height * 37 / 100);
+            // Classic MapleStory chat is a shallow strip at the bottom-left. Keeping this tight
+            // avoids OCR-ing character nameplates and NPC labels above the chat window.
+            chatRegion = new Rectangle(game.Left + game.Width * 10 / 100, game.Top + game.Height * 76 / 100,
+                game.Width * 55 / 100, game.Height * 21 / 100);
             using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu"))
             {
                 key.SetValue("ChatX", chatRegion.X); key.SetValue("ChatY", chatRegion.Y);
@@ -458,15 +460,24 @@ namespace MapleOverlay
         private void SplitSpeaker(string line, out string prefix, out string message)
         {
             prefix = ""; message = line;
-            Match match = Regex.Match(line, @"^(\s*(?:\[[^\]]{1,20}\]\s*)?(?:<[^>]{1,24}>|[^:：]{1,24})\s*[:：]\s*)(.+)$");
+            string remaining = line;
+            Match timestamp = Regex.Match(remaining, @"^\s*\[\d{1,2}:\d{2}(?::\d{2})?\]\s*");
+            if (timestamp.Success)
+            {
+                prefix = timestamp.Value;
+                remaining = remaining.Substring(timestamp.Length);
+                message = remaining;
+            }
+            Match match = Regex.Match(remaining, @"^(\s*(?:\[[^\]]{1,20}\]\s*)?(?:<[^>]{1,24}>|[^:：]{1,24})\s*[:：]\s*)(.+)$");
             if (!match.Success)
             {
-                match = Regex.Match(line, @"^(\s*<([^>]{1,24})>\s*)(.+)$");
+                match = Regex.Match(remaining, @"^(\s*<([^>]{1,24})>\s*)(.+)$");
                 if (!match.Success) return;
             }
-            prefix = match.Groups[1].Value;
+            string speakerPrefix = match.Groups[1].Value;
+            prefix += speakerPrefix;
             message = match.Groups[match.Groups.Count - 1].Value;
-            string name = Regex.Replace(prefix, @"^\s*(?:\[[^\]]+\]\s*)?", "");
+            string name = Regex.Replace(speakerPrefix, @"^\s*(?:\[[^\]]+\]\s*)?", "");
             name = name.Trim().TrimEnd(':', '：').Trim().Trim('<', '>').Trim();
             if (name.Length >= 3 && name.Length <= 24) protectedPlayerNames.Add(name);
         }
