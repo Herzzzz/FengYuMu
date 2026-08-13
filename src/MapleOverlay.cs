@@ -421,6 +421,7 @@ namespace MapleOverlay
         private Rectangle captureBounds;
         private DictionaryOnlyForm dictionaryEditor;
         private HotkeyForm hotkeyEditor;
+        private OfflineChatForm chatTranslator;
 
         [DllImport("user32.dll")] private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint modifiers, uint key);
         [DllImport("user32.dll")] private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
@@ -479,7 +480,8 @@ namespace MapleOverlay
                     "常规/任务共 " + translations.Count + " 条，任务 " + translations.TaskCount + " 个/文本 " +
                     translations.TaskTextCount + " 条，图标指纹 " + translations.IconCount + " 条，已载入内存。" +
                     HotkeyText(showKey, showModifiers) + " 呼出，" +
-                    HotkeyText(hideKey, hideModifiers) + " 缩回后台。" + ((!h1 || !h2) ? "（有快捷键注册失败）" : ""), ToolTipIcon.Info);
+                    HotkeyText(hideKey, hideModifiers) + " 缩回后台。双击托盘图标打开AI实时聊天翻译。" +
+                    ((!h1 || !h2) ? "（有快捷键注册失败）" : ""), ToolTipIcon.Info);
                 if (Program.Benchmark)
                 {
                     await Task.Delay(350);
@@ -585,23 +587,36 @@ namespace MapleOverlay
             hotkeyEditor.Activate();
         }
 
+        private void ShowChatTranslator()
+        {
+            HideTranslation();
+            if (chatTranslator == null || chatTranslator.IsDisposed)
+                chatTranslator = new OfflineChatForm(this, baseDir);
+            chatTranslator.Show();
+            chatTranslator.Activate();
+        }
+
         private void BuildTray()
         {
             tray.Icon = SystemIcons.Information;
-            tray.Text = "枫语幕";
+            tray.Text = "枫语幕 v1.4";
             tray.Visible = true;
             ContextMenuStrip menu = new ContextMenuStrip();
             ToolStripMenuItem dictionary = new ToolStripMenuItem("打开并更改词库");
             dictionary.Click += delegate { ShowDictionaryEditor(); };
             ToolStripMenuItem hotkeys = new ToolStripMenuItem("更改快捷键");
             hotkeys.Click += delegate { ShowHotkeyEditor(); };
+            ToolStripMenuItem chat = new ToolStripMenuItem("AI实时聊天翻译");
+            chat.Font = new Font(chat.Font, FontStyle.Bold);
+            chat.Click += delegate { ShowChatTranslator(); };
             ToolStripMenuItem exit = new ToolStripMenuItem("退出");
             exit.Click += delegate { Close(); };
             menu.Items.Add(dictionary);
             menu.Items.Add(hotkeys);
+            menu.Items.Add(chat);
             menu.Items.Add(exit);
             tray.ContextMenuStrip = menu;
-            tray.DoubleClick += delegate { ShowDictionaryEditor(); };
+            tray.DoubleClick += delegate { ShowChatTranslator(); };
         }
 
         private async Task ToggleAsync()
@@ -611,7 +626,7 @@ namespace MapleOverlay
                 visibleTranslation = false;
                 labels.Clear();
                 Invalidate();
-                tray.Text = "枫语幕（内存待机）";
+                tray.Text = "枫语幕 v1.4（内存待机）";
             }
             else await ShowTranslationAsync();
         }
@@ -632,7 +647,7 @@ namespace MapleOverlay
             visibleTranslation = false;
             labels.Clear();
             Invalidate();
-            tray.Text = "枫语幕（内存待机）";
+            tray.Text = "枫语幕 v1.4（内存待机）";
         }
 
         private async Task ShowTranslationAsync()
@@ -725,7 +740,7 @@ namespace MapleOverlay
                 visibleTranslation = true;
                 Invalidate();
                 stopwatch.Stop();
-                tray.Text = "枫语幕（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
+                tray.Text = "枫语幕 v1.4（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
                 if (Program.Benchmark)
                     File.WriteAllText(Path.Combine(baseDir, "last_run.txt"),
                         "耗时毫秒=" + stopwatch.ElapsedMilliseconds + Environment.NewLine +
@@ -748,7 +763,7 @@ namespace MapleOverlay
             finally { processing = false; }
         }
 
-        private static Rectangle GetForegroundCaptureBounds()
+        internal static Rectangle GetForegroundCaptureBounds()
         {
             IntPtr foreground = GetForegroundWindow();
             if (foreground != IntPtr.Zero && !IsIconic(foreground))
@@ -770,6 +785,22 @@ namespace MapleOverlay
             if (monitor != IntPtr.Zero && GetMonitorInfo(monitor, ref info))
                 return Rectangle.FromLTRB(info.Monitor.Left, info.Monitor.Top, info.Monitor.Right, info.Monitor.Bottom);
             return Screen.PrimaryScreen.Bounds;
+        }
+
+        internal async Task<string> CaptureTextAsync(Rectangle screen)
+        {
+            if (screen.Width < 80 || screen.Height < 40) return "";
+            using (Bitmap bitmap = new Bitmap(screen.Width, screen.Height, PixelFormat.Format32bppArgb))
+            {
+                using (Graphics graphics = Graphics.FromImage(bitmap))
+                    graphics.CopyFromScreen(screen.Left, screen.Top, 0, 0, screen.Size, CopyPixelOperation.SourceCopy);
+                float scale;
+                using (Bitmap prepared = PrepareForOcr(bitmap, out scale, false))
+                {
+                    OcrResult result = await RecognizeAsync(prepared);
+                    return result.Text ?? "";
+                }
+            }
         }
 
         private static Bitmap PrepareForOcr(Bitmap source, out float scale, bool grayscale,
@@ -1081,6 +1112,7 @@ namespace MapleOverlay
             UnregisterHotKey(Handle, HOTKEY_HIDE);
             tray.Visible = false;
             tray.Dispose();
+            if (chatTranslator != null && !chatTranslator.IsDisposed) chatTranslator.StopService();
             base.OnFormClosed(e);
         }
     }
