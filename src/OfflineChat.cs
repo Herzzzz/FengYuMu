@@ -241,23 +241,25 @@ namespace MapleOverlay
                 Status = "未安装AI模型包";
                 return false;
             }
-            int[] gpuLayers = new int[] { 12, 4, 0 };
+            // The bundled Qwen3 4B model fits comfortably on the supported Vulkan GPUs.
+            // Try a full offload first, while retaining the old partial/CPU fallbacks.
+            int[] gpuLayers = new int[] { 99, 32, 12, 0 };
             foreach (int layers in gpuLayers)
             {
                 try
                 {
-                    int threads = Math.Max(1, Math.Min(2, Environment.ProcessorCount - 1));
+                    int threads = Math.Max(2, Math.Min(6, Environment.ProcessorCount / 2));
                     ProcessStartInfo info = new ProcessStartInfo(server,
                         "-m \"" + model + "\" --host 127.0.0.1 --port " + Port +
-                        " -ngl " + layers + " -c 1024 -b 64 -ub 32 -t " + threads + " -tb " + threads +
-                        " --parallel 1 --prio -1 --poll 0 --poll-batch 0 --no-webui");
+                        " -ngl " + layers + " -c 1024 -b 128 -ub 64 -t " + threads + " -tb " + threads +
+                        " --parallel 1 --prio 0 --poll 0 --poll-batch 0 --no-webui");
                     info.WorkingDirectory = Path.GetDirectoryName(server);
                     info.UseShellExecute = false;
                     info.CreateNoWindow = true;
                     info.RedirectStandardOutput = false;
                     info.RedirectStandardError = false;
                     process = Process.Start(info);
-                    try { process.PriorityClass = ProcessPriorityClass.BelowNormal; } catch { }
+                    try { process.PriorityClass = ProcessPriorityClass.Normal; } catch { }
                     string mode = layers > 0 ? "Vulkan显卡（" + layers + "层）" : "CPU兼容模式";
                     Status = "正在载入本地AI模型：" + mode + "…";
                     for (int i = 0; i < 120; i++)
@@ -819,7 +821,7 @@ namespace MapleOverlay
             {
                 bool same = true;
                 for (int i = 0; i < overlap; i++)
-                    if (ChatIdentity(previous[previous.Count - overlap + i]) != ChatIdentity(current[i])) { same = false; break; }
+                    if (!SameChatLine(previous[previous.Count - overlap + i], current[i])) { same = false; break; }
                 if (same) { bestOverlap = overlap; break; }
             }
             if (bestOverlap > 0)
@@ -830,9 +832,9 @@ namespace MapleOverlay
             // OCR may alter one old character between frames. Use the newest stable anchor,
             // then enqueue only the suffix after it instead of waiting for many later lines.
             int anchor = -1;
-            HashSet<string> oldIds = new HashSet<string>(StringComparer.Ordinal);
-            foreach (string line in previous) oldIds.Add(ChatIdentity(line));
-            for (int i = 0; i < current.Count; i++) if (oldIds.Contains(ChatIdentity(current[i]))) anchor = i;
+            for (int i = 0; i < current.Count; i++)
+                for (int j = previous.Count - 1; j >= 0; j--)
+                    if (SameChatLine(previous[j], current[i])) { anchor = i; break; }
             if (anchor >= 0) for (int i = anchor + 1; i < current.Count; i++) added.Add(current[i]);
             else added.Add(current[current.Count - 1]);
             return added;
@@ -840,7 +842,37 @@ namespace MapleOverlay
 
         private static string ChatIdentity(string value)
         {
-            return Regex.Replace((value ?? "").ToLowerInvariant(), @"[^a-z0-9\u3400-\u9fff]+", "");
+            string identity = Regex.Replace((value ?? "").ToLowerInvariant(), @"[^a-z0-9\u3400-\u9fff]+", "");
+            return identity.Replace('0', 'o').Replace('1', 'l');
+        }
+
+        private static bool SameChatLine(string left, string right)
+        {
+            string a = ChatIdentity(left), b = ChatIdentity(right);
+            if (a == b) return true;
+            int longest = Math.Max(a.Length, b.Length);
+            if (longest < 8 || Math.Abs(a.Length - b.Length) > Math.Max(2, longest / 12)) return false;
+            return EditDistanceWithin(a, b, Math.Max(1, longest / 18));
+        }
+
+        private static bool EditDistanceWithin(string left, string right, int limit)
+        {
+            if (Math.Abs(left.Length - right.Length) > limit) return false;
+            int[] previous = new int[right.Length + 1], current = new int[right.Length + 1];
+            for (int j = 0; j <= right.Length; j++) previous[j] = j;
+            for (int i = 1; i <= left.Length; i++)
+            {
+                current[0] = i; int rowMinimum = current[0];
+                for (int j = 1; j <= right.Length; j++)
+                {
+                    int cost = left[i - 1] == right[j - 1] ? 0 : 1;
+                    current[j] = Math.Min(Math.Min(current[j - 1] + 1, previous[j] + 1), previous[j - 1] + cost);
+                    rowMinimum = Math.Min(rowMinimum, current[j]);
+                }
+                if (rowMinimum > limit) return false;
+                int[] swap = previous; previous = current; current = swap;
+            }
+            return previous[right.Length] <= limit;
         }
 
         internal static List<string> ParseChatLines(string ocrText)
@@ -853,6 +885,13 @@ namespace MapleOverlay
             {
                 string line = Regex.Replace(sourceLine.Trim(), @"\s+", " ");
                 if (line.Length < 2) continue;
+                int noticeAt = line.IndexOf("[Notice]", StringComparison.OrdinalIgnoreCase);
+                string notice = "";
+                if (noticeAt >= 0)
+                {
+                    notice = line.Substring(noticeAt + 8).Trim(' ', '-', '>', '|');
+                    line = line.Substring(0, noticeAt).Trim();
+                }
                 MatchCollection matches = speaker.Matches(line);
                 if (matches.Count == 0)
                 {
@@ -860,9 +899,8 @@ namespace MapleOverlay
                     // on the next physical line. Attach only short tails to the previous message.
                     if (output.Count > 0 && line.Length <= 80 && !line.StartsWith("["))
                         output[output.Count - 1] = output[output.Count - 1] + " " + line;
-                    continue;
                 }
-                for (int i = 0; i < matches.Count; i++)
+                else for (int i = 0; i < matches.Count; i++)
                 {
                     Match marker = matches[i];
                     string name = marker.Groups[1].Value;
@@ -875,6 +913,7 @@ namespace MapleOverlay
                     if (message.Length < 2) continue;
                     output.Add(name + ": " + message);
                 }
+                if (notice.Length >= 2) output.Add("系统公告: " + notice);
             }
             return output;
         }
