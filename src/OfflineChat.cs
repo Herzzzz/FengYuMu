@@ -251,8 +251,8 @@ namespace MapleOverlay
                     int threads = Math.Max(2, Math.Min(6, Environment.ProcessorCount / 2));
                     ProcessStartInfo info = new ProcessStartInfo(server,
                         "-m \"" + model + "\" --host 127.0.0.1 --port " + Port +
-                        " -ngl " + layers + " -c 1024 -b 128 -ub 64 -t " + threads + " -tb " + threads +
-                        " --parallel 1 --prio 0 --poll 0 --poll-batch 0 --no-webui");
+                        " -ngl " + layers + " -c 1024 -b 256 -ub 128 -t " + threads + " -tb " + threads +
+                        " --parallel 1 --prio 0 --poll 50 --poll-batch 50 --no-webui");
                     info.WorkingDirectory = Path.GetDirectoryName(server);
                     info.UseShellExecute = false;
                     info.CreateNoWindow = true;
@@ -306,7 +306,7 @@ namespace MapleOverlay
                 "待翻译消息：\n" + text + "\n/no_think";
             string body = new JavaScriptSerializer().Serialize(new Dictionary<string, object> {
                 { "model", "local-qwen3" },
-                { "temperature", 0.2 }, { "top_p", 0.8 }, { "max_tokens", 96 },
+                { "temperature", 0.2 }, { "top_p", 0.8 }, { "max_tokens", 72 },
                 { "messages", new object[] {
                     new Dictionary<string, string> { { "role", "system" }, { "content", system } },
                     new Dictionary<string, string> { { "role", "user" }, { "content", userText } }
@@ -319,7 +319,7 @@ namespace MapleOverlay
                 string retrySystem = "把玩家消息翻译成自然、简短的简体中文。必须出现中文，不得照抄英文，不得解释；技能名用冒险岛国服译名。" +
                     (String.IsNullOrEmpty(glossary) ? "" : "术语：\n" + glossary);
                 string retryBody = new JavaScriptSerializer().Serialize(new Dictionary<string, object> {
-                    { "model", "local-qwen3" }, { "temperature", 0.0 }, { "top_p", 0.7 }, { "max_tokens", 96 },
+                    { "model", "local-qwen3" }, { "temperature", 0.0 }, { "top_p", 0.7 }, { "max_tokens", 72 },
                     { "messages", new object[] {
                         new Dictionary<string, string> { { "role", "system" }, { "content", retrySystem } },
                         new Dictionary<string, string> { { "role", "user" }, { "content", text + "\n只输出中文译文。\n/no_think" } }
@@ -604,7 +604,7 @@ namespace MapleOverlay
             Size = new Size(600, 560); MinimumSize = new Size(520, 480);
             Font = new Font("Microsoft YaHei UI", 9.0f);
             BuildUi(); LoadRegion();
-            timer.Interval = 650;
+            timer.Interval = 500;
             timer.Tick += async delegate { await PollChatAsync(); };
             releaseTimer.Interval = 30000;
             releaseTimer.Tick += delegate {
@@ -766,8 +766,11 @@ namespace MapleOverlay
                 List<string> lines = ParseChatLines(text);
                 List<string> newLines = GetNewChatLines(previousChatFrame, lines);
                 previousChatFrame = lines;
+                // Frame differencing already preserves genuine repeated messages while
+                // suppressing a static OCR frame. Text-based queue filtering would swallow
+                // a real duplicate sent while the first copy is still being translated.
                 foreach (string line in newLines)
-                    if (line.Length >= 3 && !pendingChatLines.Contains(line)) pendingChatLines.Enqueue(line);
+                    if (line.Length >= 3) pendingChatLines.Enqueue(line);
                 status.Text = pendingChatLines.Count > 0 ? "检测到新消息，待翻译 " + pendingChatLines.Count + " 条" : status.Text;
             }
             catch (Exception ex) { status.Text = ex.Message; }
@@ -802,7 +805,7 @@ namespace MapleOverlay
                     lastSource = message; lastTranslation = translated;
                     AppendTranslation(line, speakerPrefix + translated);
                     recentChatMessages.Add(cleanedMessage);
-                    if (recentChatMessages.Count > 6) recentChatMessages.RemoveAt(0);
+                    if (recentChatMessages.Count > 4) recentChatMessages.RemoveAt(0);
                     status.Text = pendingChatLines.Count == 0 ? "新消息已翻译" : "正在翻译，剩余 " + pendingChatLines.Count + " 条";
                 }
             }
@@ -835,8 +838,17 @@ namespace MapleOverlay
             for (int i = 0; i < current.Count; i++)
                 for (int j = previous.Count - 1; j >= 0; j--)
                     if (SameChatLine(previous[j], current[i])) { anchor = i; break; }
-            if (anchor >= 0) for (int i = anchor + 1; i < current.Count; i++) added.Add(current[i]);
-            else added.Add(current[current.Count - 1]);
+            if (anchor >= 0)
+            {
+                for (int i = anchor + 1; i < current.Count; i++) added.Add(current[i]);
+            }
+            else if (current.Count > previous.Count)
+            {
+                // With no reliable anchor, only a growing chat frame proves that something
+                // was appended. A same-size but OCR-noisy frame is not new content.
+                int appendCount = Math.Min(current.Count - previous.Count, current.Count);
+                for (int i = current.Count - appendCount; i < current.Count; i++) added.Add(current[i]);
+            }
             return added;
         }
 
@@ -851,8 +863,8 @@ namespace MapleOverlay
             string a = ChatIdentity(left), b = ChatIdentity(right);
             if (a == b) return true;
             int longest = Math.Max(a.Length, b.Length);
-            if (longest < 8 || Math.Abs(a.Length - b.Length) > Math.Max(2, longest / 12)) return false;
-            return EditDistanceWithin(a, b, Math.Max(1, longest / 18));
+            if (longest < 8 || Math.Abs(a.Length - b.Length) > Math.Max(2, longest / 10)) return false;
+            return EditDistanceWithin(a, b, Math.Max(2, longest / 10));
         }
 
         private static bool EditDistanceWithin(string left, string right, int limit)
@@ -880,16 +892,20 @@ namespace MapleOverlay
             List<string> output = new List<string>();
             if (String.IsNullOrWhiteSpace(ocrText)) return output;
             string[] physicalLines = ocrText.Replace("\r", "").Split('\n');
-            Regex speaker = new Regex(@"(?<![A-Za-z0-9_])([A-Za-z][A-Za-z0-9_]{2,23}?)(?:(?:CH[O0]?\d+|SH[O0][A-Z0-9@±]*))?(?:\s+(?:CH(?:O|0)?\s*\d+|SH(?:O|0)[^\s:：•·]{0,8}|[0-9O@±]{1,4}))?\s*[:：•·]", RegexOptions.IgnoreCase);
+            Regex speaker = new Regex(@"(?<![A-Za-z0-9_])([A-Za-z][A-Za-z0-9_]{2,23}?)(?:(?:CH[O0]?\d+|SH[O0][A-Z0-9@±]*)\s*[:：•·]?|\s+(?:CH(?:O|0)?\s*\d+|SH(?:O|0)[^\s:：•·]{0,8}|[0-9O@±]{1,4})\s*[:：•·]?|\s*[:：•·])\s*", RegexOptions.IgnoreCase);
             foreach (string sourceLine in physicalLines)
             {
                 string line = Regex.Replace(sourceLine.Trim(), @"\s+", " ");
                 if (line.Length < 2) continue;
                 int noticeAt = line.IndexOf("[Notice]", StringComparison.OrdinalIgnoreCase);
+                if (noticeAt < 0 && Regex.IsMatch(line, @"^\[[^\]]{2,12}\]\s*Money\s+lost\s+through\s+cash\s+transactions", RegexOptions.IgnoreCase))
+                    noticeAt = line.IndexOf(']') + 1;
                 string notice = "";
                 if (noticeAt >= 0)
                 {
-                    notice = line.Substring(noticeAt + 8).Trim(' ', '-', '>', '|');
+                    int noticeTextAt = line.IndexOf(']', noticeAt);
+                    if (noticeTextAt < noticeAt) noticeTextAt = noticeAt + 7;
+                    notice = line.Substring(Math.Min(line.Length, noticeTextAt + 1)).Trim(' ', '-', '>', '|');
                     line = line.Substring(0, noticeAt).Trim();
                 }
                 MatchCollection matches = speaker.Matches(line);
