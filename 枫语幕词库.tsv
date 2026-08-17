@@ -7015,6 +7015,7 @@ REQ STR	需要力量	怀旧服-界面
 REQ DEX	需要敏捷	怀旧服-界面
 REQ INT	需要智力	怀旧服-界面
 REQ LUK	需要运气	怀旧服-界面
+REQ FAME	需要人气	怀旧服-界面
 WEAPON ATTACK	物理攻击力	怀旧服-界面
 WEAPON DEFENSE	物理防御力	怀旧服-界面
 MAGIC DEFENSE	魔法防御力	怀旧服-界面
@@ -7035,6 +7036,7 @@ MAGICIAN	魔法师	怀旧服-界面
 BOWMAN	弓箭手	怀旧服-界面
 THIEF	飞侠	怀旧服-界面
 BEGINNER	新手	怀旧服-界面
+Shoes	鞋子	怀旧服-界面
 ALL	全部	怀旧服-界面
 WHISPER	悄悄话	怀旧服-界面
 BUDDY	好友	怀旧服-界面
@@ -8304,3 +8306,13 @@ meso	金币	怀旧服-聊天术语	冒险岛常用语
 mesos	金币	怀旧服-聊天术语	冒险岛常用语
 scroll	卷轴	怀旧服-聊天术语	冒险岛常用语
 boomed	装备炸了	怀旧服-聊天术语	冒险岛常用语
+Rush	突进	怀旧服-技能#1321003	GMS Classic World 实测技能名
+Rush Rushes forward a certain distance in the direction you are facing. If there are monsters within the rush range, you can deal damage to up to 4 of them and knock them back a certain distance. While rushing, you will not be knocked back even if attacked by monsters.	突进：向前方突进一段距离。突进范围内有怪物时，最多可攻击4只并将其击退。突进期间即使受到怪物攻击也不会被击退。	怀旧服-技能说明#1321003	GMS Classic World 实测详情全文
+MP -30; Rush, with 130 in distance; Damage 60%	消耗MP 30；突进距离130；伤害60%。	怀旧服-技能说明#1321003	GMS Classic World 实测下一等级
+Deerhide Shoes	鹿皮鞋	怀旧服-装备#1072010	GMS Classic World 实测装备名
+I am now under the tutelage of the famous sword master, Mai, in A Split Road. For my first lesson, she told me to hunt Blue Snails, Shrooms, and Red Snails. Ah, Mai also said to meet up with Biggs in Southperry for a useful quest.	我正在岔路口接受著名剑术大师麦加的指导。第一课，她让我狩猎蓝蜗牛、蘑菇仔和红蜗牛。麦加还让我去南港找比格斯，他那里有一项有用的任务。	怀旧服-任务说明#1009	GMS Classic World 实测任务日志原文
+ReqLv	需要等级	怀旧服-OCR别名	装备详情常见粘连
+Enhancements	剩余强化次数	怀旧服-OCR别名	装备详情末行残缺
+Red snal	红蜗牛	怀旧服-OCR别名	任务框常见漏字
+Blue snal	蓝蜗牛	怀旧服-OCR别名	任务框常见漏字
+Shroorns	蘑菇仔	怀旧服-OCR别名	任务框常见误识别

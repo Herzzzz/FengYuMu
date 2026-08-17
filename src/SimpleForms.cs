@@ -556,7 +556,7 @@ namespace MapleOverlay
             {
                 dialog.Filter = "枫语幕词库 (*.tsv)|*.tsv";
                 dialog.FileName = "枫语幕词库_" + DateTime.Now.ToString("yyyyMMdd") + ".tsv";
-                if (Directory.Exists(@"D:\GTP\文件")) dialog.InitialDirectory = @"D:\GTP\文件";
+                if (Directory.Exists(@"D:\GPT\文件")) dialog.InitialDirectory = @"D:\GPT\文件";
                 if (dialog.ShowDialog(this) == DialogResult.OK) File.WriteAllText(dialog.FileName, SerializeRows(), new UTF8Encoding(true));
             }
         }
