@@ -1,5 +1,8 @@
 bin/
 *.log
 last_run.txt
+last_run*.txt
+release/
+*_ui_test.png
+dictionary_ui_test.txt
 枫语幕词库_v*_审计.json
-

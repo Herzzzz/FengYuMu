@@ -1,0 +1,2642 @@
+﻿{
+    "skills":  [
+                   {
+                       "id":  1000,
+                       "name":  "Three Snails",
+                       "nameZh":  "三只蜗牛投掷术",
+                       "description":  "Hurls snail shells to attack monsters from long distance.",
+                       "descriptionZh":  "向远处的怪物投掷蜗牛壳进行攻击。",
+                       "jobName":  "Beginner"
+                   },
+                   {
+                       "id":  1001,
+                       "name":  "Recovery",
+                       "nameZh":  "恢复",
+                       "description":  "Enables the user to recover HP constantly for 30 sec.",
+                       "descriptionZh":  "使用户持续恢复生命值，持续30秒。",
+                       "jobName":  "Beginner"
+                   },
+                   {
+                       "id":  1002,
+                       "name":  "Nimble Feet",
+                       "nameZh":  "轻盈脚步",
+                       "description":  "Enables the character to move around quickly for a short amount of time.",
+                       "descriptionZh":  "使角色在短时间内快速移动。",
+                       "jobName":  "Beginner"
+                   },
+                   {
+                       "id":  1000000,
+                       "name":  "Improved HP Recovery",
+                       "nameZh":  "生命恢复",
+                       "description":  "HP naturally regenerates over time, not just when standing still. Also, HP recovery from items is boosted.",
+                       "descriptionZh":  "生命值会随着时间自然恢复，而不仅仅是在站立时。此外，物品带来的生命值恢复效果会提升。",
+                       "jobName":  "Warrior"
+                   },
+                   {
+                       "id":  1000001,
+                       "name":  "Max HP Increase",
+                       "nameZh":  "生命强化",
+                       "description":  "Max HP increases.",
+                       "descriptionZh":  "最大生命值提升。",
+                       "jobName":  "Warrior"
+                   },
+                   {
+                       "id":  1000002,
+                       "name":  "Precise Strikes",
+                       "nameZh":  "精准打击",
+                       "description":  "Repeated practice with your weapon has increased your Accuracy and Critical Rate.",
+                       "descriptionZh":  "通过反复练习武器，提高了命中率和暴击率。",
+                       "jobName":  "Warrior"
+                   },
+                   {
+                       "id":  1001000,
+                       "name":  "Iron Body",
+                       "nameZh":  "铁甲术",
+                       "description":  "Temporarily increases your Weapon Defense.",
+                       "descriptionZh":  "暂时提升你的物理防御。",
+                       "jobName":  "Warrior"
+                   },
+                   {
+                       "id":  1001001,
+                       "name":  "Power Strike",
+                       "nameZh":  "强力攻击",
+                       "description":  "Use MP to deliver a killer blow to a single monster with your weapon.",
+                       "descriptionZh":  "使用MP释放一次强力攻击，对单个怪物造成巨大伤害。",
+                       "jobName":  "Warrior"
+                   },
+                   {
+                       "id":  1001002,
+                       "name":  "Slash Blast",
+                       "nameZh":  "斩击爆裂",
+                       "description":  "Use HP and MP to attack up to 4 enemies around you with your weapon.",
+                       "descriptionZh":  "使用HP和MP对周围至多4个敌人发动武器攻击。",
+                       "jobName":  "Warrior"
+                   },
+                   {
+                       "id":  1100000,
+                       "name":  "Sword Mastery",
+                       "nameZh":  "精准剑",
+                       "description":  "Increases Sword Mastery and Weapon Defense. It only applies when a one-handed or two-handed sword is equipped.",
+                       "descriptionZh":  "提升剑的熟练度与物理防御。仅在装备单手或双手剑时生效。",
+                       "jobName":  "Fighter"
+                   },
+                   {
+                       "id":  1100001,
+                       "name":  "Axe Mastery",
+                       "nameZh":  "精准斧",
+                       "description":  "Increases Axe Mastery, and attacks have a chance to inflict a bleeding effect on the target when attacking. It only applies when a one-handed or two-handed axe is equipped.",
+                       "descriptionZh":  "提升斧类熟练度，攻击时有几率在目标身上造成持续出血效果。该效果仅在装备单手或双手斧时生效。",
+                       "jobName":  "Fighter"
+                   },
+                   {
+                       "id":  1101000,
+                       "name":  "Final Attack: Sword",
+                       "nameZh":  "终极剑",
+                       "description":  "While the effect is active, using attack skills has a chance to activate Final Attack when there are targets within range, dealing heavy damage to up to three enemies. This skill only activates when a one-handed or two-handed sword is equipped. Using the skill activates the effect, and using it again deactivates it.",
+                       "descriptionZh":  "在效果生效期间，使用攻击技能时，若目标在范围内，有几率触发终极剑，对最多三个敌人造成巨额伤害。该技能仅在装备单手或双手剑时激活。使用技能会激活效果，再次使用则会解除效果。",
+                       "jobName":  "Fighter"
+                   },
+                   {
+                       "id":  1101001,
+                       "name":  "Final Attack: Axe",
+                       "nameZh":  "终极斧",
+                       "description":  "While the effect is active, using attack skills has a chance to activate Final Attack when there are targets within range, dealing heavy damage to up to three enemies. This skill only activates when a one-handed or two-handed axe is equipped. Using the skill activates the effect, and using it again deactivates it.",
+                       "descriptionZh":  "在效果生效期间，使用攻击技能时，若目标在范围内，有几率触发终极斧，对最多三个敌人造成巨额伤害。该技能仅在装备单手或双手斧时才能激活。使用技能会激活效果，再次使用则会解除效果。",
+                       "jobName":  "Fighter"
+                   },
+                   {
+                       "id":  1101002,
+                       "name":  "Sword Booster",
+                       "nameZh":  "剑刃加成",
+                       "description":  "Uses HP and MP to temporarily increase the Attack Speed of the equipped sword. It only applies when a one-handed or two-handed sword is equipped.",
+                       "descriptionZh":  "使用HP和MP暂时提升所装备剑的攻击力。仅在装备单手剑或双手剑时生效。",
+                       "jobName":  "Fighter"
+                   },
+                   {
+                       "id":  1101003,
+                       "name":  "Axe Booster",
+                       "nameZh":  "斧刃加成",
+                       "description":  "Uses HP and MP to temporarily increase the Attack Speed of the equipped axe. It only applies when a one-handed or a two-handed axe is equipped.",
+                       "descriptionZh":  "使用HP和MP暂时提升装备的斧头的攻击力。仅在装备单手或双手斧头时生效。",
+                       "jobName":  "Fighter"
+                   },
+                   {
+                       "id":  1101004,
+                       "name":  "Rage",
+                       "nameZh":  "愤怒之火",
+                       "description":  "Temporarily increases the Attack Power of everyone in the party around the area, but also decreases Weapon Def.",
+                       "descriptionZh":  "暂时提升 party 中周围区域内所有成员的攻击力，但会降低物理防御。",
+                       "jobName":  "Fighter"
+                   },
+                   {
+                       "id":  1101005,
+                       "name":  "Rush",
+                       "nameZh":  "突进",
+                       "description":  "Rushes forward a certain distance in the direction you are facing. If there are monsters within the rush range, you can deal damage to up to 4 of them and knock them back a certain distance. While rushing, you will not be knocked back even if attacked by monsters.",
+                       "descriptionZh":  "向前进一定距离。如果前方有怪物，可以对最多4个目标造成伤害并将其击退一定距离。突进过程中，即使被怪物攻击也不会被击退。",
+                       "jobName":  "Fighter"
+                   },
+                   {
+                       "id":  1110000,
+                       "name":  "Improved MP Recovery",
+                       "nameZh":  "魔力恢复",
+                       "description":  "The amount of MP that naturally regenerates over time increases.",
+                       "descriptionZh":  "自然恢复的魔力值会增加。",
+                       "jobName":  "Crusader"
+                   },
+                   {
+                       "id":  1111000,
+                       "name":  "Combo Attack",
+                       "nameZh":  "连击攻击",
+                       "description":  "Gain 1 combo for all attacks that do not consume combos, and the power of all attacks increases as long as at least 1 combo is maintained. Combos are consumed and disappear when using specific skills. The effect is activated when used and deactivated when used again.",
+                       "descriptionZh":  "所有不消耗连击的攻击都会获得1点连击，只要维持至少1点连击，所有攻击的威力都会提升。当使用特定技能时，连击会被消耗并消失。该效果在使用时激活，在再次使用时解除。",
+                       "jobName":  "Crusader"
+                   },
+                   {
+                       "id":  1111001,
+                       "name":  "Panic",
+                       "nameZh":  "恐慌",
+                       "description":  "Consume combo count to attack a single enemy with a sword or an axe, with a certain chance to inflict Darkness and decrease the enemy\u0027s accuracy. The power of the attack increases based on the number of Combo Counts consumed.",
+                       "descriptionZh":  "消耗连击次数对单个敌人发动剑或斧的攻击，有一定几率造成黑暗效果并降低敌人的命中率。攻击威力随着消耗的连击次数增加而提升。",
+                       "jobName":  "Crusader"
+                   },
+                   {
+                       "id":  1111002,
+                       "name":  "Coma",
+                       "nameZh":  "昏迷",
+                       "description":  "Consume combo count to attack multiple enemies in front with a sword or an axe, with a certain chance to inflict a bleeding effect. The bleed chance increases by 20% for each Combo Count consumed, and the power of the attack also increases.",
+                       "descriptionZh":  "消耗连击次数对前方多个敌人发动攻击，可使用剑或斧头。有一定几率造成出血效果。出血几率随消耗的连击次数增加而提高20%，攻击威力也随之增加。",
+                       "jobName":  "Crusader"
+                   },
+                   {
+                       "id":  1111003,
+                       "name":  "Shout",
+                       "nameZh":  "怒吼",
+                       "description":  "Shouts loudly to damage multiple nearby enemies while lowering their Evasion. If Combo Attack is active, successful hits with this skill have a chance to grant 2 combos.",
+                       "descriptionZh":  "向附近多个敌人大声呼喊，造成伤害并降低他们的回避率。如果组合攻击处于激活状态，成功命中此技能有几率获得2次组合攻击。",
+                       "jobName":  "Crusader"
+                   },
+                   {
+                       "id":  1111004,
+                       "name":  "Armor Crash",
+                       "nameZh":  "铠甲冲击",
+                       "description":  "Reduces the Physical Defense of multiple nearby monsters to 0 for a certain duration.",
+                       "descriptionZh":  "降低多个附近怪物的物理防御至0，持续一定时间。",
+                       "jobName":  "Crusader"
+                   },
+                   {
+                       "id":  1111005,
+                       "name":  "Power Guard",
+                       "nameZh":  "伤害反击",
+                       "description":  "Reflects a portion of the physical damage received from enemies. If incoming damage is guarded with a shield, 100% of the damage is reflected instead. However, the reflected damage cannot exceed 10% of the enemy’s Max HP at once.",
+                       "descriptionZh":  "反射所受敌人造成的部分物理伤害。如果使用盾牌防御 incoming 损害，100% 的伤害会被反射。然而，每次反射的伤害不能超过敌人最大生命值的10%。",
+                       "jobName":  "Crusader"
+                   },
+                   {
+                       "id":  1120003,
+                       "name":  "Advanced Combo Attack",
+                       "nameZh":  "进阶斗气",
+                       "description":  "Passively enhances the Combo Attack system with increased damage multiplier per orb and higher maximum orb count. At max level, each orb provides +150% damage and you can accumulate up to 10 orbs. Requires Combo Attack maxed at Lv30. This passive is what makes Hero\u0027s combo system devastating at endgame.",
+                       "descriptionZh":  "被动增强连击攻击系统，每增加一个 orb 会提升 damage multiplier，同时提高最大 orb 数量。在最高等级时，每个 orb 提供 +150% 的伤害，并且可以累积到 10 个 orb。需要将连击攻击提升至 Lv30。这个被动技能让 Hero 的连击系统在后期游戏变得极具威胁。",
+                       "jobName":  "Hero"
+                   },
+                   {
+                       "id":  1120004,
+                       "name":  "Achilles",
+                       "nameZh":  "阿基里斯",
+                       "description":  "Permanently reduces all physical damage taken by a flat percentage. At max level reduces damage by 17%. This is a multiplicative reduction applied after defense calculations, making it extremely powerful for survivability in boss fights.",
+                       "descriptionZh":  "永久减少所有物理伤害的固定百分比。最高等级时可减少17%的伤害。此伤害减免是在防御计算之后应用的乘法减免，使它在打BOSS时具有极强的生存能力。",
+                       "jobName":  "Hero"
+                   },
+                   {
+                       "id":  1120005,
+                       "name":  "Guardian",
+                       "nameZh":  "寒冰掌",
+                       "description":  "Passively grants a chance to completely nullify damage when your HP falls below a threshold. The proc chance and HP threshold both increase with level. At max level, 30% chance to block damage when HP is below 70%. Acts as a safety net against lethal hits.",
+                       "descriptionZh":  "当生命值低于阈值时，被动给予完全抵消伤害的几率。触发几率和生命值阈值随着等级提升而增加。满级时，生命值低于70%时有30%的几率抵消伤害。作为防止致命打击的安全网发挥作用。",
+                       "jobName":  "Hero"
+                   },
+                   {
+                       "id":  1121000,
+                       "name":  "Maple Warrior",
+                       "nameZh":  "冒险岛勇士",
+                       "description":  "Powerful party buff that increases all base stats (STR, DEX, INT, LUK) of every party member by a percentage. At max level grants +15% to all stats for 900 seconds (15 minutes). One of the most important endgame buffs — every 4th-job class has this skill.",
+                       "descriptionZh":  "一个强大的队伍增益技能，可使队伍中所有成员的基础属性（力量、敏捷、智力、幸运）提升一定百分比。在最高等级时，可为所有属性提供+15%的增益，持续900秒（15分钟）。这是最重要的终极增益技能之一——每个第四职业都有这个技能。",
+                       "jobName":  "Hero"
+                   },
+                   {
+                       "id":  1121001,
+                       "name":  "Monster Magnet",
+                       "nameZh":  "磁石",
+                       "description":  "Pulls distant monsters toward your position with 100% success rate. Useful for grouping enemies for AoE attacks. Targets scale from 3 to 7 monsters. Also works on some bosses to reposition them.",
+                       "descriptionZh":  "以100%的成功率将远处的怪物向你的位置拉近。可用于集中敌人以进行范围攻击。目标数量从3到7只怪物不等。也适用于部分Boss，以重新定位它们。",
+                       "jobName":  "Hero"
+                   },
+                   {
+                       "id":  1121002,
+                       "name":  "Power Stance",
+                       "nameZh":  "稳如泰山",
+                       "description":  "Grants a passive chance to resist knockback when hit by enemies. At max level provides 90% knockback resistance for 300 seconds. Essential for bossing where knockback interrupts attack combos. Works with all weapon types.",
+                       "descriptionZh":  "受到敌人攻击时，提供被动的抵抗击退几率。满级时可提供300秒的90%击退抵抗，对于boss战至关重要，因为击退会打断攻击连击。适用于所有武器类型。",
+                       "jobName":  "Hero"
+                   },
+                   {
+                       "id":  1121006,
+                       "name":  "Rush",
+                       "nameZh":  "突进",
+                       "description":  "Charges forward through enemies, dealing damage and pushing them to the edge of the platform. Hits up to 15 monsters in the charge path. Low damage (72–130%) but the knockback and positioning utility is invaluable for grouping mobs or repositioning during boss fights.",
+                       "descriptionZh":  "向敌人冲去，造成伤害并将其推至平台边缘。路径上可击中最多15只怪物。伤害较低（72–130%），但推退和位置控制在群怪或Boss战中非常有用。",
+                       "jobName":  "Hero"
+                   },
+                   {
+                       "id":  1121008,
+                       "name":  "Brandish",
+                       "nameZh":  "轻舞飞扬",
+                       "description":  "The Hero\u0027s signature attack skill. Swings sword in a powerful arc, hitting 2 times per cast against 1–3 enemies (targets increase at higher levels). Damage scales from 135% to 260% per hit. At max level with 2 hits × 260% = 520% total damage, making it one of the highest-DPS melee skills in the game when combined with combo orbs.",
+                       "descriptionZh":  "英雄的标志性攻击技能。挥动剑在强力的弧线中攻击，每次施放可对1至3个敌人造成2次伤害（目标数量随等级提升而增加）。每次命中造成135%至260%的伤害。最高等级时，2次命中共计260%伤害，结合连击道具，是游戏中最高单体伤害的近战技能之一。",
+                       "jobName":  "Hero"
+                   },
+                   {
+                       "id":  1121010,
+                       "name":  "Enrage",
+                       "nameZh":  "葵花宝典",
+                       "description":  "Consumes ALL accumulated combo orbs to grant a massive weapon attack (PAD) boost. The ATK bonus scales from +11 to +26 at max level. Has a 360-second (6-minute) cooldown. Requires Advanced Combo Attack Lv25. Use when you have maximum combo orbs for the biggest DPS window, then rebuild orbs during cooldown.",
+                       "descriptionZh":  "消耗所有积累的连击球体以大幅提升物理攻击力（PAD）。攻击力加成从+11提升至+26（最大等级）。冷却时间360秒（6分钟）。需要高级连击攻击Lv25。在连击球体最多时使用，以获得最大的输出窗口，冷却期间重建球体。",
+                       "jobName":  "Hero"
+                   },
+                   {
+                       "id":  1121011,
+                       "name":  "Hero\u0027s Will",
+                       "nameZh":  "勇士的意志",
+                       "description":  "Removes all abnormal status effects (seduce, stun, curse, etc.) from yourself. Has a long cooldown that decreases with level (600s → 360s). Essential for boss fights where status effects can be lethal. Every 4th-job class has this skill.",
+                       "descriptionZh":  "移除你身上的所有异常状态效果（如魅惑、眩晕、诅咒等）。拥有较长的冷却时间，随着等级提升冷却时间减少（600秒→360秒）。在面对可能致命的异常状态效果时至关重要。每个4职业都有此技能。",
+                       "jobName":  "Hero"
+                   },
+                   {
+                       "id":  1200000,
+                       "name":  "Sword Mastery",
+                       "nameZh":  "精准剑",
+                       "description":  "Increases Sword Mastery and Weapon Defense. It only applies when a one-handed or two-handed sword is equipped.",
+                       "descriptionZh":  "提升剑的熟练度和物理防御。仅在装备单手剑或双手剑时生效。",
+                       "jobName":  "Page"
+                   },
+                   {
+                       "id":  1200001,
+                       "name":  "Blunt Weapon Mastery",
+                       "nameZh":  "精准钝器",
+                       "description":  "Increases Blunt Weapon Mastery and gives a chance to deal damage that ignores the target’s Weapon Def. This skill only applies when a one-handed or two-handed blunt weapon is equipped.",
+                       "descriptionZh":  "提升钝器熟练度，并有一定几率对无视目标物理防御的敌人造成伤害。该技能仅在装备单手或双手钝器时生效。",
+                       "jobName":  "Page"
+                   },
+                   {
+                       "id":  1201000,
+                       "name":  "Final Attack: Sword",
+                       "nameZh":  "终极剑",
+                       "description":  "While the effect is active, using attack skills has a chance to activate Final Attack when there are targets within range, dealing heavy damage to a single enemy. This skill only activates when a one-handed or two-handed sword is equipped. Using the skill activates the effect, and using it again deactivates it.",
+                       "descriptionZh":  "在效果生效期间，使用攻击技能时若目标在范围内，有几率触发终极剑，对单个敌人造成巨额伤害。该技能仅在装备单手或双手剑时激活。使用技能会激活效果，再次使用则会解除效果。",
+                       "jobName":  "Page"
+                   },
+                   {
+                       "id":  1201001,
+                       "name":  "Final Attack: Blunt Weapon",
+                       "nameZh":  "终极钝器",
+                       "description":  "While the effect is active, using attack skills has a chance to activate Final Attack when there are targets within range, dealing heavy damage to a single enemy. This skill only activates when a one-handed or two-handed blunt weapon is equipped. Using the skill activates the effect, and using it again deactivates it.",
+                       "descriptionZh":  "在效果生效期间，使用攻击技能时若目标在范围内，有几率触发终极钝器，对单个敌人造成巨额伤害。该技能仅在装备单手或双手钝器时激活。使用技能会激活效果，再次使用则会解除效果。",
+                       "jobName":  "Page"
+                   },
+                   {
+                       "id":  1201002,
+                       "name":  "Sword Booster",
+                       "nameZh":  "快速剑",
+                       "description":  "Uses HP and MP to temporarily increase the Attack Speed of the equipped sword. It only applies when a one-handed or two-handed sword is equipped.",
+                       "descriptionZh":  "使用HP和MP暂时提升所装备剑的攻击力。仅在装备单手剑或双手剑时生效。",
+                       "jobName":  "Page"
+                   },
+                   {
+                       "id":  1201003,
+                       "name":  "Blunt Weapon Booster",
+                       "nameZh":  "快速钝器",
+                       "description":  "Uses HP and MP to temporarily increase the Attack Speed of the equipped blunt weapon. It only applies when a one-handed or two-handed blunt weapon is equipped.",
+                       "descriptionZh":  "使用HP和MP暂时提升所装备的钝器的攻击力。仅在装备单手或双手钝器时生效。",
+                       "jobName":  "Page"
+                   },
+                   {
+                       "id":  1201004,
+                       "name":  "Threaten",
+                       "nameZh":  "威胁",
+                       "description":  "Use MP to temporarily threaten monsters. Decreases the Movement Speed and Weapon Def. of up to 4 monsters around the area.",
+                       "descriptionZh":  "使用MP暂时威胁怪物。降低周围最多4个怪物的移动速度和物理防御。",
+                       "jobName":  "Page"
+                   },
+                   {
+                       "id":  1201005,
+                       "name":  "Rush",
+                       "nameZh":  "突进",
+                       "description":  "Rushes forward a certain distance in the direction you are facing. If there are monsters within the rush range, you can deal damage to up to 4 of them and knock them back a certain distance. While rushing, you will not be knocked back even if attacked by monsters.",
+                       "descriptionZh":  "向前进一定距离。如果前方有怪物，可以对最多4个目标造成伤害并将其击退一定距离。突进过程中，即使被怪物攻击也不会被击退。",
+                       "jobName":  "Page"
+                   },
+                   {
+                       "id":  1210000,
+                       "name":  "Improved MP Recovery",
+                       "nameZh":  "魔力恢复",
+                       "description":  "The amount of MP that naturally regenerates over time increases.",
+                       "descriptionZh":  "魔力自然恢复的量增加。",
+                       "jobName":  "White Knight"
+                   },
+                   {
+                       "id":  1211000,
+                       "name":  "Charged Blow",
+                       "nameZh":  "属性攻击",
+                       "description":  "Consumes Charged state to attack up to 4 enemies within a certain range with elemental-imbued power. Has a chance to maintain the Charged state after use.",
+                       "descriptionZh":  "消耗蓄力状态对一定范围内的最多4个敌人使用附带元素属性的攻击。使用后有一定几率维持蓄力状态。",
+                       "jobName":  "White Knight"
+                   },
+                   {
+                       "id":  1211001,
+                       "name":  "Fire Charge",
+                       "nameZh":  "火焰充能",
+                       "description":  "Imbues your sword or blunt weapon with the Fire element for a set duration to increase its power, granting a chance to burn enemies to inflict continuous damage every second for 3 seconds. Deals increased damage to fire-weak enemies, but deals reduced damage to fire-resistant enemies and cannot burn them. The effect is removed immediately if you equip a weapon other than a sword or blunt weapon, or use a charge skill of a different element, and has a chance to be removed when using Charge Blow.",
+                       "descriptionZh":  "将你的剑或钝器 imbue 与火元素，持续一段时间以提升其威力，使敌人有几率被灼烧，每秒造成持续伤害3秒。对火属性弱的敌人造成额外伤害，但对火属性抗性的敌人造成伤害减少且无法灼烧。如果装备了非剑或钝器武器，或使用了其他元素的冲撞技能，效果会立即消失。使用冲撞攻击时，还有几率使效果消失。",
+                       "jobName":  "White Knight"
+                   },
+                   {
+                       "id":  1211002,
+                       "name":  "Ice Charge",
+                       "nameZh":  "寒冰充能",
+                       "description":  "Imbues your sword or blunt weapon with the Ice element for a set duration to increase its power, granting a chance to Freeze enemies, greatly reducing their Movement Speed for 2 seconds. Deals increased damage to ice-weak enemies, but deals reduced damage to ice-resistant enemies and cannot freeze them. The effect is removed immediately if you equip a different weapon type or use a charge skill of a different element, and has a chance to be removed when using Charge Blow.",
+                       "descriptionZh":  "将你的剑或钝器附魔冰元素一段时间，提升其威力，有几率冻结敌人，大幅降低敌人2秒的移动速度。对冰弱敌人造成额外伤害，但对冰抗敌人造成伤害减少且无法冻结。如果装备了不同类型的武器或使用了不同元素的冲击技能，效果会立即消失。使用冲击打击时也有几率使效果消失。",
+                       "jobName":  "White Knight"
+                   },
+                   {
+                       "id":  1211003,
+                       "name":  "Lightning Charge",
+                       "nameZh":  "雷电充能",
+                       "description":  "Imbues your sword or blunt weapon with the Lightning element for a set duration to increase its power, granting a chance to electrocute enemies to stun them. Deals increased damage to lightning-weak enemies, but deals reduced damage to lightning-resistant enemies and cannot electrocute them. The effect is removed immediately if you equip a different weapon type or use a charge skill of a different element, and has a chance to be removed when using Charge Blow.",
+                       "descriptionZh":  "将你的剑或钝器附魔为雷元素，持续一段时间以提升其威力，有一定几率使敌人麻痹。对雷元素弱的敌人造成额外伤害，但对雷元素免疫的敌人造成伤害减少且无法麻痹。如果装备了不同类型的武器或使用了不同元素的充能技能，效果会立即消失。使用充能打击时，也有几率使效果消失。",
+                       "jobName":  "White Knight"
+                   },
+                   {
+                       "id":  1211004,
+                       "name":  "Elemental Crash",
+                       "nameZh":  "元素冲击",
+                       "description":  "Removes enemies\u0027 resistance to Fire, Lightning, and Ice elements for a set duration.",
+                       "descriptionZh":  "解除敌人对火、雷电和冰元素的抵抗效果，持续一段时间。",
+                       "jobName":  "White Knight"
+                   },
+                   {
+                       "id":  1211005,
+                       "name":  "Power Guard",
+                       "nameZh":  "伤害反击",
+                       "description":  "Reflects a portion of the physical damage received from enemies. If incoming damage is guarded with a shield, 100% of the damage is reflected instead. However, the reflected damage cannot exceed 10% of the enemy’s Max HP at once.",
+                       "descriptionZh":  "反射敌人造成的部分物理伤害。如果使用盾牌防御，所有受到的伤害都会被完全反射。然而，每次反射的伤害不得超过敌人最大生命值的10%。",
+                       "jobName":  "White Knight"
+                   },
+                   {
+                       "id":  1220005,
+                       "name":  "Achilles",
+                       "nameZh":  "阿基里斯",
+                       "description":  "Permanently reduces all physical damage taken by a flat percentage. At max level reduces damage by 17%. Applied after defense calculations for strong survivability.",
+                       "descriptionZh":  "永久减少所有物理伤害的固定百分比。最高等级时减少17%的伤害。该效果在防御计算之后应用，以提高生存能力。",
+                       "jobName":  "Paladin"
+                   },
+                   {
+                       "id":  1220006,
+                       "name":  "Guardian",
+                       "nameZh":  "寒冰掌",
+                       "description":  "Passively grants a chance to completely nullify damage when your HP falls below a threshold. At max level: 30% chance to block when HP is below 70%.",
+                       "descriptionZh":  "当生命值低于阈值时，被动给予完全抵消伤害的几率。满级时：生命值低于70%时有30%几率格挡。",
+                       "jobName":  "Paladin"
+                   },
+                   {
+                       "id":  1220010,
+                       "name":  "Advanced Charge",
+                       "nameZh":  "万佛归一破",
+                       "description":  "Passively enhances all elemental charge skills (Fire, Ice, Lightning, Holy) with additional damage and improved elemental effectiveness. At max level adds +68% to charge damage. Stacks multiplicatively with charge skill damage, significantly boosting Paladin DPS.",
+                       "descriptionZh":  "被动增强所有元素充能技能（火、冰、雷、圣光）的伤害并提升元素效果。最高等级时，充能技能伤害增加68%。与充能技能伤害叠加，显著提升圣骑士的输出能力。",
+                       "jobName":  "Paladin"
+                   },
+                   {
+                       "id":  1221000,
+                       "name":  "Maple Warrior",
+                       "nameZh":  "冒险岛勇士",
+                       "description":  "Powerful party buff that increases all base stats (STR, DEX, INT, LUK) of every party member by a percentage. At max level grants +15% to all stats for 900 seconds. Essential endgame party buff.",
+                       "descriptionZh":  "强大的队伍增益技能，可提升队伍中所有成员的基础属性（力量、敏捷、智力、幸运）百分比。最高等级时，可为队伍成员提供15%的属性加成，持续900秒。是后期不可或缺的队伍增益技能。",
+                       "jobName":  "Paladin"
+                   },
+                   {
+                       "id":  1221001,
+                       "name":  "Monster Magnet",
+                       "nameZh":  "磁石",
+                       "description":  "Pulls distant monsters toward your position with 100% success rate. Targets 3–7 monsters depending on level. Useful for grouping enemies for AoE attacks and repositioning during boss fights.",
+                       "descriptionZh":  "以100%的成功率将远处的怪物拉向你的位置。目标数量根据等级不同在3到7之间。适合用于群体作战和重新定位敌人以进行范围攻击。",
+                       "jobName":  "Paladin"
+                   },
+                   {
+                       "id":  1221002,
+                       "name":  "Power Stance",
+                       "nameZh":  "稳如泰山",
+                       "description":  "Grants a passive chance to resist knockback when hit. At max level provides 90% knockback resistance for 300 seconds. Essential for maintaining attack positioning during boss fights.",
+                       "descriptionZh":  "受到攻击时，提供被动的抗击退几率。满级时可提供300秒的90%抗击退效果。在打BOSS时有助于保持攻击位置。",
+                       "jobName":  "Paladin"
+                   },
+                   {
+                       "id":  1221003,
+                       "name":  "Holy Charge: Sword",
+                       "nameZh":  "圣灵之剑",
+                       "description":  "Enchants your sword with the holy element, dealing bonus holy damage on all attacks. Holy is uniquely effective against undead monsters (1.5x damage) and has no elemental weaknesses. The strongest charge available to Paladins, scaling from +110% to +255% bonus damage.",
+                       "descriptionZh":  "给你的剑附魔圣光元素，所有攻击都会造成额外圣光伤害。圣光元素对亡灵怪物有1.5倍伤害加成，且无元素弱点。这是牧师最强的附魔，伤害加成从+110%提升至+255%。",
+                       "jobName":  "Paladin"
+                   },
+                   {
+                       "id":  1221004,
+                       "name":  "Divine Charge (BW)",
+                       "nameZh":  "圣灵之锤",
+                       "description":  "Enchants your blunt weapon with holy element. Blunt weapon variant of Holy Charge with identical damage scaling. Extremely effective against undead monsters.",
+                       "descriptionZh":  "给重武器附魔上神圣元素。与神圣冲撞相同的伤害计算方式，但为重武器版本。对亡灵怪物效果极佳。",
+                       "jobName":  "Paladin"
+                   },
+                   {
+                       "id":  1221007,
+                       "name":  "Rush",
+                       "nameZh":  "突进",
+                       "description":  "Charges forward through enemies, dealing damage and pushing them to the edge of the platform. Hits up to 15 monsters. Damage 72–130%. Invaluable for mob grouping and boss repositioning.",
+                       "descriptionZh":  "向敌人冲去，造成伤害并将敌人推向平台边缘。可击中最多15只怪物。伤害72%-130%。对于怪物聚集和Boss重新定位非常有用。",
+                       "jobName":  "Paladin"
+                   },
+                   {
+                       "id":  1221009,
+                       "name":  "Blast",
+                       "nameZh":  "连环环破",
+                       "description":  "The Paladin\u0027s signature attack skill. Delivers a devastating 2-hit strike to up to 6 enemies. At max level deals 374% × 2 per target. Synergizes with elemental charges for massive damage output. One of the strongest multi-target melee skills in the game.",
+                       "descriptionZh":  "圣骑士的标志性攻击技能。对最多6个敌人造成2次 devastating 攻击。最大等级时每目标造成374% × 2的伤害。与元素充能协同作用可产生巨大伤害输出。游戏中最强的多目标近战技能之一。",
+                       "jobName":  "Paladin"
+                   },
+                   {
+                       "id":  1221011,
+                       "name":  "Heaven\u0027s Hammer",
+                       "nameZh":  "圣域",
+                       "description":  "Summons a massive holy hammer from the sky that crashes down on all enemies in range. Hits up to 15 targets with devastating damage (300–590%). Has a cooldown that decreases with level. One of the highest-damage single-hit AoE skills in the game, but the cooldown limits sustained use.",
+                       "descriptionZh":  "召唤一柄巨大的圣锤从天而降，对范围内所有敌人造成巨大伤害。可对最多15个目标造成伤害（300%-590%）。技能冷却时间随等级降低。游戏中最高伤害单段AOE技能之一，但冷却时间限制了持续使用。",
+                       "jobName":  "Paladin"
+                   },
+                   {
+                       "id":  1221012,
+                       "name":  "Hero\u0027s Will",
+                       "nameZh":  "勇士的意志",
+                       "description":  "Removes all abnormal status effects (seduce, stun, curse, etc.) from yourself. Has a long cooldown that decreases with level (600s → 360s). Essential for boss fights where status effects can be lethal. Every 4th-job class has this skill.",
+                       "descriptionZh":  "解除自身所有异常状态效果（如魅惑、眩晕、诅咒等）。拥有较长的冷却时间，等级越高冷却时间越短（600秒→360秒）。在对抗BOSS时非常关键，因为异常状态可能致命。每种4职业都有此技能。",
+                       "jobName":  "Paladin"
+                   },
+                   {
+                       "id":  1300000,
+                       "name":  "Spear Mastery",
+                       "nameZh":  "精准枪",
+                       "description":  "Increases Spear Mastery and Critical Rate. It only applies when a spear is equipped.",
+                       "descriptionZh":  "提升精准枪熟练度和暴击率。只有在装备长矛时生效。",
+                       "jobName":  "Spearman"
+                   },
+                   {
+                       "id":  1300001,
+                       "name":  "Polearm Mastery",
+                       "nameZh":  "精准矛",
+                       "description":  "Increases Polearm Mastery and movement speed. It only applies when a polearm is equipped.",
+                       "descriptionZh":  "提升矛的熟练度并增加移动速度。只有在装备矛时生效。",
+                       "jobName":  "Spearman"
+                   },
+                   {
+                       "id":  1301000,
+                       "name":  "Final Attack: Spear",
+                       "nameZh":  "终极枪",
+                       "description":  "While the effect is active, using attack skills has a chance to activate Final Attack when there are targets within range, dealing heavy damage to the enemy and absorbing a portion of the damage dealt as HP. The amount absorbed per activation cannot exceed 25% of the character\u0027s Max HP or the enemy\u0027s Max HP. This skill only activates when a spear is equipped. Using the skill activates the effect, and using it again deactivates it.",
+                       "descriptionZh":  "在效果生效期间，使用攻击技能时，若目标在范围内，有几率触发终极枪，对敌人造成巨额伤害，并吸收一部分造成的伤害作为生命值。每次触发吸收的量不得超过角色最大生命值或敌人最大生命值的25%。该技能仅在装备长矛时生效。使用技能会激活效果，再次使用则会解除效果。",
+                       "jobName":  "Spearman"
+                   },
+                   {
+                       "id":  1301001,
+                       "name":  "Final Attack: Polearm",
+                       "nameZh":  "终极矛",
+                       "description":  "While the effect is active, using attack skills has a chance to activate Final Attack when there are targets within range, dealing heavy damage to the enemy and absorbing a portion of the damage dealt as HP. The amount absorbed per activation cannot exceed 25% of the character\u0027s Max HP or the enemy\u0027s Max HP. This skill only activates when a polearm is equipped. Using the skill activates the effect, and using it again deactivates it.",
+                       "descriptionZh":  "在效果生效期间，使用攻击技能时，若目标在范围内，有几率触发终极矛，对敌人造成巨额伤害，并吸收一部分造成的伤害作为生命值。每次触发吸收的量不得超过角色最大生命值或敌人最大生命值的25%。该技能仅在装备长矛时生效。使用技能会激活效果，再次使用则会解除效果。",
+                       "jobName":  "Spearman"
+                   },
+                   {
+                       "id":  1301002,
+                       "name":  "Spear Booster",
+                       "nameZh":  "快速枪",
+                       "description":  "Uses HP and MP to temporarily increase the Attack Speed of the equipped spear. It only applies when a spear is equipped.",
+                       "descriptionZh":  "使用HP和MP暂时提升所装备的长矛的攻击力。只有在装备长矛时生效。",
+                       "jobName":  "Spearman"
+                   },
+                   {
+                       "id":  1301003,
+                       "name":  "Polearm Booster",
+                       "nameZh":  "快速矛",
+                       "description":  "Uses HP and MP to temporarily increase the Attack Speed of the equipped polearm. It only applies when a polearm is equipped.",
+                       "descriptionZh":  "使用HP和MP暂时提升所装备的长矛的攻击力。只有在装备长矛时生效。",
+                       "jobName":  "Spearman"
+                   },
+                   {
+                       "id":  1301004,
+                       "name":  "Iron Will",
+                       "nameZh":  "钢铁意志",
+                       "description":  "Temporarily increases the user\u0027s Weapon Defense and grants a chance to ignore knockback effects.",
+                       "descriptionZh":  "暂时提升用户的物理防御，并给予忽略击退效果的几率。",
+                       "jobName":  "Spearman"
+                   },
+                   {
+                       "id":  1301005,
+                       "name":  "Rush",
+                       "nameZh":  "突进",
+                       "description":  "Rushes forward a certain distance in the direction you are facing. If there are monsters within the rush range, you can deal damage to up to 4 of them and knock them back a certain distance. While rushing, you will not be knocked back even if attacked by monsters.",
+                       "descriptionZh":  "向前进一定距离。如果前方有怪物，可以对最多4个目标造成伤害并将其击退一定距离。突进期间，即使被怪物攻击也不会被击退。",
+                       "jobName":  "Spearman"
+                   },
+                   {
+                       "id":  1310000,
+                       "name":  "Partial Resistance",
+                       "nameZh":  "部分抵抗",
+                       "description":  "Gain resistance against Fire, Ice, and Lightning elemental attacks from enemies.",
+                       "descriptionZh":  "获得对火、冰和雷元素攻击的抵抗效果。",
+                       "jobName":  "Dragon Knight"
+                   },
+                   {
+                       "id":  1311000,
+                       "name":  "Piercing Crusher",
+                       "nameZh":  "穿刺粉碎",
+                       "description":  "Attacks multiple monsters several times by thrusting the spear or polearm.",
+                       "descriptionZh":  "通过刺击或长矛攻击多个怪物数次。",
+                       "jobName":  "Dragon Knight"
+                   },
+                   {
+                       "id":  1311001,
+                       "name":  "Dragon Fury",
+                       "nameZh":  "龙怒",
+                       "description":  "Swings a spear or polearm to attack multiple enemies from a distance. Can attack up to 4 enemies at once.",
+                       "descriptionZh":  "挥舞长矛或长柄武器对远处的多个敌人进行攻击。可同时攻击最多4个敌人。",
+                       "jobName":  "Dragon Knight"
+                   },
+                   {
+                       "id":  1311002,
+                       "name":  "Dragon Roar",
+                       "nameZh":  "龙吼",
+                       "description":  "Attacks up to 8 enemies in the surrounding area with a massive dragon\u0027s roar. The sheer shock of the roar stuns you upon activation.",
+                       "descriptionZh":  "对周围最多8个敌人造成巨大龙吼伤害。龙吼的冲击力会在发动时使你眩晕。",
+                       "jobName":  "Dragon Knight"
+                   },
+                   {
+                       "id":  1311003,
+                       "name":  "Power Crash",
+                       "nameZh":  "力量冲击",
+                       "description":  "Reduces the Physical Attack of multiple nearby monsters significantly for a certain duration.",
+                       "descriptionZh":  "降低周围多个怪物的物理攻击力一段时间。",
+                       "jobName":  "Dragon Knight"
+                   },
+                   {
+                       "id":  1311004,
+                       "name":  "Dragon Blood",
+                       "nameZh":  "龙血",
+                       "description":  "Increases Attack Power but HP gradually decreases. The buff is removed if current HP is lower than the amount of HP consumed every 3 seconds. Activating the skill enables the effect, and using it again disables it.",
+                       "descriptionZh":  "提升攻击力，但HP逐渐减少。若当前HP低于每3秒消耗的HP值，效果将消失。使用技能可激活效果，再次使用则会禁用效果。",
+                       "jobName":  "Dragon Knight"
+                   },
+                   {
+                       "id":  1311005,
+                       "name":  "Hyper Body",
+                       "nameZh":  "超凡之躯",
+                       "description":  "Temporarily increases the Max HP of all party members around the area.",
+                       "descriptionZh":  "暂时提升周围所有队伍成员的最大生命值。",
+                       "jobName":  "Dragon Knight"
+                   },
+                   {
+                       "id":  1320005,
+                       "name":  "Achilles",
+                       "nameZh":  "阿基里斯",
+                       "description":  "Permanently reduces all physical damage taken by a flat percentage. At max level reduces damage by 17%. Applied after defense calculations for strong survivability.",
+                       "descriptionZh":  "永久减少所有物理伤害的固定百分比。最高等级时可减少17%的伤害。该效果在防御计算之后应用，以提高生存能力。",
+                       "jobName":  "Dark Knight"
+                   },
+                   {
+                       "id":  1320006,
+                       "name":  "Berserk",
+                       "nameZh":  "恶龙附身",
+                       "description":  "The Dark Knight\u0027s signature and most powerful skill. While active, multiplies ALL damage dealt by a massive percentage — but ONLY when your HP is below a threshold. At max level: 300% damage multiplier when HP is below 45%. This is the single highest damage multiplier in the game, making Dark Knights the top single-target DPS class, but requires constant HP management to stay in the \"danger zone\".",
+                       "descriptionZh":  "黑暗骑士的标志性技能，也是最强大的技能。在生效期间，所有造成的伤害会乘以一个巨大的百分比——但只有在生命值低于阈值时才会生效。最高等级时，当生命值低于45%时，伤害乘积为300%。这是游戏中最高的伤害乘积，使黑暗骑士成为单体输出最高的职业，但需要持续管理生命值以保持在“危险区域”中。",
+                       "jobName":  "Dark Knight"
+                   },
+                   {
+                       "id":  1320008,
+                       "name":  "Aura of the Beholder",
+                       "nameZh":  "灵魂治愈",
+                       "description":  "Passive skill that commands the summoned Beholder to periodically heal the Dark Knight and nearby party members. Heals 10 to 68 HP every 4 seconds at max level. Synergizes with Berserk by helping manage HP levels. Requires Beholder to be summoned.",
+                       "descriptionZh":  "被动技能，指挥召唤的窥视者定期为暗骑士和 nearby party members 回血。每4秒回血10到68点生命值，满级时生效。与狂暴技能协同作用，帮助维持生命值水平。需要召唤窥视者。",
+                       "jobName":  "Dark Knight"
+                   },
+                   {
+                       "id":  1320009,
+                       "name":  "Hex of the Beholder",
+                       "nameZh":  "灵魂祝福",
+                       "description":  "Passive skill that commands the summoned Beholder to periodically buff the Dark Knight and nearby party members with increased accuracy and avoidability. Provides +5 to +19 ACC/AVOID at max level. Requires Beholder to be summoned.",
+                       "descriptionZh":  "被动技能，指挥召唤的观星者定期为暗骑士和附近队伍成员提升命中率和回避率。最大等级时提供+5至+19的命中率/回避率。需要召唤观星者。",
+                       "jobName":  "Dark Knight"
+                   },
+                   {
+                       "id":  1321000,
+                       "name":  "Maple Warrior",
+                       "nameZh":  "冒险岛勇士",
+                       "description":  "Powerful party buff that increases all base stats (STR, DEX, INT, LUK) of every party member by a percentage. At max level grants +15% to all stats for 900 seconds. Essential endgame party buff.",
+                       "descriptionZh":  "强大的队伍增益技能，可使队伍中所有成员的基础属性（力量、敏捷、智力、幸运）提升一定百分比。最高等级时，可为队伍成员提供+15%的所有属性，持续900秒。是后期不可或缺的队伍增益技能。",
+                       "jobName":  "Dark Knight"
+                   },
+                   {
+                       "id":  1321001,
+                       "name":  "Monster Magnet",
+                       "nameZh":  "磁石",
+                       "description":  "Pulls distant monsters toward your position with 100% success rate. Targets 3–7 monsters depending on level. Useful for grouping enemies for AoE attacks and repositioning during boss fights.",
+                       "descriptionZh":  "以100%的成功率将远处的怪物拉向你的位置。目标数量根据等级不同在3到7之间。适合用于群体作战时集中敌人，或在boss战中重新定位敌人。",
+                       "jobName":  "Dark Knight"
+                   },
+                   {
+                       "id":  1321002,
+                       "name":  "Power Stance",
+                       "nameZh":  "稳如泰山",
+                       "description":  "Grants a passive chance to resist knockback when hit. At max level provides 90% knockback resistance for 300 seconds. Essential for maintaining attack positioning during boss fights.",
+                       "descriptionZh":  "受到攻击时，提供被动的抵抗击退几率。满级时可提供300秒的90%击退抵抗，有助于在打BOSS时保持攻击位置。",
+                       "jobName":  "Dark Knight"
+                   },
+                   {
+                       "id":  1321003,
+                       "name":  "Rush",
+                       "nameZh":  "突进",
+                       "description":  "Charges forward through enemies, dealing damage and pushing them to the edge of the platform. Hits up to 15 monsters. Damage 72–130%. Invaluable for mob grouping and boss repositioning.",
+                       "descriptionZh":  "向敌人冲去，造成伤害并将敌人推向平台边缘。可击中最多15只怪物。伤害72%-130%。对于怪物聚集和Boss重新定位非常有用。",
+                       "jobName":  "Dark Knight"
+                   },
+                   {
+                       "id":  1321004,
+                       "name":  "Beholder",
+                       "nameZh":  "窥视者",
+                       "description":  "Summons a dark Beholder familiar that autonomously attacks nearby enemies. Deals 200–345% damage per attack and lasts 60–234 seconds. Also serves as the prerequisite for Aura of the Beholder (healing) and Hex of the Beholder (stat buffs). Keep this summoned at all times for passive DPS and party support.",
+                       "descriptionZh":  "召唤一个黑暗的Beholder伙伴，该伙伴会自主攻击附近的敌人。每次攻击造成200–345%的伤害，持续时间60–234秒。同时，它也是“Beholder的光环”（治疗）和“Beholder的诅咒”（属性加成）的前置条件。始终保持这个召唤物在场，以提供持续的被动输出和队伍辅助。",
+                       "jobName":  "Dark Knight"
+                   },
+                   {
+                       "id":  1321007,
+                       "name":  "Crusher",
+                       "nameZh":  "灵魂助力",
+                       "description":  "Delivers a devastating 2-hit melee strike against a single target. The Dark Knight\u0027s primary bossing skill. At max level deals 325% × 2 = 650% total damage per cast. When combined with Berserk, this becomes one of the highest single-target DPS skills in the game.",
+                       "descriptionZh":  "对单个目标造成两次致命近战攻击。黑暗骑士的主要boss技能。满级时每次施放造成650%的总伤害。与狂暴技能组合时，成为游戏中最高的单目标DPS技能之一。",
+                       "jobName":  "Dark Knight"
+                   },
+                   {
+                       "id":  1321008,
+                       "name":  "Fury",
+                       "nameZh":  "狂怒",
+                       "description":  "Powerful 2-hit AoE spear/polearm attack hitting up to 6 enemies. The Dark Knight\u0027s primary mobbing skill at 4th job. At max level deals 276% × 2 = 552% total damage per target. Slightly less per-hit damage than Crusher but hits multiple enemies, making it superior for training.",
+                       "descriptionZh":  "对最多6个敌人造成连续两次范围性矛/长矛攻击。黑暗骑士4级职业的主要群攻技能。满级时每目标总伤害为276%×2=552%。单次伤害略低于粉碎者，但可攻击多个敌人，因此更适合训练使用。",
+                       "jobName":  "Dark Knight"
+                   },
+                   {
+                       "id":  1321010,
+                       "name":  "Hero\u0027s Will",
+                       "nameZh":  "勇士的意志",
+                       "description":  "Removes all abnormal status effects (seduce, stun, curse, etc.) from yourself. Has a long cooldown that decreases with level (600s → 360s). Essential for boss fights where status effects can be lethal. Every 4th-job class has this skill.",
+                       "descriptionZh":  "解除自身所有异常状态效果（如魅惑、眩晕、诅咒等）。拥有较长的冷却时间，随着等级提升冷却时间减少（600秒→360秒）。在面对可能致命的异常状态效果时至关重要。每个第四职业都有此技能。",
+                       "jobName":  "Dark Knight"
+                   },
+                   {
+                       "id":  2000000,
+                       "name":  "Improved MP Recovery",
+                       "nameZh":  "魔力恢复提升",
+                       "description":  "The amount of MP that naturally regenerates over time increases. Also, MP recovery from items is boosted.",
+                       "descriptionZh":  "魔力自然恢复量增加。同时，物品带来的魔力恢复效果也得到提升。",
+                       "jobName":  "Magician"
+                   },
+                   {
+                       "id":  2000001,
+                       "name":  "Max MP Increase",
+                       "nameZh":  "魔力强化",
+                       "description":  "Max MP increases.",
+                       "descriptionZh":  "提升最大魔力值。",
+                       "jobName":  "Magician"
+                   },
+                   {
+                       "id":  2001000,
+                       "name":  "Magic Guard",
+                       "nameZh":  "魔法盾",
+                       "description":  "[Master Level :15] Replaces a portion of incoming damage with MP instead of HP. If MP reaches 0, all damage is received as HP damage. The effect is activated when used and deactivated when used again.",
+                       "descriptionZh":  "[熟练度 :15] 将部分受到的伤害转换为MP消耗而非HP消耗。若MP归零，所有伤害都将转化为HP伤害。效果在使用时激活，在再次使用时解除。",
+                       "jobName":  "Magician"
+                   },
+                   {
+                       "id":  2001001,
+                       "name":  "Magic Armor",
+                       "nameZh":  "魔法铠甲",
+                       "description":  "Temporarily boosts Weapon Def. and Magic Def. by concentrating magic into your armor.",
+                       "descriptionZh":  "通过集中魔法之力提升物理防御和魔法防御。",
+                       "jobName":  "Magician"
+                   },
+                   {
+                       "id":  2001002,
+                       "name":  "Energy Bolt",
+                       "nameZh":  "能量弹",
+                       "description":  "Use MP to attack one enemy. The higher the Mastery, the lower the damage variation.",
+                       "descriptionZh":  "使用MP攻击一个敌人。熟练度越高，伤害波动越小。",
+                       "jobName":  "Magician"
+                   },
+                   {
+                       "id":  2001003,
+                       "name":  "Magic Claw",
+                       "nameZh":  "魔法双击",
+                       "description":  "Use MP to attack an enemy twice. The higher the Mastery, the lower the damage variation.",
+                       "descriptionZh":  "使用法力值对敌人发动两次攻击。熟练度越高，攻击伤害波动越小。",
+                       "jobName":  "Magician"
+                   },
+                   {
+                       "id":  2100000,
+                       "name":  "MP Eater",
+                       "nameZh":  "魔力吸收",
+                       "description":  "Absorbs the enemy\u0027s MP when attacking with Magic skills, but only once every 5 seconds. Cannot absorb if the enemy\u0027s MP is 0.",
+                       "descriptionZh":  "使用魔法技能攻击时，吸收敌方的魔法值，但每5秒只能使用一次。若敌方魔法值为0，则无法吸收。",
+                       "jobName":  "F/P Wizard"
+                   },
+                   {
+                       "id":  2101000,
+                       "name":  "Meditation",
+                       "nameZh":  "冥想",
+                       "description":  "Meditate for a bit to temporarily increase the Magic Attack of party members around the area.",
+                       "descriptionZh":  "在周围区域内使队伍成员的魔法攻击力暂时提升。",
+                       "jobName":  "F/P Wizard"
+                   },
+                   {
+                       "id":  2101001,
+                       "name":  "Teleport",
+                       "nameZh":  "瞬间移动",
+                       "description":  "Use the arrow keys to teleport a set distance within the same map.",
+                       "descriptionZh":  "使用方向键将角色瞬间移动到同一地图内的设定距离。",
+                       "jobName":  "F/P Wizard"
+                   },
+                   {
+                       "id":  2101002,
+                       "name":  "Slow",
+                       "nameZh":  "缓速术",
+                       "description":  "Temporarily slows down the movement of up to 6 monsters. Cannot be used on monsters that are already affected.",
+                       "descriptionZh":  "暂时减慢最多6个怪物的移动速度。无法对已受影响的怪物使用。",
+                       "jobName":  "F/P Wizard"
+                   },
+                   {
+                       "id":  2101003,
+                       "name":  "Fire Arrow",
+                       "nameZh":  "火箭",
+                       "description":  "Fires a fire arrow created with magic power at a single enemy, dealing fire-elemental damage and burning them to inflict continuous damage every second for 3 seconds. Deals increased damage to fire-weak enemies, but deals reduced damage to fire-resistant enemies and cannot burn them.",
+                       "descriptionZh":  "使用魔法力量发射一支火箭攻击单个敌人，造成火焰元素伤害，并使其持续受到每秒3秒的伤害。对火属性较弱的敌人造成额外伤害，但对火属性免疫的敌人造成伤害减少且无法燃烧。",
+                       "jobName":  "F/P Wizard"
+                   },
+                   {
+                       "id":  2101004,
+                       "name":  "Poison Breath",
+                       "nameZh":  "毒雾术",
+                       "description":  "Fires a poison droplet at a single enemy. The droplet explodes on contact, dealing poison-elemental damage to up to 4 nearby enemies and granting a chance to poison them. Deals increased damage to poison-weak enemies, but deals reduced damage to poison-resistant enemies and cannot poison them.",
+                       "descriptionZh":  "向单个敌人发射一个毒滴。毒滴接触后爆炸，对附近最多4个敌人造成毒元素伤害，并有一定几率使他们中毒。对毒弱敌人造成额外伤害，但对毒抗敌人造成伤害减少，并且无法使他们中毒。",
+                       "jobName":  "F/P Wizard"
+                   },
+                   {
+                       "id":  2110000,
+                       "name":  "Elemental Resistance",
+                       "nameZh":  "元素抵抗",
+                       "description":  "Gain resistance against Fire, Ice, Lightning and Poison elemental attacks from enemies.",
+                       "descriptionZh":  "获得对火、冰、雷电和毒元素攻击的抵抗效果。",
+                       "jobName":  "F/P Mage"
+                   },
+                   {
+                       "id":  2111000,
+                       "name":  "Element Amplification",
+                       "nameZh":  "元素增幅",
+                       "description":  "Use additional MP to increase the damage dealt by all Magic attacks. The effect is activated when used and deactivated when used again.",
+                       "descriptionZh":  "消耗额外MP提升所有魔法攻击的伤害。效果在使用时激活，在再次使用时解除。",
+                       "jobName":  "F/P Mage"
+                   },
+                   {
+                       "id":  2111001,
+                       "name":  "Explosion",
+                       "nameZh":  "爆炸",
+                       "description":  "Causes a massive explosion around oneself, dealing Fire element damage to up to 4 monsters. In addition, if the target is afflicted with the Poison status, deals the remaining damage of the status duration all at once and removes the Poison status. Deals increased damage to fire-weak enemies, but deals reduced damage to fire-resistant enemies.",
+                       "descriptionZh":  "在周围造成巨大爆炸，对最多4个怪物造成火元素伤害。此外，如果目标受到中毒状态影响，会一次性造成剩余的中毒伤害并移除中毒状态。对火属性弱点敌人造成额外伤害，但对火属性抗性敌人造成减少的伤害。",
+                       "jobName":  "F/P Mage"
+                   },
+                   {
+                       "id":  2111002,
+                       "name":  "Poison Mist",
+                       "nameZh":  "毒雾",
+                       "description":  "Summons a poison mist at the location of the nearest monster in front that lasts for 5 seconds. Enemies within the poison mist area have a certain chance to become poisoned for a certain period of time. Deals increased damage to poison-weak enemies, but deals reduced damage to poison-resistant enemies and cannot poison them. Cooldown: 15 sec",
+                       "descriptionZh":  "召唤毒雾于前方最近的怪物位置，持续5秒。处于毒雾范围内的敌人有一定几率被中毒一段时间。对中毒抗性低的敌人造成额外伤害，但对中毒抗性高的敌人造成伤害减少且无法中毒。冷却时间：15秒",
+                       "jobName":  "F/P Mage"
+                   },
+                   {
+                       "id":  2111003,
+                       "name":  "Element Composition",
+                       "nameZh":  "元素混合",
+                       "description":  "Fires a magical arrow blending Fire and Poison elements to attack the single nearest enemy in front. Deals additional damage to enemies weak to either Fire or Poison, and if the enemy is weak to both elements, the damage increases up to 1.5 times.",
+                       "descriptionZh":  "向最近的前方单个敌人发射融合了火属性和毒属性的魔法箭。对弱化于火或毒属性的敌人造成额外伤害，如果敌人同时弱化于两种属性，伤害会提升至1.5倍。",
+                       "jobName":  "F/P Mage"
+                   },
+                   {
+                       "id":  2111004,
+                       "name":  "Seal",
+                       "nameZh":  "封印",
+                       "description":  "Temporarily Seals surrounding monsters. Once sealed, monsters can\u0027t use skills. Does not work against boss-level monsters.",
+                       "descriptionZh":  "暂时封印周围的怪物。一旦被封印，怪物无法使用技能。该效果对BOSS级怪物无效。",
+                       "jobName":  "F/P Mage"
+                   },
+                   {
+                       "id":  2111005,
+                       "name":  "Spell Booster",
+                       "nameZh":  "法术加速器",
+                       "description":  "Use a Magic Rock to increase the attacking speed for spells.",
+                       "descriptionZh":  "使用魔法石提升法术的攻击力。",
+                       "jobName":  "F/P Mage"
+                   },
+                   {
+                       "id":  2121000,
+                       "name":  "Maple Warrior",
+                       "nameZh":  "冒险岛勇士",
+                       "description":  "Powerful party buff that increases all base stats (STR, DEX, INT, LUK) by a percentage. At max level grants +16% to all stats for 320 seconds. Essential endgame party buff shared by all 4th-job classes.",
+                       "descriptionZh":  "强大的队伍增益技能，可提升所有基础属性（力量、敏捷、智力、幸运）的百分比。达到最大等级时，可为队伍提供320秒的+16%所有属性增益。这是所有第四职业共同拥有的终极队伍增益技能。",
+                       "jobName":  "Arch Mage (F/P)"
+                   },
+                   {
+                       "id":  2121001,
+                       "name":  "Big Bang",
+                       "nameZh":  "创世之破",
+                       "description":  "Charges up for a devastating magic explosion.",
+                       "descriptionZh":  "蓄力后释放一次强大的魔法爆炸，对周围敌人造成巨额魔法伤害。",
+                       "jobName":  "Arch Mage (F/P)"
+                   },
+                   {
+                       "id":  2121002,
+                       "name":  "Mana Reflection",
+                       "nameZh":  "魔法反击",
+                       "description":  "Temporarily reflects magic damage back to the attacking monster. At max level reflects up to 780 damage with 69% proc chance for 234s. Provides passive retaliation damage during training.",
+                       "descriptionZh":  "暂时将魔法伤害反射回攻击的怪物。最高等级时可反射最多780点伤害，每次触发概率为69%，持续234秒。在训练期间提供被动反击伤害。",
+                       "jobName":  "Arch Mage (F/P)"
+                   },
+                   {
+                       "id":  2121003,
+                       "name":  "Fire Demon",
+                       "nameZh":  "火凤球",
+                       "description":  "Summons a fire demon that attacks enemies.",
+                       "descriptionZh":  "召唤一个火恶魔攻击敌人。",
+                       "jobName":  "Arch Mage (F/P)"
+                   },
+                   {
+                       "id":  2121004,
+                       "name":  "Infinity",
+                       "nameZh":  "终极无限",
+                       "description":  "Temporarily removes all MP costs and provides a damage multiplier to all magic attacks. One of the strongest DPS buffs for Mages. At max level: +20% damage for 34 seconds with 180s cooldown. Time your biggest attacks during Infinity for maximum output.",
+                       "descriptionZh":  "暂时移除所有法力值消耗，并对所有魔法攻击提供伤害加成。对于法师来说是最强的输出增益技能。满级时：持续34秒，伤害提升20%，冷却时间180秒。在使用无限期间，尽量在释放最大伤害的技能时使用，以获得最大输出。",
+                       "jobName":  "Arch Mage (F/P)"
+                   },
+                   {
+                       "id":  2121005,
+                       "name":  "Elquines",
+                       "nameZh":  "冰破魔兽",
+                       "description":  "Summons Elquines to attack enemies.",
+                       "descriptionZh":  "召唤埃尔基尼斯攻击敌人。",
+                       "jobName":  "Arch Mage (F/P)"
+                   },
+                   {
+                       "id":  2121006,
+                       "name":  "Paralyze",
+                       "nameZh":  "连环爆破",
+                       "description":  "Powerful fire attack that can stun enemies.",
+                       "descriptionZh":  "对敌人造成大量火属性伤害，并有几率使其陷入眩晕状态。",
+                       "jobName":  "Arch Mage (F/P)"
+                   },
+                   {
+                       "id":  2121007,
+                       "name":  "Meteor Shower",
+                       "nameZh":  "天降落星",
+                       "description":  "The F/P Arch Mage\u0027s ultimate attack. Rains meteors down on ALL enemies on screen (up to 15 targets). Deals massive fire damage (280–510%) with a cooldown. One of the strongest AoE attacks in the game. MP cost is a flat 500.",
+                       "descriptionZh":  "F/P圣殿骑士的终极技能。向屏幕上的所有敌人（最多15个目标）倾泻陨石。造成巨额火属性伤害（280-510%），有冷却时间。游戏中最强大的范围攻击之一。MP消耗为固定500。",
+                       "jobName":  "Arch Mage (F/P)"
+                   },
+                   {
+                       "id":  2121008,
+                       "name":  "Hero\u0027s Will",
+                       "nameZh":  "勇士的意志",
+                       "description":  "Removes all abnormal status effects (seduce, stun, curse, etc.) from yourself. Cooldown decreases with level (600s → 360s). Essential for boss fights. Every 4th-job class has this skill.",
+                       "descriptionZh":  "解除自身所有异常状态效果（如魅惑、眩晕、诅咒等）。冷却时间随等级降低（600秒→360秒）。对于打BOSS至关重要。每种4职业都有此技能。",
+                       "jobName":  "Arch Mage (F/P)"
+                   },
+                   {
+                       "id":  2200000,
+                       "name":  "MP Eater",
+                       "nameZh":  "魔力吸收",
+                       "description":  "Absorbs the enemy\u0027s MP when attacking with Magic skills, but only once every 5 seconds. Cannot absorb if the enemy\u0027s MP is 0.",
+                       "descriptionZh":  "使用魔法技能攻击时，吸收敌方的魔法值，但每5秒只能使用一次。若敌方魔法值为0，则无法吸收。",
+                       "jobName":  "I/L Wizard"
+                   },
+                   {
+                       "id":  2201000,
+                       "name":  "Meditation",
+                       "nameZh":  "冥想",
+                       "description":  "Meditate for a bit to temporarily increase the Magic Attack of party members around the area.",
+                       "descriptionZh":  "在周围区域内使队伍成员的魔法攻击力暂时提升。",
+                       "jobName":  "I/L Wizard"
+                   },
+                   {
+                       "id":  2201001,
+                       "name":  "Teleport",
+                       "nameZh":  "瞬间移动",
+                       "description":  "Use the arrow keys to teleport a set distance within the same map.",
+                       "descriptionZh":  "使用方向键将角色瞬间移动到同一地图内的设定距离。",
+                       "jobName":  "I/L Wizard"
+                   },
+                   {
+                       "id":  2201002,
+                       "name":  "Slow",
+                       "nameZh":  "缓速术",
+                       "description":  "Temporarily slows down the movement of up to 6 monsters. Cannot be used on the same monsters more than twice in a row.",
+                       "descriptionZh":  "暂时减慢最多6个怪物的移动速度。无法连续对同一目标使用两次。",
+                       "jobName":  "I/L Wizard"
+                   },
+                   {
+                       "id":  2201003,
+                       "name":  "Cold Beam",
+                       "nameZh":  "冰冻术",
+                       "description":  "Attacks a single enemy with a sharp piece of ice, dealing ice-elemental damage. Enemies hit are briefly frozen, slowing their actions. Deals increased damage to ice-weak enemies, but deals reduced damage to ice-resistant enemies and cannot slow them.",
+                       "descriptionZh":  "对单个敌人释放一把锋利的冰锥，造成冰元素伤害。命中敌人会短暂冻结其行动，降低其移动速度。对冰属性弱点敌人造成额外伤害，但对冰属性抗性敌人造成伤害减少，并无法冻结其行动。",
+                       "jobName":  "I/L Wizard"
+                   },
+                   {
+                       "id":  2201004,
+                       "name":  "Thunder Bolt",
+                       "nameZh":  "雷电术",
+                       "description":  "Attacks surrounding monsters with a thunderbolt, dealing lightning-elemental damage. All monsters, except those resistant to lightning, have a chance to be stunned by electrocution.",
+                       "descriptionZh":  "对周围的怪物释放雷电，造成雷元素伤害。除对雷电抗性较高的怪物外，所有怪物都有可能被电击眩晕。",
+                       "jobName":  "I/L Wizard"
+                   },
+                   {
+                       "id":  2210000,
+                       "name":  "Elemental Resistance",
+                       "nameZh":  "元素抵抗",
+                       "description":  "Gain resistance against Fire, Ice, Lightning and Poison elemental attacks from enemies.",
+                       "descriptionZh":  "获得对火、冰、雷电和毒元素攻击的抵抗效果。",
+                       "jobName":  "I/L Mage"
+                   },
+                   {
+                       "id":  2211000,
+                       "name":  "Element Amplification",
+                       "nameZh":  "元素增幅",
+                       "description":  "Use additional MP to increase the damage dealt by all Magic attacks. The effect is activated when used and deactivated when used again.",
+                       "descriptionZh":  "消耗额外MP提升所有魔法攻击的伤害。效果在使用时激活，在再次使用时解除。",
+                       "jobName":  "I/L Mage"
+                   },
+                   {
+                       "id":  2211001,
+                       "name":  "Ice Strike",
+                       "nameZh":  "冰击",
+                       "description":  "Summons sharp ice fragments above the heads of multiple nearby enemies, dealing Ice-elemental damage. All monsters except those strong against ice will be briefly slowed when hit. Deals increased damage to ice-weak enemies, but deals reduced damage to ice-resistant enemies and cannot slow them.",
+                       "descriptionZh":  "召唤尖锐的冰碎屑悬浮在多个 nearby 敌人头顶，造成冰元素伤害。所有除对冰元素抗性极强的怪物外，被击中的怪物会短暂减速。对冰元素弱的敌人造成更高伤害，但对冰元素抗性高的敌人造成更低伤害，并不能减速。",
+                       "jobName":  "I/L Mage"
+                   },
+                   {
+                       "id":  2211002,
+                       "name":  "Thunder Spear",
+                       "nameZh":  "雷电长矛",
+                       "description":  "Gathers the power of lightning to create a spear, throwing it at up to two enemies in front to deal Lightning element damage. Deals increased damage to lightning-weak enemies, but deals reduced damage to lightning-resistant enemies and cannot electrocute them.",
+                       "descriptionZh":  "聚集雷电之力，制造出一根长矛，向前方最多两名敌人投掷，造成雷电元素伤害。对雷电弱化敌人造成额外伤害，但对雷电抗性敌人造成伤害减少且无法电击他们。",
+                       "jobName":  "I/L Mage"
+                   },
+                   {
+                       "id":  2211003,
+                       "name":  "Element Composition",
+                       "nameZh":  "元素构成",
+                       "description":  "Fires a magical arrow blending Ice and Lightning elements to attack the single nearest enemy in front. Deals increased damage to enemies weak to either Ice or Lightning, and if the enemy is weak to both elements, the damage increases up to 1.5 times.",
+                       "descriptionZh":  "发射一支融合冰和雷元素的魔法箭，攻击前方最近的单个敌人。对弱化于冰或雷元素的敌人造成额外伤害，若敌人同时弱化于两者，伤害可提升至1.5倍。",
+                       "jobName":  "I/L Mage"
+                   },
+                   {
+                       "id":  2211004,
+                       "name":  "Seal",
+                       "nameZh":  "封印",
+                       "description":  "Temporarily Seals surrounding monsters. Once sealed, monsters can\u0027t use skills. Does not work against boss-level monsters.",
+                       "descriptionZh":  "暂时封印周围的怪物。一旦被封印，怪物无法使用技能。该效果对BOSS级怪物无效。",
+                       "jobName":  "I/L Mage"
+                   },
+                   {
+                       "id":  2211005,
+                       "name":  "Spell Booster",
+                       "nameZh":  "法术加速器",
+                       "description":  "Use a Magic Rock to increase the attacking speed for spells.",
+                       "descriptionZh":  "使用魔法石提升法术的攻击力。",
+                       "jobName":  "I/L Mage"
+                   },
+                   {
+                       "id":  2221000,
+                       "name":  "Maple Warrior",
+                       "nameZh":  "冒险岛勇士",
+                       "description":  "Powerful party buff that increases all base stats (STR, DEX, INT, LUK) by a percentage. At max level grants +16% to all stats for 320 seconds. Essential endgame party buff shared by all 4th-job classes.",
+                       "descriptionZh":  "强大的队伍增益技能，可提升所有基础属性（力量、敏捷、智力、幸运）的百分比。在最高等级时，可为队伍提供320秒的+16%属性加成。这是所有第四职业共享的终极队伍增益技能。",
+                       "jobName":  "Arch Mage (I/L)"
+                   },
+                   {
+                       "id":  2221001,
+                       "name":  "Big Bang",
+                       "nameZh":  "创世之破",
+                       "description":  "Charges up for a devastating ice explosion.",
+                       "descriptionZh":  "蓄力后释放一次强大的冰元素爆炸，造成巨额伤害。",
+                       "jobName":  "Arch Mage (I/L)"
+                   },
+                   {
+                       "id":  2221002,
+                       "name":  "Mana Reflection",
+                       "nameZh":  "魔法反击",
+                       "description":  "Temporarily reflects magic damage back to the attacking monster. At max level reflects up to 780 damage with 69% proc chance for 234s. Provides passive retaliation damage during training.",
+                       "descriptionZh":  "暂时将魔法伤害反射回攻击的怪物。最高等级时可反射最多780点伤害，每次触发概率为69%，持续234秒。在训练期间提供被动反击伤害。",
+                       "jobName":  "Arch Mage (I/L)"
+                   },
+                   {
+                       "id":  2221003,
+                       "name":  "Ice Demon",
+                       "nameZh":  "冰凤球",
+                       "description":  "Summons an ice demon that attacks enemies.",
+                       "descriptionZh":  "召唤一个冰魔攻击敌人。",
+                       "jobName":  "Arch Mage (I/L)"
+                   },
+                   {
+                       "id":  2221004,
+                       "name":  "Infinity",
+                       "nameZh":  "终极无限",
+                       "description":  "Temporarily removes all MP costs and provides a damage multiplier to all magic attacks. One of the strongest DPS buffs for Mages. At max level: +20% damage for 34 seconds with 180s cooldown. Time your biggest attacks during Infinity for maximum output.",
+                       "descriptionZh":  "暂时移除所有法力值消耗，并对所有魔法攻击提供伤害加成。对于法师来说是最强的输出增益技能。满级时：持续34秒，伤害提升20%，冷却时间180秒。在使用无限期间，尽量在释放最大伤害的技能时使用，以获得最大输出。",
+                       "jobName":  "Arch Mage (I/L)"
+                   },
+                   {
+                       "id":  2221005,
+                       "name":  "Ifrit",
+                       "nameZh":  "火魔兽",
+                       "description":  "Summons Ifrit to attack enemies with fire.",
+                       "descriptionZh":  "召唤Ifrit对敌人造成火焰伤害。",
+                       "jobName":  "Arch Mage (I/L)"
+                   },
+                   {
+                       "id":  2221006,
+                       "name":  "Chain Lightning",
+                       "nameZh":  "链环闪电",
+                       "description":  "Unleashes a bolt of lightning that chains between up to 6 enemies. The I/L Arch Mage\u0027s primary multi-target attack. Damage scales from 250% to 424% per target. No cooldown — can be spammed for sustained AoE DPS.",
+                       "descriptionZh":  "释放一道闪电，会在最多6个敌人之间传导。I/L圣骑士的主要群体攻击技能。伤害随目标数量增加而提升，每目标伤害从250%增至424%。无冷却时间，可连续释放以维持持续的范围伤害。",
+                       "jobName":  "Arch Mage (I/L)"
+                   },
+                   {
+                       "id":  2221007,
+                       "name":  "Blizzard",
+                       "nameZh":  "落霜冰破",
+                       "description":  "The I/L Arch Mage\u0027s ultimate attack. Rains ice down on ALL enemies on screen (up to 15 targets). Deals massive ice damage (280–510%) with a freeze chance. Has a cooldown. MP cost is a flat 500.",
+                       "descriptionZh":  "I/L圣骑士的终极技能。向屏幕上的所有敌人（最多15个目标）倾泻冰霜。造成大量冰系伤害（280-510%），并有冻结效果。有冷却时间。MP消耗为固定500。",
+                       "jobName":  "Arch Mage (I/L)"
+                   },
+                   {
+                       "id":  2221008,
+                       "name":  "Hero\u0027s Will",
+                       "nameZh":  "勇士的意志",
+                       "description":  "Removes all abnormal status effects (seduce, stun, curse, etc.) from yourself. Cooldown decreases with level (600s → 360s). Essential for boss fights. Every 4th-job class has this skill.",
+                       "descriptionZh":  "解除自身所有异常状态效果（如魅惑、眩晕、诅咒等）。冷却时间随等级降低（600秒→360秒）。对于打BOSS至关重要。每个第四职业都有此技能。",
+                       "jobName":  "Arch Mage (I/L)"
+                   },
+                   {
+                       "id":  2300000,
+                       "name":  "MP Eater",
+                       "nameZh":  "魔力吸收",
+                       "description":  "Absorbs the enemy\u0027s MP when attacking with Magic skills, but only once every 5 seconds. Cannot absorb if the enemy\u0027s MP is 0.",
+                       "descriptionZh":  "使用魔法技能攻击时，吸收敌方的魔法值，但每5秒只能使用一次。若敌方魔法值为0，则无法吸收。",
+                       "jobName":  "Cleric"
+                   },
+                   {
+                       "id":  2301000,
+                       "name":  "Teleport",
+                       "nameZh":  "瞬间移动",
+                       "description":  "Use the arrow keys to teleport a set distance within the same map.",
+                       "descriptionZh":  "使用方向键将角色瞬间移动到同一地图内的设定距离。",
+                       "jobName":  "Cleric"
+                   },
+                   {
+                       "id":  2301001,
+                       "name":  "Heal",
+                       "nameZh":  "群体治愈",
+                       "description":  "Recovers the HP of all party members around the area. The amount of healing depends on the number of people being healed, and undead monsters around the area will receive damage.",
+                       "descriptionZh":  "为周围队伍成员恢复生命值。治疗量取决于被治疗的人数，周围区域内的亡灵怪物会受到伤害。",
+                       "jobName":  "Cleric"
+                   },
+                   {
+                       "id":  2301002,
+                       "name":  "Invincible",
+                       "nameZh":  "无敌",
+                       "description":  "Reduces physical damage taken for a certain duration, and deals non-elemental magic damage to any monster that takes contact damage from the caster.",
+                       "descriptionZh":  "减少一定时间内受到的物理伤害，并对接触 caster 的怪物造成非元素魔法伤害。",
+                       "jobName":  "Cleric"
+                   },
+                   {
+                       "id":  2301003,
+                       "name":  "Bless",
+                       "nameZh":  "祝福",
+                       "description":  "Temporarily increases the Accuracy, Evasion, and HP recovery from the Heal skill for all nearby party members. Required Skill : At least Level 5 on Invincible",
+                       "descriptionZh":  "暂时提升所有附近队伍成员的命中率、回避率以及治疗技能的HP回复效果。所需等级：至少5级的不败",
+                       "jobName":  "Cleric"
+                   },
+                   {
+                       "id":  2301004,
+                       "name":  "Holy Arrow",
+                       "nameZh":  "圣箭术",
+                       "description":  "Attacks monsters by firing holy arrows. Very effective against the undead or devil-based monsters.",
+                       "descriptionZh":  "向怪物发射圣箭进行攻击。对亡灵或恶魔系怪物效果显著。",
+                       "jobName":  "Cleric"
+                   },
+                   {
+                       "id":  2310000,
+                       "name":  "Elemental Resistance",
+                       "nameZh":  "元素抵抗",
+                       "description":  "Gain resistance against Fire, Ice, Lightning and Poison elemental attacks from enemies.",
+                       "descriptionZh":  "获得对火、冰、雷电和毒元素攻击的抵抗效果。",
+                       "jobName":  "Priest"
+                   },
+                   {
+                       "id":  2311000,
+                       "name":  "Dispel",
+                       "nameZh":  "解除",
+                       "description":  "[Master Level : 20] Cure nearby party members of certain abnormal status conditions.",
+                       "descriptionZh":  "[熟练度 : 20] 解除附近队伍成员的某些异常状态。",
+                       "jobName":  "Priest"
+                   },
+                   {
+                       "id":  2311001,
+                       "name":  "Mystic Door",
+                       "nameZh":  "神秘之门",
+                       "description":  "Use a Magic Rock to create a portal leading to the nearest town. Only party members can use it multiple times until the portal disappears, and it can be accessed by pressing the up arrow key while standing on it.",
+                       "descriptionZh":  "使用魔法石创造一道通往最近城镇的传送门。只有队伍成员可以在传送门消失前多次使用，站在传送门上时按上箭键即可进入。",
+                       "jobName":  "Priest"
+                   },
+                   {
+                       "id":  2311002,
+                       "name":  "Holy Symbol",
+                       "nameZh":  "圣徽",
+                       "description":  "Protect yourself with a Holy Symbol, allowing you to resurrect on the spot if you die while the effect is active.",
+                       "descriptionZh":  "使用圣徽保护自己，若在效果生效期间死亡，可当场复活。",
+                       "jobName":  "Priest"
+                   },
+                   {
+                       "id":  2311003,
+                       "name":  "Shining Ray",
+                       "nameZh":  "圣光射线",
+                       "description":  "Deal Holy-attribute damage to up to 4 enemies with holy light. Deals massive damage to Undead and Demon targets.",
+                       "descriptionZh":  "对最多4个敌人造成圣属性伤害。对亡灵和恶魔目标造成巨额伤害。",
+                       "jobName":  "Priest"
+                   },
+                   {
+                       "id":  2311004,
+                       "name":  "Doom",
+                       "nameZh":  "诅咒",
+                       "description":  "Turn up to 6 monsters into snails. Changes the appearance, attacking capacity, and movement speed. Cannot be used against boss monsters. Cooldown: 30 sec",
+                       "descriptionZh":  "将最多6个怪物变为蜗牛。改变外观、攻击力和移动速度。不能对Boss怪物使用。冷却时间：30秒",
+                       "jobName":  "Priest"
+                   },
+                   {
+                       "id":  2311005,
+                       "name":  "Summon Dragon",
+                       "nameZh":  "召唤龙",
+                       "description":  "Summon a holy dragon for a certain amount of time. The dragon will stay beside you and attack nearby enemies while summoned. The higher the skill level, the stronger the summoned dragon is.",
+                       "descriptionZh":  "召唤一只圣龙，持续一段时间。圣龙会站在你身边，并在召唤期间攻击附近的敌人。技能等级越高，召唤的龙越强。",
+                       "jobName":  "Priest"
+                   },
+                   {
+                       "id":  2321000,
+                       "name":  "Maple Warrior",
+                       "nameZh":  "冒险岛勇士",
+                       "description":  "Powerful party buff that increases all base stats (STR, DEX, INT, LUK) by a percentage. At max level grants +16% to all stats for 320 seconds. Essential endgame party buff shared by all 4th-job classes.",
+                       "descriptionZh":  "强大的队伍增益技能，可提升所有基础属性（力量、敏捷、智力、幸运）的百分比。满级时可为队伍提供320秒的+16%属性加成。是所有第四职业共享的终极队伍增益技能。",
+                       "jobName":  "Bishop"
+                   },
+                   {
+                       "id":  2321001,
+                       "name":  "Big Bang",
+                       "nameZh":  "创世之破",
+                       "description":  "Charges up for a devastating holy explosion.",
+                       "descriptionZh":  "蓄力后释放一次毁灭性的圣光爆炸。",
+                       "jobName":  "Bishop"
+                   },
+                   {
+                       "id":  2321002,
+                       "name":  "Mana Reflection",
+                       "nameZh":  "魔法反击",
+                       "description":  "Temporarily reflects magic damage back to the attacking monster. At max level reflects up to 780 damage with 69% proc chance for 234s. Provides passive retaliation damage during training.",
+                       "descriptionZh":  "暂时将魔法伤害反射回攻击怪物。最高级时可反射最多780点伤害，每次触发概率为69%，持续234秒。在训练时提供被动反击伤害。",
+                       "jobName":  "Bishop"
+                   },
+                   {
+                       "id":  2321003,
+                       "name":  "Bahamut",
+                       "nameZh":  "强化圣龙",
+                       "description":  "Summons the legendary Bahamut dragon.",
+                       "descriptionZh":  "召唤传奇的巴哈姆特龙。",
+                       "jobName":  "Bishop"
+                   },
+                   {
+                       "id":  2321004,
+                       "name":  "Infinity",
+                       "nameZh":  "终极无限",
+                       "description":  "Temporarily removes all MP costs and provides a damage multiplier to all magic attacks. One of the strongest DPS buffs for Mages. At max level: +20% damage for 34 seconds with 180s cooldown. Time your biggest attacks during Infinity for maximum output.",
+                       "descriptionZh":  "暂时移除所有法力值消耗，并对所有魔法攻击提供伤害加成。对于法师来说是最强的输出增益技能。满级时：34秒内提升20%伤害，冷却时间180秒。在使用无限期间，尽量在释放最大伤害的技能时使用，以获得最大输出。",
+                       "jobName":  "Bishop"
+                   },
+                   {
+                       "id":  2321005,
+                       "name":  "Holy Shield",
+                       "nameZh":  "圣灵之盾",
+                       "description":  "Grants party members immunity to status effects.",
+                       "descriptionZh":  "为队伍成员提供免疫状态效果的保护。",
+                       "jobName":  "Bishop"
+                   },
+                   {
+                       "id":  2321006,
+                       "name":  "Resurrection",
+                       "nameZh":  "复活术",
+                       "description":  "Revives a fallen party member at the location where they died, restoring a percentage of their EXP that was lost on death. At max level recovers 78% of lost EXP. Bishop-exclusive skill — one of the most valuable abilities in the game for endgame content.",
+                       "descriptionZh":  "在角色死亡的位置复活队伍成员，恢复其因死亡而损失的百分比经验值。满级时可恢复78%的损失经验值。神职专属技能——在游戏中最具价值的能力之一，适用于最终副本内容。",
+                       "jobName":  "Bishop"
+                   },
+                   {
+                       "id":  2321007,
+                       "name":  "Angel Ray",
+                       "nameZh":  "光芒飞箭",
+                       "description":  "Holy ray that damages enemies and heals allies.",
+                       "descriptionZh":  "对敌人造成伤害并为盟友治疗。",
+                       "jobName":  "Bishop"
+                   },
+                   {
+                       "id":  2321008,
+                       "name":  "Genesis",
+                       "nameZh":  "圣光普照",
+                       "description":  "The Bishop\u0027s ultimate attack. Unleashes a devastating holy explosion that damages ALL enemies on screen (up to 15 targets). Deals 320–552% holy damage with a cooldown. Holy element makes it particularly devastating against undead. MP cost is a flat 600.",
+                       "descriptionZh":  "主教的终极攻击。释放一道毁灭性的神圣爆炸，对屏幕上的所有敌人（最多15个目标）造成伤害。造成320-552%的神圣伤害，有冷却时间。神圣元素使其对亡灵特别有效。MP消耗为固定600。",
+                       "jobName":  "Bishop"
+                   },
+                   {
+                       "id":  2321009,
+                       "name":  "Hero\u0027s Will",
+                       "nameZh":  "勇士的意志",
+                       "description":  "Removes all abnormal status effects (seduce, stun, curse, etc.) from yourself. Cooldown decreases with level (600s → 360s). Essential for boss fights. Every 4th-job class has this skill.",
+                       "descriptionZh":  "解除自身所有异常状态效果（魅惑、眩晕、诅咒等）。冷却时间随等级降低（600秒→360秒）。对于Boss战至关重要。每4职业都有此技能。",
+                       "jobName":  "Bishop"
+                   },
+                   {
+                       "id":  3000000,
+                       "name":  "Critical Shot",
+                       "nameZh":  "暴击射箭",
+                       "description":  "Increases Critical Rate and Critical Damage.",
+                       "descriptionZh":  "提升暴击率和暴击伤害。",
+                       "jobName":  "Archer"
+                   },
+                   {
+                       "id":  3000001,
+                       "name":  "The Eye of Amazon",
+                       "nameZh":  "亚马逊之眼",
+                       "description":  "Increases attack range for bows and crossbows.",
+                       "descriptionZh":  "提升弓箭和复合弓的攻击范围。",
+                       "jobName":  "Archer"
+                   },
+                   {
+                       "id":  3001000,
+                       "name":  "Focus",
+                       "nameZh":  "集中术",
+                       "description":  "Focus to temporarily increase Accuracy and Evasion.",
+                       "descriptionZh":  "暂时提升命中率和回避率。",
+                       "jobName":  "Archer"
+                   },
+                   {
+                       "id":  3001001,
+                       "name":  "Arrow Blow",
+                       "nameZh":  "断魂箭",
+                       "description":  "Fires an arrow with authority. Applies more damage than usual.",
+                       "descriptionZh":  "释放一支强力箭矢，造成比 usual 更高的伤害。",
+                       "jobName":  "Archer"
+                   },
+                   {
+                       "id":  3001002,
+                       "name":  "Double Shot",
+                       "nameZh":  "双发",
+                       "description":  "Fires two arrows at once to attack up to two enemies.",
+                       "descriptionZh":  "同时发射两支箭，对最多两名敌人造成伤害。",
+                       "jobName":  "Archer"
+                   },
+                   {
+                       "id":  3001003,
+                       "name":  "Power Knockback",
+                       "nameZh":  "强力推退",
+                       "description":  "Swings the bow widely to push multiple enemies far back. This attack always hits as a critical, and as the level rises, the number of monsters that one can push back with one swing increases.",
+                       "descriptionZh":  "弓箭手挥动弓箭，将多个敌人推退至远处。此攻击总是命中且为暴击，随着等级提升，每次挥动能将更多敌人推退。",
+                       "jobName":  "Archer"
+                   },
+                   {
+                       "id":  3100000,
+                       "name":  "Bow Mastery",
+                       "nameZh":  "精准弓",
+                       "description":  "Increases Bow Mastery and Evasion. This effect only applies when a bow is equipped.",
+                       "descriptionZh":  "提升弓箭熟练度和回避率。此效果仅在装备弓箭时生效。",
+                       "jobName":  "Hunter"
+                   },
+                   {
+                       "id":  3100001,
+                       "name":  "Amazon\u0027s Judgement",
+                       "nameZh":  "亚马逊的祝福",
+                       "description":  "Critical hits sever the enemy\u0027s tendons, slowing them down.",
+                       "descriptionZh":  "暴击命中时会切断敌人的肌腱，使其移动速度降低。",
+                       "jobName":  "Hunter"
+                   },
+                   {
+                       "id":  3101000,
+                       "name":  "Final Attack: Bow",
+                       "nameZh":  "终极弓",
+                       "description":  "While the effect is active, using attack skills has a chance to activate Final Attack when there are targets within range, dealing heavy damage to up to three enemies. This skill only activates when a bow is equipped. Using the skill activates the effect, and using it again deactivates it.",
+                       "descriptionZh":  "在效果生效期间，使用攻击技能时，若目标在范围内，有几率触发终极弓，对最多三个敌人造成巨额伤害。该技能仅在装备弓时才能激活。使用技能会激活效果，再次使用则会解除效果。",
+                       "jobName":  "Hunter"
+                   },
+                   {
+                       "id":  3101001,
+                       "name":  "Bow Booster",
+                       "nameZh":  "弓速提升",
+                       "description":  "Uses HP and MP to temporarily increase the Attack Speed of the equipped bow. It only applies when a bow is equipped.",
+                       "descriptionZh":  "使用HP和MP暂时提升装备的弓的攻击力。只有在装备弓时生效。",
+                       "jobName":  "Hunter"
+                   },
+                   {
+                       "id":  3101003,
+                       "name":  "Soul Arrow: Bow",
+                       "nameZh":  "灵魂箭：弓",
+                       "description":  "Temporarily allows the character to fire bow arrows without using up arrows. Only works with a bow equipped.",
+                       "descriptionZh":  "暂时允许角色在不消耗箭矢的情况下发射弓箭。仅在装备弓时生效。",
+                       "jobName":  "Hunter"
+                   },
+                   {
+                       "id":  3101004,
+                       "name":  "Arrow Bomb: Bow",
+                       "nameZh":  "爆炸箭：弓",
+                       "description":  "Fires an arrow with a bomb attached to it. If struck cleanly, the bomb explodes on the enemy, stunning some enemies around with a certain success rate. Can\u0027t attack more than 4 at once, and it only works with a bow equipped.",
+                       "descriptionZh":  "发射一支附带炸弹的箭。若精准命中，炸弹会在敌人身上爆炸，对周围部分敌人造成眩晕效果。一次无法攻击超过4个目标，且仅在装备弓的情况下生效。",
+                       "jobName":  "Hunter"
+                   },
+                   {
+                       "id":  3110000,
+                       "name":  "Mortal Blow",
+                       "nameZh":  "致命一击",
+                       "description":  "Enables shooting arrows at a very close range with a certain success rate. May instantly kill a monster with a single shot, but Bosses cannot be instantly killed.",
+                       "descriptionZh":  "有一定命中率射出箭矢至极近距离。单发可能瞬间击杀怪物，但BOSS无法被瞬间击杀。",
+                       "jobName":  "Ranger"
+                   },
+                   {
+                       "id":  3111000,
+                       "name":  "Puppet",
+                       "nameZh":  "木偶",
+                       "description":  "Temporarily summons a puppet in front. While the puppet is summoned, monsters will attack the puppet instead of yourself.",
+                       "descriptionZh":  "暂时召唤一个木偶在前方。在木偶被召唤期间，怪物会攻击木偶而不是你自己。",
+                       "jobName":  "Ranger"
+                   },
+                   {
+                       "id":  3111001,
+                       "name":  "Inferno",
+                       "nameZh":  "烈焰",
+                       "description":  "Fires a flaming arrow at an enemy in front that incinerates the surrounding area on impact, dealing Fire-elemental damage to up to 4 enemies. Targets hit will suffer from a Burn effect that inflicts continuous damage every second for 3 seconds. Deals increased damage to fire-weak enemies, but deals reduced damage to fire-resistant enemies and cannot burn them.",
+                       "descriptionZh":  "向前方敌人发射一支燃烧的箭矢，在命中时焚烧周围区域，对最多4个敌人造成火元素伤害。命中目标会受到持续伤害，每秒造成3秒的伤害。对火属性弱的敌人造成额外伤害，但对火属性免疫的敌人造成伤害减少且无法点燃。",
+                       "jobName":  "Ranger"
+                   },
+                   {
+                       "id":  3111002,
+                       "name":  "Arrow Rain",
+                       "nameZh":  "箭雨",
+                       "description":  "Fires multiple arrows into the sky to attack up to 4 enemies in the surrounding area 2 times. Can be used even when monsters are close by.",
+                       "descriptionZh":  "向天空发射多支箭矢，对周围区域内的最多4个敌人造成2次攻击。即使怪物靠近时也可以使用。",
+                       "jobName":  "Ranger"
+                   },
+                   {
+                       "id":  3111003,
+                       "name":  "Strafe",
+                       "nameZh":  "突袭",
+                       "description":  "Fires multiple arrows in rapid succession to attack a single enemy.",
+                       "descriptionZh":  "向单一敌人连续发射多支箭矢进行攻击。",
+                       "jobName":  "Ranger"
+                   },
+                   {
+                       "id":  3111004,
+                       "name":  "Silver Hawk",
+                       "nameZh":  "银鹰",
+                       "description":  "Summons a silver hawk. The hawk flies around the player for a certain period of time, attacking nearby monsters, and a more powerful hawk can be summoned as the skill level increases.",
+                       "descriptionZh":  "召唤一只银鹰。银鹰会在玩家周围盘旋一段时间，攻击附近的怪物，随着技能等级的提升，可以召唤更强大的银鹰。",
+                       "jobName":  "Ranger"
+                   },
+                   {
+                       "id":  3111005,
+                       "name":  "Wind Step",
+                       "nameZh":  "风步",
+                       "description":  "Leaps forward a certain distance in the direction you are facing. As the skill level increases, the jump distance increases.",
+                       "descriptionZh":  "向前进方向跳跃一定距离。技能等级提升时，跳跃距离增加。",
+                       "jobName":  "Ranger"
+                   },
+                   {
+                       "id":  3120005,
+                       "name":  "Bow Expert",
+                       "nameZh":  "神箭手",
+                       "description":  "Increases bow mastery and minimum damage.",
+                       "descriptionZh":  "提升弓箭手的熟练度并增加基础伤害。",
+                       "jobName":  "Bowmaster"
+                   },
+                   {
+                       "id":  3121000,
+                       "name":  "Maple Warrior",
+                       "nameZh":  "冒险岛勇士",
+                       "description":  "Powerful party buff that increases all base stats (STR, DEX, INT, LUK) by a percentage. At max level grants +16% to all stats for 320 seconds. Essential endgame party buff.",
+                       "descriptionZh":  "强大的队伍增益技能，可提升所有基础属性（力量、敏捷、智力、幸运）的百分比。在最高等级时，可为队伍提供320秒的+16%所有属性增益。是后期必带的队伍增益技能。",
+                       "jobName":  "Bowmaster"
+                   },
+                   {
+                       "id":  3121002,
+                       "name":  "Sharp Eyes",
+                       "nameZh":  "火眼晶晶",
+                       "description":  "Party buff that increases critical hit rate and critical damage for all nearby party members. At max level provides +15% critical rate and +20% critical damage for 320 seconds. One of the most valuable party buffs in the game — essential for all boss runs.",
+                       "descriptionZh":  "团队增益技能，提升附近所有队友的暴击率和暴击伤害。最高等级时可提供320秒的+15%暴击率和+20%暴击伤害。游戏中最宝贵的团队增益之一——所有副本跑图都不可或缺。",
+                       "jobName":  "Bowmaster"
+                   },
+                   {
+                       "id":  3121003,
+                       "name":  "Dragon\u0027s Breath",
+                       "nameZh":  "飞龙冲击波",
+                       "description":  "Knocks back enemies with a powerful gust.",
+                       "descriptionZh":  "对敌人造成巨大冲击，将敌人击退。",
+                       "jobName":  "Bowmaster"
+                   },
+                   {
+                       "id":  3121004,
+                       "name":  "Hurricane",
+                       "nameZh":  "暴风箭雨",
+                       "description":  "The Bowmaster\u0027s signature skill. Rapidly fires arrows at a blinding rate, dealing continuous damage to a single target. The fastest-attacking skill in the game — holds down the key to maintain a stream of arrows. At max level deals 133% per hit with extremely fast attack speed. The premier single-target DPS skill for endgame bossing.",
+                       "descriptionZh":  "弓箭手的标志性技能。以极快的速度连续发射箭矢，对单一目标造成持续伤害。游戏中最快速的攻击技能——按住按键可维持箭矢连击。最高等级时每击造成133%伤害，攻击速度极快。终结boss战时最强大的单体输出技能。",
+                       "jobName":  "Bowmaster"
+                   },
+                   {
+                       "id":  3121006,
+                       "name":  "Phoenix",
+                       "nameZh":  "火凤凰",
+                       "description":  "Summons a phoenix that damages enemies.",
+                       "descriptionZh":  "召唤一只凤凰对敌人造成伤害。",
+                       "jobName":  "Bowmaster"
+                   },
+                   {
+                       "id":  3121007,
+                       "name":  "Hamstring",
+                       "nameZh":  "击退箭",
+                       "description":  "Slows enemy movement with each attack.",
+                       "descriptionZh":  "每次攻击都会减缓敌人的移动速度。",
+                       "jobName":  "Bowmaster"
+                   },
+                   {
+                       "id":  3121008,
+                       "name":  "Concentrate",
+                       "nameZh":  "集中精力",
+                       "description":  "Increases attack power temporarily.",
+                       "descriptionZh":  "暂时提升攻击力。",
+                       "jobName":  "Bowmaster"
+                   },
+                   {
+                       "id":  3121009,
+                       "name":  "Hero\u0027s Will",
+                       "nameZh":  "勇士的意志",
+                       "description":  "Removes all abnormal status effects (seduce, stun, curse, etc.) from yourself. Cooldown decreases with level (600s → 360s). Essential for boss fights.",
+                       "descriptionZh":  "解除自身所有异常状态效果（魅惑、眩晕、诅咒等）。冷却时间随等级降低（600秒→360秒）。对于打BOSS至关重要。",
+                       "jobName":  "Bowmaster"
+                   },
+                   {
+                       "id":  3200000,
+                       "name":  "Crossbow Mastery",
+                       "nameZh":  "精准弩",
+                       "description":  "Increases Crossbow Mastery and gives a chance to deal damage that ignores the target\u0027s Weapon Def. This effect only applies when a crossbow is equipped.",
+                       "descriptionZh":  "提升精准弩熟练度，并有一定几率对目标造成无视其物理防御的伤害。此效果仅在装备精准弩时生效。",
+                       "jobName":  "Crossbowman"
+                   },
+                   {
+                       "id":  3200001,
+                       "name":  "Amazon\u0027s Judgement",
+                       "nameZh":  "亚马逊的祝福",
+                       "description":  "Critical hits sever the enemy\u0027s tendons, slowing them down.",
+                       "descriptionZh":  "暴击命中时会切断敌人的肌腱，使其移动速度降低。",
+                       "jobName":  "Crossbowman"
+                   },
+                   {
+                       "id":  3201000,
+                       "name":  "Final Attack: Crossbow",
+                       "nameZh":  "终极弩",
+                       "description":  "While the effect is active, using attack skills has a chance to activate Final Attack when there are targets within range, dealing heavy damage to a single enemy. This skill only activates when a crossbow is equipped. Using the skill activates the effect, and using it again deactivates it.",
+                       "descriptionZh":  "在效果生效期间，使用攻击技能时若目标在范围内，有几率触发终极弩。对单个敌人造成巨额伤害。该技能仅在装备弩时才能激活。使用技能会激活效果，再次使用则会解除效果。",
+                       "jobName":  "Crossbowman"
+                   },
+                   {
+                       "id":  3201001,
+                       "name":  "Crossbow Booster",
+                       "nameZh":  "弩箭加成",
+                       "description":  "Uses HP and MP to temporarily increase the Attack Speed of the equipped crossbow. It only applies when a crossbow is equipped.",
+                       "descriptionZh":  "使用HP和MP暂时提升装备的弩箭的攻击力。只有在装备弩箭时生效。",
+                       "jobName":  "Crossbowman"
+                   },
+                   {
+                       "id":  3201003,
+                       "name":  "Soul Arrow: Crossbow",
+                       "nameZh":  "无形箭：弩",
+                       "description":  "Temporarily allows the character to fire crossbow arrows without using up arrows. Only works with a crossbow equipped.",
+                       "descriptionZh":  "暂时允许角色在不消耗箭矢的情况下发射弩箭。仅在装备弩时生效。",
+                       "jobName":  "Crossbowman"
+                   },
+                   {
+                       "id":  3201004,
+                       "name":  "Iron Arrow: Crossbow",
+                       "nameZh":  "穿透箭：弩",
+                       "description":  "Attacks up to 4 monsters at once with a powerful arrow, which penetrates through them. Damage decreases as the arrow flies through each monster.",
+                       "descriptionZh":  "对最多4个怪物同时发动攻击，使用强力的箭矢穿透它们。箭矢穿过每个怪物时，造成的伤害会减少。",
+                       "jobName":  "Crossbowman"
+                   },
+                   {
+                       "id":  3210000,
+                       "name":  "Mortal Blow",
+                       "nameZh":  "致命一击",
+                       "description":  "Enables shooting arrows at a very close range with a certain success rate. May instantly kill a monster with a single shot, but Bosses cannot be instantly killed.",
+                       "descriptionZh":  "使玩家能够在一定范围内射出箭矢，有一定命中率。单发可能瞬间击杀怪物，但BOSS无法被瞬间击杀。",
+                       "jobName":  "Sniper"
+                   },
+                   {
+                       "id":  3211000,
+                       "name":  "Puppet",
+                       "nameZh":  "木偶",
+                       "description":  "Temporarily summons a puppet in front. While the puppet is summoned, monsters will attack the puppet instead of yourself.",
+                       "descriptionZh":  "暂时召唤一个木偶在前方。当木偶被召唤时，怪物会攻击木偶而不是你自己。",
+                       "jobName":  "Sniper"
+                   },
+                   {
+                       "id":  3211001,
+                       "name":  "Blizzard",
+                       "nameZh":  "暴风",
+                       "description":  "Fires an ice arrow at an enemy in front that freezes the surrounding area on impact, dealing Ice-elemental damage to up to 4 enemies. Targets hit will suffer from a Slow effect that reduces movement speed for 2 seconds. Deals increased damage to ice-weak enemies, but deals reduced damage to ice-resistant enemies and cannot slow them.",
+                       "descriptionZh":  "向前方的敌人发射一支冰箭，在命中时冻结周围区域，对最多4个敌人造成冰元素伤害。命中目标会受到减速效果，减少2秒内的移动速度。对冰属性弱点敌人造成额外伤害，但对冰属性抗性敌人造成伤害减少且无法减速。",
+                       "jobName":  "Sniper"
+                   },
+                   {
+                       "id":  3211002,
+                       "name":  "Arrow Eruption",
+                       "nameZh":  "箭爆",
+                       "description":  "[Master Level : 30] Fires multiple arrows into the ground that erupt to attack up to 4 enemies in the surrounding area. Can be used even when monsters are close by.",
+                       "descriptionZh":  "[熟练度 : 30] 向地面发射多支箭矢，箭矢会爆炸并攻击周围至多4个敌人。即使附近有怪物时也可以使用。",
+                       "jobName":  "Sniper"
+                   },
+                   {
+                       "id":  3211003,
+                       "name":  "Strafe",
+                       "nameZh":  "突袭",
+                       "description":  "Fires multiple arrows in rapid succession to attack a single enemy.",
+                       "descriptionZh":  "向单一敌人连续发射多支箭矢进行攻击。",
+                       "jobName":  "Sniper"
+                   },
+                   {
+                       "id":  3211004,
+                       "name":  "Golden Eagle",
+                       "nameZh":  "金鹰",
+                       "description":  "Summons a golden eagle. The eagle flies around the player for a certain period of time, attacking nearby monsters, and a more powerful eagle can be summoned as the skill level increases. Required Skill : At least Level 5 on Puppet",
+                       "descriptionZh":  "召唤一只金鹰。金鹰会在玩家周围盘旋一段时间，攻击附近的怪物，随着技能等级的提升，可以召唤更强大的金鹰。所需技能：至少在傀儡技能上达到5级",
+                       "jobName":  "Sniper"
+                   },
+                   {
+                       "id":  3211005,
+                       "name":  "Evasion Step",
+                       "nameZh":  "回避步",
+                       "description":  "Moves a certain distance in the opposite direction you are facing. As the skill level increases, the move distance increases.",
+                       "descriptionZh":  "向相反方向移动一定距离。技能等级提升时，移动距离增加。",
+                       "jobName":  "Sniper"
+                   },
+                   {
+                       "id":  3220004,
+                       "name":  "Marksman Boost",
+                       "nameZh":  "神弩手",
+                       "description":  "Increases crossbow mastery and damage.",
+                       "descriptionZh":  "提升十字弓熟练度和伤害。",
+                       "jobName":  "Marksman"
+                   },
+                   {
+                       "id":  3221000,
+                       "name":  "Maple Warrior",
+                       "nameZh":  "冒险岛勇士",
+                       "description":  "Powerful party buff that increases all base stats (STR, DEX, INT, LUK) by a percentage. At max level grants +16% to all stats for 320 seconds. Essential endgame party buff.",
+                       "descriptionZh":  "强大的队伍增益技能，可提升所有基础属性（力量、敏捷、智力、幸运）的百分比。在最高等级时，可为队伍提供320秒的+16%所有属性增益。是后期不可或缺的队伍增益技能。",
+                       "jobName":  "Marksman"
+                   },
+                   {
+                       "id":  3221001,
+                       "name":  "Piercing Arrow",
+                       "nameZh":  "穿透箭",
+                       "description":  "Powerful piercing shot that hits multiple enemies.",
+                       "descriptionZh":  "强力的穿刺射击，可击中多个敌人。",
+                       "jobName":  "Marksman"
+                   },
+                   {
+                       "id":  3221002,
+                       "name":  "Sharp Eyes",
+                       "nameZh":  "火眼晶晶",
+                       "description":  "Party buff that increases critical hit rate and critical damage for all nearby party members. At max level provides +15% critical rate and +20% critical damage for 320 seconds. One of the most valuable party buffs in the game — essential for all boss runs.",
+                       "descriptionZh":  "团队增益技能，提升附近所有队友的暴击率和暴击伤害。最高等级时可提供320秒的+15%暴击率和+20%暴击伤害。游戏中最宝贵的团队增益之一——所有副本跑图都不可或缺。",
+                       "jobName":  "Marksman"
+                   },
+                   {
+                       "id":  3221003,
+                       "name":  "Dragon\u0027s Breath",
+                       "nameZh":  "飞龙冲击波",
+                       "description":  "Knocks back enemies with a powerful gust.",
+                       "descriptionZh":  "对敌人造成伤害并将其击退。",
+                       "jobName":  "Marksman"
+                   },
+                   {
+                       "id":  3221005,
+                       "name":  "Frostprey",
+                       "nameZh":  "冰凤凰",
+                       "description":  "Summons an ice bird that damages enemies.",
+                       "descriptionZh":  "召唤一只冰鸟对敌人造成伤害。",
+                       "jobName":  "Marksman"
+                   },
+                   {
+                       "id":  3221006,
+                       "name":  "Blind",
+                       "nameZh":  "刺眼箭",
+                       "description":  "Reduces enemy accuracy with each attack.",
+                       "descriptionZh":  "每次攻击都会降低敌方的命中率。",
+                       "jobName":  "Marksman"
+                   },
+                   {
+                       "id":  3221007,
+                       "name":  "Snipe",
+                       "nameZh":  "一击要害箭",
+                       "description":  "The Marksman\u0027s ultimate single-target attack. Fires a single devastating shot that always deals 199,999 damage (effectively a fixed-damage skill). Has a cooldown that decreases with level. The only skill in the game with guaranteed fixed damage, making it uniquely powerful against high-defense bosses.",
+                       "descriptionZh":  "射手的终极单体攻击。发射一发 devastating 的射击，总是造成 199,999 点伤害（实际上是一个固定伤害技能）。拥有冷却时间，随着等级提升而减少。游戏内唯一一个保证固定伤害的技能，使其在对抗高防御boss时具有独特优势。",
+                       "jobName":  "Marksman"
+                   },
+                   {
+                       "id":  3221008,
+                       "name":  "Hero\u0027s Will",
+                       "nameZh":  "勇士的意志",
+                       "description":  "Removes all abnormal status effects (seduce, stun, curse, etc.) from yourself. Cooldown decreases with level (600s → 360s). Essential for boss fights.",
+                       "descriptionZh":  "解除自身所有异常状态效果（魅惑、眩晕、诅咒等）。冷却时间随等级降低（600秒→360秒）。对于打BOSS至关重要。",
+                       "jobName":  "Marksman"
+                   },
+                   {
+                       "id":  4000000,
+                       "name":  "Nimble Body",
+                       "nameZh":  "敏捷之躯",
+                       "description":  "Increases Accuracy and Evasion.",
+                       "descriptionZh":  "提升命中率和回避率。",
+                       "jobName":  "Rogue"
+                   },
+                   {
+                       "id":  4000001,
+                       "name":  "Keen Eyes",
+                       "nameZh":  "敏锐之眼",
+                       "description":  "Increases attack range for throwing weapons such as Throwing Stars and Knives.",
+                       "descriptionZh":  "提升投掷武器的攻击范围，例如投掷飞刀和飞镖。",
+                       "jobName":  "Rogue"
+                   },
+                   {
+                       "id":  4001000,
+                       "name":  "Disorder",
+                       "nameZh":  "混乱术",
+                       "description":  "Temporarily decreases the Attack Power and Weapon Def. of an enemy and dissuades it from attacking you. Has no effect on a monster that\u0027s already in \"Disorder.\"",
+                       "descriptionZh":  "暂时降低敌方的攻击力和物理防御，使其不愿攻击你。对已处于『混乱』状态的怪物无效。",
+                       "jobName":  "Rogue"
+                   },
+                   {
+                       "id":  4001001,
+                       "name":  "Dark Sight",
+                       "nameZh":  "暗影潜行",
+                       "description":  "Use MP to hide behind the shadows. Can\u0027t be attacked, and can\u0027t attack either. The effect is activated when used and deactivated when used again.",
+                       "descriptionZh":  "使用MP值潜入阴影中。无法被攻击，也无法攻击。效果在使用时激活，在再次使用时解除。",
+                       "jobName":  "Rogue"
+                   },
+                   {
+                       "id":  4001002,
+                       "name":  "Double Stab",
+                       "nameZh":  "双刺",
+                       "description":  "Use MP to quickly stab a monster twice in one turn using a dagger.",
+                       "descriptionZh":  "使用MP快速对怪物进行两次刺击。",
+                       "jobName":  "Rogue"
+                   },
+                   {
+                       "id":  4001003,
+                       "name":  "Lucky Seven",
+                       "nameZh":  "幸运七式",
+                       "description":  "Use MP to throw 2 throwing stars and apply damage based on LUK, regardless of the rate of Claw Mastery.",
+                       "descriptionZh":  "使用MP释放两颗投掷星，造成基于LUK的伤害，无论Claw Mastery的命中率如何。",
+                       "jobName":  "Rogue"
+                   },
+                   {
+                       "id":  4100000,
+                       "name":  "Claw Mastery",
+                       "nameZh":  "精准暗器",
+                       "description":  "Increases Claw Mastery and Attack Power, and gives a chance to recover used throwing stars when using throwing star attacks. Only applies when a claw is equipped.",
+                       "descriptionZh":  "提升精准暗器熟练度和攻击力，并在使用投掷匕首攻击时有一定几率恢复已使用过的投掷匕首。仅在装备匕首时生效。",
+                       "jobName":  "Assassin"
+                   },
+                   {
+                       "id":  4100001,
+                       "name":  "Critical Throw",
+                       "nameZh":  "暴击投掷",
+                       "description":  "Increases Critical Rate and Critical Damage.",
+                       "descriptionZh":  "提升暴击率和暴击伤害。",
+                       "jobName":  "Assassin"
+                   },
+                   {
+                       "id":  4100002,
+                       "name":  "Critical Recovery",
+                       "nameZh":  "暴击恢复",
+                       "description":  "Recovers additional HP and MP with a certain chance when landing a critical hit. Cannot recover again within 30 seconds after a recovery.",
+                       "descriptionZh":  "在命中暴击时有一定概率恢复额外HP和MP。在30秒内无法再次恢复。",
+                       "jobName":  "Assassin"
+                   },
+                   {
+                       "id":  4101000,
+                       "name":  "Claw Booster",
+                       "nameZh":  "快速暗器",
+                       "description":  "Uses HP and MP to temporarily increase the Attack Speed of the equipped claw. It only applies when the character is equipped with a claw and throwing stars.",
+                       "descriptionZh":  "使用HP和MP暂时提升装备的暗器攻击力。仅在装备暗器时生效。",
+                       "jobName":  "Assassin"
+                   },
+                   {
+                       "id":  4101001,
+                       "name":  "Haste",
+                       "nameZh":  "轻功",
+                       "description":  "Temporarily increases the speed and jump of all party members around the area.",
+                       "descriptionZh":  "暂时提升附近所有队伍成员的移动速度和跳跃能力。",
+                       "jobName":  "Assassin"
+                   },
+                   {
+                       "id":  4101002,
+                       "name":  "Drain",
+                       "nameZh":  "吸血术",
+                       "description":  "Absorbs some of the damage dished out to the enemy as HP. The most one can absorb at once is 25% of the character\u0027s Max HP, and can\u0027t absorb more than the Max HP of the enemy.",
+                       "descriptionZh":  "吸收施放者对敌人造成的部分伤害作为生命值。一次最多吸收角色最大生命值的25%，且不能超过敌人的最大生命值。",
+                       "jobName":  "Assassin"
+                   },
+                   {
+                       "id":  4110000,
+                       "name":  "Claw Guard",
+                       "nameZh":  "爪盾",
+                       "description":  "Increases Weapon Defense, with a chance to perfectly block enemy attacks. It only applies when a claw is equipped.",
+                       "descriptionZh":  "提升物理防御，有一定概率完美格挡敌方攻击。仅在装备爪类武器时生效。",
+                       "jobName":  "Hermit"
+                   },
+                   {
+                       "id":  4111000,
+                       "name":  "Meso Saver",
+                       "nameZh":  "金币守护",
+                       "description":  "Protects yourself with Meso. While the effect is active, it prevents death once when in critical danger and recovers a certain amount of HP.",
+                       "descriptionZh":  "使用金币保护自己。在效果生效期间，当处于濒死状态时可抵挡一次死亡，并恢复一定量的HP。",
+                       "jobName":  "Hermit"
+                   },
+                   {
+                       "id":  4111001,
+                       "name":  "Shadow Partner",
+                       "nameZh":  "影子伙伴",
+                       "description":  "Summons a shadow partner for a certain period of time. The partner follows you and mimics your throwing star attacks to deal extra damage, but all attacks consume twice as many throwing stars.",
+                       "descriptionZh":  "召唤一个影子伙伴一段时间。伙伴会跟随你，并模仿你的投掷星攻击造成额外伤害，但所有攻击消耗的投掷星是普通攻击的两倍。",
+                       "jobName":  "Hermit"
+                   },
+                   {
+                       "id":  4111002,
+                       "name":  "Shadow Web",
+                       "nameZh":  "影网",
+                       "description":  "Throws a shadow spiderweb forward. Temporarily snares caught enemies, dealing damage every second.",
+                       "descriptionZh":  "向前方投掷一个影蛛网。暂时束缚住被捕捉的敌人，每秒造成伤害。",
+                       "jobName":  "Hermit"
+                   },
+                   {
+                       "id":  4111003,
+                       "name":  "Shadow Meso",
+                       "nameZh":  "影之金币",
+                       "description":  "Replaces MP with mesos and attacks enemies with the damage based on the amount of mesos thrown. Nullifies the monsters\u0027 \"weapon def. up\" and \"magic guard up.\"",
+                       "descriptionZh":  "将法力值替换为金币，并使用投掷的金币对敌人造成伤害。使怪物的「物理防御提升」和「魔法防御提升」效果失效。",
+                       "jobName":  "Hermit"
+                   },
+                   {
+                       "id":  4111004,
+                       "name":  "Avenger",
+                       "nameZh":  "复仇者",
+                       "description":  "Consumes MP to create and throw a massive throwing star. The thrown star pierces through enemies to attack up to 4 targets.",
+                       "descriptionZh":  "消耗MP生成并投掷一颗巨大的投掷星。投掷星会穿透敌人，对最多4个目标造成伤害。",
+                       "jobName":  "Hermit"
+                   },
+                   {
+                       "id":  4111005,
+                       "name":  "Flash Jump",
+                       "nameZh":  "闪跃",
+                       "description":  "While in the air after a jump, use this skill to perform a second jump in the direction you are facing.",
+                       "descriptionZh":  "在跳跃后空中时，使用此技能向正面方向进行第二次跳跃。",
+                       "jobName":  "Hermit"
+                   },
+                   {
+                       "id":  4120002,
+                       "name":  "Shadow Shifter",
+                       "nameZh":  "假动作",
+                       "description":  "Chance to dodge attacks.",
+                       "descriptionZh":  "有几率躲避攻击。",
+                       "jobName":  "Night Lord"
+                   },
+                   {
+                       "id":  4120005,
+                       "name":  "Venomous Star",
+                       "nameZh":  "武器用毒液",
+                       "description":  "Stars have a chance to poison enemies.",
+                       "descriptionZh":  "星辰有几率对敌人造成中毒效果。",
+                       "jobName":  "Night Lord"
+                   },
+                   {
+                       "id":  4121000,
+                       "name":  "Maple Warrior",
+                       "nameZh":  "冒险岛勇士",
+                       "description":  "Powerful party buff that increases all base stats (STR, DEX, INT, LUK) by a percentage. At max level grants +16% to all stats for 320 seconds. Essential endgame party buff.",
+                       "descriptionZh":  "强大的队伍增益技能，可提升所有基础属性（力量、敏捷、智力、幸运）的百分比。满级时可为队伍提供320秒的+16%所有属性增益。是终极阶段不可或缺的队伍增益技能。",
+                       "jobName":  "Night Lord"
+                   },
+                   {
+                       "id":  4121003,
+                       "name":  "Taunt",
+                       "nameZh":  "挑衅",
+                       "description":  "Taunts enemies, increasing their attack but also the EXP they give.",
+                       "descriptionZh":  "使敌人攻击你，同时提升他们给予的经验值。",
+                       "jobName":  "Night Lord"
+                   },
+                   {
+                       "id":  4121004,
+                       "name":  "Ninja Ambush",
+                       "nameZh":  "忍者伏击",
+                       "description":  "Damages all enemies on screen over time.",
+                       "descriptionZh":  "对屏幕上的所有敌人造成持续伤害。",
+                       "jobName":  "Night Lord"
+                   },
+                   {
+                       "id":  4121006,
+                       "name":  "Shadow Stars",
+                       "nameZh":  "暗器伤人",
+                       "description":  "Creates unlimited throwing stars temporarily.",
+                       "descriptionZh":  "制造大量临时的投掷星体。",
+                       "jobName":  "Night Lord"
+                   },
+                   {
+                       "id":  4121007,
+                       "name":  "Triple Throw",
+                       "nameZh":  "三连环光击破",
+                       "description":  "The Night Lord\u0027s signature attack. Throws 3 throwing stars simultaneously at a single target. At max level deals 187% × 3 = 561% total damage. Combined with Shadow Partner, this effectively becomes 6 hits per cast. The highest sustained single-target DPS for ranged classes.",
+                       "descriptionZh":  "夜之领主的标志性攻击。同时向单一目标投掷三颗投掷星。最高等级时造成总计561%的伤害。与影伴配合使用时，实际上每次施法可造成6次伤害。是远程职业中持续输出最高的技能。",
+                       "jobName":  "Night Lord"
+                   },
+                   {
+                       "id":  4121008,
+                       "name":  "Ninja Storm",
+                       "nameZh":  "忍者冲击",
+                       "description":  "Damages all nearby enemies and knocks them back.",
+                       "descriptionZh":  "对周围所有敌人造成伤害并击退他们。",
+                       "jobName":  "Night Lord"
+                   },
+                   {
+                       "id":  4121009,
+                       "name":  "Hero\u0027s Will",
+                       "nameZh":  "勇士的意志",
+                       "description":  "Removes all abnormal status effects (seduce, stun, curse, etc.) from yourself. Cooldown decreases with level (600s → 360s). Essential for boss fights.",
+                       "descriptionZh":  "解除自身所有异常状态效果（魅惑、眩晕、诅咒等）。冷却时间随等级降低（600秒→360秒）。对于打BOSS至关重要。",
+                       "jobName":  "Night Lord"
+                   },
+                   {
+                       "id":  4200000,
+                       "name":  "Dagger Mastery",
+                       "nameZh":  "精准短刀",
+                       "description":  "Increases Dagger Mastery and Critical Rate, with a chance to ignore knockback effects. It only applies when a dagger is equipped.",
+                       "descriptionZh":  "提升短刀熟练度和暴击率，并有一定几率忽略击退效果。该效果仅在装备短刀时生效。",
+                       "jobName":  "Bandit"
+                   },
+                   {
+                       "id":  4200001,
+                       "name":  "Nimble Recovery",
+                       "nameZh":  "敏捷恢复",
+                       "description":  "Recover HP and MP with a certain chance when evading. Cannot recover again within 30 seconds after a recovery.",
+                       "descriptionZh":  "在回避时有一定概率恢复HP和MP。30秒内无法再次恢复。",
+                       "jobName":  "Bandit"
+                   },
+                   {
+                       "id":  4201000,
+                       "name":  "Dagger Booster",
+                       "nameZh":  "短刀加成",
+                       "description":  "Uses HP and MP to temporarily increase the Attack Speed of the equipped dagger. It only applies when a dagger is equipped.",
+                       "descriptionZh":  "使用HP和MP暂时提升所装备短刀的攻击力。只有在装备短刀时生效。",
+                       "jobName":  "Bandit"
+                   },
+                   {
+                       "id":  4201001,
+                       "name":  "Haste",
+                       "nameZh":  "轻功",
+                       "description":  "Temporarily increases the speed and jump of all party members around the area.",
+                       "descriptionZh":  "暂时提升周围所有队伍成员的移动速度和跳跃能力。",
+                       "jobName":  "Bandit"
+                   },
+                   {
+                       "id":  4201002,
+                       "name":  "Steal",
+                       "nameZh":  "偷窃术",
+                       "description":  "Attempts to steal an item from up to 2 monsters at once with a given success rate. On a successful steal, stuns the enemies for 1.5 seconds and increases Attack Power for 30 seconds. Stealing works only once per monster and can be attempted until successful.",
+                       "descriptionZh":  "尝试同时从最多2个怪物身上偷取物品，成功率取决于设定。成功偷窃时，会使敌人眩晕1.5秒，并提升攻击力30秒。每次偷窃仅能对每个怪物进行一次尝试，直到成功为止。",
+                       "jobName":  "Bandit"
+                   },
+                   {
+                       "id":  4201003,
+                       "name":  "Savage Blow",
+                       "nameZh":  "狂暴一击",
+                       "description":  "Use MP to attack an enemy up to 6 times in a row with a dagger.",
+                       "descriptionZh":  "使用MP对敌人连续发动六次攻击，使用匕首进行打击。",
+                       "jobName":  "Bandit"
+                   },
+                   {
+                       "id":  4210000,
+                       "name":  "Chakra",
+                       "nameZh":  "气旋",
+                       "description":  "Using Dark Sight while below a certain HP threshold slowly restores HP. The recovery cancels if the Dark Sight effect ends, and cannot trigger again for a certain duration after activation.",
+                       "descriptionZh":  "在生命值低于一定阈值时，使用暗视缓慢恢复生命值。恢复效果在暗视效果消失后会取消，并且在激活后一段时间内无法再次触发。",
+                       "jobName":  "Chief Bandit"
+                   },
+                   {
+                       "id":  4211000,
+                       "name":  "Meso Guard",
+                       "nameZh":  "金币护盾",
+                       "description":  "While active, use Meso to block a portion of incoming damage. The effect is deactivated if you lack the required Meso. The effect is activated when used and deactivated when used again. Required Skill : At least Level 3 on Chakra",
+                       "descriptionZh":  "在生效期间，使用金币可以抵挡一部分 incoming 损害。如果金币不足，效果会失效。效果在使用时激活，在再次使用时失效。所需技能：至少在 Chakra 上达到3级",
+                       "jobName":  "Chief Bandit"
+                   },
+                   {
+                       "id":  4211001,
+                       "name":  "Assaulter",
+                       "nameZh":  "突击者",
+                       "description":  "Instantly deals powerful damage to a single enemy in front and moves behind their back. Has a chance to stun the attacked enemy.",
+                       "descriptionZh":  "立即对前方单个敌人造成巨大伤害，并移动到其背后。有几率使敌人眩晕。",
+                       "jobName":  "Chief Bandit"
+                   },
+                   {
+                       "id":  4211002,
+                       "name":  "Band of Thieves",
+                       "nameZh":  "小偷之环",
+                       "description":  "Upon a successful attack, summons fellow thieves to sweep enemies in front with a coordinated strike.",
+                       "descriptionZh":  "攻击成功时，召唤其他小偷协同攻击敌人前方，进行一次有组织的打击。",
+                       "jobName":  "Chief Bandit"
+                   },
+                   {
+                       "id":  4211003,
+                       "name":  "Pickpocket",
+                       "nameZh":  "扒窃",
+                       "description":  "Temporarily causes monsters to drop mesos when attacked with an offensive skill. The effect is activated when used and deactivated when used again.",
+                       "descriptionZh":  "暂时使怪物在受到攻击时掉落金币。效果在使用技能时激活，在再次使用时解除。",
+                       "jobName":  "Chief Bandit"
+                   },
+                   {
+                       "id":  4211004,
+                       "name":  "Meso Explosion",
+                       "nameZh":  "金币爆炸",
+                       "description":  "Explodes the mesos dropped on the ground around you to attack monsters. The mesos from the monsters killed by someone else will not be able to be used for this. Required Skill : At least Level 3 on Pickpocket",
+                       "descriptionZh":  "将周围地面的金币爆炸以攻击怪物。由他人击杀的怪物掉落的金币无法用于此技能。所需等级：至少3级盗贼技能",
+                       "jobName":  "Chief Bandit"
+                   },
+                   {
+                       "id":  4211005,
+                       "name":  "Flash Jump",
+                       "nameZh":  "闪跃跳",
+                       "description":  "While in the air after a jump, use this skill to perform a second jump in the direction you are facing.",
+                       "descriptionZh":  "在跳跃后空中时，使用此技能向面对方向进行第二次跳跃。",
+                       "jobName":  "Chief Bandit"
+                   },
+                   {
+                       "id":  4220002,
+                       "name":  "Shadow Shifter",
+                       "nameZh":  "假动作",
+                       "description":  "Chance to dodge attacks.",
+                       "descriptionZh":  "有几率躲避攻击。",
+                       "jobName":  "Shadower"
+                   },
+                   {
+                       "id":  4220005,
+                       "name":  "Venomous Stab",
+                       "nameZh":  "武器用毒液",
+                       "description":  "Daggers have a chance to poison enemies.",
+                       "descriptionZh":  "匕首有几率使敌人中毒。",
+                       "jobName":  "Shadower"
+                   },
+                   {
+                       "id":  4221000,
+                       "name":  "Maple Warrior",
+                       "nameZh":  "冒险岛勇士",
+                       "description":  "Powerful party buff that increases all base stats (STR, DEX, INT, LUK) by a percentage. At max level grants +16% to all stats for 320 seconds. Essential endgame party buff.",
+                       "descriptionZh":  "强大的队伍增益技能，可提升所有基础属性（力量、敏捷、智力、幸运）的百分比。在最高等级时，可为队伍提供320秒的+16%所有属性增益。是后期不可或缺的队伍增益技能。",
+                       "jobName":  "Shadower"
+                   },
+                   {
+                       "id":  4221001,
+                       "name":  "Assassinate",
+                       "nameZh":  "暗杀",
+                       "description":  "The Shadower\u0027s signature skill. Delivers a devastating 2-hit assassination strike that deals bonus damage when attacking from Dark Sight. At max level deals 590% × 2 = 1180% total damage. The highest per-cast damage in the game when used from Dark Sight.",
+                       "descriptionZh":  "影刃的标志性技能。造成两次致命打击，当从暗视状态攻击时，会额外造成伤害。最大等级时总伤害为590% × 2 = 1180%。从暗视状态使用时，是游戏中单次施法造成的最高伤害。",
+                       "jobName":  "Shadower"
+                   },
+                   {
+                       "id":  4221003,
+                       "name":  "Taunt",
+                       "nameZh":  "挑衅",
+                       "description":  "Taunts enemies, increasing their attack but also the EXP they give.",
+                       "descriptionZh":  "嘲讽敌人，提高其攻击力，同时增加经验获取量。",
+                       "jobName":  "Shadower"
+                   },
+                   {
+                       "id":  4221004,
+                       "name":  "Ninja Ambush",
+                       "nameZh":  "忍者伏击",
+                       "description":  "Damages all enemies on screen over time.",
+                       "descriptionZh":  "对屏幕上的所有敌人造成持续伤害。",
+                       "jobName":  "Shadower"
+                   },
+                   {
+                       "id":  4221006,
+                       "name":  "Smokescreen",
+                       "nameZh":  "烟幕弹",
+                       "description":  "Creates an area where party members cannot be hit.",
+                       "descriptionZh":  "在范围内制造一个区域，使队伍成员无法被击中。",
+                       "jobName":  "Shadower"
+                   },
+                   {
+                       "id":  4221007,
+                       "name":  "Boomerang Step",
+                       "nameZh":  "一出双击",
+                       "description":  "Rushes through enemies multiple times.",
+                       "descriptionZh":  "多次冲撞敌人。",
+                       "jobName":  "Shadower"
+                   },
+                   {
+                       "id":  4221008,
+                       "name":  "Hero\u0027s Will",
+                       "nameZh":  "勇士的意志",
+                       "description":  "Removes all abnormal status effects (seduce, stun, curse, etc.) from yourself. Cooldown decreases with level (600s → 360s). Essential for boss fights.",
+                       "descriptionZh":  "解除自身所有异常状态效果（魅惑、眩晕、诅咒等）。冷却时间随等级降低（600秒→360秒）。boss战中至关重要。",
+                       "jobName":  "Shadower"
+                   }
+               ],
+    "templates":  [
+                      {
+                          "english":  "{n1}% increased Fire, Ice, Lightning and Poison Resistance",
+                          "chinese":  "{n1}% 增加火、冰、雷电和中毒抵抗"
+                      },
+                      {
+                          "english":  "{n1}% Increased resistance to Fire, Ice, and Lightning elements",
+                          "chinese":  "{n1}% 增加对火、冰和雷元素的抵抗性"
+                      },
+                      {
+                          "english":  "{n1}% Increased resistance to Fire, Ice, and Lightning elements.",
+                          "chinese":  "{n1}% 增加对火、冰和雷元素的抵抗。"
+                      },
+                      {
+                          "english":  "{n1}% success rate, Damage {n2}%; Kills the monster with HP at {n3}% or lower at {n4}% success rate",
+                          "chinese":  "{n1}%命中率，伤害{n2}%; 使怪物在HP为{n3}%或更低时，有{n4}%的成功率击杀"
+                      },
+                      {
+                          "english":  "{n1}% success rate, Final Attack with axe damage {n2}% to up to {n3} enemies",
+                          "chinese":  "{n1}%命中率，最终攻击造成轴伤害，对{n2}%的敌人造成最大{n3}伤害"
+                      },
+                      {
+                          "english":  "{n1}% success rate, Final Attack with blunt weapon damage {n2}%",
+                          "chinese":  "{n1}%命中率，最终攻击使用钝器伤害{n2}%"
+                      },
+                      {
+                          "english":  "{n1}% success rate, Final Attack with bow damage {n2}% to up to {n3} enemies",
+                          "chinese":  "{n1}%命中率，弓伤害对最多{n3}敌人造成{n2}%的伤害"
+                      },
+                      {
+                          "english":  "{n1}% success rate, Final Attack with crossbow damage {n2}%",
+                          "chinese":  "{n1}%命中率，最终攻击造成{n2}%伤害"
+                      },
+                      {
+                          "english":  "{n1}% success rate, Final Attack with polearm damage {n2}%, absorb {n3}% of damage as HP",
+                          "chinese":  "{n1}%命中率，最终攻击造成{n2}%的重武器伤害，吸收{n3}%的伤害转化为HP"
+                      },
+                      {
+                          "english":  "{n1}% success rate, Final Attack with spear damage {n2}%, absorb {n3}% of damage as HP",
+                          "chinese":  "{n1}%命中率，最终攻击造成{n2}%的剑伤，吸收{n3}%的伤害转化为HP"
+                      },
+                      {
+                          "english":  "{n1}% success rate, Final Attack with sword damage {n2}%",
+                          "chinese":  "{n1}%命中率，最终攻击造成剑伤害{n2}%"
+                      },
+                      {
+                          "english":  "{n1}% success rate, Final Attack with sword damage {n2}% to up to {n3} enemies",
+                          "chinese":  "{n1}%命中率，最终攻击造成剑伤害，对{n2}%的敌人造成最大{n3}伤害"
+                      },
+                      {
+                          "english":  "Accuracy +{n1}, Critical Rate +{n2}%",
+                          "chinese":  "命中率 +{n1}, 暴击率 +{n2}%"
+                      },
+                      {
+                          "english":  "Accuracy +{n1}, Evasion +{n2}",
+                          "chinese":  "命中率 +{n1}, 回避率 +{n2}"
+                      },
+                      {
+                          "english":  "Attack range for bows and crossbows: +{n1}",
+                          "chinese":  "弓箭和弩的攻击范围：+{n1}"
+                      },
+                      {
+                          "english":  "Attack range for throwing weapons: +{n1}",
+                          "chinese":  "投掷武器的攻击范围：+{n1}"
+                      },
+                      {
+                          "english":  "Axe Mastery level {n1}, {n2}% chance to inflict bleed, dealing {n3}% total damage over {n4} sec",
+                          "chinese":  "斧头熟练度 {n1}, {n2}% 概率造成出血，造成 {n3}% 总伤害，持续 {n4} 秒"
+                      },
+                      {
+                          "english":  "Blue Snail Shell -{n1}, MP -{n2}; Damage {n3}",
+                          "chinese":  "蓝蜗牛壳 -{n1}, MP -{n2}; 伤害 {n3}"
+                      },
+                      {
+                          "english":  "Blunt Weapon Mastery level {n1}, {n2}% chance to ignore enemy Weapon Def.",
+                          "chinese":  "钝器熟练度等级 {n1}, {n2}% 的机会忽略敌方武器防御。"
+                      },
+                      {
+                          "english":  "Bow Mastery level {n1}, Evasion +{n2}",
+                          "chinese":  "弓箭熟练度等级 {n1}, 回避率 +{n2}"
+                      },
+                      {
+                          "english":  "Claw Mastery level {n1}, Attack Power +{n2}, {n3}% chance to retrieve used throwing stars",
+                          "chinese":  "爪类熟练度等级 {n1}，攻击力 +{n2}，有 {n3}% 的几率拾取已使用的投掷星。"
+                      },
+                      {
+                          "english":  "Critical hits have a {n1}% chance to reduce Enemy Speed by {n2} for {n3} sec",
+                          "chinese":  "暴击 hits 有 {n1}% 的几率使敌人速度降低 {n2} 于 {n3} 秒"
+                      },
+                      {
+                          "english":  "Critical Rate +{n1}%, Critical Damage +{n2}%",
+                          "chinese":  "暴击率 +{n1}%, 暴击伤害 +{n2}%"
+                      },
+                      {
+                          "english":  "Crossbow Mastery level {n1}, {n2}% chance to ignore enemy Weapon Def.",
+                          "chinese":  "十字弓熟练度等级 {n1}, {n2}% 的机会忽略敌方物理防御。"
+                      },
+                      {
+                          "english":  "Dagger Mastery level {n1}, Critical Rate +{n2}%, {n3}% chance to ignore knockbacks",
+                          "chinese":  "匕首熟练度等级 {n1}, 暴击率 +{n2}%, {n3}% 概率忽略击退"
+                      },
+                      {
+                          "english":  "Dark Sight MP cost -{n1}, When HP is {n2}% or below, restores a total of {n3}% HP over {n4} sec, Cannot retrigger for {n5} sec",
+                          "chinese":  "暗视 MP消耗 -{n1}, 当HP为{n2}%或以下时，会在{n4}秒内恢复总HP的{n3}%, 无法在{n5}秒内再次触发"
+                      },
+                      {
+                          "english":  "For every attack, {n1}% success rate, absorb {n2}% of the enemy\u0027s Max MP",
+                          "chinese":  "每次攻击，{n1}%成功率，吸收敌人max MP的{n2}%"
+                      },
+                      {
+                          "english":  "Heal {n1} HP every {n2} seconds",
+                          "chinese":  "治疗每{n2}秒恢复{n1} HP"
+                      },
+                      {
+                          "english":  "HP -{n1}, MP -{n2}; Damage {n3}%",
+                          "chinese":  "HP -{n1}, MP -{n2}; 伤害 {n3}%"
+                      },
+                      {
+                          "english":  "HP -{n1}, MP -{n2}; Damage {n3}%; {n4}% chance to maintain Charged state",
+                          "chinese":  "HP -{n1}, MP -{n2}; 伤害 {n3}%; {n4}% 概率维持充能状态"
+                      },
+                      {
+                          "english":  "HP -{n1}, MP -{n2}; Damage {n3}%; Range {n4}%; Stun for {n5} sec",
+                          "chinese":  "HP -{n1}, MP -{n2}; 伤害 {n3}%; 攻击范围 {n4}%; 麻痹持续{n5}秒"
+                      },
+                      {
+                          "english":  "HP -{n1}, MP -{n2}; Increases Axe Attack Speed by {n3} stages for {n4} sec",
+                          "chinese":  "HP -{n1}, MP -{n2}; 提高斧类攻击力速度{n3}阶段，持续{n4}秒"
+                      },
+                      {
+                          "english":  "HP -{n1}, MP -{n2}; Increases Blunt Weapon Attack Speed by {n3} stages for {n4} sec",
+                          "chinese":  "HP -{n1}, MP -{n2}; 提高重击武器攻击速度{n3}阶段，持续{n4}秒"
+                      },
+                      {
+                          "english":  "HP -{n1}, MP -{n2}; Increases Bow Attack Speed by {n3} stages for {n4} sec",
+                          "chinese":  "HP -{n1}, MP -{n2}; 提高弓箭攻击力速度{n3}阶段，持续{n4}秒"
+                      },
+                      {
+                          "english":  "HP -{n1}, MP -{n2}; Increases Claw Attack Speed by {n3} stages for {n4} sec",
+                          "chinese":  "HP -{n1}, MP -{n2}; 提高爪击攻击速度{n3}阶段，持续{n4}秒"
+                      },
+                      {
+                          "english":  "HP -{n1}, MP -{n2}; Increases Crossbow Attack Speed by {n3} stages for {n4} sec",
+                          "chinese":  "HP -{n1}, MP -{n2}; 提高弓箭攻击力速度{n3}级持续{n4}秒"
+                      },
+                      {
+                          "english":  "HP -{n1}, MP -{n2}; Increases Dagger Attack Speed by {n3} stages for {n4} sec",
+                          "chinese":  "HP -{n1}, MP -{n2}; 提高匕首攻击力速度{n3}阶段，持续{n4}秒"
+                      },
+                      {
+                          "english":  "HP -{n1}, MP -{n2}; Increases Polearm Attack Speed by {n3} stages for {n4} sec",
+                          "chinese":  "HP -{n1}, MP -{n2}; 提高剑类武器攻击力速度{n3}阶段，持续{n4}秒"
+                      },
+                      {
+                          "english":  "HP -{n1}, MP -{n2}; Increases Spear Attack Speed by {n3} stages for {n4} sec",
+                          "chinese":  "HP -{n1}, MP -{n2}; 提高长矛攻击力速度{n3}阶段，持续{n4}秒"
+                      },
+                      {
+                          "english":  "HP -{n1}, MP -{n2}; Increases Sword Attack Speed by {n3} stages for {n4} sec",
+                          "chinese":  "HP -{n1}, MP -{n2}; 提高剑攻击力速度{n3}阶段，持续{n4}秒"
+                      },
+                      {
+                          "english":  "HP -{n1}; MP -{n2}; Damage {n3}%",
+                          "chinese":  "HP -{n1}; MP -{n2}; 伤害 {n3}%"
+                      },
+                      {
+                          "english":  "HP -{n1}; MP -{n2}; Damage {n3}%; {n4}% chance to inflict bleed, dealing {n5}% total damage over {n6} sec.",
+                          "chinese":  "HP -{n1}; MP -{n2}; 伤害 {n3}%; {n4}% 概率造成流血，造成 {n5}% 总伤害 over {n6} 秒。"
+                      },
+                      {
+                          "english":  "Max HP +{n1}%",
+                          "chinese":  "最大HP +{n1}%"
+                      },
+                      {
+                          "english":  "Max MP +{n1}%",
+                          "chinese":  "最大MP +{n1}%"
+                      },
+                      {
+                          "english":  "MP - {n1}, Damage {n2}%, attack {n3} times",
+                          "chinese":  "MP - {n1}, 伤害 {n2}%, 攻击 {n3}次"
+                      },
+                      {
+                          "english":  "MP - {n1}, Summoning Rock -{n2}; For {n3} sec, summons HP {n4} puppet",
+                          "chinese":  "MP - {n1}, 召唤岩石 -{n2}；持续{n3}秒，召唤HP {n4}的傀儡"
+                      },
+                      {
+                          "english":  "MP -{n1}, {n2}% chance to steal, apply {n3}% in damage, on success +{n4} Attack Power for {n5} sec",
+                          "chinese":  "MP减少{n1}点，有{n2}%的几率偷取，造成{n3}%的伤害，成功时增加{n4}点攻击力，持续{n5}秒。"
+                      },
+                      {
+                          "english":  "MP -{n1}, Basic Attack {n2}, Mastery level {n3}",
+                          "chinese":  "MP -{n1}, 基础攻击 {n2}, 熟练度等级 {n3}"
+                      },
+                      {
+                          "english":  "MP -{n1}, Damage {n2}%, {n3}% chance to be stunned for {n4} sec",
+                          "chinese":  "MP -{n1}, 伤害 {n2}%, {n3}% 概率使目标眩晕 {n4} 秒"
+                      },
+                      {
+                          "english":  "MP -{n1}, Magic Rock -{n2}; Increases Magic Casting Speed by {n3} stage for {n4} sec",
+                          "chinese":  "MP -{n1}, Magic Rock -{n2}; 提高魔法施放速度{n3}阶段，持续{n4}秒"
+                      },
+                      {
+                          "english":  "MP -{n1}, Magic Rock -{n2}; Increases Magic Casting Speed by {n3} stages for {n4} sec",
+                          "chinese":  "MP -{n1}, Magic Rock -{n2}; 提高魔法施放速度{n3}阶段，持续{n4}秒"
+                      },
+                      {
+                          "english":  "MP -{n1}, Magic Rock -{n2}; Portal duration {n3} sec",
+                          "chinese":  "MP -{n1}, 魔法石 -{n2}；传送门持续时间 {n3} 秒"
+                      },
+                      {
+                          "english":  "MP -{n1}, Magic Rock -{n2}; Protects yourself with a holy symbol for {n3} min, resurrecting with {n4}% HP recovered",
+                          "chinese":  "MP -{n1}, Magic Rock -{n2}; 为你施加圣符保护 {n3} 分钟，复活时恢复 {n4}% HP"
+                      },
+                      {
+                          "english":  "MP -{n1}, Mastery {n2}%, Explode up to {n3}",
+                          "chinese":  "法力值-{n1}，熟练度{n2}%，最大爆炸次数{n3}次"
+                      },
+                      {
+                          "english":  "MP -{n1}, Summoning Rock -{n2}; Summons a dragon with {n3} Attack and Mastery level {n4} for {n5} sec",
+                          "chinese":  "MP减少{n1}点，召唤岩石-{n2}；召唤一只攻击力{n3}、熟练度{n4}的龙，持续{n5}秒。"
+                      },
+                      {
+                          "english":  "MP -{n1}, Summoning Rock -{n2}; Summons a Golden Eagle with {n3} Attack Power for {n4} sec; {n5}% chance to be stunned for {n6} sec",
+                          "chinese":  "MP减少{n1}点，召唤岩石-{n2}；召唤一只攻击力{n3}的黄金鹰持续{n4}秒；有{n5}%的几率被眩晕{n6}秒。"
+                      },
+                      {
+                          "english":  "MP -{n1}, Summoning Rock -{n2}; Summons a shadow partner for {n3} sec, Deals +{n4}% extra damage",
+                          "chinese":  "MP减少{n1}点，召唤岩石-{n2}；召唤阴影伙伴持续{n3}秒，造成额外{n4}%的伤害。"
+                      },
+                      {
+                          "english":  "MP -{n1}, Summoning Rock -{n2}; Summons a Silver Hawk with {n3} Attack Power for {n4} sec; {n5}% chance to be stunned for {n6} sec",
+                          "chinese":  "MP减少{n1}点，召唤岩石-{n2}；召唤一只攻击力{n3}的银鹰持续{n4}秒；有{n5}%的几率被击倒{n6}秒。"
+                      },
+                      {
+                          "english":  "MP -{n1}, Summons a poison mist that lasts for {n2} sec, Attack Range {n3}%, {n4}% success rate, deals {n5} Basic Attack over {n6} sec",
+                          "chinese":  "MP -{n1}, 召唤毒雾持续{n2}秒，攻击范围{n3}%，{n4}%成功概率，造成{n5}基础伤害持续{n6}秒"
+                      },
+                      {
+                          "english":  "MP -{n1}, Uses {n2} Arrows, Damage {n3}%",
+                          "chinese":  "MP -{n1}, 使用 {n2} 支箭，伤害 {n3}%"
+                      },
+                      {
+                          "english":  "MP -{n1}, Uses {n2} Arrows, Damage {n3}%, Attacks {n4} enemy {n5} times",
+                          "chinese":  "MP -{n1}, 使用 {n2} 支箭，伤害 {n3}%，攻击 {n4} 个敌人 {n5} 次"
+                      },
+                      {
+                          "english":  "MP -{n1}; {n2}% chance to drop Mesos upon attacking; Max {n3} Mesos can exist",
+                          "chinese":  "MP减少{n1}点；攻击时有{n2}%的几率掉落Mesos；最多可存在{n3}个Mesos"
+                      },
+                      {
+                          "english":  "MP -{n1}; {n2}% chance to morph into a Blue Snail for {n3} sec",
+                          "chinese":  "MP减少{n1}点；有{n2}%的几率变成蓝蜗牛持续{n3}秒"
+                      },
+                      {
+                          "english":  "MP -{n1}; {n2}% chance to Seal enemies for {n3} sec",
+                          "chinese":  "法力值-{n1}；有{n2}%的几率使敌人封印{n3}秒"
+                      },
+                      {
+                          "english":  "MP -{n1}; {n2}% damage with {n3} summoned thieves",
+                          "chinese":  "MP -{n1}; {n2}% 伤害 with {n3} 召唤的盗贼"
+                      },
+                      {
+                          "english":  "MP -{n1}; Accuracy +{n2}, Evasion +{n3} for {n4} sec",
+                          "chinese":  "MP -{n1}; 准确度 +{n2}, 回避 +{n3} 持续 {n4} 秒"
+                      },
+                      {
+                          "english":  "MP -{n1}; Accuracy +{n2}, Evasion +{n3}, and HP recovery from the Heal skill is increased by {n4}% for {n5} sec",
+                          "chinese":  "MP -{n1}; 准确度 +{n2}, 回避 +{n3}, 并且治疗技能的HP恢复量增加{n4}%持续{n5}秒"
+                      },
+                      {
+                          "english":  "MP -{n1}; Attack {n2}x with {n3}% damage",
+                          "chinese":  "MP -{n1}; 攻击 {n2}次 造成 {n3}% 伤害"
+                      },
+                      {
+                          "english":  "MP -{n1}; Attack Power +{n2}, Weapon Def. -{n3} for {n4} sec",
+                          "chinese":  "MP -{n1}; 攻击力 +{n2}, 物理防御 -{n3} for {n4} sec"
+                      },
+                      {
+                          "english":  "MP -{n1}; Attack without using up any arrows for {n2} sec",
+                          "chinese":  "MP -{n1}; 攻击不消耗箭矢持续{n2}秒"
+                      },
+                      {
+                          "english":  "MP -{n1}; Basic Attack {n2} on {n3} enemies, Mastery level {n4}",
+                          "chinese":  "MP -{n1}; 基础攻击 {n2} 次对 {n3} 个敌人，熟练度等级 {n4}"
+                      },
+                      {
+                          "english":  "MP -{n1}; Basic Attack {n2}, Mastery level {n3}, Attack Range {n4}%",
+                          "chinese":  "MP -{n1}; 基础攻击 {n2}, 熟练度等级 {n3}, 攻击范围 {n4}%"
+                      },
+                      {
+                          "english":  "MP -{n1}; Basic Attack {n2}, Mastery level {n3}, Attack Range {n4}%; Slowed for {n5} sec",
+                          "chinese":  "MP -{n1}; 基础攻击 {n2}, 熟练度等级 {n3}, 攻击范围 {n4}%; 移动速度降低 {n5} 秒"
+                      },
+                      {
+                          "english":  "MP -{n1}; Basic Attack {n2}, Mastery level {n3}, Range {n4}%; Detonates Poison debuffs",
+                          "chinese":  "MP -{n1}; 基础攻击 {n2}, 熟练度等级 {n3}, 范围 {n4}%; 解除中毒 debuff"
+                      },
+                      {
+                          "english":  "MP -{n1}; Basic Attack {n2}, Mastery level {n3}; {n4}% chance to be electrocuted",
+                          "chinese":  "MP -{n1}；基础攻击 {n2}，熟练度等级 {n3}；{n4}% 的几率被电击"
+                      },
+                      {
+                          "english":  "MP -{n1}; Basic Attack {n2}, Mastery level {n3}; {n4}% success rate, deals {n5} Basic Attack over {n6} sec",
+                          "chinese":  "MP -{n1}; 基础攻击 {n2}, 熟练度等级 {n3}; {n4}% 成功率, 造成 {n5} 基础攻击 over {n6} 秒"
+                      },
+                      {
+                          "english":  "MP -{n1}; Basic Attack {n2}, Mastery level {n3}; Deals {n4} Basic Attack over {n5} sec",
+                          "chinese":  "MP -{n1}；基础攻击 {n2}，熟练度等级 {n3}；造成 {n4} 基础攻击 over {n5} 秒"
+                      },
+                      {
+                          "english":  "MP -{n1}; Basic Attack {n2}, Mastery level {n3}; Slowed for {n4} sec",
+                          "chinese":  "MP -{n1}; 基础攻击 {n2}, 熟练度等级 {n3}; 慢速持续 {n4} 秒"
+                      },
+                      {
+                          "english":  "MP -{n1}; Blocks {n2}% of incoming damage using Meso; Consumes Meso equal to {n3}% of the blocked damage",
+                          "chinese":  "MP -{n1}；使用Meso阻挡{n2}%的 incoming 伤害；消耗的Meso等于被阻挡伤害的{n3}%"
+                      },
+                      {
+                          "english":  "MP -{n1}; Cooldown {n2} sec; Attack Power of {n3} monsters decreased by {n4}% for {n5} sec",
+                          "chinese":  "MP -{n1}；冷却 {n2} 秒；{n3} 的怪物攻击力降低 {n4}% 持续 {n5} 秒"
+                      },
+                      {
+                          "english":  "MP -{n1}; Cooldown {n2} sec; Physical Defense of {n3} monsters set to {n4} for {n5} sec.",
+                          "chinese":  "MP -{n1}；冷却 {n2} 秒；{n3} 种怪物的物理防御设为 {n4} 持续 {n5} 秒。"
+                      },
+                      {
+                          "english":  "MP -{n1}; Cooldown {n2} sec; Removes Fire, Lightning, and Ice resistance from {n3} monsters for {n4} sec.",
+                          "chinese":  "MP -{n1}；冷却 {n2} 秒；解除 {n3} 怪物的火、雷电和冰抗性，持续 {n4} 秒。"
+                      },
+                      {
+                          "english":  "MP -{n1}; Damage {n2}%",
+                          "chinese":  "MP -{n1}; 伤害 {n2}%"
+                      },
+                      {
+                          "english":  "MP -{n1}; damage {n2}%, {n3}% chance to absorb {n4}% of damage as HP",
+                          "chinese":  "MP -{n1}; 伤害 {n2}%, {n3}% 概率吸收 {n4}% 的伤害作为HP"
+                      },
+                      {
+                          "english":  "MP -{n1}; Damage {n2}%, knockback {n3} enemies by {n4}",
+                          "chinese":  "MP -{n1}; 伤害 {n2}%, 推开 {n3} 名敌人 by {n4}"
+                      },
+                      {
+                          "english":  "MP -{n1}; Damage {n2}%; {n3}% chance to reduce enemy\u0027s Accuracy for {n4} sec.",
+                          "chinese":  "MP -{n1}; 伤害 {n2}%; {n3}% 概率降低敌人命中率 {n4} 秒。"
+                      },
+                      {
+                          "english":  "MP -{n1}; Damage {n2}%; Attacks {n3} enemies {n4} times",
+                          "chinese":  "MP -{n1}; 伤害 {n2}%; 攻击 {n3} enemies {n4}次"
+                      },
+                      {
+                          "english":  "MP -{n1}; Damage {n2}%; Attacks {n3} enemy {n4} times",
+                          "chinese":  "MP -{n1}; 伤害 {n2}%; 攻击 {n3} 敌方 {n4} 次次"
+                      },
+                      {
+                          "english":  "MP -{n1}; Damage {n2}%; Combo chance {n3}% for {n4} combos; Range {n5}%; Evasion -{n6} for {n7} sec.",
+                          "chinese":  "MP -{n1}; 伤害 {n2}%; 组合概率 {n3}% 对于 {n4} 组合；范围 {n5}%; 回避 -{n6} 对于 {n7} 秒。"
+                      },
+                      {
+                          "english":  "MP -{n1}; Damage increases by {n2}% while maintaining at least {n3} combo; Max combo count {n4}",
+                          "chinese":  "MP -{n1}; 伤害增加{n2}%，在保持至少{n3}连击时；最大连击次数{n4}"
+                      },
+                      {
+                          "english":  "MP -{n1}; Disappear into the shadows, regular movement speed while active",
+                          "chinese":  "MP -{n1}；消失于阴影中，处于生效状态时正常移动速度"
+                      },
+                      {
+                          "english":  "MP -{n1}; Disappear into the shadows, Speed -{n2} while active",
+                          "chinese":  "MP -{n1}; 消失于阴影中，速度 -{n2} while active"
+                      },
+                      {
+                          "english":  "MP -{n1}; Enemy Speed -{n2}, Evasion -{n3} for {n4} sec",
+                          "chinese":  "MP减少{n1}点，敌人速度减少{n2}，回避减少{n3}，持续{n4}秒。"
+                      },
+                      {
+                          "english":  "MP -{n1}; Enemy Speed -{n2}, Weapon Def. -{n3} for {n4} sec",
+                          "chinese":  "法力值减少{n1}点；敌人速度降低{n2}点，武器防御力降低{n3}点，持续{n4}秒。"
+                      },
+                      {
+                          "english":  "MP -{n1}; Enemy\u0027s Attack Power -{n2}, Weapon Def. -{n3} for {n4} sec",
+                          "chinese":  "MP减少{n1}点；敌人攻击力减少{n2}点，武器防御力减少{n3}点，持续{n4}秒。"
+                      },
+                      {
+                          "english":  "MP -{n1}; Fire Damage {n2}%, {n3}% chance to deal {n4}% Damage over {n5} sec",
+                          "chinese":  "MP -{n1}; 火伤害 {n2}%, {n3}% 概率造成 {n4}% 伤害 over {n5} 秒"
+                      },
+                      {
+                          "english":  "MP -{n1}; For {n2} sec, return {n3}% of the physical damage received",
+                          "chinese":  "MP -{n1}; 对于 {n2} 秒，回复 {n3}% 的物理伤害"
+                      },
+                      {
+                          "english":  "MP -{n1}; HP -{n2} every {n3} sec; Attack Power +{n4}",
+                          "chinese":  "法力值减少{n1}点；每{n3}秒生命值减少{n2}点；攻击力提升{n4}点。"
+                      },
+                      {
+                          "english":  "MP -{n1}; Ice Damage {n2}%, {n3}% chance to inflict Slow for {n4} sec",
+                          "chinese":  "MP -{n1}; 冰伤害 {n2}%, {n3}% 概率造成迟缓 for {n4} 秒"
+                      },
+                      {
+                          "english":  "MP -{n1}; Imbues weapon with Fire for {n2} seconds; Damage +{n3}%; {n4}% chance to deal {n5}% Damage over {n6} sec.",
+                          "chinese":  "MP -{n1}; 为武器附魔火焰持续{n2}秒；伤害+{n3}%；有{n4}%的几率造成{n5}%的伤害持续{n6}秒。"
+                      },
+                      {
+                          "english":  "MP -{n1}; Imbues weapon with Ice for {n2} seconds; Damage +{n3}%; {n4}% chance to Freeze enemies for {n5} sec.",
+                          "chinese":  "MP -{n1}; 为武器附魔冰属性持续{n2}秒；伤害+{n3}%；有{n4}%的几率使敌人冻结{n5}秒。"
+                      },
+                      {
+                          "english":  "MP -{n1}; Imbues weapon with Lightning for {n2} seconds; Damage +{n3}%; {n4}% chance to be electrocuted",
+                          "chinese":  "MP -{n1}; 为武器附着雷电 {n2} 秒；伤害 +{n3}%; {n4}% 概率被电击"
+                      },
+                      {
+                          "english":  "MP -{n1}; Imbues weapon with Lightning for {n2} seconds; Damage +{n3}%; {n4}%chance to be electrocuted",
+                          "chinese":  "MP -{n1}; 为武器附着雷电 {n2} 秒；伤害 +{n3}%; {n4}% chance to be electrocuted"
+                      },
+                      {
+                          "english":  "MP -{n1}; Jumps again in mid-air",
+                          "chinese":  "MP -{n1}；空中再次跳跃"
+                      },
+                      {
+                          "english":  "MP -{n1}; Leap backward",
+                          "chinese":  "MP -{n1}；后退一步"
+                      },
+                      {
+                          "english":  "MP -{n1}; Leap forward",
+                          "chinese":  "MP -{n1}；向前跃出"
+                      },
+                      {
+                          "english":  "MP -{n1}; Max HP +{n2}% for {n3} sec",
+                          "chinese":  "法力值减少{n1}点；{n3}秒内最大生命值增加{n2}%"
+                      },
+                      {
+                          "english":  "MP -{n1}; MP cost increased to {n2}%, Magic Attack Damage increased to {n3}%",
+                          "chinese":  "法力值减少{n1}点；法力消耗增加至{n2}%，魔法攻击力伤害增加至{n3}%。"
+                      },
+                      {
+                          "english":  "MP -{n1}; Party\u0027s Magic Attack +{n2} for {n3} sec",
+                          "chinese":  "法力值-{n1}；队伍魔法攻击提升{n2}点，持续{n3}秒"
+                      },
+                      {
+                          "english":  "MP {n1}; Physical damage -{n2}%, Basic Attack {n3} non-elemental magic damage for {n4} sec",
+                          "chinese":  "MP {n1}; 物理伤害 -{n2}%, 基础攻击造成{n3}非元素魔法伤害，持续{n4}秒"
+                      },
+                      {
+                          "english":  "MP -{n1}; Range {n2}%; {n3}% chance to cure Poison, Blind, Weakness, and Curse conditions",
+                          "chinese":  "MP减少{n1}点；范围{n2}%；有{n3}%的几率治愈中毒、失明、虚弱和诅咒状态。"
+                      },
+                      {
+                          "english":  "MP -{n1}; Recover HP {n2} in {n3} sec. Cooldown: {n4} min.",
+                          "chinese":  "MP -{n1}; 回复HP {n2} 在 {n3} 秒内。冷却时间：{n4} 分钟。"
+                      },
+                      {
+                          "english":  "MP -{n1}; Recovery rate {n2}%",
+                          "chinese":  "MP -{n1}; 回复率 {n2}%"
+                      },
+                      {
+                          "english":  "MP -{n1}; Replace {n2}% of HP damage with MP while active",
+                          "chinese":  "MP -{n1}; 用MP替换{n2}%的HP伤害"
+                      },
+                      {
+                          "english":  "MP -{n1}; Rush, with {n2} in distance; Damage {n3}%",
+                          "chinese":  "MP -{n1}；突进，距离{n2}；伤害{n3}%"
+                      },
+                      {
+                          "english":  "MP -{n1}; Snares up to {n2} enemies for {n3} sec, dealing a total of {n4}% Damage",
+                          "chinese":  "MP -{n1}; 俘获最多{n2}个敌人{n3}秒，造成{n4}%伤害"
+                      },
+                      {
+                          "english":  "MP -{n1}; speed +{n2} for {n3} sec. Cooldown: {n4} min.",
+                          "chinese":  "MP -{n1}; 速度+{n2}持续{n3}秒。冷却时间：{n4}分钟。"
+                      },
+                      {
+                          "english":  "MP -{n1}; Speed +{n2}, Jump +{n3} for {n4} sec",
+                          "chinese":  "MP -{n1}; 速度+{n2}, 跳跃+{n3}持续{n4}秒"
+                      },
+                      {
+                          "english":  "MP -{n1}; Stun chance {n2}% for {n3} sec, damage {n4}%",
+                          "chinese":  "MP -{n1}; 麻烦 {n2}% for {n3} sec, damage {n4}%"
+                      },
+                      {
+                          "english":  "MP -{n1}; Teleport, with {n2} in distance",
+                          "chinese":  "MP -{n1}；传送，距离为{n2}"
+                      },
+                      {
+                          "english":  "MP -{n1}; Thrown Stars -{n2}; Damage {n3}%",
+                          "chinese":  "MP -{n1}; 飞星 -{n2}; 伤害 {n3}%"
+                      },
+                      {
+                          "english":  "MP -{n1}; Weapon Def. +{n2}% for {n3} sec",
+                          "chinese":  "MP -{n1}; 武器防御 +{n2}% for {n3}秒"
+                      },
+                      {
+                          "english":  "MP -{n1}; Weapon Def. +{n2}, {n3}% chance to ignore knockbacks for {n4} sec",
+                          "chinese":  "MP -{n1}; 武器防御 +{n2}, {n3}% 概率忽略击退 for {n4} 秒"
+                      },
+                      {
+                          "english":  "MP -{n1}; Weapon Def. +{n2}, Magic Def. +{n3} for {n4} sec",
+                          "chinese":  "MP -{n1}; 武器防御 +{n2}, 魔法防御 +{n3} for {n4} sec"
+                      },
+                      {
+                          "english":  "Polearm Mastery level {n1}, Speed +{n2}",
+                          "chinese":  "长柄武器熟练度等级 {n1}, 速度 +{n2}"
+                      },
+                      {
+                          "english":  "Recover {n1} additional MP every {n2} sec.",
+                          "chinese":  "每{n2}秒恢复{n1}点MP。"
+                      },
+                      {
+                          "english":  "Recover {n1}% HP and {n2}% MP with a {n3}% chance when evading",
+                          "chinese":  "恢复{n1}% HP和{n2}% MP，成功回避时有{n3}% chance。"
+                      },
+                      {
+                          "english":  "Recover {n1}% HP and {n2}% MP with a {n3}% chance when landing a critical hit",
+                          "chinese":  "恢复 {n1}% HP 和 {n2}% MP，有 {n3}% 的几率在暴击命中时获得。"
+                      },
+                      {
+                          "english":  "Red Snail Shell -{n1}, MP -{n2}; Damage {n3}",
+                          "chinese":  "红蜗牛壳 -{n1}, MP -{n2}; 伤害 {n3}"
+                      },
+                      {
+                          "english":  "Regenerates {n1}% of Max MP every {n2} seconds; increases MP recovery from items by {n3}%",
+                          "chinese":  "每{n2}秒恢复{n1}%的最大MP；物品恢复MP效果提升{n3}%。"
+                      },
+                      {
+                          "english":  "Regenerates HP every {n1} seconds; increases HP recovery from items by {n2}%",
+                          "chinese":  "每{n1}秒恢复HP；物品造成的HP恢复效果提升{n2}%。"
+                      },
+                      {
+                          "english":  "Snail Shell -{n1}, MP -{n2}; Damage {n3}",
+                          "chinese":  "蜗牛壳 -{n1}, MP -{n2}; 伤害 {n3}"
+                      },
+                      {
+                          "english":  "Spear Mastery level {n1}, Critical Rate +{n2}%",
+                          "chinese":  "长矛熟练度 {n1}，暴击率 +{n2}%"
+                      },
+                      {
+                          "english":  "Sword Mastery level {n1}, Weapon Def. +{n2}",
+                          "chinese":  "剑士熟练度 {n1}，武器防御 +{n2}"
+                      },
+                      {
+                          "english":  "Throws {n1} Mesos to deal {n2}x damage; Chance to reduce Meso cost by {n3}% based on DEX",
+                          "chinese":  "向{n1}投掷Meso造成{n2}x伤害；基于DEX减少Meso消耗量的{n3}%。"
+                      },
+                      {
+                          "english":  "Uses {n1} times level in Mesos, Magic Stone -{n2}; Prevents death from fatal damage and recovers {n3}% HP for {n4} min",
+                          "chinese":  "使用 {n1} 级的 Mesos，魔法石 -{n2}；防止致命伤害并恢复 {n3}% HP，持续 {n4} 秒"
+                      },
+                      {
+                          "english":  "When a claw is equipped, Weapon Def. +{n1}; {n2}% chance to block physical attacks",
+                          "chinese":  "当装备爪时，物理防御+{n1}；{n2}% chance to block physical attacks"
+                      }
+                  ]
+}
