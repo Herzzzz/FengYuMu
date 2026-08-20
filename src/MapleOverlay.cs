@@ -1036,6 +1036,26 @@ namespace MapleOverlay
         public string Kind;
     }
 
+    internal sealed class VisualColorBand
+    {
+        public int Left;
+        public int Right;
+        public int Top;
+        public int Bottom;
+        public float CenterX { get { return (Left + Right) / 2.0f; } }
+    }
+
+    internal sealed class CharacterStatVisualLayout
+    {
+        public readonly List<VisualColorBand> UpperRows = new List<VisualColorBand>();
+        public float Left;
+        public float Top;
+        public float Scale;
+        public Rectangle Crop;
+        public float RightLeft { get { return Left + 360.0f * Scale; } }
+        public float RightTop { get { return Top + 112.0f * Scale; } }
+    }
+
     internal static class ChatRegionSettings
     {
         private const int Scale = 10000;
@@ -1351,7 +1371,7 @@ namespace MapleOverlay
         private void BuildTray()
         {
             tray.Icon = SystemIcons.Information;
-            tray.Text = "枫语幕 v2.1.1";
+            tray.Text = "枫语幕 v2.1.2";
             tray.Visible = true;
             ContextMenuStrip menu = new ContextMenuStrip();
             ToolStripMenuItem dictionary = new ToolStripMenuItem("打开并更改词库");
@@ -1381,7 +1401,7 @@ namespace MapleOverlay
                 visibleTranslation = false;
                 labels.Clear();
                 Invalidate();
-                tray.Text = "枫语幕 v2.1.1（内存待机）";
+                tray.Text = "枫语幕 v2.1.2（内存待机）";
             }
             else await ShowTranslationAsync();
         }
@@ -1402,7 +1422,7 @@ namespace MapleOverlay
             visibleTranslation = false;
             labels.Clear();
             Invalidate();
-            tray.Text = "枫语幕 v2.1.1（低配置优化）";
+            tray.Text = "枫语幕 v2.1.2（低配置优化）";
         }
 
         private async Task ShowTranslationAsync()
@@ -1475,6 +1495,7 @@ namespace MapleOverlay
                         }
                         else g.CopyFromScreen(screen.Left, screen.Top, 0, 0, screen.Size, CopyPixelOperation.SourceCopy);
                     }
+                    CharacterStatVisualLayout visualCharacter = FindCharacterStatVisualLayout(bitmap);
                     float ocrScale;
                     // A 2200px first pass keeps classic-client tooltip and quest text legible.
                     // The indexed matchers below are now cheap enough that this remains well inside
@@ -1483,6 +1504,8 @@ namespace MapleOverlay
                     {
                         OcrResult result = await RecognizeAsync(prepared);
                         List<OverlayLabel> next = BuildLabels(result, ocrScale, prepared);
+                        if (visualCharacter != null)
+                            AddCharacterStatVisualLayoutLabels(next, visualCharacter, screen);
                         benchmarkOcrText = result.Text;
                         if (Program.Benchmark)
                         {
@@ -1498,17 +1521,25 @@ namespace MapleOverlay
                         bool useHoverPass = !Program.Benchmark ||
                             (hasImageCapture && Program.BenchmarkCursor != System.Drawing.Point.Empty);
                         Rectangle hoverCapture = Rectangle.Empty;
+                        System.Drawing.Point pointer = Program.Benchmark && Program.BenchmarkCursor != System.Drawing.Point.Empty
+                            ? Program.BenchmarkCursor : Cursor.Position;
+                        Rectangle chat = GetChatExclusionBounds();
+                        Rectangle tooltipLocal = useHoverPass && !chat.Contains(pointer)
+                            ? FindClassicTooltipCrop(bitmap, pointer, screen) : Rectangle.Empty;
+                        // Fixed stat help does not need another OCR pass. Add it immediately so
+                        // a slower first pass cannot leave a shallow hover tooltip half translated.
+                        if (visualCharacter != null && !tooltipLocal.IsEmpty)
+                            AddCharacterStatHoverHelp(next, visualCharacter,
+                                tooltipLocal, pointer, screen);
                         if (useHoverPass && stopwatch.ElapsedMilliseconds < 780)
                         {
-                            System.Drawing.Point pointer = Program.Benchmark && Program.BenchmarkCursor != System.Drawing.Point.Empty ? Program.BenchmarkCursor : Cursor.Position;
-                            Rectangle chat = GetChatExclusionBounds();
-                            Rectangle tooltipLocal = FindClassicTooltipCrop(bitmap, pointer, screen);
                             Rectangle hover = tooltipLocal.IsEmpty
                                 ? Rectangle.Intersect(screen,
                                     new Rectangle(pointer.X - 500, pointer.Y - 360, 1000, 720))
                                 : new Rectangle(screen.Left + tooltipLocal.Left,
                                     screen.Top + tooltipLocal.Top, tooltipLocal.Width, tooltipLocal.Height);
-                            if (!chat.Contains(pointer) && hover.Width >= 300 && hover.Height >= 220 &&
+                            int minimumHoverHeight = tooltipLocal.IsEmpty ? 220 : 82;
+                            if (!chat.Contains(pointer) && hover.Width >= 260 && hover.Height >= minimumHoverHeight &&
                                 hover.Width * hover.Height < screen.Width * screen.Height * 0.90)
                             {
                                 hoverCapture = hover;
@@ -1537,10 +1568,30 @@ namespace MapleOverlay
                         if (stopwatch.ElapsedMilliseconds < 1120)
                         {
                             List<Rectangle> panelCrops = FindPanelCrops(result, ocrScale, screen);
+                            Rectangle visualCharacterCrop = Rectangle.Empty;
+                            if (visualCharacter != null)
+                            {
+                                visualCharacterCrop = new Rectangle(screen.Left + visualCharacter.Crop.Left,
+                                    screen.Top + visualCharacter.Crop.Top,
+                                    visualCharacter.Crop.Width, visualCharacter.Crop.Height);
+                                bool alreadyPresent = false;
+                                foreach (Rectangle existing in panelCrops)
+                                {
+                                    Rectangle overlap = Rectangle.Intersect(existing, visualCharacterCrop);
+                                    long smaller = Math.Min((long)existing.Width * existing.Height,
+                                        (long)visualCharacterCrop.Width * visualCharacterCrop.Height);
+                                    if (smaller > 0 && (long)overlap.Width * overlap.Height * 10 >= smaller * 6)
+                                    { alreadyPresent = true; break; }
+                                }
+                                if (!alreadyPresent) panelCrops.Insert(0, visualCharacterCrop);
+                                while (panelCrops.Count > 2) panelCrops.RemoveAt(panelCrops.Count - 1);
+                            }
                             foreach (Rectangle panelCrop in panelCrops)
                             {
                                 if (stopwatch.ElapsedMilliseconds >= 1680) break;
-                                if (IsCharacterPanelAlreadyCovered(panelCrop, next)) continue;
+                                bool isVisualCharacterCrop = !visualCharacterCrop.IsEmpty &&
+                                    panelCrop == visualCharacterCrop;
+                                if (!isVisualCharacterCrop && IsCharacterPanelAlreadyCovered(panelCrop, next)) continue;
                                 if (!hoverCapture.IsEmpty)
                                 {
                                     Rectangle overlap = Rectangle.Intersect(hoverCapture, panelCrop);
@@ -1571,20 +1622,20 @@ namespace MapleOverlay
                                         if (LooksLikeItemPanelText(panelResult.Text) &&
                                             stopwatch.ElapsedMilliseconds < 1320)
                                         {
-                                            Rectangle tooltipLocal = FindEquipmentTooltipCrop(panelResult,
+                                            Rectangle equipmentTooltipLocal = FindEquipmentTooltipCrop(panelResult,
                                                 panelScale, panelBitmap.Size);
-                                            using (Bitmap tooltipBitmap = panelBitmap.Clone(tooltipLocal,
+                                            using (Bitmap tooltipBitmap = panelBitmap.Clone(equipmentTooltipLocal,
                                                 PixelFormat.Format32bppArgb))
                                             {
                                                 float tooltipScale;
                                                 using (Bitmap tooltipPrepared = PrepareTooltipForOcr(
                                                     tooltipBitmap, out tooltipScale,
                                                     Math.Min(2150.0f, Math.Max(1650.0f,
-                                                        tooltipLocal.Width * 3.25f))))
+                                                        equipmentTooltipLocal.Width * 3.25f))))
                                                 {
-                                                    captureBounds = new Rectangle(panelCrop.Left + tooltipLocal.Left,
-                                                        panelCrop.Top + tooltipLocal.Top,
-                                                        tooltipLocal.Width, tooltipLocal.Height);
+                                                    captureBounds = new Rectangle(panelCrop.Left + equipmentTooltipLocal.Left,
+                                                        panelCrop.Top + equipmentTooltipLocal.Top,
+                                                        equipmentTooltipLocal.Width, equipmentTooltipLocal.Height);
                                                     OcrResult tooltipResult = await RecognizeAsync(tooltipPrepared);
                                                     MergeLabels(next, BuildLabels(tooltipResult, tooltipScale,
                                                         tooltipPrepared));
@@ -1629,13 +1680,24 @@ namespace MapleOverlay
                                     benchmarkOcrText += " || 三次=" + thirdResult.Text;
                             }
                         }
+                        if (visualCharacter != null)
+                        {
+                            AddCharacterStatVisualLayoutLabels(next, visualCharacter, screen);
+                            if (!tooltipLocal.IsEmpty)
+                                AddCharacterStatHoverHelp(next, visualCharacter,
+                                    tooltipLocal, pointer, screen);
+                        }
+                        MergeAdjacentLongLabels(next);
+                        MergeOverlappingSameTextLabels(next);
+                        MergeSameTextLabels(next);
+                        RemoveContainedLabels(next);
                         labels.Clear(); labels.AddRange(next);
                     }
                 }
                 visibleTranslation = true;
                 Invalidate();
                 stopwatch.Stop();
-                tray.Text = "枫语幕 v2.1.1（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
+                tray.Text = "枫语幕 v2.1.2（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
                 if (Program.Benchmark)
                 {
                     StringBuilder benchmarkLabels = new StringBuilder();
@@ -1871,6 +1933,209 @@ namespace MapleOverlay
                 if (score > bestScore) { bestScore = score; best = candidate; }
             }
             return best;
+        }
+
+        private static CharacterStatVisualLayout FindCharacterStatVisualLayout(Bitmap bitmap)
+        {
+            if (bitmap == null || bitmap.Width < 640 || bitmap.Height < 480) return null;
+            BitmapData data = null;
+            try
+            {
+                Rectangle area = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+                data = bitmap.LockBits(area, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+                int stride = Math.Abs(data.Stride);
+                byte[] pixels = new byte[stride * bitmap.Height];
+                Marshal.Copy(data.Scan0, pixels, 0, pixels.Length);
+                const int step = 3;
+                List<VisualColorBand> bands = new List<VisualColorBand>();
+                VisualColorBand active = null;
+                for (int y = 0; y < bitmap.Height; y += step)
+                {
+                    int row = data.Stride >= 0 ? y * stride : (bitmap.Height - 1 - y) * stride;
+                    int count = 0, minimum = bitmap.Width, maximum = -1;
+                    for (int x = 0; x < bitmap.Width; x += step)
+                    {
+                        int offset = row + x * 4;
+                        int blue = pixels[offset], green = pixels[offset + 1], red = pixels[offset + 2];
+                        bool magenta = red >= 165 && red <= 238 && green >= 38 && green <= 128 &&
+                            blue >= 78 && blue <= 170 && red >= green + 52 && blue >= green + 18;
+                        if (!magenta) continue;
+                        count++; minimum = Math.Min(minimum, x); maximum = Math.Max(maximum, x);
+                    }
+                    int width = maximum >= minimum ? maximum - minimum : 0;
+                    bool rowCandidate = count >= 8 && width >= 45 && width <= 190;
+                    if (!rowCandidate)
+                    {
+                        if (active != null) { bands.Add(active); active = null; }
+                        continue;
+                    }
+                    float center = (minimum + maximum) / 2.0f;
+                    if (active != null && y - active.Bottom <= step &&
+                        Math.Abs(center - active.CenterX) <= 38)
+                    {
+                        active.Bottom = y;
+                        active.Left = Math.Min(active.Left, minimum);
+                        active.Right = Math.Max(active.Right, maximum);
+                    }
+                    else
+                    {
+                        if (active != null) bands.Add(active);
+                        active = new VisualColorBand { Left = minimum, Right = maximum,
+                            Top = y, Bottom = y };
+                    }
+                }
+                if (active != null) bands.Add(active);
+
+                bands.RemoveAll(delegate(VisualColorBand band) {
+                    int width = band.Right - band.Left, height = band.Bottom - band.Top;
+                    return width < 45 || width > 190 || height > 62;
+                });
+                bands.Sort(delegate(VisualColorBand left, VisualColorBand right) {
+                    return left.Top.CompareTo(right.Top);
+                });
+
+                List<List<VisualColorBand>> runs = new List<List<VisualColorBand>>();
+                foreach (VisualColorBand band in bands)
+                {
+                    List<VisualColorBand> target = null;
+                    int bestGap = Int32.MaxValue;
+                    foreach (List<VisualColorBand> run in runs)
+                    {
+                        VisualColorBand previous = run[run.Count - 1];
+                        int gap = band.Top - previous.Top;
+                        if (gap < 18 || gap > 68 || Math.Abs(band.CenterX - previous.CenterX) > 30) continue;
+                        if (gap < bestGap) { bestGap = gap; target = run; }
+                    }
+                    if (target == null) { target = new List<VisualColorBand>(); runs.Add(target); }
+                    target.Add(band);
+                }
+
+                List<VisualColorBand> best = null;
+                double bestScore = 0;
+                foreach (List<VisualColorBand> run in runs)
+                {
+                    if (run.Count < 5) continue;
+                    List<int> ordinaryGaps = new List<int>();
+                    for (int i = 1; i < run.Count; i++)
+                    {
+                        int gap = run[i].Top - run[i - 1].Top;
+                        if (gap <= 45) ordinaryGaps.Add(gap);
+                    }
+                    if (ordinaryGaps.Count < 3) continue;
+                    ordinaryGaps.Sort();
+                    float typicalGap = ordinaryGaps[ordinaryGaps.Count / 2];
+                    float scale = Math.Max(0.72f, Math.Min(1.75f, typicalGap / 34.0f));
+                    float left = 0;
+                    foreach (VisualColorBand band in run) left += band.Left;
+                    left /= run.Count;
+                    float top = run[0].Top - 44.0f * scale;
+                    float rightLeft = left + 360.0f * scale;
+                    float rightTop = top + 112.0f * scale;
+                    int blueSamples = 0;
+                    for (int y = Math.Max(0, (int)rightTop); y < Math.Min(bitmap.Height,
+                        (int)(rightTop + 10 * 34.0f * scale)); y += 5)
+                    {
+                        int row = data.Stride >= 0 ? y * stride : (bitmap.Height - 1 - y) * stride;
+                        for (int x = Math.Max(0, (int)rightLeft); x < Math.Min(bitmap.Width,
+                            (int)(rightLeft + 112.0f * scale)); x += 5)
+                        {
+                            int offset = row + x * 4;
+                            int blue = pixels[offset], green = pixels[offset + 1], red = pixels[offset + 2];
+                            if (blue >= 125 && blue <= 205 && green >= 82 && green <= 165 &&
+                                red >= 48 && red <= 135 && blue >= red + 28) blueSamples++;
+                        }
+                    }
+                    if (blueSamples < 28) continue;
+                    double score = run.Count * 1000 + blueSamples - Math.Abs(1.0f - scale) * 80;
+                    if (score <= bestScore) continue;
+                    bestScore = score; best = run;
+                }
+                if (best == null) return null;
+
+                List<int> gaps = new List<int>();
+                for (int i = 1; i < best.Count; i++)
+                {
+                    int gap = best[i].Top - best[i - 1].Top;
+                    if (gap <= 45) gaps.Add(gap);
+                }
+                gaps.Sort();
+                float rowGap = gaps[gaps.Count / 2];
+                CharacterStatVisualLayout layout = new CharacterStatVisualLayout();
+                layout.Scale = Math.Max(0.72f, Math.Min(1.75f, rowGap / 34.0f));
+                foreach (VisualColorBand band in best) layout.UpperRows.Add(band);
+                float averageLeft = 0;
+                foreach (VisualColorBand band in best) averageLeft += band.Left;
+                layout.Left = averageLeft / best.Count;
+                layout.Top = best[0].Top - 44.0f * layout.Scale;
+                layout.Crop = Rectangle.Intersect(new Rectangle(0, 0, bitmap.Width, bitmap.Height),
+                    new Rectangle((int)Math.Max(0, layout.Left - 20.0f * layout.Scale),
+                        (int)Math.Max(0, layout.Top - 18.0f * layout.Scale),
+                        (int)(720.0f * layout.Scale), (int)(560.0f * layout.Scale)));
+                return layout.Crop.Width >= 500 && layout.Crop.Height >= 400 ? layout : null;
+            }
+            catch { return null; }
+            finally { if (data != null) bitmap.UnlockBits(data); }
+        }
+
+        private void AddCharacterStatVisualLayoutLabels(List<OverlayLabel> output,
+            CharacterStatVisualLayout layout, Rectangle screen)
+        {
+            if (layout == null) return;
+            AddCharacterStatLayoutLabelsAt(output,
+                screen.Left + layout.Left - Bounds.Left,
+                screen.Top + layout.Top - Bounds.Top, layout.Scale);
+        }
+
+        private void AddCharacterStatHoverHelp(List<OverlayLabel> output,
+            CharacterStatVisualLayout layout, Rectangle tooltipLocal,
+            System.Drawing.Point screenPointer, Rectangle screen)
+        {
+            if (layout == null || tooltipLocal.IsEmpty) return;
+            float localX = screenPointer.X - screen.Left;
+            float localY = screenPointer.Y - screen.Top;
+            float row = 34.0f * layout.Scale;
+            if (localX < layout.RightLeft - 22.0f * layout.Scale ||
+                localX > layout.RightLeft + 150.0f * layout.Scale) return;
+            int index = (int)Math.Floor((localY - layout.RightTop + 5.0f * layout.Scale) /
+                Math.Max(1.0f, row));
+            if (index < 0 || index >= 10) return;
+            float rowCenter = layout.RightTop + index * row + 10.0f * layout.Scale;
+            if (Math.Abs(localY - rowCenter) > 24.0f * layout.Scale) return;
+            string[] help = new string[] {
+                "攻击力：角色普通攻击能够造成的伤害范围。",
+                "物理防御力：降低受到的物理攻击伤害。",
+                "魔法攻击力：影响魔法技能造成的伤害。",
+                "魔法防御力：降低受到的魔法攻击伤害。",
+                "命中率：影响攻击命中目标的概率。",
+                "回避率：影响躲避敌人攻击的概率。",
+                "暴击率：决定攻击造成暴击的概率；暴击的额外伤害取决于暴击伤害属性。",
+                "暴击伤害：决定暴击时额外增加的伤害。",
+                "移动速度：决定角色的移动速度。",
+                "跳跃力：决定角色的跳跃高度。"
+            };
+            RectangleF translatedBounds = new RectangleF(
+                screen.Left + tooltipLocal.Left - Bounds.Left,
+                screen.Top + tooltipLocal.Top - Bounds.Top,
+                tooltipLocal.Width, tooltipLocal.Height);
+            for (int i = output.Count - 1; i >= 0; i--)
+            {
+                RectangleF current = output[i].Bounds;
+                float centerX = current.Left + current.Width / 2.0f;
+                float centerY = current.Top + current.Height / 2.0f;
+                if (!translatedBounds.Contains(centerX, centerY) ||
+                    IsCharacterStatLabel(output[i].Text)) continue;
+                output.RemoveAt(i);
+            }
+            output.Add(new OverlayLabel { Bounds = translatedBounds, Text = help[index], Wrap = true });
+        }
+
+        private static bool IsCharacterStatLabel(string text)
+        {
+            string[] values = new string[] { "攻击力", "物理防御力", "魔法攻击力", "魔法防御力",
+                "命中率", "回避率", "暴击率", "暴击伤害", "移动速度", "跳跃力" };
+            foreach (string value in values)
+                if (String.Equals(value, text, StringComparison.Ordinal)) return true;
+            return false;
         }
 
         private static void MergeLabels(List<OverlayLabel> primary, List<OverlayLabel> secondary)
@@ -2565,12 +2830,14 @@ namespace MapleOverlay
             float left, float top, float scale)
         {
             float row = 34.0f * scale, labelHeight = Math.Max(18.0f, 20.0f * scale);
-            float firstTop = top + 44.0f * scale;
             string[] leftUpper = new string[] { "名称", "职业", "等级", "生命值", "魔法值", "经验", "人气" };
+            // JOB has a second line for the advancement name, so LEVEL and the rows
+            // below it start about half a row later than a uniform grid predicts.
+            float[] leftOffsets = new float[] { 44, 78, 128, 162, 196, 230, 264 };
             for (int i = 0; i < leftUpper.Length; i++)
-                AddLayoutLabel(output, leftUpper[i], new RectangleF(left - 2, firstTop + row * i,
+                AddLayoutLabel(output, leftUpper[i], new RectangleF(left - 2, top + leftOffsets[i] * scale,
                     104.0f * scale, labelHeight));
-            float attributesTop = firstTop + row * leftUpper.Length + 27.0f * scale;
+            float attributesTop = top + 310.0f * scale;
             string[] attributes = new string[] { "力量", "敏捷", "智力", "运气" };
             for (int i = 0; i < attributes.Length; i++)
                 AddLayoutLabel(output, attributes[i], new RectangleF(left - 2, attributesTop + row * i,
@@ -2786,6 +3053,30 @@ namespace MapleOverlay
             if (normalized.Length == 0) return false;
             List<string> fields = new List<string>();
             string value;
+
+            // Quest Helper objectives use a compact "3/10 Snail" form. It is
+            // structurally distinct from chat/player names, so translate only the
+            // dictionary-backed monster or item and preserve the live counter.
+            Match progress = Regex.Match(text ?? "",
+                @"^\s*[•·*\-]?\s*([\dlIoO]+)\s*/\s*([\dlIoO]+)\s+(.{2,80}?)\s*$",
+                RegexOptions.IgnoreCase);
+            if (progress.Success)
+            {
+                string objective = progress.Groups[3].Value.Trim(' ', '.', ':', '-', '*');
+                TranslationEntry bestObjective = null;
+                foreach (MatchResult match in translations.FindMatches(objective))
+                {
+                    bool allowed = match.Entry.Category.StartsWith("怀旧服-怪物#", StringComparison.Ordinal) ||
+                        match.Entry.Category.StartsWith("怀旧服-道具#", StringComparison.Ordinal) ||
+                        match.Entry.Category.StartsWith("怀旧服-装备#", StringComparison.Ordinal);
+                    if (!allowed) continue;
+                    if (bestObjective == null || match.Entry.Normalized.Length > bestObjective.Normalized.Length)
+                        bestObjective = match.Entry;
+                }
+                if (bestObjective != null)
+                    fields.Add(RepairOcrNumber(progress.Groups[1].Value) + "/" +
+                        RepairOcrNumber(progress.Groups[2].Value) + " " + bestObjective.Chinese);
+            }
 
             bool requirementLine = equipmentContext || normalized.Contains("req ") ||
                 normalized.Contains("required ");
@@ -3220,6 +3511,7 @@ namespace MapleOverlay
                 for (int j = 0; j < labels.Count; j++)
                 {
                     if (i == j || labels[i].Text.Length >= labels[j].Text.Length) continue;
+                    if (IsCharacterStatLabel(labels[i].Text)) continue;
                     string shorter = Regex.Replace(labels[i].Text, @"\s+", "");
                     string longer = Regex.Replace(labels[j].Text, @"\s+", "");
                     if (!longer.Contains(shorter)) continue;
