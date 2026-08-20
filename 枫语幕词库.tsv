@@ -168,11 +168,11 @@ What Sen wants to eat	珊想吃的是什么？	怀旧服-任务#1003		冒险岛 
 Returning to Nina	回到妮娜的住所	怀旧服-任务#1004		冒险岛 · 彩虹岛
 Todd's How-to-Hunt	透德的打猎方法	怀旧服-任务#1005		冒险岛 · 彩虹岛
 Sam's Suggestion	叁的建议	怀旧服-任务#1006		冒险岛 · 彩虹岛
-Letter for Lucas	传递信件	怀旧服-任务#1007		冒险岛 · 彩虹岛
+Letter for Lucas	给卢卡斯的信	怀旧服-任务#1007		冒险岛 · 彩虹岛
 Lucas' Reply	长老的回信	怀旧服-任务#1008		冒险岛 · 彩虹岛
 Mai's Training	麦加的锻炼	怀旧服-任务#1009		冒险岛 · 彩虹岛
 Mai's Final Training	麦加的最后锻炼	怀旧服-任务#1010		冒险岛 · 彩虹岛
-Biggs's Collection of Items	瑞恩的冒险岛问答3	怀旧服-任务#1011		冒险岛 · 彩虹岛
+Biggs's Collection of Items	比格斯的物品收集	怀旧服-任务#1011		冒险岛 · 彩虹岛
 Pio's Collecting Recycled Goods	皮奥的垃圾回收	怀旧服-任务#1012		冒险岛 · 彩虹岛
 Rain's Maple Quiz 1	瑞恩的冒险岛问答1	怀旧服-任务#1013		冒险岛 · 彩虹岛
 Rain's Maple Quiz 2	瑞恩的冒险岛问答2	怀旧服-任务#1014		冒险岛 · 彩虹岛
@@ -12521,3 +12521,9 @@ Boomerang Step	一出双击	怀旧服-技能#4221007	Henesys.gg当前技能数�
 Rushes through enemies multiple times.	多次冲撞敌人。	怀旧服-技能说明#4221007	Henesys.gg当前技能说明
 Hero's Will	勇士的意志	怀旧服-技能#4221008	Henesys.gg当前技能数据
 Removes all abnormal status effects (seduce, stun, curse, etc.) from yourself. Cooldown decreases with level (600s → 360s). Essential for boss fights.	解除自身所有异常状态效果（魅惑、眩晕、诅咒等）。冷却时间随等级降低（600秒→360秒）。boss战中至关重要。	怀旧服-技能说明#4221008	Henesys.gg当前技能说明
+The Way of Hermit	隐士之道	怀旧服-界面	技能窗口职业标题
+SELLER INFO	卖家信息	怀旧服-界面	玩家商店按钮
+BUY ITEM	购买道具	怀旧服-界面	玩家商店按钮
+Have fun maplin'!	冒险愉快！	怀旧服-界面长句	玩家商店提示
+DETAILS	详情	怀旧服-界面	任务日志按钮
+Maple Island	冒险岛	怀旧服-界面	任务地区标题
