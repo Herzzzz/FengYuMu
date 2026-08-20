@@ -167,7 +167,7 @@ Roger's Apple	罗杰和苹果	怀旧服-任务#1002		冒险岛 · 彩虹岛
 What Sen wants to eat	珊想吃的是什么？	怀旧服-任务#1003		冒险岛 · 彩虹岛
 Returning to Nina	回到妮娜的住所	怀旧服-任务#1004		冒险岛 · 彩虹岛
 Todd's How-to-Hunt	透德的打猎方法	怀旧服-任务#1005		冒险岛 · 彩虹岛
-Sam's Suggestion	叁的建议	怀旧服-任务#1006		冒险岛 · 彩虹岛
+Sam's Suggestion	萨姆的建议	怀旧服-任务#1006		冒险岛 · 彩虹岛
 Letter for Lucas	给卢卡斯的信	怀旧服-任务#1007		冒险岛 · 彩虹岛
 Lucas' Reply	长老的回信	怀旧服-任务#1008		冒险岛 · 彩虹岛
 Mai's Training	麦加的锻炼	怀旧服-任务#1009		冒险岛 · 彩虹岛
@@ -3436,7 +3436,7 @@ Someday, long after you leave this place, you'll be powerful enough to take on r
 Huh? You're not carrying 3 Jr. Sentinel Shellpiece . After you've defeated a Tutorial Jr. Sentinel , it'll drop a Jr. Sentinel Shellpiece . Then press Z to pick up the item.	啊？你没有携带 3 小石球碎片 。当你击败初级哨兵教程后，它会掉落初级哨兵外壳。然后按Z键拾取该物品。	怀旧服-任务对白#1005	英文对白语境翻译
 Hmm, you should have seen a small Tutorial Jr. Sentinel at the bottom of the map. Press Ctrl to attack it. Pick up the item it drops once you defeat it, and then come talk to me.	嗯，你应该在地图底部看到一个小教程 Jr. Sentinel。按 Ctrl 对其进行攻击。打败它后，捡起它掉落的物品，然后来跟我说话。	怀旧服-任务对白#1005	英文对白语境翻译
 What? Haven't you gone to Peter yet? You need to defeat 3 Tutorial Jr. Sentinels and take 3 Jr. Sentinel Shellpiece with you!	什么？你还没去找彼得吗？您需要击败 3 个初级哨兵并带走 3 个初级哨兵外壳！	怀旧服-任务对白#1005	英文对白语境翻译
-When you talk to Sam, he tells you to head to the east and hunt 10 Snail before meeting Mai.	叁有一些给新手冒险家的建议……和叁交谈后，他让你往东走，狩猎 10 只蜗牛，然后去见麦加。按照叁的建议，你打倒了 10 只蜗牛，然后见到了麦加。这个人是高手吗？确实散发着很强大的气场。	怀旧服-任务说明#1006	GCW同任务代码中文
+When you talk to Sam, he tells you to head to the east and hunt 10 Snail before meeting Mai.	萨姆建议新手冒险家先做好准备。和萨姆交谈后，他让我往东走，在见麦加之前先打倒 10 只蜗牛。我照做后见到了麦加。她就是传说中的高手吗？看起来确实很强。	怀旧服-任务说明#1006	GCW同任务代码中文
 Hello, I'm Sam . I'm helping guide the beginner adventurers. You look like someone who should go talk to Mai . What do you think?	你好，我是萨姆。我正在帮助引导新手冒险者。你看起来应该去和麦谈谈。你怎么认为？	怀旧服-任务对白#1006	英文对白语境翻译
 Mai is one of the very best fighters in Maple World. To prepare yourself, I suggest you take down 10 Snails before seeing her.	麦是枫叶世界中最优秀的战士之一。为了做好准备，我建议你在见到她之前先拿掉 10 只蜗牛。	怀旧服-任务对白#1006	英文对白语境翻译
 After defeating 10 Snails , go see Mai , who should be standing on a fork in the road out to the east.	击败10只蜗牛后，去找麦，麦应该站在东边的岔路口上。	怀旧服-任务对白#1006	英文对白语境翻译
@@ -6963,6 +6963,8 @@ EVASION	回避率	怀旧服-界面
 CRIT. RATE	暴击率	怀旧服-界面
 CRIT RATE	暴击率	怀旧服-界面
 CRITICAL RATE	暴击率	怀旧服-界面
+Determines how often your attacks critically hit.	决定攻击造成暴击的概率。	怀旧服-界面长句
+Critical hits deal more damage based on Crit. Damage.	暴击造成的额外伤害取决于暴击伤害属性。	怀旧服-界面长句
 CRIT. DAMAGE	暴击伤害	怀旧服-界面
 CRIT DAMAGE	暴击伤害	怀旧服-界面
 CRITICAL DAMAGE	暴击伤害	怀旧服-界面
