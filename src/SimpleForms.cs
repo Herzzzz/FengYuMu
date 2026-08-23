@@ -20,6 +20,97 @@ namespace MapleOverlay
         public string StartMap;
     }
 
+    internal sealed class MainPanelForm : Form
+    {
+        private readonly OverlayForm overlay;
+        private readonly Label status = new Label();
+        private readonly Label hotkeys = new Label();
+
+        public MainPanelForm(OverlayForm owner)
+        {
+            overlay = owner;
+            Text = "枫语幕";
+            StartPosition = FormStartPosition.CenterScreen;
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
+            MinimizeBox = true;
+            ShowIcon = true;
+            Icon = SystemIcons.Information;
+            ClientSize = new Size(560, 430);
+            BackColor = Color.FromArgb(244, 247, 251);
+            Font = new Font("Microsoft YaHei UI", 9.0f);
+
+            Panel header = new Panel {
+                Dock = DockStyle.Top, Height = 112,
+                BackColor = Color.FromArgb(31, 41, 55), Padding = new Padding(24, 20, 24, 12)
+            };
+            Label title = new Label {
+                Text = "枫语幕", ForeColor = Color.White, AutoSize = true,
+                Font = new Font("Microsoft YaHei UI", 22.0f, FontStyle.Bold), Location = new Point(22, 17)
+            };
+            Label subtitle = new Label {
+                Text = "稳定识别模式 · 外部截图 OCR · 不修改游戏", ForeColor = Color.FromArgb(191, 219, 254),
+                AutoSize = true, Font = new Font("Microsoft YaHei UI", 10.0f), Location = new Point(25, 68)
+            };
+            header.Controls.Add(title); header.Controls.Add(subtitle);
+
+            Panel card = new Panel {
+                Location = new Point(22, 132), Size = new Size(516, 91),
+                BackColor = Color.White, BorderStyle = BorderStyle.FixedSingle
+            };
+            status.AutoSize = true; status.Location = new Point(18, 16);
+            status.Font = new Font("Microsoft YaHei UI", 10.5f, FontStyle.Bold);
+            status.ForeColor = Color.FromArgb(22, 101, 52);
+            hotkeys.AutoSize = true; hotkeys.Location = new Point(18, 52);
+            hotkeys.ForeColor = Color.FromArgb(75, 85, 99);
+            card.Controls.Add(status); card.Controls.Add(hotkeys);
+
+            Button ready = MakeButton("缩到托盘，返回游戏", new Point(22, 244), new Size(250, 48), true);
+            ready.Click += delegate { Hide(); };
+            Button hideTranslation = MakeButton("隐藏当前翻译", new Point(288, 244), new Size(250, 48), false);
+            hideTranslation.Click += delegate { overlay.HideTranslation(); };
+            Button dictionary = MakeButton("词库", new Point(22, 309), new Size(158, 42), false);
+            dictionary.Click += delegate { overlay.ShowDictionaryEditor(); };
+            Button shortcut = MakeButton("快捷键", new Point(201, 309), new Size(158, 42), false);
+            shortcut.Click += delegate { overlay.ShowHotkeyEditor(); };
+            Button ai = MakeButton("AI 聊天翻译", new Point(380, 309), new Size(158, 42), false);
+            ai.Click += delegate { overlay.ShowChatTranslator(); };
+            Label hint = new Label {
+                Text = "使用方法：缩到托盘 → 切回游戏 → 按呼出快捷键。关闭本窗口只会缩到托盘。",
+                Location = new Point(24, 379), Size = new Size(512, 28),
+                ForeColor = Color.FromArgb(107, 114, 128), TextAlign = ContentAlignment.MiddleLeft
+            };
+
+            Controls.Add(hint); Controls.Add(ai); Controls.Add(shortcut); Controls.Add(dictionary);
+            Controls.Add(hideTranslation); Controls.Add(ready); Controls.Add(card); Controls.Add(header);
+            FormClosing += delegate(object sender, FormClosingEventArgs e) {
+                if (e.CloseReason == CloseReason.UserClosing) { e.Cancel = true; Hide(); }
+            };
+        }
+
+        private static Button MakeButton(string text, Point location, Size size, bool primary)
+        {
+            Button button = new Button {
+                Text = text, Location = location, Size = size, FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand, Font = new Font("Microsoft YaHei UI", 10.0f, FontStyle.Bold),
+                BackColor = primary ? Color.FromArgb(37, 99, 235) : Color.White,
+                ForeColor = primary ? Color.White : Color.FromArgb(31, 41, 55)
+            };
+            button.FlatAppearance.BorderColor = primary ? Color.FromArgb(37, 99, 235) : Color.FromArgb(209, 213, 219);
+            return button;
+        }
+
+        internal void RefreshStatus()
+        {
+            int dictionaryCount = overlay == null ? 50000 : overlay.DictionaryEntryCount;
+            int taskCount = overlay == null ? 12000 : overlay.TaskEntryCount;
+            string showKey = overlay == null ? "F8" : overlay.ShowHotkeyDescription;
+            string hideKey = overlay == null ? "F9" : overlay.HideHotkeyDescription;
+            status.Text = "已就绪 · 词库 " + dictionaryCount + " 条 · 任务文本 " + taskCount + " 条";
+            hotkeys.Text = "呼出翻译  " + showKey + "     隐藏翻译  " + hideKey;
+        }
+    }
+
     internal sealed class HotkeyForm : Form
     {
         private readonly OverlayForm overlay;
