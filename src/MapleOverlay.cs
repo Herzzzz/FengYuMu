@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -19,10 +20,16 @@ using Windows.Graphics.Imaging;
 using Windows.Media.Ocr;
 using Windows.Storage.Streams;
 
+[assembly: AssemblyTitle("枫语幕")]
+[assembly: AssemblyProduct("枫语幕")]
+[assembly: AssemblyVersion("2.2.0.0")]
+[assembly: AssemblyFileVersion("2.2.0.0")]
+
 namespace MapleOverlay
 {
     internal static class Program
     {
+        internal static readonly Icon AppIcon = LoadAppIcon();
         internal static bool Benchmark;
         internal static string BenchmarkIconPath;
         internal static string BenchmarkImagePath;
@@ -32,6 +39,18 @@ namespace MapleOverlay
         internal static string BenchmarkBestIcon = "";
         internal static string BenchmarkCurrentArea = "";
         internal static System.Drawing.Point BenchmarkCursor = System.Drawing.Point.Empty;
+
+        private static Icon LoadAppIcon()
+        {
+            try
+            {
+                return Icon.ExtractAssociatedIcon(Application.ExecutablePath) ?? SystemIcons.Application;
+            }
+            catch
+            {
+                return SystemIcons.Application;
+            }
+        }
         [STAThread]
         private static void Main(string[] args)
         {
@@ -58,6 +77,20 @@ namespace MapleOverlay
                 }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            if (args != null && Array.IndexOf(args, "--main-ui-test") >= 0)
+            {
+                using (MainPanelForm panel = new MainPanelForm(null))
+                using (Bitmap bitmap = new Bitmap(panel.Width, panel.Height, PixelFormat.Format32bppArgb))
+                {
+                    panel.RefreshStatus();
+                    panel.Show();
+                    Application.DoEvents();
+                    panel.DrawToBitmap(bitmap, new Rectangle(System.Drawing.Point.Empty, bitmap.Size));
+                    panel.Hide();
+                    bitmap.Save(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "main_ui_test.png"), ImageFormat.Png);
+                }
+                return;
+            }
             if (args != null && Array.IndexOf(args, "--dictionary-ui-test") >= 0)
             {
                 using (DictionaryOnlyForm editor = new DictionaryOnlyForm(null, AppDomain.CurrentDomain.BaseDirectory))
@@ -1153,9 +1186,11 @@ namespace MapleOverlay
         private const int WS_EX_TOOLWINDOW = 0x80;
         private const int WS_EX_NOACTIVATE = 0x08000000;
         private readonly string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-        private readonly TranslationStore translations;
+        private TranslationStore translations;
         private readonly List<OverlayLabel> labels = new List<OverlayLabel>();
         private readonly NotifyIcon tray = new NotifyIcon();
+        private readonly Font overlayFont = new Font("Microsoft YaHei UI", 12.0f,
+            FontStyle.Bold, GraphicsUnit.Pixel);
         private bool processing;
         private bool visibleTranslation;
         private OcrEngine ocr;
@@ -1168,6 +1203,7 @@ namespace MapleOverlay
         private DictionaryOnlyForm dictionaryEditor;
         private HotkeyForm hotkeyEditor;
         private OfflineChatForm chatTranslator;
+        private MainPanelForm mainPanel;
 
         [DllImport("user32.dll")] private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint modifiers, uint key);
         [DllImport("user32.dll")] private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
@@ -1227,7 +1263,8 @@ namespace MapleOverlay
                     HotkeyText(showKey, showModifiers) + " 呼出，" +
                     HotkeyText(hideKey, hideModifiers) + " 缩回后台。双击托盘图标打开AI实时聊天翻译。" +
                     ((!h1 || !h2) ? "（有快捷键注册失败）" : ""), ToolTipIcon.Info);
-                SyncAiKnowledge(false);
+                BeginSafeWarmup();
+                if (!Program.Benchmark) ShowMainPanel();
                 if (Program.Benchmark)
                 {
                     await Task.Delay(350);
@@ -1299,6 +1336,10 @@ namespace MapleOverlay
         internal Keys HideKey { get { return hideKey; } }
         internal uint ShowModifiers { get { return showModifiers; } }
         internal uint HideModifiers { get { return hideModifiers; } }
+        internal int DictionaryEntryCount { get { return translations.Count; } }
+        internal int TaskEntryCount { get { return translations.TaskTextCount; } }
+        internal string ShowHotkeyDescription { get { return HotkeyText(showKey, showModifiers); } }
+        internal string HideHotkeyDescription { get { return HotkeyText(hideKey, hideModifiers); } }
 
         internal void ApplyHotkeys(Keys newShowKey, uint newShowModifiers, Keys newHideKey, uint newHideModifiers)
         {
@@ -1313,9 +1354,41 @@ namespace MapleOverlay
 
         internal void ReloadDictionary()
         {
-            translations.Load();
-            SyncAiKnowledge(false);
-            tray.ShowBalloonTip(1200, "词库与AI知识已同步", translations.Count + " 条", ToolTipIcon.Info);
+            try
+            {
+                TranslationStore replacement = new TranslationStore(Path.Combine(baseDir, "枫语幕词库.tsv"));
+                replacement.Load();
+                translations = replacement;
+                tray.ShowBalloonTip(1200, "词库已重新载入",
+                    translations.Count + " 条；AI知识将在打开AI功能时按需同步。", ToolTipIcon.Info);
+            }
+            catch (Exception ex)
+            {
+                tray.ShowBalloonTip(2600, "词库重新载入失败",
+                    ex.Message + "；已继续使用上一次的稳定索引。", ToolTipIcon.Error);
+            }
+        }
+
+        private void BeginSafeWarmup()
+        {
+            // The dictionary index, OCR engine and overlay handle are already ready here.
+            // Warm only disposable drawing resources; failure leaves the original F8 path intact.
+            try
+            {
+                BeginInvoke((MethodInvoker)delegate {
+                    try
+                    {
+                        using (Bitmap bitmap = new Bitmap(2, 2, PixelFormat.Format32bppArgb))
+                        using (Graphics graphics = Graphics.FromImage(bitmap))
+                        using (GraphicsPath path = RoundedRect(new RectangleF(0, 0, 2, 2), 0.5f))
+                        {
+                            graphics.MeasureString("枫语幕", overlayFont);
+                        }
+                    }
+                    catch { }
+                });
+            }
+            catch { }
         }
 
         internal void SyncAiKnowledge(bool showNotice)
@@ -1343,7 +1416,7 @@ namespace MapleOverlay
             }
         }
 
-        private void ShowDictionaryEditor()
+        internal void ShowDictionaryEditor()
         {
             HideTranslation();
             if (dictionaryEditor == null || dictionaryEditor.IsDisposed) dictionaryEditor = new DictionaryOnlyForm(this, baseDir);
@@ -1351,7 +1424,7 @@ namespace MapleOverlay
             dictionaryEditor.Activate();
         }
 
-        private void ShowHotkeyEditor()
+        internal void ShowHotkeyEditor()
         {
             HideTranslation();
             if (hotkeyEditor == null || hotkeyEditor.IsDisposed) hotkeyEditor = new HotkeyForm(this);
@@ -1359,39 +1432,78 @@ namespace MapleOverlay
             hotkeyEditor.Activate();
         }
 
-        private void ShowChatTranslator()
+        internal void ShowChatTranslator()
         {
             HideTranslation();
-            if (chatTranslator == null || chatTranslator.IsDisposed)
-                chatTranslator = new OfflineChatForm(this, baseDir);
-            chatTranslator.Show();
-            chatTranslator.Activate();
+            try
+            {
+                // Constructing this form performs the AI glossary/knowledge initialization.
+                // Keeping it here makes AI fully lazy and isolates failures from F8 translation.
+                if (chatTranslator == null || chatTranslator.IsDisposed)
+                    chatTranslator = new OfflineChatForm(this, baseDir);
+                chatTranslator.Show();
+                chatTranslator.Activate();
+            }
+            catch (Exception ex)
+            {
+                tray.ShowBalloonTip(3000, "AI功能打开失败",
+                    ex.Message + "；F8词库翻译仍可继续使用。", ToolTipIcon.Error);
+            }
         }
 
         private void BuildTray()
         {
-            tray.Icon = SystemIcons.Information;
-            tray.Text = "枫语幕 v2.1.2";
+            tray.Icon = Program.AppIcon;
+            tray.Text = "枫语幕 v2.2.0";
             tray.Visible = true;
             ContextMenuStrip menu = new ContextMenuStrip();
+            ToolStripMenuItem main = new ToolStripMenuItem("打开主界面");
+            main.Font = new Font(main.Font, FontStyle.Bold);
+            main.Click += delegate { ShowMainPanel(); };
             ToolStripMenuItem dictionary = new ToolStripMenuItem("打开并更改词库");
             dictionary.Click += delegate { ShowDictionaryEditor(); };
             ToolStripMenuItem hotkeys = new ToolStripMenuItem("更改快捷键");
             hotkeys.Click += delegate { ShowHotkeyEditor(); };
             ToolStripMenuItem chat = new ToolStripMenuItem("AI实时聊天翻译");
-            chat.Font = new Font(chat.Font, FontStyle.Bold);
             chat.Click += delegate { ShowChatTranslator(); };
             ToolStripMenuItem syncAi = new ToolStripMenuItem("同步AI词库");
             syncAi.Click += delegate { SyncAiKnowledge(true); };
             ToolStripMenuItem exit = new ToolStripMenuItem("退出");
             exit.Click += delegate { Close(); };
+            menu.Items.Add(main);
+            menu.Items.Add(new ToolStripSeparator());
             menu.Items.Add(dictionary);
             menu.Items.Add(hotkeys);
             menu.Items.Add(chat);
             menu.Items.Add(syncAi);
             menu.Items.Add(exit);
             tray.ContextMenuStrip = menu;
-            tray.DoubleClick += delegate { ShowChatTranslator(); };
+            tray.DoubleClick += delegate { ShowMainPanel(); };
+        }
+
+        internal void ShowMainPanel()
+        {
+            HideTranslation();
+            if (mainPanel == null || mainPanel.IsDisposed) mainPanel = new MainPanelForm(this);
+            mainPanel.RefreshStatus();
+            mainPanel.Show();
+            mainPanel.Activate();
+        }
+
+        internal void HideMainPanel()
+        {
+            if (mainPanel != null && !mainPanel.IsDisposed) mainPanel.Hide();
+        }
+
+        private async Task ShowTranslationFromHotkeyAsync()
+        {
+            bool panelWasVisible = mainPanel != null && !mainPanel.IsDisposed && mainPanel.Visible;
+            if (panelWasVisible)
+            {
+                mainPanel.Hide();
+                await Task.Delay(140);
+            }
+            await ShowTranslationAsync();
         }
 
         private async Task ToggleAsync()
@@ -1401,7 +1513,7 @@ namespace MapleOverlay
                 visibleTranslation = false;
                 labels.Clear();
                 Invalidate();
-                tray.Text = "枫语幕 v2.1.2（内存待机）";
+                tray.Text = "枫语幕 v2.2.0（内存待机）";
             }
             else await ShowTranslationAsync();
         }
@@ -1411,18 +1523,18 @@ namespace MapleOverlay
             if (m.Msg == WM_HOTKEY)
             {
                 int id = m.WParam.ToInt32();
-                if (id == HOTKEY_SHOW) { Task ignored = ShowTranslationAsync(); }
+                if (id == HOTKEY_SHOW) { Task ignored = ShowTranslationFromHotkeyAsync(); }
                 else if (id == HOTKEY_HIDE) HideTranslation();
             }
             base.WndProc(ref m);
         }
 
-        private void HideTranslation()
+        internal void HideTranslation()
         {
             visibleTranslation = false;
             labels.Clear();
             Invalidate();
-            tray.Text = "枫语幕 v2.1.2（低配置优化）";
+            tray.Text = "枫语幕 v2.2.0（低配置优化）";
         }
 
         private async Task ShowTranslationAsync()
@@ -1430,6 +1542,12 @@ namespace MapleOverlay
             if (processing) return;
             processing = true;
             Stopwatch stopwatch = Stopwatch.StartNew();
+            long captureDuration = 0;
+            long mainPassDuration = 0;
+            long hoverPassDuration = 0;
+            long panelPassDuration = 0;
+            long fallbackPassDuration = 0;
+            long finalizeDuration = 0;
             // Screen results are never reused. Every F8 starts from an empty overlay and a fresh capture.
             visibleTranslation = false;
             labels.Clear();
@@ -1454,6 +1572,7 @@ namespace MapleOverlay
                 else screen = Program.Benchmark ? new Rectangle(0, 0, 1280, 720) : GetForegroundCaptureBounds();
                 captureBounds = screen;
                 gameBounds = screen;
+                long captureStarted = Program.Benchmark ? stopwatch.ElapsedMilliseconds : 0;
                 using (Bitmap bitmap = new Bitmap(screen.Width, screen.Height, PixelFormat.Format32bppArgb))
                 {
                     using (Graphics g = Graphics.FromImage(bitmap))
@@ -1495,6 +1614,8 @@ namespace MapleOverlay
                         }
                         else g.CopyFromScreen(screen.Left, screen.Top, 0, 0, screen.Size, CopyPixelOperation.SourceCopy);
                     }
+                    if (Program.Benchmark) captureDuration = stopwatch.ElapsedMilliseconds - captureStarted;
+                    long mainPassStarted = Program.Benchmark ? stopwatch.ElapsedMilliseconds : 0;
                     CharacterStatVisualLayout visualCharacter = FindCharacterStatVisualLayout(bitmap);
                     float ocrScale;
                     // A 2200px first pass keeps classic-client tooltip and quest text legible.
@@ -1504,6 +1625,7 @@ namespace MapleOverlay
                     {
                         OcrResult result = await RecognizeAsync(prepared);
                         List<OverlayLabel> next = BuildLabels(result, ocrScale, prepared);
+                        if (Program.Benchmark) mainPassDuration = stopwatch.ElapsedMilliseconds - mainPassStarted;
                         if (visualCharacter != null)
                             AddCharacterStatVisualLayoutLabels(next, visualCharacter, screen);
                         benchmarkOcrText = result.Text;
@@ -1542,6 +1664,7 @@ namespace MapleOverlay
                             if (!chat.Contains(pointer) && hover.Width >= 260 && hover.Height >= minimumHoverHeight &&
                                 hover.Width * hover.Height < screen.Width * screen.Height * 0.90)
                             {
+                                long hoverPassStarted = Program.Benchmark ? stopwatch.ElapsedMilliseconds : 0;
                                 hoverCapture = hover;
                                 Rectangle local = new Rectangle(hover.Left - screen.Left, hover.Top - screen.Top, hover.Width, hover.Height);
                                 using (Bitmap hoverBitmap = bitmap.Clone(local, PixelFormat.Format32bppArgb))
@@ -1559,6 +1682,8 @@ namespace MapleOverlay
                                     }
                                 }
                                 captureBounds = screen;
+                                if (Program.Benchmark)
+                                    hoverPassDuration += stopwatch.ElapsedMilliseconds - hoverPassStarted;
                             }
                         }
                         // Small classic UI labels (NAME/STR/DEX, quest objectives, etc.) are
@@ -1600,6 +1725,7 @@ namespace MapleOverlay
                                     if (smaller > 0 && (long)overlap.Width * overlap.Height * 10 >= smaller * 6)
                                         continue;
                                 }
+                                long panelPassStarted = Program.Benchmark ? stopwatch.ElapsedMilliseconds : 0;
                                 Rectangle local = new Rectangle(panelCrop.Left - screen.Left,
                                     panelCrop.Top - screen.Top, panelCrop.Width, panelCrop.Height);
                                 using (Bitmap panelBitmap = bitmap.Clone(local, PixelFormat.Format32bppArgb))
@@ -1647,6 +1773,8 @@ namespace MapleOverlay
                                         }
                                     }
                                 }
+                                if (Program.Benchmark)
+                                    panelPassDuration += stopwatch.ElapsedMilliseconds - panelPassStarted;
                             }
                             captureBounds = screen;
                         }
@@ -1657,6 +1785,7 @@ namespace MapleOverlay
                         // keep the colour pass. Slow machines skip the second pass before one second.
                         if (needsMoreOcr && stopwatch.ElapsedMilliseconds < 450)
                         {
+                            long fallbackPassStarted = Program.Benchmark ? stopwatch.ElapsedMilliseconds : 0;
                             float secondScale;
                             using (Bitmap contrastPrepared = PrepareForOcr(bitmap, out secondScale, true))
                             {
@@ -1667,10 +1796,13 @@ namespace MapleOverlay
                                 if (Program.Benchmark)
                                     benchmarkOcrText += " || 二次=" + secondResult.Text;
                             }
+                            if (Program.Benchmark)
+                                fallbackPassDuration += stopwatch.ElapsedMilliseconds - fallbackPassStarted;
                         }
                         // A higher-resolution colour pass improves very small item and quest text.
                         if (needsMoreOcr && stopwatch.ElapsedMilliseconds < 650)
                         {
+                            long fallbackPassStarted = Program.Benchmark ? stopwatch.ElapsedMilliseconds : 0;
                             float thirdScale;
                             using (Bitmap largePrepared = PrepareForOcr(bitmap, out thirdScale, false, 3000.0f))
                             {
@@ -1679,6 +1811,8 @@ namespace MapleOverlay
                                 if (Program.Benchmark)
                                     benchmarkOcrText += " || 三次=" + thirdResult.Text;
                             }
+                            if (Program.Benchmark)
+                                fallbackPassDuration += stopwatch.ElapsedMilliseconds - fallbackPassStarted;
                         }
                         if (visualCharacter != null)
                         {
@@ -1687,17 +1821,19 @@ namespace MapleOverlay
                                 AddCharacterStatHoverHelp(next, visualCharacter,
                                     tooltipLocal, pointer, screen);
                         }
+                        long finalizeStarted = Program.Benchmark ? stopwatch.ElapsedMilliseconds : 0;
                         MergeAdjacentLongLabels(next);
                         MergeOverlappingSameTextLabels(next);
                         MergeSameTextLabels(next);
                         RemoveContainedLabels(next);
                         labels.Clear(); labels.AddRange(next);
+                        if (Program.Benchmark) finalizeDuration = stopwatch.ElapsedMilliseconds - finalizeStarted;
                     }
                 }
                 visibleTranslation = true;
                 Invalidate();
                 stopwatch.Stop();
-                tray.Text = "枫语幕 v2.1.2（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
+                tray.Text = "枫语幕 v2.2.0（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
                 if (Program.Benchmark)
                 {
                     StringBuilder benchmarkLabels = new StringBuilder();
@@ -1708,6 +1844,9 @@ namespace MapleOverlay
                     }
                     File.WriteAllText(Path.Combine(baseDir, "last_run.txt"),
                         "耗时毫秒=" + stopwatch.ElapsedMilliseconds + Environment.NewLine +
+                        "阶段耗时=截图:" + captureDuration + "ms, 主OCR与匹配:" + mainPassDuration +
+                        "ms, 光标详情:" + hoverPassDuration + "ms, 面板复核:" + panelPassDuration +
+                        "ms, 兜底复核:" + fallbackPassDuration + "ms, 合并绘制:" + finalizeDuration + "ms" + Environment.NewLine +
                         "命中数量=" + labels.Count + Environment.NewLine +
                         "图标指纹数量=" + translations.IconCount + Environment.NewLine +
                         "任务数量=" + translations.TaskCount + Environment.NewLine +
@@ -3786,7 +3925,6 @@ namespace MapleOverlay
             using (SolidBrush background = new SolidBrush(Color.FromArgb(238, 18, 18, 20)))
             using (Pen border = new Pen(Color.FromArgb(220, 255, 190, 45), 1.0f))
             using (SolidBrush text = new SolidBrush(Color.White))
-            using (Font font = new Font("Microsoft YaHei UI", 12.0f, FontStyle.Bold, GraphicsUnit.Pixel))
             {
                 foreach (OverlayLabel label in labels)
                 {
@@ -3795,13 +3933,13 @@ namespace MapleOverlay
                     if (label.Wrap)
                     {
                         r.Width = Math.Max(90, r.Width);
-                        size = e.Graphics.MeasureString(label.Text, font,
+                        size = e.Graphics.MeasureString(label.Text, overlayFont,
                             new SizeF(Math.Max(20, r.Width - 8), 1000), StringFormat.GenericTypographic);
                         r.Height = Math.Max(r.Height, size.Height + 7);
                     }
                     else
                     {
-                        size = e.Graphics.MeasureString(label.Text, font);
+                        size = e.Graphics.MeasureString(label.Text, overlayFont);
                         r.Width = Math.Max(r.Width, size.Width + 8);
                         r.Height = Math.Max(r.Height, size.Height + 5);
                     }
@@ -3811,10 +3949,10 @@ namespace MapleOverlay
                         e.Graphics.DrawPath(border, path);
                     }
                     if (label.Wrap)
-                        e.Graphics.DrawString(label.Text, font, text,
+                        e.Graphics.DrawString(label.Text, overlayFont, text,
                             new RectangleF(r.X + 4, r.Y + 3, r.Width - 8, r.Height - 5), StringFormat.GenericTypographic);
                     else
-                        e.Graphics.DrawString(label.Text, font, text, r.X + 4, r.Y + (r.Height - size.Height) / 2 - 1);
+                        e.Graphics.DrawString(label.Text, overlayFont, text, r.X + 4, r.Y + (r.Height - size.Height) / 2 - 1);
                 }
             }
         }
@@ -3837,6 +3975,8 @@ namespace MapleOverlay
             UnregisterHotKey(Handle, HOTKEY_HIDE);
             tray.Visible = false;
             tray.Dispose();
+            overlayFont.Dispose();
+            if (mainPanel != null && !mainPanel.IsDisposed) mainPanel.Dispose();
             if (chatTranslator != null && !chatTranslator.IsDisposed) chatTranslator.StopService();
             base.OnFormClosed(e);
         }

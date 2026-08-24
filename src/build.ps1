@@ -5,7 +5,8 @@ $csc = 'C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe'
 $framework = 'C:\Windows\Microsoft.NET\Framework64\v4.0.30319'
 $winmd = 'C:\Windows\System32\WinMetadata'
 
-& $csc /nologo /target:winexe /optimize+ /platform:anycpu /win32manifest:"$scriptDir\app.manifest" /out:"$repoRoot\枫语幕.exe" `
+& $csc /nologo /target:winexe /optimize+ /platform:anycpu /win32manifest:"$scriptDir\app.manifest" `
+  /win32icon:"$scriptDir\FengYuMu.ico" /out:"$repoRoot\枫语幕.exe" `
   /reference:System.dll /reference:System.Core.dll /reference:System.Drawing.dll `
   /reference:System.Windows.Forms.dll `
   /reference:System.Web.Extensions.dll `
