@@ -35,54 +35,52 @@ namespace MapleOverlay
             MaximizeBox = false;
             MinimizeBox = true;
             ShowIcon = true;
-            Icon = SystemIcons.Information;
-            ClientSize = new Size(560, 430);
+            Icon = Program.AppIcon;
+            ClientSize = new Size(520, 350);
             BackColor = Color.FromArgb(244, 247, 251);
             Font = new Font("Microsoft YaHei UI", 9.0f);
 
             Panel header = new Panel {
-                Dock = DockStyle.Top, Height = 112,
-                BackColor = Color.FromArgb(31, 41, 55), Padding = new Padding(24, 20, 24, 12)
+                Dock = DockStyle.Top, Height = 94,
+                BackColor = Color.FromArgb(31, 41, 55), Padding = new Padding(22, 16, 22, 10)
             };
             Label title = new Label {
                 Text = "枫语幕", ForeColor = Color.White, AutoSize = true,
-                Font = new Font("Microsoft YaHei UI", 22.0f, FontStyle.Bold), Location = new Point(22, 17)
+                Font = new Font("Microsoft YaHei UI", 20.0f, FontStyle.Bold), Location = new Point(20, 12)
             };
             Label subtitle = new Label {
                 Text = "稳定识别模式 · 外部截图 OCR · 不修改游戏", ForeColor = Color.FromArgb(191, 219, 254),
-                AutoSize = true, Font = new Font("Microsoft YaHei UI", 10.0f), Location = new Point(25, 68)
+                AutoSize = true, Font = new Font("Microsoft YaHei UI", 9.5f), Location = new Point(22, 58)
             };
             header.Controls.Add(title); header.Controls.Add(subtitle);
 
             Panel card = new Panel {
-                Location = new Point(22, 132), Size = new Size(516, 91),
+                Location = new Point(20, 110), Size = new Size(480, 76),
                 BackColor = Color.White, BorderStyle = BorderStyle.FixedSingle
             };
-            status.AutoSize = true; status.Location = new Point(18, 16);
+            status.AutoSize = true; status.Location = new Point(16, 11);
             status.Font = new Font("Microsoft YaHei UI", 10.5f, FontStyle.Bold);
             status.ForeColor = Color.FromArgb(22, 101, 52);
-            hotkeys.AutoSize = true; hotkeys.Location = new Point(18, 52);
+            hotkeys.AutoSize = true; hotkeys.Location = new Point(16, 42);
             hotkeys.ForeColor = Color.FromArgb(75, 85, 99);
             card.Controls.Add(status); card.Controls.Add(hotkeys);
 
-            Button ready = MakeButton("缩到托盘，返回游戏", new Point(22, 244), new Size(250, 48), true);
+            Button ready = MakeButton("缩到托盘，开始使用", new Point(20, 201), new Size(480, 42), true);
             ready.Click += delegate { Hide(); };
-            Button hideTranslation = MakeButton("隐藏当前翻译", new Point(288, 244), new Size(250, 48), false);
-            hideTranslation.Click += delegate { overlay.HideTranslation(); };
-            Button dictionary = MakeButton("词库", new Point(22, 309), new Size(158, 42), false);
+            Button dictionary = MakeButton("词库", new Point(20, 255), new Size(146, 38), false);
             dictionary.Click += delegate { overlay.ShowDictionaryEditor(); };
-            Button shortcut = MakeButton("快捷键", new Point(201, 309), new Size(158, 42), false);
+            Button shortcut = MakeButton("快捷键", new Point(187, 255), new Size(146, 38), false);
             shortcut.Click += delegate { overlay.ShowHotkeyEditor(); };
-            Button ai = MakeButton("AI 聊天翻译", new Point(380, 309), new Size(158, 42), false);
+            Button ai = MakeButton("AI 聊天翻译", new Point(354, 255), new Size(146, 38), false);
             ai.Click += delegate { overlay.ShowChatTranslator(); };
             Label hint = new Label {
-                Text = "使用方法：缩到托盘 → 切回游戏 → 按呼出快捷键。关闭本窗口只会缩到托盘。",
-                Location = new Point(24, 379), Size = new Size(512, 28),
+                Text = "缩到托盘后切回游戏，按呼出快捷键；F9 隐藏翻译。关闭窗口也只会缩到托盘。",
+                Location = new Point(22, 306), Size = new Size(476, 30),
                 ForeColor = Color.FromArgb(107, 114, 128), TextAlign = ContentAlignment.MiddleLeft
             };
 
             Controls.Add(hint); Controls.Add(ai); Controls.Add(shortcut); Controls.Add(dictionary);
-            Controls.Add(hideTranslation); Controls.Add(ready); Controls.Add(card); Controls.Add(header);
+            Controls.Add(ready); Controls.Add(card); Controls.Add(header);
             FormClosing += delegate(object sender, FormClosingEventArgs e) {
                 if (e.CloseReason == CloseReason.UserClosing) { e.Cancel = true; Hide(); }
             };

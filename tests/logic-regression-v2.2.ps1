@@ -46,11 +46,30 @@ foreach ($required in @(
     'if (!Program.Benchmark) ShowMainPanel()',
     'ShowTranslationFromHotkeyAsync',
     'GetChatExclusionBounds',
-    'IsChatLine')) {
+    'IsChatLine',
+    'tray.Icon = Program.AppIcon')) {
     if (-not $source.Contains($required)) { throw "v2.2 稳定性基线缺少：$required" }
 }
 if ($source -match 'Shown\s*\+=?[\s\S]{0,900}SyncAiKnowledge\(false\)') {
     throw '启动链路仍在主动同步AI知识，AI懒加载未生效'
+}
+
+$formsSource = Get-Content (Join-Path $repoRoot 'src\SimpleForms.cs') -Raw -Encoding UTF8
+if (-not $formsSource.Contains('Icon = Program.AppIcon')) {
+    throw '主界面没有使用枫语幕应用图标'
+}
+if ($formsSource.Contains('MakeButton("隐藏当前翻译"')) {
+    throw '主界面仍保留与 F9 重复的隐藏翻译大按钮'
+}
+
+$buildSource = Get-Content (Join-Path $repoRoot 'src\build.ps1') -Raw -Encoding UTF8
+if (-not $buildSource.Contains('/win32icon:"$scriptDir\FengYuMu.ico"')) {
+    throw '构建流程没有嵌入枫语幕应用图标'
+}
+foreach ($iconAsset in @('src\MapleLeafIcon.png', 'src\FengYuMu.ico')) {
+    if (-not (Test-Path (Join-Path $repoRoot $iconAsset))) {
+        throw "应用图标资源缺失：$iconAsset"
+    }
 }
 
 Write-Output 'v2.2 冻结基线：装备/物品/技能/任务/角色/长短句/动态数字/同名词条/聊天排除逻辑通过'

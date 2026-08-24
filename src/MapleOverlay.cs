@@ -23,6 +23,7 @@ namespace MapleOverlay
 {
     internal static class Program
     {
+        internal static readonly Icon AppIcon = LoadAppIcon();
         internal static bool Benchmark;
         internal static string BenchmarkIconPath;
         internal static string BenchmarkImagePath;
@@ -32,6 +33,18 @@ namespace MapleOverlay
         internal static string BenchmarkBestIcon = "";
         internal static string BenchmarkCurrentArea = "";
         internal static System.Drawing.Point BenchmarkCursor = System.Drawing.Point.Empty;
+
+        private static Icon LoadAppIcon()
+        {
+            try
+            {
+                return Icon.ExtractAssociatedIcon(Application.ExecutablePath) ?? SystemIcons.Application;
+            }
+            catch
+            {
+                return SystemIcons.Application;
+            }
+        }
         [STAThread]
         private static void Main(string[] args)
         {
@@ -1434,7 +1447,7 @@ namespace MapleOverlay
 
         private void BuildTray()
         {
-            tray.Icon = SystemIcons.Information;
+            tray.Icon = Program.AppIcon;
             tray.Text = "枫语幕 v2.1.2";
             tray.Visible = true;
             ContextMenuStrip menu = new ContextMenuStrip();
@@ -1523,6 +1536,12 @@ namespace MapleOverlay
             if (processing) return;
             processing = true;
             Stopwatch stopwatch = Stopwatch.StartNew();
+            long captureDuration = 0;
+            long mainPassDuration = 0;
+            long hoverPassDuration = 0;
+            long panelPassDuration = 0;
+            long fallbackPassDuration = 0;
+            long finalizeDuration = 0;
             // Screen results are never reused. Every F8 starts from an empty overlay and a fresh capture.
             visibleTranslation = false;
             labels.Clear();
@@ -1547,6 +1566,7 @@ namespace MapleOverlay
                 else screen = Program.Benchmark ? new Rectangle(0, 0, 1280, 720) : GetForegroundCaptureBounds();
                 captureBounds = screen;
                 gameBounds = screen;
+                long captureStarted = Program.Benchmark ? stopwatch.ElapsedMilliseconds : 0;
                 using (Bitmap bitmap = new Bitmap(screen.Width, screen.Height, PixelFormat.Format32bppArgb))
                 {
                     using (Graphics g = Graphics.FromImage(bitmap))
@@ -1588,6 +1608,8 @@ namespace MapleOverlay
                         }
                         else g.CopyFromScreen(screen.Left, screen.Top, 0, 0, screen.Size, CopyPixelOperation.SourceCopy);
                     }
+                    if (Program.Benchmark) captureDuration = stopwatch.ElapsedMilliseconds - captureStarted;
+                    long mainPassStarted = Program.Benchmark ? stopwatch.ElapsedMilliseconds : 0;
                     CharacterStatVisualLayout visualCharacter = FindCharacterStatVisualLayout(bitmap);
                     float ocrScale;
                     // A 2200px first pass keeps classic-client tooltip and quest text legible.
@@ -1597,6 +1619,7 @@ namespace MapleOverlay
                     {
                         OcrResult result = await RecognizeAsync(prepared);
                         List<OverlayLabel> next = BuildLabels(result, ocrScale, prepared);
+                        if (Program.Benchmark) mainPassDuration = stopwatch.ElapsedMilliseconds - mainPassStarted;
                         if (visualCharacter != null)
                             AddCharacterStatVisualLayoutLabels(next, visualCharacter, screen);
                         benchmarkOcrText = result.Text;
@@ -1635,6 +1658,7 @@ namespace MapleOverlay
                             if (!chat.Contains(pointer) && hover.Width >= 260 && hover.Height >= minimumHoverHeight &&
                                 hover.Width * hover.Height < screen.Width * screen.Height * 0.90)
                             {
+                                long hoverPassStarted = Program.Benchmark ? stopwatch.ElapsedMilliseconds : 0;
                                 hoverCapture = hover;
                                 Rectangle local = new Rectangle(hover.Left - screen.Left, hover.Top - screen.Top, hover.Width, hover.Height);
                                 using (Bitmap hoverBitmap = bitmap.Clone(local, PixelFormat.Format32bppArgb))
@@ -1652,6 +1676,8 @@ namespace MapleOverlay
                                     }
                                 }
                                 captureBounds = screen;
+                                if (Program.Benchmark)
+                                    hoverPassDuration += stopwatch.ElapsedMilliseconds - hoverPassStarted;
                             }
                         }
                         // Small classic UI labels (NAME/STR/DEX, quest objectives, etc.) are
@@ -1693,6 +1719,7 @@ namespace MapleOverlay
                                     if (smaller > 0 && (long)overlap.Width * overlap.Height * 10 >= smaller * 6)
                                         continue;
                                 }
+                                long panelPassStarted = Program.Benchmark ? stopwatch.ElapsedMilliseconds : 0;
                                 Rectangle local = new Rectangle(panelCrop.Left - screen.Left,
                                     panelCrop.Top - screen.Top, panelCrop.Width, panelCrop.Height);
                                 using (Bitmap panelBitmap = bitmap.Clone(local, PixelFormat.Format32bppArgb))
@@ -1740,6 +1767,8 @@ namespace MapleOverlay
                                         }
                                     }
                                 }
+                                if (Program.Benchmark)
+                                    panelPassDuration += stopwatch.ElapsedMilliseconds - panelPassStarted;
                             }
                             captureBounds = screen;
                         }
@@ -1750,6 +1779,7 @@ namespace MapleOverlay
                         // keep the colour pass. Slow machines skip the second pass before one second.
                         if (needsMoreOcr && stopwatch.ElapsedMilliseconds < 450)
                         {
+                            long fallbackPassStarted = Program.Benchmark ? stopwatch.ElapsedMilliseconds : 0;
                             float secondScale;
                             using (Bitmap contrastPrepared = PrepareForOcr(bitmap, out secondScale, true))
                             {
@@ -1760,10 +1790,13 @@ namespace MapleOverlay
                                 if (Program.Benchmark)
                                     benchmarkOcrText += " || 二次=" + secondResult.Text;
                             }
+                            if (Program.Benchmark)
+                                fallbackPassDuration += stopwatch.ElapsedMilliseconds - fallbackPassStarted;
                         }
                         // A higher-resolution colour pass improves very small item and quest text.
                         if (needsMoreOcr && stopwatch.ElapsedMilliseconds < 650)
                         {
+                            long fallbackPassStarted = Program.Benchmark ? stopwatch.ElapsedMilliseconds : 0;
                             float thirdScale;
                             using (Bitmap largePrepared = PrepareForOcr(bitmap, out thirdScale, false, 3000.0f))
                             {
@@ -1772,6 +1805,8 @@ namespace MapleOverlay
                                 if (Program.Benchmark)
                                     benchmarkOcrText += " || 三次=" + thirdResult.Text;
                             }
+                            if (Program.Benchmark)
+                                fallbackPassDuration += stopwatch.ElapsedMilliseconds - fallbackPassStarted;
                         }
                         if (visualCharacter != null)
                         {
@@ -1780,11 +1815,13 @@ namespace MapleOverlay
                                 AddCharacterStatHoverHelp(next, visualCharacter,
                                     tooltipLocal, pointer, screen);
                         }
+                        long finalizeStarted = Program.Benchmark ? stopwatch.ElapsedMilliseconds : 0;
                         MergeAdjacentLongLabels(next);
                         MergeOverlappingSameTextLabels(next);
                         MergeSameTextLabels(next);
                         RemoveContainedLabels(next);
                         labels.Clear(); labels.AddRange(next);
+                        if (Program.Benchmark) finalizeDuration = stopwatch.ElapsedMilliseconds - finalizeStarted;
                     }
                 }
                 visibleTranslation = true;
@@ -1801,6 +1838,9 @@ namespace MapleOverlay
                     }
                     File.WriteAllText(Path.Combine(baseDir, "last_run.txt"),
                         "耗时毫秒=" + stopwatch.ElapsedMilliseconds + Environment.NewLine +
+                        "阶段耗时=截图:" + captureDuration + "ms, 主OCR与匹配:" + mainPassDuration +
+                        "ms, 光标详情:" + hoverPassDuration + "ms, 面板复核:" + panelPassDuration +
+                        "ms, 兜底复核:" + fallbackPassDuration + "ms, 合并绘制:" + finalizeDuration + "ms" + Environment.NewLine +
                         "命中数量=" + labels.Count + Environment.NewLine +
                         "图标指纹数量=" + translations.IconCount + Environment.NewLine +
                         "任务数量=" + translations.TaskCount + Environment.NewLine +
