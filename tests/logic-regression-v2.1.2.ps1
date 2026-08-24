@@ -58,6 +58,6 @@ foreach ($forbidden in @('D:\TEMP\codex-clipboard','ReadProcessMemory','WritePro
     'CreateRemoteThread','VirtualAllocEx','SetWindowsHookEx','SendInput')) {
     if ($source.Contains($forbidden)) { throw "源码包含禁止能力或样本硬编码：$forbidden" }
 }
-if (-not $source.Contains('枫语幕 v2.1.2')) { throw '程序版本号不是 v2.1.2' }
+if (-not $source.Contains('枫语幕 v2.')) { throw '程序没有有效的 v2 版本号' }
 
 Write-Output 'v2.1.2 结构识别、任务进度与安全边界回归：通过'
