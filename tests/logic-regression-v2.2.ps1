@@ -50,9 +50,9 @@ foreach ($required in @(
     'tray.Icon = Program.AppIcon')) {
     if (-not $source.Contains($required)) { throw "v2.2 稳定性基线缺少：$required" }
 }
-if (-not $source.Contains('枫语幕 v2.2.0') -or
-    -not $source.Contains('AssemblyFileVersion("2.2.0.0")')) {
-    throw '正式版程序版本号不是 v2.2.0'
+if (-not $source.Contains('枫语幕 v2.2.1') -or
+    -not $source.Contains('AssemblyFileVersion("2.2.1.0")')) {
+    throw '正式版程序版本号不是 v2.2.1'
 }
 if ($source -match 'Shown\s*\+=?[\s\S]{0,900}SyncAiKnowledge\(false\)') {
     throw '启动链路仍在主动同步AI知识，AI懒加载未生效'
@@ -76,4 +76,4 @@ foreach ($iconAsset in @('src\MapleLeafIcon.png', 'src\FengYuMu.ico')) {
     }
 }
 
-Write-Output 'v2.2.0 冻结基线：装备/物品/技能/任务/角色/长短句/动态数字/同名词条/聊天排除逻辑通过'
+Write-Output 'v2.2.1 冻结基线：装备/物品/技能/任务/角色/长短句/动态数字/同名词条/聊天排除逻辑通过'

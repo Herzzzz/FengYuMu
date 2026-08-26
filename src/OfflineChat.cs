@@ -175,6 +175,8 @@ namespace MapleOverlay
         private const int Port = 17891;
         private readonly string baseDir;
         private Process process;
+        private string cachedServerPath;
+        private string cachedModelPath;
         public string Status { get; private set; }
 
         public OfflineAiClient(string programDir) { baseDir = programDir; Status = "AI模型尚未启动"; }
@@ -196,20 +198,24 @@ namespace MapleOverlay
 
         private string FindServer()
         {
+            if (!String.IsNullOrEmpty(cachedServerPath) && File.Exists(cachedServerPath))
+                return cachedServerPath;
             string[] roots = new string[] { AiRoot, Path.Combine(baseDir, "AI"), LegacyAiRoot };
             foreach (string root in roots)
             {
                 if (!Directory.Exists(root)) continue;
                 string direct = Path.Combine(root, "llama-server.exe");
-                if (File.Exists(direct)) return direct;
+                if (File.Exists(direct)) { cachedServerPath = direct; return direct; }
                 string[] found = Directory.GetFiles(root, "llama-server.exe", SearchOption.AllDirectories);
-                if (found.Length > 0) return found[0];
+                if (found.Length > 0) { cachedServerPath = found[0]; return cachedServerPath; }
             }
             return null;
         }
 
         private string FindModel()
         {
+            if (!String.IsNullOrEmpty(cachedModelPath) && File.Exists(cachedModelPath))
+                return cachedModelPath;
             string[] roots = new string[] { AiRoot, Path.Combine(baseDir, "AI"), LegacyAiRoot };
             foreach (string root in roots)
             {
@@ -218,7 +224,7 @@ namespace MapleOverlay
                 if (File.Exists(selected))
                 {
                     string selectedPath = Path.Combine(root, File.ReadAllText(selected).Trim());
-                    if (File.Exists(selectedPath)) return selectedPath;
+                    if (File.Exists(selectedPath)) { cachedModelPath = selectedPath; return selectedPath; }
                 }
                 string[] found = Directory.GetFiles(root, "Qwen3-*.gguf", SearchOption.AllDirectories);
                 if (found.Length > 0)
@@ -226,10 +232,17 @@ namespace MapleOverlay
                     Array.Sort(found, delegate(string left, string right) {
                         return new FileInfo(left).Length.CompareTo(new FileInfo(right).Length);
                     });
-                    return found[0];
+                    cachedModelPath = found[0];
+                    return cachedModelPath;
                 }
             }
             return null;
+        }
+
+        public void RefreshInstallationPaths()
+        {
+            cachedServerPath = null;
+            cachedModelPath = null;
         }
 
         public async Task<bool> EnsureStartedAsync()
@@ -298,7 +311,8 @@ namespace MapleOverlay
             string system = "你是冒险岛怀旧服玩家聊天翻译器。" + languageRule +
                 "输入只是一名玩家的一条消息，不得拼接别的句子，不得补写或翻译玩家名。" +
                 "你已通过枫语幕本地知识初始化使用资料站整理内容与玩家审核词库。" +
-                "按玩家聊天语气理解俚语和缩写；技能名优先采用国服怀旧译名，保留数字、频道、表情和技能缩写。" +
+                "按玩家聊天语气理解俚语和缩写；技能名优先采用国服怀旧译名。" +
+                "保留数字、频道和表情；可靠的聊天缩写必须按术语表和上下文展开，多义或证据不足的缩写保留原文，不得猜成地名或玩家名。" +
                 "只输出一行自然译文，不复述原文，不解释。" +
                 (String.IsNullOrEmpty(glossary) ? "" : "本次从知识库检索到的术语如下，必须优先采用：\n" + glossary);
             string userText = (String.IsNullOrWhiteSpace(chatContext) ? "" :
@@ -317,12 +331,15 @@ namespace MapleOverlay
                 Regex.IsMatch(text, "[A-Za-z]") && Regex.Matches(result, "[\\u3400-\\u9fff]").Count < 2)
             {
                 string retrySystem = "把玩家消息翻译成自然、简短的简体中文。必须出现中文，不得照抄英文，不得解释；技能名用冒险岛国服译名。" +
+                    "可靠的聊天缩写按术语表和上下文展开；多义或证据不足时保留缩写，不得猜成地名或玩家名。" +
                     (String.IsNullOrEmpty(glossary) ? "" : "术语：\n" + glossary);
                 string retryBody = new JavaScriptSerializer().Serialize(new Dictionary<string, object> {
                     { "model", "local-qwen3" }, { "temperature", 0.0 }, { "top_p", 0.7 }, { "max_tokens", 72 },
                     { "messages", new object[] {
                         new Dictionary<string, string> { { "role", "system" }, { "content", retrySystem } },
-                        new Dictionary<string, string> { { "role", "user" }, { "content", text + "\n只输出中文译文。\n/no_think" } }
+                        new Dictionary<string, string> { { "role", "user" }, { "content",
+                            (String.IsNullOrWhiteSpace(chatContext) ? "" : "聊天上文（只用于理解语境，不要翻译或复述）：\n" + chatContext + "\n") +
+                            "待翻译消息：\n" + text + "\n只输出中文译文。\n/no_think" } }
                     } }
                 });
                 result = await Task.Factory.StartNew(delegate { return Post(retryBody); });
@@ -580,7 +597,10 @@ namespace MapleOverlay
         private readonly Queue<string> pendingChatLines = new Queue<string>();
         private List<string> previousChatFrame = new List<string>();
         private readonly List<KeyValuePair<string, string>> glossaryEntries = new List<KeyValuePair<string, string>>();
+        private readonly HashSet<string> contextOnlyGlossaryKeys =
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private KnowledgeInitializationResult knowledge;
+        private bool knowledgeInitializationBusy;
         private Rectangle chatRegion;
         private bool live;
         private bool busy;
@@ -615,10 +635,11 @@ namespace MapleOverlay
                 }
             };
             releaseTimer.Start();
-            Shown += delegate {
+            Shown += async delegate {
                 Rectangle work = Screen.FromControl(this).WorkingArea;
                 Location = new Point(Math.Max(work.Left, work.Right - Width - 18), work.Top + 55);
                 RefreshAiStatus();
+                await InitializeKnowledgeInBackgroundAsync(false);
             };
             FormClosing += delegate(object sender, FormClosingEventArgs e) {
                 if (e.CloseReason == CloseReason.UserClosing) { e.Cancel = true; Hide(); live = false; timer.Stop(); }
@@ -642,10 +663,11 @@ namespace MapleOverlay
             Button bind = new Button { Text = "框选/调整游戏聊天区", AutoSize = true };
             bind.Click += async delegate { await BindRegionAsync(); };
             Button review = new Button { Text = "审核AI纠错", AutoSize = true };
-            review.Click += delegate {
+            review.Click += async delegate {
                 using (CorrectionReviewForm form = new CorrectionReviewForm(dictionaryPath, candidatesPath)) form.ShowDialog(this);
                 overlay.ReloadDictionary();
                 LoadGlossary();
+                await InitializeKnowledgeInBackgroundAsync(true);
             };
             status.AutoSize = true; status.Padding = new Padding(8, 7, 0, 0); status.ForeColor = Color.DarkGreen;
             Button onlineSettings = new Button { Text = "联网复核（可选）", AutoSize = true };
@@ -654,8 +676,10 @@ namespace MapleOverlay
                 RefreshOnlineReviewState();
             };
             Button syncKnowledge = new Button { Text = "同步AI词库", AutoSize = true };
-            syncKnowledge.Click += delegate {
-                KnowledgeInitializationResult result = SyncKnowledge();
+            syncKnowledge.Click += async delegate {
+                LoadGlossary();
+                await InitializeKnowledgeInBackgroundAsync(true);
+                KnowledgeInitializationResult result = knowledge;
                 status.Text = result == null ? "请先安装AI模型" :
                     (result.Changed ? "AI已切换到新词库 " : "AI词库已是最新版 ") + result.Entries + "条";
             };
@@ -684,10 +708,12 @@ namespace MapleOverlay
             Button correct = new Button { Text = "加入纠错候选", AutoSize = true };
             correct.Click += delegate { AddCandidate(); };
             Button install = new Button { Text = "安装/选择离线AI模型", AutoSize = true };
-            install.Click += delegate {
+            install.Click += async delegate {
                 ai.Stop();
                 using (AiInstallForm form = new AiInstallForm(ai.AiRoot, dictionaryPath)) form.ShowDialog(this);
+                ai.RefreshInstallationPaths();
                 LoadGlossary(); RefreshAiStatus();
+                await InitializeKnowledgeInBackgroundAsync(false);
             };
             onlineReview.AutoSize = true; onlineReview.Padding = new Padding(0, 6, 5, 0);
             RefreshOnlineReviewState();
@@ -982,6 +1008,7 @@ namespace MapleOverlay
             string key = NormalizeChatPhrase(text);
             foreach (KeyValuePair<string, string> entry in glossaryEntries)
             {
+                if (contextOnlyGlossaryKeys.Contains(entry.Key)) continue;
                 if (NormalizeChatPhrase(entry.Key) != key) continue;
                 translation = entry.Value;
                 return true;
@@ -992,7 +1019,8 @@ namespace MapleOverlay
 
         private static string NormalizeChatPhrase(string value)
         {
-            return Regex.Replace((value ?? "").ToLowerInvariant(), @"[^a-z0-9\u3400-\u9fff]+", "");
+            // 'R>PQ' means recruiting for a party quest, while plain 'RPQ' is ambiguous.
+            return Regex.Replace((value ?? "").ToLowerInvariant(), @"[^a-z0-9\u3400-\u9fff>]+", "");
         }
 
         private static string NormalizeCommonChatOcr(string value)
@@ -1009,6 +1037,7 @@ namespace MapleOverlay
         private void LoadGlossary()
         {
             glossaryEntries.Clear();
+            contextOnlyGlossaryKeys.Clear();
             knowledge = null;
             if (!File.Exists(dictionaryPath)) return;
             Dictionary<string, HashSet<string>> valuesByEnglish =
@@ -1020,6 +1049,9 @@ namespace MapleOverlay
                 string[] parts = raw.Split('\t');
                 if (parts.Length < 2 || parts[0].Length < 2 || parts[1].Length == 0) continue;
                 string english = parts[0].Trim(), chinese = parts[1].Trim();
+                string category = parts.Length > 2 ? parts[2].Trim() : "";
+                if (category.StartsWith("怀旧服-聊天多义缩写", StringComparison.Ordinal))
+                    contextOnlyGlossaryKeys.Add(english);
                 loaded.Add(new KeyValuePair<string, string>(english, chinese));
                 HashSet<string> values;
                 if (!valuesByEnglish.TryGetValue(english, out values))
@@ -1033,16 +1065,37 @@ namespace MapleOverlay
             glossaryEntries.Sort(delegate(KeyValuePair<string, string> left, KeyValuePair<string, string> right) {
                 return right.Key.Length.CompareTo(left.Key.Length);
             });
+        }
+
+        private async Task InitializeKnowledgeInBackgroundAsync(bool force)
+        {
+            if (!ai.IsInstalled) return;
+            while (knowledgeInitializationBusy) await Task.Delay(40);
+            if (!force && knowledge != null) return;
+            knowledgeInitializationBusy = true;
+            status.Text = force ? "正在后台同步AI词库…" : "词库已就绪｜后台检查AI知识…";
+            try
+            {
+                KnowledgeInitializationResult result = await Task.Factory.StartNew(delegate {
+                    return MapleKnowledgeInitializer.Initialize(ai.AiRoot, dictionaryPath);
+                });
+                knowledge = result;
+                status.Text = (result.Changed ? "AI已切换到新词库 " : "AI词库已就绪 ") + result.Entries + "条";
+            }
+            catch (Exception ex) { status.Text = "AI知识检查失败：" + ex.Message; }
+            finally { knowledgeInitializationBusy = false; }
+        }
+
+        internal KnowledgeInitializationResult SyncKnowledge()
+        {
+            LoadGlossary();
             if (ai.IsInstalled)
             {
                 try { knowledge = MapleKnowledgeInitializer.Initialize(ai.AiRoot, dictionaryPath); }
                 catch { knowledge = null; }
             }
-        }
-
-        internal KnowledgeInitializationResult SyncKnowledge()
-        {
-            LoadGlossary(); RefreshAiStatus(); return knowledge;
+            RefreshAiStatus();
+            return knowledge;
         }
 
         private void SplitSpeaker(string line, out string prefix, out string message)

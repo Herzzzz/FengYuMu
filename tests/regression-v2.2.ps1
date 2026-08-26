@@ -18,4 +18,4 @@ $ErrorActionPreference = 'Stop'
 & (Join-Path $PSScriptRoot 'regression-v2.1.2.ps1') `
     -CharacterImage $CharacterImage -Cursor $CharacterCursor
 
-Write-Output 'v2.2.0 完整冻结基线：逻辑 + 5张实图全部通过'
+Write-Output 'v2.2.1 完整冻结基线：逻辑 + 5张实图全部通过'

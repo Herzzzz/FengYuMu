@@ -12529,3 +12529,62 @@ BUY ITEM	购买道具	怀旧服-界面	玩家商店按钮
 Have fun maplin'!	冒险愉快！	怀旧服-界面长句	玩家商店提示
 DETAILS	详情	怀旧服-界面	任务日志按钮
 Maple Island	冒险岛	怀旧服-界面	任务地区标题
+PQ	组队任务	怀旧服-聊天缩写	Party Quest；聊天专用
+KPQ	废弃都市组队任务	怀旧服-聊天缩写	Kerning Party Quest
+Kerning PQ	废弃都市组队任务	怀旧服-聊天缩写	Kerning Party Quest
+LPQ	玩具城组队任务	怀旧服-聊天缩写	Ludibrium Party Quest
+Ludi PQ	玩具城组队任务	怀旧服-聊天缩写	Ludibrium Party Quest
+OPQ	天空之城组队任务	怀旧服-聊天缩写	Orbis Party Quest
+LMPQ	玩具城迷宫组队任务	怀旧服-聊天缩写	Ludibrium Maze Party Quest
+RJPQ	罗密欧与朱丽叶组队任务	怀旧服-聊天缩写	Romeo and Juliet Party Quest
+R&J PQ	罗密欧与朱丽叶组队任务	怀旧服-聊天缩写	Romeo and Juliet Party Quest
+RnJ PQ	罗密欧与朱丽叶组队任务	怀旧服-聊天缩写	Romeo and Juliet Party Quest
+APQ	Amoria组队任务	怀旧服-聊天缩写	Amoria Party Quest
+CWKPQ	绯红要塞组队任务	怀旧服-聊天缩写	Crimsonwood Keep Party Quest
+GPQ	家族组队任务	怀旧服-聊天缩写	Guild Party Quest
+MCPQ	怪物嘉年华组队任务	怀旧服-聊天缩写	Monster Carnival Party Quest
+JPQ	求加入组队任务	怀旧服-聊天缩写	Join Party Quest；招募语境
+J>PQ	求加入组队任务	怀旧服-聊天缩写	Join Party Quest
+R>PQ	招募组队任务队员	怀旧服-聊天缩写	Recruiting Party Quest
+J>	求加入	怀旧服-聊天缩写	Join
+R>	招募	怀旧服-聊天缩写	Recruiting
+LF	寻找	怀旧服-聊天缩写	Looking For
+LFG	求组	怀旧服-聊天缩写	Looking For Group
+LFM	继续招人	怀旧服-聊天缩写	Looking For More
+inv	邀请我	怀旧服-聊天缩写	Invite
+PT	队伍	怀旧服-聊天缩写	Party
+B>	收购	怀旧服-聊天缩写	Buying
+S>	出售	怀旧服-聊天缩写	Selling
+WTB	想收购	怀旧服-聊天缩写	Want To Buy
+WTS	想出售	怀旧服-聊天缩写	Want To Sell
+WTT	想交换	怀旧服-聊天缩写	Want To Trade
+FM	自由市场	怀旧服-聊天缩写	Free Market
+NX	Nexon点券	怀旧服-聊天缩写	Nexon Cash
+AP	能力值点数	怀旧服-聊天缩写	Ability Points
+SP	技能点数	怀旧服-聊天缩写	Skill Points
+WATK	物理攻击力	怀旧服-聊天缩写	Weapon Attack
+MATK	魔法攻击力	怀旧服-聊天缩写	Magic Attack
+PDEF	物理防御力	怀旧服-聊天缩写	Physical Defense
+MDEF	魔法防御力	怀旧服-聊天缩写	Magic Defense
+ACC	命中率	怀旧服-聊天缩写	Accuracy
+AVOID	回避率	怀旧服-聊天缩写	Avoidability
+ATK	攻击力	怀旧服-聊天缩写	Attack
+ATT	攻击力	怀旧服-聊天缩写	Attack
+DMG	伤害	怀旧服-聊天缩写	Damage
+CRIT	暴击	怀旧服-聊天缩写	Critical
+KB	击退	怀旧服-聊天缩写	Knockback
+KS	抢怪	怀旧服-聊天缩写	Kill Steal
+LV	等级	怀旧服-聊天缩写	Level
+LVL	等级	怀旧服-聊天缩写	Level
+ASPD	攻击速度	怀旧服-聊天缩写	Attack Speed
+RPQ	组队任务招募（具体含义需结合上下文）	怀旧服-聊天多义缩写	不同服务器可能指招募或特定组队任务；不得与RJPQ混同
+HPQ	HPQ（具体任务需结合服务器和上下文）	怀旧服-聊天多义缩写	可能指射手村、妖精森林或其他组队任务
+CPQ	CPQ（具体任务需结合服务器和上下文）	怀旧服-聊天多义缩写	可能指怪物嘉年华或其他组队任务
+PPQ	PPQ（具体任务需结合服务器和上下文）	怀旧服-聊天多义缩写	可能指海盗或金字塔组队任务
+BM	BM（职业含义需结合上下文）	怀旧服-聊天多义缩写	可能指弓箭手分支或其他职业简称
+MM	MM（职业含义需结合上下文）	怀旧服-聊天多义缩写	可能指神射手或其他简称
+BS	BS（技能或职业含义需结合上下文）	怀旧服-聊天多义缩写	可能是技能、职业或网络用语
+WA	WA（职业或属性含义需结合上下文）	怀旧服-聊天多义缩写	可能指风灵使者或武器攻击
+MA	MA（职业或属性含义需结合上下文）	怀旧服-聊天多义缩写	可能指魔法攻击或职业简称
+PC	PC（含义需结合上下文）	怀旧服-聊天多义缩写	可能指价格检查或其他简称
+PL	PL（含义需结合上下文）	怀旧服-聊天多义缩写	可能指带练或其他简称
