@@ -22,8 +22,8 @@ using Windows.Storage.Streams;
 
 [assembly: AssemblyTitle("枫语幕")]
 [assembly: AssemblyProduct("枫语幕")]
-[assembly: AssemblyVersion("2.2.1.0")]
-[assembly: AssemblyFileVersion("2.2.1.0")]
+[assembly: AssemblyVersion("2.2.2.0")]
+[assembly: AssemblyFileVersion("2.2.2.0")]
 
 namespace MapleOverlay
 {
@@ -1456,7 +1456,7 @@ namespace MapleOverlay
         private void BuildTray()
         {
             tray.Icon = Program.AppIcon;
-            tray.Text = "枫语幕 v2.2.1";
+            tray.Text = "枫语幕 v2.2.2";
             tray.Visible = true;
             ContextMenuStrip menu = new ContextMenuStrip();
             ToolStripMenuItem main = new ToolStripMenuItem("打开主界面");
@@ -1515,7 +1515,7 @@ namespace MapleOverlay
                 visibleTranslation = false;
                 labels.Clear();
                 Invalidate();
-                tray.Text = "枫语幕 v2.2.1（内存待机）";
+                tray.Text = "枫语幕 v2.2.2（内存待机）";
             }
             else await ShowTranslationAsync();
         }
@@ -1536,7 +1536,7 @@ namespace MapleOverlay
             visibleTranslation = false;
             labels.Clear();
             Invalidate();
-            tray.Text = "枫语幕 v2.2.1（低配置优化）";
+            tray.Text = "枫语幕 v2.2.2（低配置优化）";
         }
 
         private async Task ShowTranslationAsync()
@@ -1835,7 +1835,7 @@ namespace MapleOverlay
                 visibleTranslation = true;
                 Invalidate();
                 stopwatch.Stop();
-                tray.Text = "枫语幕 v2.2.1（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
+                tray.Text = "枫语幕 v2.2.2（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
                 if (Program.Benchmark)
                 {
                     StringBuilder benchmarkLabels = new StringBuilder();

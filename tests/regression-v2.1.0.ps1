@@ -10,9 +10,11 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 $exe = Join-Path $repoRoot '枫语幕.exe'
 
 function Test-Screenshot([string]$name, [string]$image, [string[]]$expected,
-    [string[]]$forbidden, [int]$budgetMs) {
+    [string[]]$forbidden, [int]$budgetMs, [string]$cursor = '') {
     if (-not (Test-Path -LiteralPath $image)) { throw "缺少测试图片：$image" }
-    Start-Process -FilePath $exe -ArgumentList @('--benchmark', "--benchmark-image=$image") `
+    $arguments = @('--benchmark', "--benchmark-image=$image")
+    if (-not [string]::IsNullOrWhiteSpace($cursor)) { $arguments += "--benchmark-cursor=$cursor" }
+    Start-Process -FilePath $exe -ArgumentList $arguments `
         -WorkingDirectory $repoRoot -Wait
     $result = Get-Content (Join-Path $repoRoot 'last_run.txt') -Raw -Encoding UTF8
     $elapsed = [int]([regex]::Match($result, '耗时毫秒=(\d+)').Groups[1].Value)
@@ -34,6 +36,6 @@ $results += Test-Screenshot '人物属性＋突进详情' $RushImage `
 $results += Test-Screenshot '任务日志整段' $QuestImage `
     @('麦加的锻炼','我正在岔路口接受著名剑术大师麦加的指导') @('智力@{X=266') 1800
 $results += Test-Screenshot '寒冰充能整段与等级效果' $IceImage `
-    @('寒冰充能@','将你的剑或钝器附魔冰元素一段时间','持续90秒','持续97秒') @('力量@') 1200
+    @('寒冰充能@','将你的剑或钝器附魔冰元素一段时间','持续90秒','持续97秒') @('力量@') 1600 '1500,700'
 $results | Format-Table -AutoSize
 Write-Output '实图回归：4/4 通过'

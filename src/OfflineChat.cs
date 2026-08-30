@@ -1333,7 +1333,14 @@ namespace MapleOverlay
                 Directory.CreateDirectory(aiRoot);
                 string[] models = Directory.GetFiles(aiRoot, "Qwen3-*-Q4_K_M.gguf", SearchOption.AllDirectories);
                 if (models.Length == 0) { MessageBox.Show("没有发现已安装模型，请先选择1.7B、4B或8B安装。", "检查更新"); return; }
-                bool changed = await InstallRuntimeAsync(true);
+                bool changed = false;
+                string runtimeWarning = null;
+                try { changed = await InstallRuntimeAsync(true); }
+                catch (Exception ex)
+                {
+                    runtimeWarning = ex.Message;
+                    progress.Text = "运行库沿用当前版本，继续检查模型…";
+                }
                 foreach (string modelPath in models)
                 {
                     string fileName = Path.GetFileName(modelPath);
@@ -1344,9 +1351,13 @@ namespace MapleOverlay
                 }
                 KnowledgeInitializationResult knowledge = await InitializeKnowledgeAsync();
                 progressBar.Style = ProgressBarStyle.Continuous; progressBar.Value = 100;
-                progress.Text = changed ? "更新及知识初始化完成" : "模型与知识库已是最新版";
-                MessageBox.Show((changed ? "模型和运行库检查完成，已安装可用更新。" : "当前模型和运行库已经是最新版。") +
-                    "\n知识初始化：" + knowledge.Entries + "条、" + knowledge.Categories + "类。", "检查更新");
+                progress.Text = runtimeWarning == null
+                    ? (changed ? "更新及知识初始化完成" : "模型与知识库已是最新版")
+                    : "模型与知识库检查完成；运行库沿用当前版本";
+                string summary = changed ? "模型和运行库检查完成，已安装可用更新。" : "当前模型和运行库已经是最新版。";
+                if (runtimeWarning != null)
+                    summary = "模型与知识库已正常检查；显卡运行库暂时无法联网核对，已继续使用当前可用版本。\n原因：" + runtimeWarning;
+                MessageBox.Show(summary + "\n知识初始化：" + knowledge.Entries + "条、" + knowledge.Categories + "类。", "检查更新");
             }
             catch (Exception ex)
             {
@@ -1450,13 +1461,59 @@ namespace MapleOverlay
 
         private static string FindRuntimeUrl()
         {
-            string json = WithNetworkRetry(delegate {
-                HttpWebRequest request = CreateRequest("https://api.github.com/repos/ggml-org/llama.cpp/releases/latest", 30000);
+            Exception latestError = null;
+            try
+            {
+                string json = ReadTextUrl("https://api.github.com/repos/ggml-org/llama.cpp/releases/latest");
+                string direct = FindRuntimeAssetUrl(json);
+                if (!String.IsNullOrEmpty(direct)) return direct;
+
+                string tagUrl = FindNamedAssetUrl(json, "nightly-tag.txt");
+                if (!String.IsNullOrEmpty(tagUrl))
+                    return BuildRuntimeUrlFromNightlyTag(ReadTextUrl(tagUrl));
+            }
+            catch (Exception ex) { latestError = ex; }
+
+            try
+            {
+                // The stable release can intentionally contain only nightly-tag.txt.
+                // This download endpoint avoids GitHub API rate limits and still points
+                // to the official build selected by the llama.cpp maintainers.
+                string tag = ReadTextUrl("https://github.com/ggml-org/llama.cpp/releases/latest/download/nightly-tag.txt");
+                return BuildRuntimeUrlFromNightlyTag(tag);
+            }
+            catch (Exception fallbackError)
+            {
+                throw new InvalidOperationException(
+                    "无法从 llama.cpp 官方稳定版或官方 nightly 索引找到 Windows Vulkan 运行包；当前运行库未被改动。",
+                    latestError ?? fallbackError);
+            }
+        }
+
+        private static string ReadTextUrl(string url)
+        {
+            return WithNetworkRetry(delegate {
+                HttpWebRequest request = CreateRequest(url, 30000);
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 using (StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8)) return reader.ReadToEnd();
             });
+        }
+
+        private static string FindRuntimeAssetUrl(string json)
+        {
+            return FindNamedAssetUrl(json, "bin-win-vulkan-x64.zip", true);
+        }
+
+        private static string FindNamedAssetUrl(string json, string expectedName)
+        {
+            return FindNamedAssetUrl(json, expectedName, false);
+        }
+
+        private static string FindNamedAssetUrl(string json, string expectedName, bool contains)
+        {
             Dictionary<string, object> root = new JavaScriptSerializer().Deserialize<Dictionary<string, object>>(json);
-            object assetsValue = root["assets"];
+            object assetsValue;
+            if (root == null || !root.TryGetValue("assets", out assetsValue)) return null;
             object[] assets = assetsValue as object[];
             if (assets == null)
             {
@@ -1467,11 +1524,25 @@ namespace MapleOverlay
             {
                 Dictionary<string, object> asset = item as Dictionary<string, object>;
                 if (asset == null) continue;
-                string name = Convert.ToString(asset["name"]);
-                if (name.IndexOf("bin-win-vulkan-x64.zip", StringComparison.OrdinalIgnoreCase) >= 0)
-                    return Convert.ToString(asset["browser_download_url"]);
+                object nameValue;
+                object urlValue;
+                if (!asset.TryGetValue("name", out nameValue) || !asset.TryGetValue("browser_download_url", out urlValue)) continue;
+                string name = Convert.ToString(nameValue);
+                bool match = contains
+                    ? name.IndexOf(expectedName, StringComparison.OrdinalIgnoreCase) >= 0
+                    : String.Equals(name, expectedName, StringComparison.OrdinalIgnoreCase);
+                if (match) return Convert.ToString(urlValue);
             }
-            throw new InvalidOperationException("官方发布页暂时没有 Windows Vulkan 运行包，请稍后再试。");
+            return null;
+        }
+
+        private static string BuildRuntimeUrlFromNightlyTag(string tagText)
+        {
+            string tag = (tagText ?? "").Trim();
+            if (!Regex.IsMatch(tag, "^b[0-9]+$"))
+                throw new InvalidDataException("官方 nightly 版本标记格式无效");
+            return "https://github.com/ggml-org/llama.cpp/releases/download/" + tag +
+                "/llama-" + tag + "-bin-win-vulkan-x64.zip";
         }
 
         private async Task DownloadAsync(string url, string destination, string stage)
