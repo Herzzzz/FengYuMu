@@ -12588,3 +12588,9 @@ WA	WA（职业或属性含义需结合上下文）	怀旧服-聊天多义缩写	
 MA	MA（职业或属性含义需结合上下文）	怀旧服-聊天多义缩写	可能指魔法攻击或职业简称
 PC	PC（含义需结合上下文）	怀旧服-聊天多义缩写	可能指价格检查或其他简称
 PL	PL（含义需结合上下文）	怀旧服-聊天多义缩写	可能指带练或其他简称
+Path of a Magician	魔法师之路	怀旧服-任务#200		魔法密林 · 魔法图书馆
+To all that desire to become a Magician...talk to me...	想成为魔法师的人……来和我谈谈吧……	怀旧服-任务对白#200	英文对白语境翻译	魔法密林 · 魔法图书馆
+Are you ready to become a Magician like me?	你准备好成为像我一样的魔法师了吗？	怀旧服-任务对白#200	英文对白语境翻译	魔法密林 · 魔法图书馆
+Are you ready to become a Magician like meo	你准备好成为像我一样的魔法师了吗？	怀旧服-任务对白#200	OCR将问号误读为o	魔法密林 · 魔法图书馆
+END CHAT	结束对话	怀旧服-界面
+OK	确定	怀旧服-界面

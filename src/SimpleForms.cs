@@ -25,6 +25,8 @@ namespace MapleOverlay
         private readonly OverlayForm overlay;
         private readonly Label status = new Label();
         private readonly Label hotkeys = new Label();
+        private readonly TrackBar range = new TrackBar();
+        private readonly Label rangeValue = new Label();
 
         public MainPanelForm(OverlayForm owner)
         {
@@ -36,7 +38,7 @@ namespace MapleOverlay
             MinimizeBox = true;
             ShowIcon = true;
             Icon = Program.AppIcon;
-            ClientSize = new Size(520, 350);
+            ClientSize = new Size(520, 438);
             BackColor = Color.FromArgb(244, 247, 251);
             Font = new Font("Microsoft YaHei UI", 9.0f);
 
@@ -65,22 +67,45 @@ namespace MapleOverlay
             hotkeys.ForeColor = Color.FromArgb(75, 85, 99);
             card.Controls.Add(status); card.Controls.Add(hotkeys);
 
-            Button ready = MakeButton("缩到托盘，开始使用", new Point(20, 201), new Size(480, 42), true);
+            GroupBox rangeCard = new GroupBox {
+                Text = "翻译范围", Location = new Point(20, 196), Size = new Size(480, 92),
+                BackColor = Color.White, ForeColor = Color.FromArgb(55, 65, 81)
+            };
+            range.Minimum = 1; range.Maximum = 3; range.TickStyle = TickStyle.TopLeft;
+            range.TickFrequency = 1; range.SmallChange = 1; range.LargeChange = 1;
+            range.Location = new Point(15, 19); range.Size = new Size(310, 42);
+            range.Value = overlay == null ? 1 : (int)overlay.TranslationRangeMode;
+            rangeValue.Location = new Point(336, 23); rangeValue.Size = new Size(128, 26);
+            rangeValue.TextAlign = ContentAlignment.MiddleCenter;
+            rangeValue.Font = new Font("Microsoft YaHei UI", 9.5f, FontStyle.Bold);
+            rangeValue.ForeColor = Color.FromArgb(37, 99, 235);
+            Label rangeLabels = new Label {
+                Text = "最大                         均衡                         最小",
+                Location = new Point(19, 60), Size = new Size(302, 20),
+                ForeColor = Color.FromArgb(107, 114, 128)
+            };
+            range.ValueChanged += delegate {
+                if (overlay != null) overlay.ApplyTranslationRangeMode((TranslationRangeMode)range.Value);
+                RefreshRangeText();
+            };
+            rangeCard.Controls.Add(rangeValue); rangeCard.Controls.Add(rangeLabels); rangeCard.Controls.Add(range);
+
+            Button ready = MakeButton("缩到托盘，开始使用", new Point(20, 302), new Size(480, 42), true);
             ready.Click += delegate { Hide(); };
-            Button dictionary = MakeButton("词库", new Point(20, 255), new Size(146, 38), false);
+            Button dictionary = MakeButton("词库", new Point(20, 356), new Size(146, 38), false);
             dictionary.Click += delegate { overlay.ShowDictionaryEditor(); };
-            Button shortcut = MakeButton("快捷键", new Point(187, 255), new Size(146, 38), false);
+            Button shortcut = MakeButton("快捷键", new Point(187, 356), new Size(146, 38), false);
             shortcut.Click += delegate { overlay.ShowHotkeyEditor(); };
-            Button ai = MakeButton("AI 聊天翻译", new Point(354, 255), new Size(146, 38), false);
+            Button ai = MakeButton("AI 聊天翻译", new Point(354, 356), new Size(146, 38), false);
             ai.Click += delegate { overlay.ShowChatTranslator(); };
             Label hint = new Label {
                 Text = "缩到托盘后切回游戏，按呼出快捷键；F9 隐藏翻译。关闭窗口也只会缩到托盘。",
-                Location = new Point(22, 306), Size = new Size(476, 30),
+                Location = new Point(22, 398), Size = new Size(476, 30),
                 ForeColor = Color.FromArgb(107, 114, 128), TextAlign = ContentAlignment.MiddleLeft
             };
 
             Controls.Add(hint); Controls.Add(ai); Controls.Add(shortcut); Controls.Add(dictionary);
-            Controls.Add(ready); Controls.Add(card); Controls.Add(header);
+            Controls.Add(ready); Controls.Add(rangeCard); Controls.Add(card); Controls.Add(header);
             FormClosing += delegate(object sender, FormClosingEventArgs e) {
                 if (e.CloseReason == CloseReason.UserClosing) { e.Cancel = true; Hide(); }
             };
@@ -106,6 +131,15 @@ namespace MapleOverlay
             string hideKey = overlay == null ? "F9" : overlay.HideHotkeyDescription;
             status.Text = "已就绪 · 词库 " + dictionaryCount + " 条 · 任务文本 " + taskCount + " 条";
             hotkeys.Text = "呼出翻译  " + showKey + "     隐藏翻译  " + hideKey;
+            if (overlay != null && range.Value != (int)overlay.TranslationRangeMode)
+                range.Value = (int)overlay.TranslationRangeMode;
+            RefreshRangeText();
+        }
+
+        private void RefreshRangeText()
+        {
+            rangeValue.Text = range.Value == 1 ? "范围最大" :
+                (range.Value == 2 ? "均衡" : "范围最小");
         }
     }
 
