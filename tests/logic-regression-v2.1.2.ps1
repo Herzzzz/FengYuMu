@@ -49,15 +49,19 @@ if (-not ($taskChinese -contains '萨姆的建议')) {
 }
 
 $source = Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -Encoding UTF8
+$sceneSource = Get-Content (Join-Path $repoRoot 'src\SceneRecognition.cs') -Raw -Encoding UTF8
+$recognitionSource = $source + [Environment]::NewLine + $sceneSource
 foreach ($required in @('VisualColorBand','CharacterStatVisualLayout',
-    'FindCharacterStatVisualLayout','AddCharacterStatVisualLayoutLabels',
+    'ClassicSceneVision','FindCharacterStats','AddCharacterStatVisualLayoutLabels',
     'AddCharacterStatHoverHelp','LockBits','minimumHoverHeight = tooltipLocal.IsEmpty ? 220 : 82')) {
-    if (-not $source.Contains($required)) { throw "v2.1.2 结构识别缺少：$required" }
+    if (-not $recognitionSource.Contains($required)) { throw "v2.1.2 结构识别缺少：$required" }
 }
 foreach ($forbidden in @('D:\TEMP\codex-clipboard','ReadProcessMemory','WriteProcessMemory',
     'CreateRemoteThread','VirtualAllocEx','SetWindowsHookEx','SendInput')) {
-    if ($source.Contains($forbidden)) { throw "源码包含禁止能力或样本硬编码：$forbidden" }
+    if ($recognitionSource.Contains($forbidden)) { throw "源码包含禁止能力或样本硬编码：$forbidden" }
 }
-if (-not $source.Contains('枫语幕 v2.')) { throw '程序没有有效的 v2 版本号' }
+if (-not ($source.Contains('枫语幕 v2.') -or $source.Contains('枫语幕 v3.'))) {
+    throw '程序没有有效版本号'
+}
 
 Write-Output 'v2.1.2 结构识别、任务进度与安全边界回归：通过'

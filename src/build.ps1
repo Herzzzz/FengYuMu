@@ -19,7 +19,8 @@ $winmd = 'C:\Windows\System32\WinMetadata'
   /reference:"$winmd\Windows.Graphics.winmd" `
   /reference:"$winmd\Windows.Media.winmd" `
   /reference:"$winmd\Windows.Storage.winmd" `
-  "$scriptDir\MapleOverlay.cs" "$scriptDir\SimpleForms.cs" "$scriptDir\OfflineChat.cs"
+  "$scriptDir\MapleOverlay.cs" "$scriptDir\SceneRecognition.cs" `
+  "$scriptDir\SimpleForms.cs" "$scriptDir\OfflineChat.cs"
 
 if ($LASTEXITCODE -ne 0) { throw "编译失败，退出码 $LASTEXITCODE" }
 Write-Host "编译完成: $((Resolve-Path (Join-Path $repoRoot '枫语幕.exe')).Path)"

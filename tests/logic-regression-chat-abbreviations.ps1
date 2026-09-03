@@ -1,6 +1,12 @@
+param(
+    [string]$ExpectedVersion = '2.2.2.0',
+    [string]$ExpectedDisplayVersion = 'v2.2.2'
+)
+
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
-& (Join-Path $PSScriptRoot 'logic-regression-v2.2.ps1')
+& (Join-Path $PSScriptRoot 'logic-regression-v2.2.ps1') `
+    -ExpectedVersion $ExpectedVersion -ExpectedDisplayVersion $ExpectedDisplayVersion
 $a = [Reflection.Assembly]::LoadFile((Join-Path $root '枫语幕.exe'))
 $st = $a.GetType('MapleOverlay.TranslationStore', $true)
 $sc = $st.GetConstructor([Reflection.BindingFlags]'Instance,NonPublic,Public', $null, [Type[]]@([string]), $null)
