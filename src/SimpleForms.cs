@@ -130,7 +130,10 @@ namespace MapleOverlay
             string showKey = overlay == null ? "F8" : overlay.ShowHotkeyDescription;
             string hideKey = overlay == null ? "F9" : overlay.HideHotkeyDescription;
             status.Text = "已就绪 · 词库 " + dictionaryCount + " 条 · 任务文本 " + taskCount + " 条";
-            hotkeys.Text = "呼出翻译  " + showKey + "     隐藏翻译  " + hideKey;
+            string gamepadShow = overlay == null ? "未绑定" : overlay.ShowGamepadShortcutDescription;
+            string gamepadHide = overlay == null ? "未绑定" : overlay.HideGamepadShortcutDescription;
+            hotkeys.Text = "键盘  呼出 " + showKey + " / 隐藏 " + hideKey +
+                "    手柄  呼出 " + gamepadShow + " / 隐藏 " + gamepadHide;
             if (overlay != null && range.Value != (int)overlay.TranslationRangeMode)
                 range.Value = (int)overlay.TranslationRangeMode;
             RefreshRangeText();
@@ -145,11 +148,29 @@ namespace MapleOverlay
 
     internal sealed class HotkeyForm : Form
     {
+        private sealed class GamepadButtonItem
+        {
+            public readonly GamepadButton Button;
+            private readonly string text;
+
+            public GamepadButtonItem(GamepadButton button, string label)
+            {
+                Button = button;
+                text = label;
+            }
+
+            public override string ToString() { return text; }
+        }
+
         private readonly OverlayForm overlay;
         private readonly ComboBox showKey = new ComboBox();
         private readonly ComboBox hideKey = new ComboBox();
         private readonly TextBox showModifiers = new TextBox();
         private readonly TextBox hideModifiers = new TextBox();
+        private readonly ComboBox showGamepadFirst = new ComboBox();
+        private readonly ComboBox showGamepadSecond = new ComboBox();
+        private readonly ComboBox hideGamepadFirst = new ComboBox();
+        private readonly ComboBox hideGamepadSecond = new ComboBox();
 
         public HotkeyForm(OverlayForm owner)
         {
@@ -160,28 +181,56 @@ namespace MapleOverlay
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;
-            ClientSize = new Size(430, 178);
+            ClientSize = new Size(470, 330);
             Font = new Font("Microsoft YaHei UI", 9.0f);
             BuildUi();
-            showKey.SelectedItem = overlay.ShowKey.ToString();
-            hideKey.SelectedItem = overlay.HideKey.ToString();
-            showModifiers.Text = OverlayForm.ModifiersText(overlay.ShowModifiers);
-            hideModifiers.Text = OverlayForm.ModifiersText(overlay.HideModifiers);
+            showKey.SelectedItem = overlay == null ? "F8" : overlay.ShowKey.ToString();
+            hideKey.SelectedItem = overlay == null ? "F9" : overlay.HideKey.ToString();
+            showModifiers.Text = overlay == null ? "" : OverlayForm.ModifiersText(overlay.ShowModifiers);
+            hideModifiers.Text = overlay == null ? "" : OverlayForm.ModifiersText(overlay.HideModifiers);
+            SelectGamepadButton(showGamepadFirst, overlay == null ? GamepadButton.None : overlay.ShowGamepadShortcut.First);
+            SelectGamepadButton(showGamepadSecond, overlay == null ? GamepadButton.None : overlay.ShowGamepadShortcut.Second);
+            SelectGamepadButton(hideGamepadFirst, overlay == null ? GamepadButton.None : overlay.HideGamepadShortcut.First);
+            SelectGamepadButton(hideGamepadSecond, overlay == null ? GamepadButton.None : overlay.HideGamepadShortcut.Second);
+            UpdateGamepadSecondBoxes();
         }
 
         private void BuildUi()
         {
             FillKeys(showKey); FillKeys(hideKey);
-            Label showLabel = new Label { Text = "呼出翻译：", Location = new Point(24, 25), AutoSize = true };
-            showKey.Location = new Point(112, 21);
-            showModifiers.Location = new Point(215, 21); showModifiers.Width = 180;
-            Label hideLabel = new Label { Text = "缩回后台：", Location = new Point(24, 68), AutoSize = true };
-            hideKey.Location = new Point(112, 64);
-            hideModifiers.Location = new Point(215, 64); hideModifiers.Width = 180;
-            Label hint = new Label { Text = "右侧可留空，或写 CTRL、ALT、SHIFT、WIN，多个用 + 连接。", Location = new Point(24, 105), AutoSize = true, ForeColor = Color.DimGray };
-            Button save = new Button { Text = "保存并立即生效", Location = new Point(260, 134), Size = new Size(135, 30) };
+            GroupBox keyboard = new GroupBox { Text = "键盘快捷键", Location = new Point(16, 12), Size = new Size(438, 126) };
+            Label showLabel = new Label { Text = "呼出翻译：", Location = new Point(14, 29), AutoSize = true };
+            showKey.Location = new Point(100, 25);
+            showModifiers.Location = new Point(203, 25); showModifiers.Width = 212;
+            Label hideLabel = new Label { Text = "缩回后台：", Location = new Point(14, 70), AutoSize = true };
+            hideKey.Location = new Point(100, 66);
+            hideModifiers.Location = new Point(203, 66); hideModifiers.Width = 212;
+            Label hint = new Label { Text = "右侧可留空，或写 CTRL、ALT、SHIFT、WIN，多个用 + 连接。", Location = new Point(14, 99), AutoSize = true, ForeColor = Color.DimGray };
+            keyboard.Controls.AddRange(new Control[] { showLabel, showKey, showModifiers, hideLabel, hideKey, hideModifiers, hint });
+
+            GroupBox gamepad = new GroupBox { Text = "手柄快捷键（独立于键盘）", Location = new Point(16, 146), Size = new Size(438, 136) };
+            FillGamepadButtons(showGamepadFirst, false); FillGamepadButtons(showGamepadSecond, true);
+            FillGamepadButtons(hideGamepadFirst, false); FillGamepadButtons(hideGamepadSecond, true);
+            Label gamepadShowLabel = new Label { Text = "呼出翻译：", Location = new Point(14, 30), AutoSize = true };
+            Label gamepadHideLabel = new Label { Text = "缩回后台：", Location = new Point(14, 72), AutoSize = true };
+            showGamepadFirst.Location = new Point(100, 26); showGamepadFirst.Width = 132;
+            showGamepadSecond.Location = new Point(253, 26); showGamepadSecond.Width = 162;
+            hideGamepadFirst.Location = new Point(100, 68); hideGamepadFirst.Width = 132;
+            hideGamepadSecond.Location = new Point(253, 68); hideGamepadSecond.Width = 162;
+            Label plus1 = new Label { Text = "+", Location = new Point(237, 30), AutoSize = true };
+            Label plus2 = new Label { Text = "+", Location = new Point(237, 72), AutoSize = true };
+            Label gamepadHint = new Label {
+                Text = "支持单键或双键同时按；松开前只触发一次。兼容 XInput / Steam Input。",
+                Location = new Point(14, 106), AutoSize = true, ForeColor = Color.DimGray
+            };
+            showGamepadFirst.SelectedIndexChanged += delegate { UpdateGamepadSecondBoxes(); };
+            hideGamepadFirst.SelectedIndexChanged += delegate { UpdateGamepadSecondBoxes(); };
+            gamepad.Controls.AddRange(new Control[] { gamepadShowLabel, showGamepadFirst, plus1, showGamepadSecond,
+                gamepadHideLabel, hideGamepadFirst, plus2, hideGamepadSecond, gamepadHint });
+
+            Button save = new Button { Text = "保存并立即生效", Location = new Point(306, 293), Size = new Size(148, 30) };
             save.Click += delegate { SaveSettings(); };
-            Controls.AddRange(new Control[] { showLabel, showKey, showModifiers, hideLabel, hideKey, hideModifiers, hint, save });
+            Controls.AddRange(new Control[] { keyboard, gamepad, save });
         }
 
         private static void FillKeys(ComboBox box)
@@ -189,6 +238,39 @@ namespace MapleOverlay
             box.DropDownStyle = ComboBoxStyle.DropDownList;
             box.Width = 88;
             box.Items.AddRange(new object[] { "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "Home", "End", "Insert", "Delete", "PageUp", "PageDown" });
+        }
+
+        private static void FillGamepadButtons(ComboBox box, bool second)
+        {
+            box.DropDownStyle = ComboBoxStyle.DropDownList;
+            box.Items.Add(new GamepadButtonItem(GamepadButton.None, second ? "无（单键）" : "未绑定"));
+            foreach (GamepadButton button in GamepadButtonNames.SelectableButtons())
+                box.Items.Add(new GamepadButtonItem(button, GamepadButtonNames.Display(button)));
+            box.SelectedIndex = 0;
+        }
+
+        private static void SelectGamepadButton(ComboBox box, GamepadButton wanted)
+        {
+            for (int i = 0; i < box.Items.Count; i++)
+            {
+                GamepadButtonItem item = box.Items[i] as GamepadButtonItem;
+                if (item != null && item.Button == wanted) { box.SelectedIndex = i; return; }
+            }
+            box.SelectedIndex = 0;
+        }
+
+        private static GamepadButton SelectedGamepadButton(ComboBox box)
+        {
+            GamepadButtonItem item = box.SelectedItem as GamepadButtonItem;
+            return item == null ? GamepadButton.None : item.Button;
+        }
+
+        private void UpdateGamepadSecondBoxes()
+        {
+            showGamepadSecond.Enabled = SelectedGamepadButton(showGamepadFirst) != GamepadButton.None;
+            hideGamepadSecond.Enabled = SelectedGamepadButton(hideGamepadFirst) != GamepadButton.None;
+            if (!showGamepadSecond.Enabled) showGamepadSecond.SelectedIndex = 0;
+            if (!hideGamepadSecond.Enabled) hideGamepadSecond.SelectedIndex = 0;
         }
 
         private void SaveSettings()
@@ -200,13 +282,33 @@ namespace MapleOverlay
                 uint sm = OverlayForm.ParseModifiers(showModifiers.Text);
                 uint hm = OverlayForm.ParseModifiers(hideModifiers.Text);
                 if (sk == hk && sm == hm) { MessageBox.Show("两个功能不能用完全相同的快捷键。", "快捷键"); return; }
+                GamepadButton showFirst = SelectedGamepadButton(showGamepadFirst);
+                GamepadButton showSecond = SelectedGamepadButton(showGamepadSecond);
+                GamepadButton hideFirst = SelectedGamepadButton(hideGamepadFirst);
+                GamepadButton hideSecond = SelectedGamepadButton(hideGamepadSecond);
+                if ((showSecond != GamepadButton.None && showFirst == showSecond) ||
+                    (hideSecond != GamepadButton.None && hideFirst == hideSecond))
+                {
+                    MessageBox.Show("双键组合不能选择两个相同按键。", "快捷键");
+                    return;
+                }
+                GamepadShortcut gs = new GamepadShortcut(showFirst, showSecond);
+                GamepadShortcut gh = new GamepadShortcut(hideFirst, hideSecond);
+                if (gs.ConflictsWith(gh))
+                {
+                    MessageBox.Show("手柄呼出和缩回组合会同时触发，请换成不重叠的按键。", "快捷键");
+                    return;
+                }
                 overlay.ApplyHotkeys(sk, sm, hk, hm);
+                overlay.ApplyGamepadShortcuts(gs, gh);
                 using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu"))
                 {
                     key.SetValue("ShowKey", sk.ToString());
                     key.SetValue("ShowModifiers", OverlayForm.ModifiersText(sm));
                     key.SetValue("HideKey", hk.ToString());
                     key.SetValue("HideModifiers", OverlayForm.ModifiersText(hm));
+                    key.SetValue("GamepadShowShortcut", gs.Serialize());
+                    key.SetValue("GamepadHideShortcut", gh.Serialize());
                 }
                 Close();
             }

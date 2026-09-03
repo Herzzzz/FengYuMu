@@ -175,6 +175,24 @@ namespace MapleOverlay
                         editor.RunCategorySelfTest(), Encoding.UTF8);
                 return;
             }
+            if (args != null && Array.IndexOf(args, "--hotkey-ui-test") >= 0)
+            {
+                using (HotkeyForm form = new HotkeyForm(null))
+                using (Bitmap bitmap = new Bitmap(form.Width, form.Height, PixelFormat.Format32bppArgb))
+                {
+                    form.Show();
+                    Application.DoEvents();
+                    form.DrawToBitmap(bitmap, new Rectangle(System.Drawing.Point.Empty, bitmap.Size));
+                    form.Hide();
+                    bitmap.Save(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "hotkey_ui_test.png"), ImageFormat.Png);
+                }
+                return;
+            }
+            if (args != null && Array.IndexOf(args, "--gamepad-self-test") >= 0)
+            {
+                Environment.ExitCode = GamepadShortcutLatch.RunSelfTest() ? 0 : 2;
+                return;
+            }
             if (!Benchmark && !BenchmarkUi && !AcquirePrimaryInstance()) return;
             try { Application.Run(new OverlayForm()); }
             catch (Exception ex)
@@ -1358,6 +1376,299 @@ namespace MapleOverlay
         }
     }
 
+    [Flags]
+    internal enum GamepadButton : uint
+    {
+        None = 0,
+        DPadUp = 0x0001,
+        DPadDown = 0x0002,
+        DPadLeft = 0x0004,
+        DPadRight = 0x0008,
+        Start = 0x0010,
+        Back = 0x0020,
+        LeftThumb = 0x0040,
+        RightThumb = 0x0080,
+        LeftShoulder = 0x0100,
+        RightShoulder = 0x0200,
+        A = 0x1000,
+        B = 0x2000,
+        X = 0x4000,
+        Y = 0x8000,
+        LeftTrigger = 0x00010000,
+        RightTrigger = 0x00020000
+    }
+
+    internal struct GamepadShortcut
+    {
+        public readonly GamepadButton First;
+        public readonly GamepadButton Second;
+
+        public GamepadShortcut(GamepadButton first, GamepadButton second)
+        {
+            First = first;
+            Second = first == GamepadButton.None || second == first ? GamepadButton.None : second;
+        }
+
+        public bool IsBound { get { return First != GamepadButton.None; } }
+        public uint Mask { get { return (uint)First | (uint)Second; } }
+
+        public bool IsPressed(uint buttons)
+        {
+            uint mask = Mask;
+            return mask != 0 && (buttons & mask) == mask;
+        }
+
+        public bool ConflictsWith(GamepadShortcut other)
+        {
+            if (!IsBound || !other.IsBound) return false;
+            uint left = Mask;
+            uint right = other.Mask;
+            return (left & right) == left || (left & right) == right;
+        }
+
+        public string Serialize()
+        {
+            if (!IsBound) return "";
+            return First + (Second == GamepadButton.None ? "" : "+" + Second);
+        }
+
+        public static GamepadShortcut Parse(string value)
+        {
+            if (String.IsNullOrWhiteSpace(value)) return new GamepadShortcut();
+            string[] parts = value.Split('+');
+            GamepadButton first;
+            GamepadButton second = GamepadButton.None;
+            if (!Enum.TryParse<GamepadButton>(parts[0].Trim(), true, out first) || first == GamepadButton.None)
+                return new GamepadShortcut();
+            if (parts.Length > 1)
+            {
+                GamepadButton parsed;
+                if (Enum.TryParse<GamepadButton>(parts[1].Trim(), true, out parsed)) second = parsed;
+            }
+            return new GamepadShortcut(first, second);
+        }
+
+        public override string ToString()
+        {
+            if (!IsBound) return "未绑定";
+            string text = GamepadButtonNames.Display(First);
+            if (Second != GamepadButton.None) text += "+" + GamepadButtonNames.Display(Second);
+            return text;
+        }
+    }
+
+    internal static class GamepadButtonNames
+    {
+        public static string Display(GamepadButton button)
+        {
+            switch (button)
+            {
+                case GamepadButton.LeftShoulder: return "LB";
+                case GamepadButton.RightShoulder: return "RB";
+                case GamepadButton.LeftTrigger: return "LT";
+                case GamepadButton.RightTrigger: return "RT";
+                case GamepadButton.LeftThumb: return "L3";
+                case GamepadButton.RightThumb: return "R3";
+                case GamepadButton.DPadUp: return "方向上";
+                case GamepadButton.DPadDown: return "方向下";
+                case GamepadButton.DPadLeft: return "方向左";
+                case GamepadButton.DPadRight: return "方向右";
+                case GamepadButton.Start: return "菜单";
+                case GamepadButton.Back: return "视图";
+                default: return button == GamepadButton.None ? "未绑定" : button.ToString();
+            }
+        }
+
+        public static GamepadButton[] SelectableButtons()
+        {
+            return new GamepadButton[] {
+                GamepadButton.A, GamepadButton.B, GamepadButton.X, GamepadButton.Y,
+                GamepadButton.LeftShoulder, GamepadButton.RightShoulder,
+                GamepadButton.LeftTrigger, GamepadButton.RightTrigger,
+                GamepadButton.LeftThumb, GamepadButton.RightThumb,
+                GamepadButton.DPadUp, GamepadButton.DPadDown,
+                GamepadButton.DPadLeft, GamepadButton.DPadRight,
+                GamepadButton.Start, GamepadButton.Back
+            };
+        }
+    }
+
+    internal enum GamepadShortcutAction
+    {
+        None,
+        Show,
+        Hide
+    }
+
+    internal sealed class GamepadShortcutLatch
+    {
+        private bool showBlocked = true;
+        private bool hideBlocked = true;
+
+        public void Reset()
+        {
+            // Requiring a release after startup/settings changes prevents a held button
+            // from activating the overlay as soon as the app begins polling.
+            showBlocked = true;
+            hideBlocked = true;
+        }
+
+        public GamepadShortcutAction Evaluate(uint[] controllerStates,
+            GamepadShortcut showShortcut, GamepadShortcut hideShortcut)
+        {
+            bool showPressed = IsPressedOnOneController(controllerStates, showShortcut);
+            bool hidePressed = IsPressedOnOneController(controllerStates, hideShortcut);
+
+            if (!showPressed) showBlocked = false;
+            if (!hidePressed) hideBlocked = false;
+
+            // Ambiguous input must never fire both commands. It remains blocked until release.
+            if (showPressed && hidePressed)
+            {
+                showBlocked = true;
+                hideBlocked = true;
+                return GamepadShortcutAction.None;
+            }
+            if (showPressed && !showBlocked)
+            {
+                showBlocked = true;
+                return GamepadShortcutAction.Show;
+            }
+            if (hidePressed && !hideBlocked)
+            {
+                hideBlocked = true;
+                return GamepadShortcutAction.Hide;
+            }
+            return GamepadShortcutAction.None;
+        }
+
+        private static bool IsPressedOnOneController(uint[] controllerStates, GamepadShortcut shortcut)
+        {
+            if (!shortcut.IsBound || controllerStates == null) return false;
+            for (int i = 0; i < controllerStates.Length; i++)
+                if (shortcut.IsPressed(controllerStates[i])) return true;
+            return false;
+        }
+
+        internal static bool RunSelfTest()
+        {
+            GamepadShortcut show = new GamepadShortcut(GamepadButton.A, GamepadButton.None);
+            GamepadShortcut hide = new GamepadShortcut(GamepadButton.LeftShoulder, GamepadButton.RightShoulder);
+            GamepadShortcutLatch latch = new GamepadShortcutLatch();
+            uint[] states = new uint[4];
+
+            states[0] = (uint)GamepadButton.A;
+            if (latch.Evaluate(states, show, hide) != GamepadShortcutAction.None) return false;
+            states[0] = 0;
+            latch.Evaluate(states, show, hide);
+            states[0] = (uint)GamepadButton.A;
+            if (latch.Evaluate(states, show, hide) != GamepadShortcutAction.Show) return false;
+            if (latch.Evaluate(states, show, hide) != GamepadShortcutAction.None) return false;
+            states[0] = 0;
+            latch.Evaluate(states, show, hide);
+            states[0] = (uint)GamepadButton.LeftShoulder;
+            if (latch.Evaluate(states, show, hide) != GamepadShortcutAction.None) return false;
+            states[0] |= (uint)GamepadButton.RightShoulder;
+            if (latch.Evaluate(states, show, hide) != GamepadShortcutAction.Hide) return false;
+            states[0] = 0;
+            latch.Evaluate(states, show, hide);
+            states[0] = (uint)GamepadButton.A;
+            states[1] = (uint)GamepadButton.LeftShoulder | (uint)GamepadButton.RightShoulder;
+            if (latch.Evaluate(states, show, hide) != GamepadShortcutAction.None) return false;
+
+            latch.Reset();
+            states[0] = 0;
+            states[1] = 0;
+            latch.Evaluate(states, show, hide);
+            states[0] = (uint)GamepadButton.LeftShoulder;
+            states[1] = (uint)GamepadButton.RightShoulder;
+            if (latch.Evaluate(states, show, hide) != GamepadShortcutAction.None) return false;
+
+            GamepadShortcut overlapping = new GamepadShortcut(GamepadButton.A, GamepadButton.B);
+            if (!show.ConflictsWith(overlapping)) return false;
+            if (show.ConflictsWith(hide)) return false;
+            if (GamepadShortcut.Parse("LeftShoulder+RightShoulder").Mask != hide.Mask) return false;
+            for (int i = 0; i < 4; i++) XInputReader.ReadButtons(i);
+            return true;
+        }
+    }
+
+    internal static class XInputReader
+    {
+        private const uint ErrorSuccess = 0;
+        private const byte TriggerThreshold = 48;
+        private static int backend;
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct XInputGamepad
+        {
+            public ushort Buttons;
+            public byte LeftTrigger;
+            public byte RightTrigger;
+            public short ThumbLX;
+            public short ThumbLY;
+            public short ThumbRX;
+            public short ThumbRY;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct XInputState
+        {
+            public uint PacketNumber;
+            public XInputGamepad Gamepad;
+        }
+
+        [DllImport("xinput1_4.dll", EntryPoint = "XInputGetState")]
+        private static extern uint GetState14(uint userIndex, out XInputState state);
+        [DllImport("xinput9_1_0.dll", EntryPoint = "XInputGetState")]
+        private static extern uint GetState910(uint userIndex, out XInputState state);
+        [DllImport("xinput1_3.dll", EntryPoint = "XInputGetState")]
+        private static extern uint GetState13(uint userIndex, out XInputState state);
+
+        public static uint ReadButtons(int userIndex)
+        {
+            XInputState state;
+            uint result;
+            if (!TryGetState((uint)userIndex, out state, out result) || result != ErrorSuccess) return 0;
+            uint buttons = state.Gamepad.Buttons;
+            if (state.Gamepad.LeftTrigger >= TriggerThreshold) buttons |= (uint)GamepadButton.LeftTrigger;
+            if (state.Gamepad.RightTrigger >= TriggerThreshold) buttons |= (uint)GamepadButton.RightTrigger;
+            return buttons;
+        }
+
+        private static bool TryGetState(uint userIndex, out XInputState state, out uint result)
+        {
+            state = new XInputState();
+            result = 0;
+            if (backend != 0) return TryBackend(backend, userIndex, out state, out result);
+            for (int candidate = 1; candidate <= 3; candidate++)
+            {
+                if (!TryBackend(candidate, userIndex, out state, out result)) continue;
+                backend = candidate;
+                return true;
+            }
+            backend = -1;
+            return false;
+        }
+
+        private static bool TryBackend(int candidate, uint userIndex,
+            out XInputState state, out uint result)
+        {
+            state = new XInputState();
+            result = 0;
+            try
+            {
+                if (candidate == 1) result = GetState14(userIndex, out state);
+                else if (candidate == 2) result = GetState910(userIndex, out state);
+                else if (candidate == 3) result = GetState13(userIndex, out state);
+                else return false;
+                return true;
+            }
+            catch (DllNotFoundException) { return false; }
+            catch (EntryPointNotFoundException) { return false; }
+        }
+    }
+
     internal sealed class OverlayForm : Form
     {
         private const int HOTKEY_SHOW = 1001;
@@ -1380,6 +1691,11 @@ namespace MapleOverlay
         private Keys hideKey = Keys.F9;
         private uint showModifiers;
         private uint hideModifiers;
+        private GamepadShortcut showGamepadShortcut;
+        private GamepadShortcut hideGamepadShortcut;
+        private readonly GamepadShortcutLatch gamepadLatch = new GamepadShortcutLatch();
+        private readonly uint[] gamepadStates = new uint[4];
+        private readonly System.Windows.Forms.Timer gamepadTimer = new System.Windows.Forms.Timer();
         private TranslationRangeMode translationRangeMode = TranslationRangeMode.Maximum;
         private Rectangle captureBounds;
         private Rectangle gameBounds;
@@ -1436,6 +1752,8 @@ namespace MapleOverlay
             DoubleBuffered = true;
 
             LoadSettings();
+            gamepadTimer.Interval = 25;
+            gamepadTimer.Tick += delegate { PollGamepadShortcuts(); };
             if (Program.Benchmark && Program.BenchmarkRangeMode >= 1 && Program.BenchmarkRangeMode <= 3)
                 translationRangeMode = (TranslationRangeMode)Program.BenchmarkRangeMode;
 
@@ -1445,11 +1763,14 @@ namespace MapleOverlay
                     WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE);
                 bool h1 = RegisterHotKey(Handle, HOTKEY_SHOW, showModifiers, (uint)showKey);
                 bool h2 = RegisterHotKey(Handle, HOTKEY_HIDE, hideModifiers, (uint)hideKey);
+                UpdateGamepadPolling();
                 tray.ShowBalloonTip(2500, "枫语幕已启动",
                     "常规/任务共 " + translations.Count + " 条，任务 " + translations.TaskCount + " 个/文本 " +
                     translations.TaskTextCount + " 条，图标指纹 " + translations.IconCount + " 条，已载入内存。" +
                     HotkeyText(showKey, showModifiers) + " 呼出，" +
-                    HotkeyText(hideKey, hideModifiers) + " 缩回后台。双击托盘图标打开AI实时聊天翻译。" +
+                    HotkeyText(hideKey, hideModifiers) + " 缩回后台。手柄：呼出 " +
+                    showGamepadShortcut + "，缩回 " + hideGamepadShortcut + "。" +
+                    "双击托盘图标打开AI实时聊天翻译。" +
                     ((!h1 || !h2) ? "（有快捷键注册失败）" : ""), ToolTipIcon.Info);
                 BeginSafeWarmup();
                 if (!Program.Benchmark) BeginActivationRecovery();
@@ -1487,6 +1808,8 @@ namespace MapleOverlay
                 if (Enum.TryParse<Keys>(hk, true, out parsed)) hideKey = parsed;
                 showModifiers = ParseModifiers(Convert.ToString(key.GetValue("ShowModifiers", "")));
                 hideModifiers = ParseModifiers(Convert.ToString(key.GetValue("HideModifiers", "")));
+                showGamepadShortcut = GamepadShortcut.Parse(Convert.ToString(key.GetValue("GamepadShowShortcut", "")));
+                hideGamepadShortcut = GamepadShortcut.Parse(Convert.ToString(key.GetValue("GamepadHideShortcut", "")));
                 int savedRange = Convert.ToInt32(key.GetValue("TranslationRangeMode", 1), CultureInfo.InvariantCulture);
                 if (savedRange >= (int)TranslationRangeMode.Maximum && savedRange <= (int)TranslationRangeMode.Minimum)
                     translationRangeMode = (TranslationRangeMode)savedRange;
@@ -1528,10 +1851,14 @@ namespace MapleOverlay
         internal Keys HideKey { get { return hideKey; } }
         internal uint ShowModifiers { get { return showModifiers; } }
         internal uint HideModifiers { get { return hideModifiers; } }
+        internal GamepadShortcut ShowGamepadShortcut { get { return showGamepadShortcut; } }
+        internal GamepadShortcut HideGamepadShortcut { get { return hideGamepadShortcut; } }
         internal int DictionaryEntryCount { get { return translations.Count; } }
         internal int TaskEntryCount { get { return translations.TaskTextCount; } }
         internal string ShowHotkeyDescription { get { return HotkeyText(showKey, showModifiers); } }
         internal string HideHotkeyDescription { get { return HotkeyText(hideKey, hideModifiers); } }
+        internal string ShowGamepadShortcutDescription { get { return showGamepadShortcut.ToString(); } }
+        internal string HideGamepadShortcutDescription { get { return hideGamepadShortcut.ToString(); } }
         internal TranslationRangeMode TranslationRangeMode { get { return translationRangeMode; } }
 
         internal void ApplyTranslationRangeMode(TranslationRangeMode mode)
@@ -1553,6 +1880,42 @@ namespace MapleOverlay
             bool ok1 = RegisterHotKey(Handle, HOTKEY_SHOW, showModifiers, (uint)showKey);
             bool ok2 = RegisterHotKey(Handle, HOTKEY_HIDE, hideModifiers, (uint)hideKey);
             if (!ok1 || !ok2) MessageBox.Show("快捷键被其他程序占用，请换一个组合。", "快捷键设置");
+            if (mainPanel != null && !mainPanel.IsDisposed) mainPanel.RefreshStatus();
+        }
+
+        internal void ApplyGamepadShortcuts(GamepadShortcut newShowShortcut,
+            GamepadShortcut newHideShortcut)
+        {
+            showGamepadShortcut = newShowShortcut;
+            hideGamepadShortcut = newHideShortcut;
+            gamepadLatch.Reset();
+            UpdateGamepadPolling();
+            if (mainPanel != null && !mainPanel.IsDisposed) mainPanel.RefreshStatus();
+        }
+
+        private void UpdateGamepadPolling()
+        {
+            if (Program.Benchmark || Program.BenchmarkUi ||
+                (!showGamepadShortcut.IsBound && !hideGamepadShortcut.IsBound))
+                gamepadTimer.Stop();
+            else if (!gamepadTimer.Enabled)
+                gamepadTimer.Start();
+        }
+
+        private void PollGamepadShortcuts()
+        {
+            for (int i = 0; i < gamepadStates.Length; i++)
+                gamepadStates[i] = XInputReader.ReadButtons(i);
+            GamepadShortcutAction action = gamepadLatch.Evaluate(gamepadStates,
+                showGamepadShortcut, hideGamepadShortcut);
+            if (action == GamepadShortcutAction.Show)
+            {
+                Task ignored = ShowTranslationFromHotkeyAsync();
+            }
+            else if (action == GamepadShortcutAction.Hide)
+            {
+                HideTranslation();
+            }
         }
 
         internal void ReloadDictionary()
@@ -4416,6 +4779,8 @@ namespace MapleOverlay
         {
             UnregisterHotKey(Handle, HOTKEY_SHOW);
             UnregisterHotKey(Handle, HOTKEY_HIDE);
+            gamepadTimer.Stop();
+            gamepadTimer.Dispose();
             if (activationWait != null)
             {
                 activationWait.Unregister(null);
