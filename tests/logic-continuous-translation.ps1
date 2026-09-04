@@ -11,6 +11,8 @@ $shouldTranslate = $policyType.GetMethod('ShouldTranslate',
     [Reflection.BindingFlags]'Static,NonPublic,Public')
 $nextInterval = $policyType.GetMethod('NextInterval',
     [Reflection.BindingFlags]'Static,NonPublic,Public')
+$shouldRunProbe = $policyType.GetMethod('ShouldRunProbe',
+    [Reflection.BindingFlags]'Static,NonPublic,Public')
 
 if ([bool]$shouldTranslate.Invoke($null, @($snapshot, $false))) {
     throw '空画面不应触发持续翻译'
@@ -34,9 +36,14 @@ $idle2 = [int]$nextInterval.Invoke($null, @($false, 2, 0))
 $idleCap = [int]$nextInterval.Invoke($null, @($false, 99, 0))
 $failure1 = [int]$nextInterval.Invoke($null, @($false, 0, 1))
 $failureCap = [int]$nextInterval.Invoke($null, @($false, 0, 99))
-if ($visible -ne 550 -or $idle0 -ne 450 -or $idle2 -ne 900 -or
-    $idleCap -ne 1350 -or $failure1 -ne 1350 -or $failureCap -ne 2600) {
+if ($visible -ne 240 -or $idle0 -ne 260 -or $idle2 -ne 580 -or
+    $idleCap -ne 900 -or $failure1 -ne 1200 -or $failureCap -ne 2600) {
     throw "持续翻译轮询退避错误：$visible/$idle0/$idle2/$idleCap/$failure1/$failureCap"
+}
+if (-not [bool]$shouldRunProbe.Invoke($null, @($true, $false, $false)) -or
+    [bool]$shouldRunProbe.Invoke($null, @($true, $true, $false)) -or
+    -not [bool]$shouldRunProbe.Invoke($null, @($true, $true, $true))) {
+    throw '持续模式快速探测复用策略错误'
 }
 
 $source = Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -Encoding UTF8

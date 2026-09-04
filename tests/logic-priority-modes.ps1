@@ -33,6 +33,20 @@ Assert-Plan (Get-Plan $false $false $false $true 2) `
     @('CurrentInterface') @(1.0) '仅当前界面'
 
 $target = $planner.GetMethod('TargetLongEdge', [Reflection.BindingFlags]'Static,NonPublic,Public')
+$currentInterface = $planner.GetMethod('ShouldUseCurrentInterface', [Reflection.BindingFlags]'Static,NonPublic,Public')
+if ($null -eq $currentInterface) { throw '未找到当前界面优先级裁决' }
+if ([bool]$currentInterface.Invoke($null, @($true, $false, $false, $true))) {
+    throw '存在详情框时不应再加入当前界面层'
+}
+if ([bool]$currentInterface.Invoke($null, @($false, $true, $false, $true))) {
+    throw '存在对话框时不应再加入当前界面层'
+}
+if ([bool]$currentInterface.Invoke($null, @($false, $false, $true, $true))) {
+    throw '存在对话框外面板时不应再加入当前界面层'
+}
+if (-not [bool]$currentInterface.Invoke($null, @($false, $false, $false, $true))) {
+    throw '无前三类面板时应自动前移到当前界面层'
+}
 $rect = New-Object System.Drawing.Rectangle -ArgumentList 0,0,900,700
 $full = [single]$target.Invoke($null, @($rect, [single]10, [double]1.0, $false))
 $middle = [single]$target.Invoke($null, @($rect, [single]10, [double]0.75, $false))
@@ -77,6 +91,9 @@ foreach ($required in @(
     '范围最大（兼容路径）')) {
     if (-not $source.Contains($required)) { throw "缺少三档范围安全基线：$required" }
 }
+foreach ($required in @('StableLayout', 'if (label.StableLayout) continue;')) {
+    if (-not $source.Contains($required)) { throw "角色属性稳定布局保护缺少：$required" }
+}
 foreach ($required in @(
     'RegisterWindowMessage("TaskbarCreated")',
     'RestoreTrayIcon(false)',
@@ -86,7 +103,7 @@ foreach ($required in @(
     'RestoreTrayIcon(true)')) {
     if (-not $source.Contains($required)) { throw "缺少托盘恢复机制：$required" }
 }
-foreach ($required in @('TrackBar range', 'range.Minimum = 1', 'range.Maximum = 3', '范围最大', '均衡', '范围最小')) {
+foreach ($required in @('TrackBar range', 'range.Minimum = 1', 'range.Maximum = 3', '兼容最大', '推荐均衡', '精简最小')) {
     if (-not $forms.Contains($required)) { throw "主界面滑动条缺少：$required" }
 }
 

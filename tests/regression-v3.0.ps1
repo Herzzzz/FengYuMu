@@ -16,6 +16,9 @@ $exe = Join-Path $repoRoot '枫语幕.exe'
 & (Join-Path $PSScriptRoot 'logic-priority-modes.ps1')
 & (Join-Path $PSScriptRoot 'logic-regression-v3.0.ps1')
 & (Join-Path $PSScriptRoot 'logic-continuous-translation.ps1')
+& (Join-Path $PSScriptRoot 'logic-independent-window.ps1')
+& (Join-Path $PSScriptRoot 'logic-overlay-paint-safety.ps1')
+& (Join-Path $PSScriptRoot 'logic-chat-region-first-use.ps1')
 & (Join-Path $PSScriptRoot 'logic-regression-chat-abbreviations.ps1') `
     -ExpectedVersion '3.0.0.0' -ExpectedDisplayVersion 'v3.0'
 & (Join-Path $PSScriptRoot 'logic-regression-v2.2.2-updater.ps1')
@@ -33,7 +36,12 @@ $exe = Join-Path $repoRoot '枫语幕.exe'
 & (Join-Path $PSScriptRoot 'benchmark-v3.0-resources.ps1')
 & (Join-Path $PSScriptRoot 'compare-v2.3-v3.0.ps1')
 
+$mainUiError = Join-Path $repoRoot 'main_ui_test_error.txt'
+Remove-Item -LiteralPath $mainUiError -Force -ErrorAction SilentlyContinue
 Start-Process -FilePath $exe -ArgumentList '--main-ui-test' -WorkingDirectory $repoRoot -Wait
+if (Test-Path -LiteralPath $mainUiError) {
+    throw "主界面渲染自检异常：$(Get-Content $mainUiError -Raw -Encoding UTF8)"
+}
 $mainUi = Join-Path $repoRoot 'main_ui_test.png'
 if (-not (Test-Path -LiteralPath $mainUi) -or (Get-Item -LiteralPath $mainUi).Length -lt 20000) {
     throw '主界面高 DPI 渲染自检失败'

@@ -165,19 +165,70 @@ namespace MapleOverlay
             Application.SetCompatibleTextRenderingDefault(false);
             if (args != null && Array.IndexOf(args, "--main-ui-test") >= 0)
             {
-                using (MainPanelForm panel = new MainPanelForm(null))
+                string uiErrorPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                    "main_ui_test_error.txt");
+                try
                 {
-                    panel.RefreshStatus();
-                    panel.Show();
-                    Application.DoEvents();
-                    // PerMonitorV2 can resize the form when its handle is first shown. Allocate
-                    // the QA bitmap afterwards so high-DPI screenshots are not clipped or scaled.
-                    using (Bitmap bitmap = new Bitmap(panel.Width, panel.Height, PixelFormat.Format32bppArgb))
+                    Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
+                    if (File.Exists(uiErrorPath)) File.Delete(uiErrorPath);
+                    using (MainPanelForm panel = new MainPanelForm(null))
                     {
-                        panel.DrawToBitmap(bitmap, new Rectangle(System.Drawing.Point.Empty, bitmap.Size));
-                        panel.Hide();
-                        bitmap.Save(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "main_ui_test.png"), ImageFormat.Png);
+                        panel.RefreshStatus();
+                        panel.Show();
+                        Application.DoEvents();
+                        // PerMonitorV2 can resize the form when its handle is first shown. Allocate
+                        // the QA bitmap afterwards so high-DPI screenshots are not clipped or scaled.
+                        using (Bitmap bitmap = new Bitmap(panel.Width, panel.Height, PixelFormat.Format32bppArgb))
+                        {
+                            panel.DrawToBitmap(bitmap, new Rectangle(System.Drawing.Point.Empty, bitmap.Size));
+                            panel.Hide();
+                            bitmap.Save(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                                "main_ui_test.png"), ImageFormat.Png);
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    File.WriteAllText(uiErrorPath, ex.ToString(), Encoding.UTF8);
+                    Environment.ExitCode = 3;
+                }
+                return;
+            }
+            if (args != null && Array.IndexOf(args, "--translation-window-ui-test") >= 0)
+            {
+                string uiErrorPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                    "translation_window_ui_test_error.txt");
+                try
+                {
+                    Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
+                    if (File.Exists(uiErrorPath)) File.Delete(uiErrorPath);
+                    List<OverlayLabel> sample = new List<OverlayLabel> {
+                        new OverlayLabel { Text = "需要等级：50", Bounds = new RectangleF(20, 40, 130, 24) },
+                        new OverlayLabel { Text = "需要力量：20", Bounds = new RectangleF(20, 70, 130, 24) },
+                        new OverlayLabel { Text = "需要等级：50", Bounds = new RectangleF(280, 40, 130, 24) },
+                        new OverlayLabel { Text = "这是一段完整对话译文。浮窗集中显示可靠结果，不再把零碎词铺满游戏画面。",
+                            Bounds = new RectangleF(20, 130, 400, 70), Wrap = true }
+                    };
+                    using (TranslationWindowForm window = new TranslationWindowForm(null))
+                    {
+                        window.SetTranslations(sample);
+                        window.Show();
+                        Application.DoEvents();
+                        using (Bitmap bitmap = new Bitmap(window.Width, window.Height,
+                            PixelFormat.Format32bppArgb))
+                        {
+                            window.DrawToBitmap(bitmap, new Rectangle(System.Drawing.Point.Empty,
+                                bitmap.Size));
+                            window.Hide();
+                            bitmap.Save(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                                "translation_window_ui_test.png"), ImageFormat.Png);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    File.WriteAllText(uiErrorPath, ex.ToString(), Encoding.UTF8);
+                    Environment.ExitCode = 3;
                 }
                 return;
             }
@@ -261,6 +312,9 @@ namespace MapleOverlay
         private readonly List<TranslationEntry> itemTextEntries = new List<TranslationEntry>();
         private readonly List<TranslationEntry> interfaceTextEntries = new List<TranslationEntry>();
         private readonly List<TranslationEntry> uiEntries = new List<TranslationEntry>();
+        private readonly Dictionary<string, byte> skillClassificationCache =
+            new Dictionary<string, byte>(StringComparer.Ordinal);
+        private readonly object skillClassificationLock = new object();
         private string cachedIconText = "";
         private readonly List<KeyValuePair<TranslationEntry, float>> cachedIconCandidates =
             new List<KeyValuePair<TranslationEntry, float>>();
@@ -364,6 +418,7 @@ namespace MapleOverlay
             SortBuckets(iconTextBuckets);
             cachedIconText = "";
             cachedIconCandidates.Clear();
+            lock (skillClassificationLock) skillClassificationCache.Clear();
             Count = entries.Count;
         }
 
@@ -695,22 +750,61 @@ namespace MapleOverlay
 
         public bool LooksLikeSkillTextStart(string text)
         {
+            bool detail;
+            return ClassifySkillText(text, out detail);
+        }
+
+        public bool ClassifySkillText(string text, out bool detail)
+        {
+            detail = false;
             string normalized = Normalize(text);
             if (normalized.Length < 3) return false;
-            foreach (MatchResult match in FindInBuckets(text, buckets, null))
-                if (match.Entry.Category.StartsWith("怀旧服-技能#", StringComparison.Ordinal)) return true;
-            if (normalized.Length < 8) return false;
-            List<TranslationEntry> candidates;
-            if (skillTextBuckets.TryGetValue(normalized[0], out candidates))
-            {
-                foreach (TranslationEntry candidate in candidates)
+            byte cached;
+            lock (skillClassificationLock)
+                if (skillClassificationCache.TryGetValue(normalized, out cached))
                 {
-                    if (candidate.Normalized.StartsWith(normalized, StringComparison.Ordinal) ||
-                        normalized.StartsWith(candidate.Normalized, StringComparison.Ordinal)) return true;
+                    detail = (cached & 2) != 0;
+                    return (cached & 1) != 0;
                 }
+            bool skillName = false;
+            foreach (MatchResult match in FindInBuckets(text, buckets, null))
+                if (match.Entry.Category.StartsWith("怀旧服-技能#", StringComparison.Ordinal))
+                { skillName = true; break; }
+            if (normalized.Length >= 8)
+            {
+                List<TranslationEntry> candidates;
+                if (skillTextBuckets.TryGetValue(normalized[0], out candidates))
+                {
+                    foreach (TranslationEntry candidate in candidates)
+                    {
+                        if (candidate.Normalized.StartsWith(normalized, StringComparison.Ordinal) ||
+                            normalized.StartsWith(candidate.Normalized, StringComparison.Ordinal))
+                        {
+                            detail = normalized.Length >= 18;
+                            break;
+                        }
+                    }
+                }
+                if (!detail)
+                    detail = HasStrongDetailFragment(text, skillTextEntries) ||
+                        FindApproximateDetailMatch(text, skillTextEntries).Count > 0;
             }
-            return HasStrongDetailFragment(text, skillTextEntries) ||
-                FindApproximateDetailMatch(text, skillTextEntries).Count > 0;
+            bool result = skillName || detail;
+            byte value = (byte)((result ? 1 : 0) | (detail ? 2 : 0));
+            lock (skillClassificationLock)
+            {
+                if (skillClassificationCache.Count >= 2048)
+                    skillClassificationCache.Clear();
+                skillClassificationCache[normalized] = value;
+            }
+            return result;
+        }
+
+        public bool LooksLikeSkillDetailText(string text)
+        {
+            bool detail;
+            ClassifySkillText(text, out detail);
+            return detail;
         }
 
 
@@ -733,6 +827,19 @@ namespace MapleOverlay
             }
             return HasStrongDetailFragment(text, itemTextEntries) ||
                 FindApproximateDetailMatch(text, itemTextEntries).Count > 0;
+        }
+
+        public bool LooksLikeItemDetailText(string text)
+        {
+            string normalized = Normalize(text);
+            if (normalized.Length < 12) return false;
+            foreach (MatchResult match in FindItemTextMatches(text))
+            {
+                if (match.Entry == null || !match.Entry.IsItemText || match.Length < 10) continue;
+                if (match.Entry.Normalized.Length >= 16 ||
+                    match.Length * 10 >= normalized.Length * 6) return true;
+            }
+            return false;
         }
 
         public string DetectSkillId(string text)
@@ -1169,6 +1276,44 @@ namespace MapleOverlay
         public RectangleF Bounds;
         public string Text;
         public bool Wrap;
+        public bool StableLayout;
+    }
+
+    internal static class OverlayPaintSafety
+    {
+        private const float MaximumCoordinate = 100000.0f;
+        private const float MaximumDimension = 32768.0f;
+        private const int MaximumTextLength = 4096;
+
+        internal static bool TryPrepare(OverlayLabel label, out string text,
+            out RectangleF bounds)
+        {
+            text = "";
+            bounds = RectangleF.Empty;
+            if (label == null || String.IsNullOrWhiteSpace(label.Text)) return false;
+
+            RectangleF candidate = label.Bounds;
+            if (!IsFinite(candidate.X) || !IsFinite(candidate.Y) ||
+                !IsFinite(candidate.Width) || !IsFinite(candidate.Height)) return false;
+            if (Math.Abs(candidate.X) > MaximumCoordinate ||
+                Math.Abs(candidate.Y) > MaximumCoordinate ||
+                candidate.Width < 0 || candidate.Height < 0 ||
+                candidate.Width > MaximumDimension || candidate.Height > MaximumDimension)
+                return false;
+
+            candidate.Width = Math.Max(1.0f, candidate.Width);
+            candidate.Height = Math.Max(1.0f, candidate.Height);
+            text = label.Text.Length <= MaximumTextLength
+                ? label.Text
+                : label.Text.Substring(0, MaximumTextLength);
+            bounds = candidate;
+            return true;
+        }
+
+        private static bool IsFinite(float value)
+        {
+            return !Single.IsNaN(value) && !Single.IsInfinity(value);
+        }
     }
 
     internal sealed class OcrPanelInfo
@@ -1178,6 +1323,7 @@ namespace MapleOverlay
         public bool IsQuest;
         public bool IsSkillDetail;
         public bool IsCharacterStats;
+        public bool IsCharacterInfo;
         public bool IsEquipmentDetail;
         public string TaskId = "";
         public string SkillId = "";
@@ -1225,6 +1371,12 @@ namespace MapleOverlay
     internal static class RecognitionPriorityPlanner
     {
         private static readonly double[] Levels = new double[] { 1.0, 0.75, 0.5 };
+
+        internal static bool ShouldUseCurrentInterface(bool hasDetail, bool hasDialogue,
+            bool hasOutsideDialogue, bool hasVisibleText)
+        {
+            return hasVisibleText && !hasDetail && !hasDialogue && !hasOutsideDialogue;
+        }
 
         internal static List<RecognitionTier> Select(bool hasDetail, bool hasDialogue,
             bool hasOutsideDialogue, bool hasCurrentInterface, int maximumTargets)
@@ -1284,11 +1436,19 @@ namespace MapleOverlay
         }
     }
 
+    internal enum ChatRegionOrigin
+    {
+        None = 0,
+        Automatic = 1,
+        Manual = 2
+    }
+
     internal static class ChatRegionSettings
     {
         private const int Scale = 10000;
+        private const string OriginValueName = "ChatRegionOrigin";
 
-        public static void Save(Rectangle region, Rectangle gameBounds)
+        private static void Save(Rectangle region, Rectangle gameBounds, ChatRegionOrigin origin)
         {
             if (region.Width < 40 || region.Height < 20 || gameBounds.Width < 1 || gameBounds.Height < 1) return;
             using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu"))
@@ -1301,7 +1461,28 @@ namespace MapleOverlay
                 key.SetValue("ChatRelH", region.Height * Scale / gameBounds.Height);
                 key.SetValue("ChatGameX", gameBounds.X); key.SetValue("ChatGameY", gameBounds.Y);
                 key.SetValue("ChatGameW", gameBounds.Width); key.SetValue("ChatGameH", gameBounds.Height);
+                key.SetValue(OriginValueName, origin == ChatRegionOrigin.Manual ? "manual" : "automatic");
             }
+        }
+
+        public static void SaveManual(Rectangle region, Rectangle gameBounds)
+        {
+            Save(region, gameBounds, ChatRegionOrigin.Manual);
+        }
+
+        public static Rectangle SaveAutomatic(Rectangle suggestedRegion, Rectangle gameBounds)
+        {
+            if (HasSelection()) return ResolveForGame(gameBounds);
+            Rectangle region = Rectangle.Intersect(suggestedRegion, gameBounds);
+            if (region.Width < 80 || region.Height < 30) region = DefaultForGame(gameBounds);
+            Save(region, gameBounds, ChatRegionOrigin.Automatic);
+            return region;
+        }
+
+        public static void ResaveForGame(Rectangle region, Rectangle gameBounds)
+        {
+            ChatRegionOrigin origin = GetOrigin();
+            if (origin != ChatRegionOrigin.None) Save(region, gameBounds, origin);
         }
 
         public static Rectangle LoadAbsolute()
@@ -1324,6 +1505,26 @@ namespace MapleOverlay
         {
             Rectangle value = LoadAbsolute();
             return value.Width >= 80 && value.Height >= 30;
+        }
+
+        public static ChatRegionOrigin GetOrigin()
+        {
+            if (!HasSelection()) return ChatRegionOrigin.None;
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\FengYuMu"))
+                {
+                    string value = key == null ? "" : Convert.ToString(key.GetValue(OriginValueName, ""));
+                    if (String.Equals(value, "automatic", StringComparison.OrdinalIgnoreCase))
+                        return ChatRegionOrigin.Automatic;
+                    if (String.Equals(value, "manual", StringComparison.OrdinalIgnoreCase))
+                        return ChatRegionOrigin.Manual;
+                }
+            }
+            catch { }
+            // Regions saved by an older release could only have come from the selector.
+            // Treat them as manual so an upgrade never overwrites the user's choice.
+            return ChatRegionOrigin.Manual;
         }
 
         public static Rectangle ResolveForGame(Rectangle gameBounds)
@@ -1368,6 +1569,41 @@ namespace MapleOverlay
             return new Rectangle(gameBounds.Left + gameBounds.Width * 10 / 100,
                 gameBounds.Top + gameBounds.Height * 76 / 100,
                 gameBounds.Width * 55 / 100, gameBounds.Height * 21 / 100);
+        }
+    }
+
+    internal static class ChatRegionDetector
+    {
+        public static Rectangle Detect(IList<RectangleF> chatLines, Rectangle gameBounds)
+        {
+            RectangleF union = RectangleF.Empty;
+            int count = 0;
+            float minimumY = gameBounds.Top + gameBounds.Height * 0.58f;
+            float maximumLeft = gameBounds.Left + gameBounds.Width * 0.72f;
+            if (chatLines != null)
+            {
+                foreach (RectangleF line in chatLines)
+                {
+                    if (line.IsEmpty || line.Bottom < minimumY || line.Left > maximumLeft) continue;
+                    union = count == 0 ? line : RectangleF.Union(union, line);
+                    count++;
+                }
+            }
+            if (count == 0) return ChatRegionSettings.DefaultForGame(gameBounds);
+
+            int horizontalPadding = Math.Max(8, gameBounds.Width * 12 / 1000);
+            int left = Math.Max(gameBounds.Left, (int)Math.Floor(union.Left) - horizontalPadding);
+            int top = Math.Max(gameBounds.Top + gameBounds.Height * 58 / 100,
+                (int)Math.Floor(union.Top) - Math.Max(34, gameBounds.Height * 9 / 100));
+            int right = Math.Max((int)Math.Ceiling(union.Right) + gameBounds.Width * 2 / 100,
+                left + gameBounds.Width * 42 / 100);
+            int bottom = Math.Max((int)Math.Ceiling(union.Bottom) + gameBounds.Height * 5 / 100,
+                gameBounds.Top + gameBounds.Height * 96 / 100);
+            right = Math.Min(gameBounds.Right, right);
+            bottom = Math.Min(gameBounds.Bottom, bottom);
+            Rectangle detected = Rectangle.FromLTRB(left, top, right, bottom);
+            return detected.Width >= 240 && detected.Height >= 70
+                ? detected : ChatRegionSettings.DefaultForGame(gameBounds);
         }
     }
 
@@ -1681,6 +1917,7 @@ namespace MapleOverlay
             FontStyle.Bold, GraphicsUnit.Pixel);
         private bool processing;
         private bool visibleTranslation;
+        private bool shuttingDown;
         private OcrEngine ocr;
         private Keys showKey = Keys.F8;
         private Keys hideKey = Keys.F9;
@@ -1692,8 +1929,9 @@ namespace MapleOverlay
         private readonly uint[] gamepadStates = new uint[4];
         private readonly System.Windows.Forms.Timer gamepadTimer = new System.Windows.Forms.Timer();
         private readonly System.Windows.Forms.Timer continuousTranslationTimer = new System.Windows.Forms.Timer();
-        private TranslationRangeMode translationRangeMode = TranslationRangeMode.Maximum;
+        private TranslationRangeMode translationRangeMode = TranslationRangeMode.Balanced;
         private bool continuousTranslationEnabled;
+        private bool independentWindowEnabled;
         private int continuousTranslationMisses;
         private int continuousTranslationFailures;
         private DateTime continuousTranslationSuppressedUntilUtc = DateTime.MinValue;
@@ -1703,6 +1941,7 @@ namespace MapleOverlay
         private HotkeyForm hotkeyEditor;
         private OfflineChatForm chatTranslator;
         private MainPanelForm mainPanel;
+        private TranslationWindowForm translationWindow;
         private RegisteredWaitHandle activationWait;
 
         [DllImport("user32.dll")] private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint modifiers, uint key);
@@ -1753,9 +1992,10 @@ namespace MapleOverlay
             DoubleBuffered = true;
 
             LoadSettings();
+            if (Program.Benchmark || Program.BenchmarkUi) independentWindowEnabled = false;
             gamepadTimer.Interval = 25;
             gamepadTimer.Tick += delegate { PollGamepadShortcuts(); };
-            continuousTranslationTimer.Interval = 450;
+            continuousTranslationTimer.Interval = 260;
             continuousTranslationTimer.Tick += async delegate { await PollContinuousTranslationAsync(); };
             if (Program.Benchmark && Program.BenchmarkRangeMode >= 1 && Program.BenchmarkRangeMode <= 3)
                 translationRangeMode = (TranslationRangeMode)Program.BenchmarkRangeMode;
@@ -1874,11 +2114,13 @@ namespace MapleOverlay
                 hideModifiers = ParseModifiers(Convert.ToString(key.GetValue("HideModifiers", "")));
                 showGamepadShortcut = GamepadShortcut.Parse(Convert.ToString(key.GetValue("GamepadShowShortcut", "")));
                 hideGamepadShortcut = GamepadShortcut.Parse(Convert.ToString(key.GetValue("GamepadHideShortcut", "")));
-                int savedRange = Convert.ToInt32(key.GetValue("TranslationRangeMode", 1), CultureInfo.InvariantCulture);
+                int savedRange = Convert.ToInt32(key.GetValue("TranslationRangeMode", 2), CultureInfo.InvariantCulture);
                 if (savedRange >= (int)TranslationRangeMode.Maximum && savedRange <= (int)TranslationRangeMode.Minimum)
                     translationRangeMode = (TranslationRangeMode)savedRange;
                 continuousTranslationEnabled = Convert.ToInt32(
                     key.GetValue("ContinuousTranslationEnabled", 0), CultureInfo.InvariantCulture) != 0;
+                independentWindowEnabled = Convert.ToInt32(
+                    key.GetValue("IndependentWindowEnabled", 0), CultureInfo.InvariantCulture) != 0;
             }
         }
 
@@ -1927,6 +2169,7 @@ namespace MapleOverlay
         internal string HideGamepadShortcutDescription { get { return hideGamepadShortcut.ToString(); } }
         internal TranslationRangeMode TranslationRangeMode { get { return translationRangeMode; } }
         internal bool ContinuousTranslationEnabled { get { return continuousTranslationEnabled; } }
+        internal bool IndependentWindowEnabled { get { return independentWindowEnabled; } }
 
         internal void ApplyTranslationRangeMode(TranslationRangeMode mode)
         {
@@ -1949,6 +2192,36 @@ namespace MapleOverlay
                     RegistryValueKind.DWord);
             UpdateContinuousTranslationPolling();
             if (mainPanel != null && !mainPanel.IsDisposed) mainPanel.RefreshStatus();
+        }
+
+        internal void ApplyIndependentWindow(bool enabled)
+        {
+            independentWindowEnabled = enabled;
+            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu"))
+                key.SetValue("IndependentWindowEnabled", enabled ? 1 : 0,
+                    RegistryValueKind.DWord);
+            ShowCurrentTranslations();
+            if (mainPanel != null && !mainPanel.IsDisposed) mainPanel.RefreshStatus();
+        }
+
+        private void ShowCurrentTranslations()
+        {
+            if (!visibleTranslation || labels.Count == 0)
+            {
+                if (translationWindow != null && !translationWindow.IsDisposed) translationWindow.Hide();
+                Invalidate();
+                return;
+            }
+            if (independentWindowEnabled && !Program.Benchmark && !Program.BenchmarkUi)
+            {
+                if (translationWindow == null || translationWindow.IsDisposed)
+                    translationWindow = new TranslationWindowForm(this);
+                translationWindow.SetTranslations(labels);
+                translationWindow.ShowPassive();
+            }
+            else if (translationWindow != null && !translationWindow.IsDisposed)
+                translationWindow.Hide();
+            Invalidate();
         }
 
         internal void ApplyHotkeys(Keys newShowKey, uint newShowModifiers, Keys newHideKey, uint newHideModifiers)
@@ -2211,10 +2484,7 @@ namespace MapleOverlay
         {
             if (visibleTranslation)
             {
-                visibleTranslation = false;
-                labels.Clear();
-                Invalidate();
-                tray.Text = "枫语幕 v3.0（内存待机）";
+                HideTranslation();
             }
             else await ShowTranslationAsync();
         }
@@ -2240,7 +2510,7 @@ namespace MapleOverlay
         {
             visibleTranslation = false;
             labels.Clear();
-            Invalidate();
+            ShowCurrentTranslations();
             if (continuousTranslationEnabled)
                 continuousTranslationSuppressedUntilUtc = DateTime.UtcNow.AddSeconds(3);
             tray.Text = "枫语幕 v3.0（低配置优化）";
@@ -2268,6 +2538,7 @@ namespace MapleOverlay
             string recognitionPlanText = "范围最大（兼容路径）";
             // Screen results are never reused. Every F8 starts from an empty overlay and a fresh capture.
             visibleTranslation = false;
+            if (translationWindow != null && !translationWindow.IsDisposed) translationWindow.Hide();
             if (!restoreExistingOverlay) labels.Clear();
             Invalidate();
             // Invalidate only queues a repaint. Force that repaint through the desktop compositor
@@ -2291,6 +2562,8 @@ namespace MapleOverlay
                 else screen = Program.Benchmark ? new Rectangle(0, 0, 1280, 720) : GetForegroundCaptureBounds();
                 captureBounds = screen;
                 gameBounds = screen;
+                bool lockChatRegionOnFirstUse = !automatic && !Program.Benchmark &&
+                    !ChatRegionSettings.HasSelection();
                 long captureStarted = Program.Benchmark ? stopwatch.ElapsedMilliseconds : 0;
                 using (Bitmap bitmap = new Bitmap(screen.Width, screen.Height, PixelFormat.Format32bppArgb))
                 {
@@ -2339,12 +2612,13 @@ namespace MapleOverlay
                     if (restoreExistingOverlay)
                     {
                         visibleTranslation = true;
-                        Invalidate();
+                        ShowCurrentTranslations();
                         Update();
                     }
                     if (Program.Benchmark) captureDuration = stopwatch.ElapsedMilliseconds - captureStarted;
                     CharacterStatVisualLayout visualCharacter = ClassicSceneVision.FindCharacterStats(bitmap);
-                    bool useSceneProbe = automatic || Program.BenchmarkSceneProbe;
+                    bool useSceneProbe = ContinuousTranslationPolicy.ShouldRunProbe(automatic,
+                        restoreExistingOverlay, Program.BenchmarkSceneProbe);
                     if (useSceneProbe && visualCharacter == null)
                     {
                         long probeStarted = stopwatch.ElapsedMilliseconds;
@@ -2368,7 +2642,7 @@ namespace MapleOverlay
                                     {
                                         visibleTranslation = false;
                                         labels.Clear();
-                                        Invalidate();
+                                        ShowCurrentTranslations();
                                     }
                                     continuousTranslationTimer.Interval = ContinuousTranslationPolicy.NextInterval(
                                         false, continuousTranslationMisses, continuousTranslationFailures);
@@ -2392,6 +2666,15 @@ namespace MapleOverlay
                     using (Bitmap prepared = PrepareForOcr(bitmap, out ocrScale, false, screen.Width >= 1900 ? 2200.0f : 2000.0f))
                     {
                         OcrResult result = await RecognizeAsync(prepared);
+                        if (lockChatRegionOnFirstUse)
+                        {
+                            List<RectangleF> chatLineBounds = FindPlayerChatLineBounds(result,
+                                ocrScale, gameBounds);
+                            Rectangle chatRegion = ChatRegionSettings.SaveAutomatic(
+                                ChatRegionDetector.Detect(chatLineBounds, gameBounds), gameBounds);
+                            if (chatTranslator != null && !chatTranslator.IsDisposed)
+                                chatTranslator.UpdateChatRegion(chatRegion, ChatRegionSettings.GetOrigin());
+                        }
                         SceneSnapshot sceneSnapshot = SceneClassifier.Analyze(result, translations, true);
                         string preciseScenes = sceneSnapshot.Describe();
                         if (visualCharacter != null) preciseScenes += ">人物视觉:200/2";
@@ -2463,7 +2746,11 @@ namespace MapleOverlay
                                 return value.PriorityKind == RecognitionPriorityKind.Dialogue; });
                             bool hasOutsideDialogue = priorityCandidates.Exists(delegate(PanelCropCandidate value) {
                                 return value.PriorityKind == RecognitionPriorityKind.OutsideDialogue; });
-                            bool hasCurrentInterface = !hasDialogue && result.Lines.Count > 0;
+                            // The fourth tier means the current interface only when no higher
+                            // priority panel exists. Adding it beside a character/shop/dialogue
+                            // panel defeated the user's four-tier rule and kept HUD fragments.
+                            bool hasCurrentInterface = RecognitionPriorityPlanner.ShouldUseCurrentInterface(
+                                hasDetail, hasDialogue, hasOutsideDialogue, result.Lines.Count > 0);
                             int maximumTargets = translationRangeMode == TranslationRangeMode.Minimum ? 2 : 3;
                             recognitionPlan = RecognitionPriorityPlanner.Select(hasDetail, hasDialogue,
                                 hasOutsideDialogue, hasCurrentInterface, maximumTargets);
@@ -2674,6 +2961,8 @@ namespace MapleOverlay
                                 AddCharacterStatHoverHelp(next, visualCharacter,
                                     tooltipLocal, pointer, screen);
                         }
+                        if (usePriorityPlan && plannedPanelTargets.Count > 0)
+                            RetainLabelsInPriorityRegions(next, plannedPanelTargets);
                         long finalizeStarted = Program.Benchmark ? stopwatch.ElapsedMilliseconds : 0;
                         MergeAdjacentLongLabels(next);
                         MergeOverlappingSameTextLabels(next);
@@ -2688,20 +2977,20 @@ namespace MapleOverlay
                 {
                     visibleTranslation = false;
                     labels.Clear();
-                    Invalidate();
+                    ShowCurrentTranslations();
                     return;
                 }
                 if (automatic && labels.Count == 0)
                 {
                     continuousTranslationMisses++;
                     visibleTranslation = false;
-                    Invalidate();
+                    ShowCurrentTranslations();
                     continuousTranslationTimer.Interval = ContinuousTranslationPolicy.NextInterval(
                         false, continuousTranslationMisses, 0);
                     return;
                 }
                 visibleTranslation = true;
-                Invalidate();
+                ShowCurrentTranslations();
                 stopwatch.Stop();
                 tray.Text = "枫语幕 v3.0（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
                 if (Program.Benchmark)
@@ -2716,7 +3005,7 @@ namespace MapleOverlay
                 {
                     visibleTranslation = false;
                     labels.Clear();
-                    Invalidate();
+                    ShowCurrentTranslations();
                 }
                 if (Program.Benchmark)
                     File.WriteAllText(Path.Combine(baseDir, "last_run.txt"),
@@ -2976,11 +3265,14 @@ namespace MapleOverlay
             // and dynamic values are left untouched.
             for (int i = output.Count - 1; i >= 0; i--)
                 if (IsCharacterLayoutLabel(output[i].Text)) output.RemoveAt(i);
+            int stableStart = output.Count;
             AddCharacterStatLayoutLabelsAt(output,
                 screen.Left + layout.Left - Bounds.Left,
                 screen.Top + layout.Top - Bounds.Top, layout.Scale,
                 screen.Left + layout.RightLeft - Bounds.Left,
                 screen.Top + layout.RightTop - Bounds.Top);
+            for (int i = stableStart; i < output.Count; i++)
+                output[i].StableLayout = true;
         }
 
         private void AddCharacterStatHoverHelp(List<OverlayLabel> output,
@@ -3276,26 +3568,59 @@ namespace MapleOverlay
             return accepted;
         }
 
+        private void RetainLabelsInPriorityRegions(List<OverlayLabel> currentLabels,
+            List<PanelCropCandidate> priorityRegions)
+        {
+            if (currentLabels == null || priorityRegions == null || priorityRegions.Count == 0) return;
+            for (int i = currentLabels.Count - 1; i >= 0; i--)
+            {
+                OverlayLabel label = currentLabels[i];
+                // The colour-band detector has already verified the complete Character Stat
+                // geometry. Do not cut its last rows merely because a higher-priority tooltip
+                // overlaps only the upper part of the same panel.
+                if (label.StableLayout) continue;
+                PointF center = new PointF(Bounds.Left + label.Bounds.Left + label.Bounds.Width / 2.0f,
+                    Bounds.Top + label.Bounds.Top + label.Bounds.Height / 2.0f);
+                bool inside = false;
+                foreach (PanelCropCandidate region in priorityRegions)
+                {
+                    Rectangle expanded = region.Bounds;
+                    expanded.Inflate(8, 8);
+                    if (expanded.Contains(System.Drawing.Point.Round(center))) { inside = true; break; }
+                }
+                if (!inside) currentLabels.RemoveAt(i);
+            }
+        }
+
         private bool IsCharacterPanelAlreadyCovered(Rectangle panelCrop,
             List<OverlayLabel> currentLabels)
         {
-            string[] markers = new string[] { "名称", "职业", "生命值", "魔法值",
+            string[] statMarkers = new string[] { "名称", "职业", "生命值", "魔法值",
                 "能力值点数", "物理防御力", "暴击伤害", "跳跃力" };
-            int count = 0;
+            string[] infoMarkers = new string[] { "角色信息", "公民身份", "人气", "家族",
+                "邀请组队", "申请交易", "查看宠物信息" };
+            int statCount = 0, infoCount = 0;
             foreach (OverlayLabel label in currentLabels)
             {
-                bool marker = false;
-                foreach (string value in markers)
+                bool statMarker = false, infoMarker = false;
+                foreach (string value in statMarkers)
                     if (String.Equals(value, label.Text, StringComparison.Ordinal))
-                    { marker = true; break; }
-                if (!marker) continue;
+                    { statMarker = true; break; }
+                foreach (string value in infoMarkers)
+                    if (String.Equals(value, label.Text, StringComparison.Ordinal))
+                    { infoMarker = true; break; }
+                if (!statMarker && !infoMarker) continue;
                 RectangleF screenBounds = new RectangleF(Bounds.Left + label.Bounds.Left,
                     Bounds.Top + label.Bounds.Top, label.Bounds.Width, label.Bounds.Height);
-                if (screenBounds.IntersectsWith(panelCrop)) count++;
+                if (!screenBounds.IntersectsWith(panelCrop)) continue;
+                if (statMarker) statCount++;
+                if (infoMarker) infoCount++;
             }
-            // Once the fixed-layout pass has covered almost the whole stat panel, another
-            // high-resolution OCR pass only repeats the same labels and adds latency.
-            return count >= 6;
+            // Once a deterministic layout has covered the panel, another focused OCR pass
+            // only repeats the same short labels at slightly different offsets. Character
+            // Info is deliberately separate from Character Stat: treating both as one panel
+            // was the cause of the duplicated/misaligned labels seen when trade was open.
+            return statCount >= 6 || infoCount >= 4;
         }
 
         private Dictionary<OcrLine, OcrPanelInfo> BuildOcrPanels(List<OcrLine> lines)
@@ -3354,13 +3679,8 @@ namespace MapleOverlay
                     (panel.SkillId.Length > 0 && normalized.Length >= 35 &&
                      (normalized.Contains("damage") || normalized.Contains("duration") ||
                       normalized.Contains("seconds") || normalized.Contains(" mp ")));
-                int statAnchors = 0;
-                string[] statWords = new string[] { " name ", " job ", " level ", " hp ", " mp ",
-                    " exp ", " fame ", " str ", " dex ", " int ", " luk ", " accuracy ", " evasion " };
-                string padded = " " + normalized + " ";
-                foreach (string word in statWords) if (padded.Contains(word)) statAnchors++;
-                panel.IsCharacterStats = normalized.Contains("character stat") ||
-                    normalized.Contains("character info") || statAnchors >= 5;
+                panel.IsCharacterInfo = CharacterPanelPolicy.IsInformation(normalized);
+                panel.IsCharacterStats = CharacterPanelPolicy.IsStatistics(normalized);
                 panel.IsEquipmentDetail = normalized.Contains("req lev") ||
                     normalized.Contains("required level") || normalized.Contains("remaining enhancements") ||
                     (normalized.Contains("weapon def") && normalized.Contains("magic def"));
@@ -3406,6 +3726,11 @@ namespace MapleOverlay
             StringBuilder visibleText = new StringBuilder();
             foreach (OcrLine candidate in result.Lines)
             {
+                // Static interface/item matching must never translate player chat. A chat line
+                // can legitimately contain an exact item or skill name ("T> Bamboo Hat"), but
+                // that is not evidence that the corresponding tooltip is open. Chat has its
+                // own explicit AI translator and is excluded here even without a saved region.
+                if (SceneClassifier.LooksLikePlayerChat(candidate.Text)) continue;
                 if (IsChatLine(candidate, ocrScale, chatExclusion) &&
                     !translations.HasDetailCandidate(candidate.Text) &&
                     !LooksLikeEquipmentStatText(candidate.Text)) continue;
@@ -3500,6 +3825,15 @@ namespace MapleOverlay
                 }
                 if (bestInterfaceMatches != null && bestInterfaceMatches.Count > 0)
                 {
+                    // Short static UI words (ALL, LEVEL, MESOS, SHOP...) are not useful
+                    // translations by themselves. They used to win before the actual dialogue
+                    // or description and produced dozens of tiny boxes across the HUD.
+                    bestInterfaceMatches.RemoveAll(delegate(MatchResult match) {
+                        return !match.Entry.IsInterfaceText && match.Entry.Normalized.Length < 18;
+                    });
+                }
+                if (bestInterfaceMatches != null && bestInterfaceMatches.Count > 0)
+                {
                     AddExactLabels(output, interfaceLines.GetRange(0, bestInterfaceSpan),
                         bestInterfaceText, bestInterfaceMatches, ocrScale);
                     // Windows OCR can flatten several nearby UI blocks into one very long line.
@@ -3581,8 +3915,18 @@ namespace MapleOverlay
                     normalizedCurrentLine.Length >= 18 &&
                     (currentPanel == null || (!currentPanel.IsSkillDetail && !currentPanel.IsEquipmentDetail &&
                      !currentPanel.IsCharacterStats)));
+                bool taskSceneAnchor = visibleScene.IsStrong(SceneKind.Quest) &&
+                    (normalizedCurrentLine.Contains("quest helper") ||
+                     ContainsWholeNormalizedPhrase(normalizedCurrentLine, "exp"));
                 List<MatchResult> matches;
-                if (taskTextContext && !equipmentStatLine)
+                if (taskSceneAnchor && !equipmentStatLine)
+                {
+                    // Panel title and reward amount are small but semantically important.
+                    // Route them explicitly instead of weakening the generic short-word filter,
+                    // which would bring back dozens of ALL/LEVEL/MESOS labels across the HUD.
+                    matches = translations.FindMatches(line.Text);
+                }
+                else if (taskTextContext && !equipmentStatLine)
                 {
                     // A quest list and the helper can show several different quest titles
                     // around one selected quest body. Never constrain a short title row to
@@ -3597,6 +3941,8 @@ namespace MapleOverlay
                         : translations.FindTaskMatches(line.Text, activeTaskId);
                 }
                 else matches = translations.FindMatches(line.Text);
+                if (!taskTextContext && !taskSceneAnchor && !equipmentStatLine && matches.Count > 0)
+                    KeepHighCoverageMatches(matches, normalizedCurrentLine.Length);
                 if (!questInterface && normalizedCurrentLine.Length > 28 && !equipmentStatLine)
                     matches.RemoveAll(delegate(MatchResult match) {
                         int lineLength = normalizedCurrentLine.Length;
@@ -3654,6 +4000,14 @@ namespace MapleOverlay
                     // the wrong item even though the adjacent icon is unambiguous.
                     OverlayLabel resolved = BuildIconAssistedLabel(line, ocrScale, prepared);
                     if (resolved != null) { output.Add(resolved); continue; }
+                    // In a confirmed item scene, a single high-coverage name is still useful
+                    // when the tiny icon is too blurred for a reliable hash (Lionheart is a
+                    // public regression sample). Outside an item scene the same fallback
+                    // turned player/job names into unrelated equipment, so reject it there.
+                    bool strongFocusedItemName = globalEquipmentContext && matches.Count == 1 &&
+                        matches[0].Entry.HasIcon && normalizedCurrentLine.Length >= 8 &&
+                        matches[0].Length * 10 >= normalizedCurrentLine.Length * 7;
+                    if (!strongFocusedItemName) continue;
                 }
                 AddExactLabels(output, new List<OcrLine> { line }, line.Text, matches, ocrScale);
             }
@@ -3662,6 +4016,23 @@ namespace MapleOverlay
             MergeSameTextLabels(output);
             RemoveContainedLabels(output);
             return output;
+        }
+
+        private static void KeepHighCoverageMatches(List<MatchResult> matches, int lineLength)
+        {
+            if (matches == null || matches.Count == 0 || lineLength <= 0) return;
+            int covered = 0;
+            foreach (MatchResult match in matches) covered += Math.Max(0, match.Length);
+            bool collectivelyMeaningful = covered * 10 >= lineLength * 6;
+            matches.RemoveAll(delegate(MatchResult match) {
+                // The generic dictionary must not paint small static UI vocabulary across
+                // unrelated screens. Dedicated panel layouts and long-interface matching
+                // remain responsible for those labels.
+                bool shortInterface = match.Entry.Category.StartsWith("怀旧服-界面",
+                    StringComparison.Ordinal) && match.Entry.Normalized.Length < 18;
+                if (shortInterface) return true;
+                return !collectivelyMeaningful && match.Length * 10 < lineLength * 7;
+            });
         }
 
         private void AddStablePanelLayouts(List<OverlayLabel> output, List<OcrLine> lines,
@@ -4033,8 +4404,15 @@ namespace MapleOverlay
                 { "top", "上衣" }
             };
             for (int i = 0; i < values.GetLength(0); i++)
-                if (normalized.Contains(values[i, 0])) return values[i, 1];
+                if (ContainsWholeNormalizedPhrase(normalized, values[i, 0])) return values[i, 1];
             return "";
+        }
+
+        private static bool ContainsWholeNormalizedPhrase(string normalized, string phrase)
+        {
+            if (String.IsNullOrEmpty(normalized) || String.IsNullOrEmpty(phrase)) return false;
+            return (" " + normalized + " ").IndexOf(" " + phrase + " ",
+                StringComparison.Ordinal) >= 0;
         }
 
         private static int StructuredEditDistance(string left, string right)
@@ -4148,7 +4526,11 @@ namespace MapleOverlay
                 if (normalized.Contains(jobs[i]) ||
                     ContainsApproximateStructuredToken(normalized, jobs[i], 0.52f))
                 { jobCount++; allowedJobs.Add(jobNames[i]); }
-            if (jobCount >= 2) fields.Add("可用职业：" + String.Join("／", allowedJobs.ToArray()));
+            // A friend/party list can contain several job names on adjacent rows. Only an
+            // already-confirmed equipment tooltip may turn a class ribbon into an allowed-job
+            // field; job words by themselves are not equipment structure.
+            if (equipmentContext && jobCount >= 2)
+                fields.Add("可用职业：" + String.Join("／", allowedJobs.ToArray()));
 
             string type = TranslateEquipmentType(normalized);
             if ((equipmentContext || normalized.Contains("type ")) && type.Length > 0)
@@ -4605,9 +4987,9 @@ namespace MapleOverlay
             // so the AI reader and the F8 exclusion continue to point at one region.
             if (ChatRegionSettings.HasSelection() && ChatRegionSettings.LoadAbsolute() != resolved)
             {
-                ChatRegionSettings.Save(resolved, gameBounds);
+                ChatRegionSettings.ResaveForGame(resolved, gameBounds);
                 if (chatTranslator != null && !chatTranslator.IsDisposed)
-                    chatTranslator.UpdateChatRegion(resolved);
+                    chatTranslator.UpdateChatRegion(resolved, ChatRegionSettings.GetOrigin());
             }
             return resolved;
         }
@@ -4756,6 +5138,23 @@ namespace MapleOverlay
             return left == Single.MaxValue ? RectangleF.Empty : RectangleF.FromLTRB(left, top, right, bottom);
         }
 
+        private static List<RectangleF> FindPlayerChatLineBounds(OcrResult result,
+            float ocrScale, Rectangle screen)
+        {
+            List<RectangleF> output = new List<RectangleF>();
+            if (result == null || ocrScale <= 0) return output;
+            foreach (OcrLine line in result.Lines)
+            {
+                if (!SceneClassifier.LooksLikePlayerChat(line.Text)) continue;
+                RectangleF raw = GetOcrLineBounds(line);
+                if (raw.IsEmpty) continue;
+                output.Add(new RectangleF(screen.Left + raw.Left / ocrScale,
+                    screen.Top + raw.Top / ocrScale, raw.Width / ocrScale,
+                    raw.Height / ocrScale));
+            }
+            return output;
+        }
+
         private static bool AreOcrBlocksContinuous(RectangleF first, RectangleF second)
         {
             if (first.IsEmpty || second.IsEmpty) return false;
@@ -4855,42 +5254,79 @@ namespace MapleOverlay
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            if (!visibleTranslation) return;
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
-            using (SolidBrush background = new SolidBrush(Color.FromArgb(238, 18, 18, 20)))
-            using (Pen border = new Pen(Color.FromArgb(220, 255, 190, 45), 1.0f))
-            using (SolidBrush text = new SolidBrush(Color.White))
+            if (shuttingDown || !visibleTranslation || independentWindowEnabled) return;
+            try
             {
-                foreach (OverlayLabel label in labels)
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+                using (SolidBrush background = new SolidBrush(Color.FromArgb(238, 18, 18, 20)))
+                using (Pen border = new Pen(Color.FromArgb(220, 255, 190, 45), 1.0f))
+                using (SolidBrush textBrush = new SolidBrush(Color.White))
                 {
-                    RectangleF r = label.Bounds;
-                    SizeF size;
-                    if (label.Wrap)
+                    OverlayLabel[] snapshot = labels.ToArray();
+                    foreach (OverlayLabel label in snapshot)
                     {
-                        r.Width = Math.Max(90, r.Width);
-                        size = e.Graphics.MeasureString(label.Text, overlayFont,
-                            new SizeF(Math.Max(20, r.Width - 8), 1000), StringFormat.GenericTypographic);
-                        r.Height = Math.Max(r.Height, size.Height + 7);
+                        string labelText;
+                        RectangleF r;
+                        if (!OverlayPaintSafety.TryPrepare(label, out labelText, out r))
+                            continue;
+                        try
+                        {
+                            PaintOverlayLabel(e.Graphics, label, labelText, r,
+                                background, border, textBrush);
+                        }
+                        catch (ArgumentException)
+                        {
+                            // A malformed OCR rectangle or a transient GDI+ font state must not
+                            // replace the entire transparent overlay with WinForms' red error cross.
+                        }
+                        catch (System.Runtime.InteropServices.ExternalException)
+                        {
+                            // Isolate a single GDI+ drawing failure and keep the remaining labels.
+                        }
                     }
-                    else
-                    {
-                        size = e.Graphics.MeasureString(label.Text, overlayFont);
-                        r.Width = Math.Max(r.Width, size.Width + 8);
-                        r.Height = Math.Max(r.Height, size.Height + 5);
-                    }
-                    using (GraphicsPath path = RoundedRect(r, 4.0f))
-                    {
-                        e.Graphics.FillPath(background, path);
-                        e.Graphics.DrawPath(border, path);
-                    }
-                    if (label.Wrap)
-                        e.Graphics.DrawString(label.Text, overlayFont, text,
-                            new RectangleF(r.X + 4, r.Y + 3, r.Width - 8, r.Height - 5), StringFormat.GenericTypographic);
-                    else
-                        e.Graphics.DrawString(label.Text, overlayFont, text, r.X + 4, r.Y + (r.Height - size.Height) / 2 - 1);
                 }
             }
+            catch (ArgumentException)
+            {
+                // Keep paint callbacks exception-safe even while the overlay is closing.
+            }
+            catch (System.Runtime.InteropServices.ExternalException)
+            {
+                // GDI+ can invalidate a paint surface during display/DPI changes.
+            }
+        }
+
+        private void PaintOverlayLabel(Graphics graphics, OverlayLabel label, string labelText,
+            RectangleF r, Brush background, Pen border, Brush textBrush)
+        {
+            SizeF size;
+            if (label.Wrap)
+            {
+                r.Width = Math.Max(90, r.Width);
+                size = graphics.MeasureString(labelText, overlayFont,
+                    new SizeF(Math.Max(20, r.Width - 8), 1000),
+                    StringFormat.GenericTypographic);
+                r.Height = Math.Max(r.Height, size.Height + 7);
+            }
+            else
+            {
+                size = graphics.MeasureString(labelText, overlayFont);
+                r.Width = Math.Max(r.Width, size.Width + 8);
+                r.Height = Math.Max(r.Height, size.Height + 5);
+            }
+            using (GraphicsPath path = RoundedRect(r, 4.0f))
+            {
+                graphics.FillPath(background, path);
+                graphics.DrawPath(border, path);
+            }
+            if (label.Wrap)
+                graphics.DrawString(labelText, overlayFont, textBrush,
+                    new RectangleF(r.X + 4, r.Y + 3, r.Width - 8, r.Height - 5),
+                    StringFormat.GenericTypographic);
+            else
+                graphics.DrawString(labelText, overlayFont, textBrush, r.X + 4,
+                    r.Y + (r.Height - size.Height) / 2 - 1);
         }
 
         private static GraphicsPath RoundedRect(RectangleF r, float radius)
@@ -4907,6 +5343,9 @@ namespace MapleOverlay
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
+            shuttingDown = true;
+            visibleTranslation = false;
+            labels.Clear();
             UnregisterHotKey(Handle, HOTKEY_SHOW);
             UnregisterHotKey(Handle, HOTKEY_HIDE);
             gamepadTimer.Stop();
@@ -4920,10 +5359,12 @@ namespace MapleOverlay
             }
             tray.Visible = false;
             tray.Dispose();
-            overlayFont.Dispose();
             if (mainPanel != null && !mainPanel.IsDisposed) mainPanel.Dispose();
+            if (translationWindow != null && !translationWindow.IsDisposed)
+                translationWindow.ClosePermanently();
             if (chatTranslator != null && !chatTranslator.IsDisposed) chatTranslator.StopService();
             base.OnFormClosed(e);
+            overlayFont.Dispose();
         }
     }
 }

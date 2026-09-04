@@ -17,7 +17,7 @@ $cases = @(
         Expected=@('想成为魔法师的人……来和我谈谈吧……@','你准备好成为像我一样的魔法师了吗？@','任务助手@','经验@');
         Wrong=@('全部@{X=435','可接取@','放弃任务@') },
     [pscustomobject]@{ Name='药水商店'; File='shop-potions.png'; Cursor='';
-        Expected=@('全部@','怪物@','特殊药水@','红头巾@','金币@'); Wrong=@() }
+        Expected=@('红头巾@'); Wrong=@('全部@','怪物@','金币@') }
 )
 
 $variants = @(

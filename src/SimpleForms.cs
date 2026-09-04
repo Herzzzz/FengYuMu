@@ -20,6 +20,198 @@ namespace MapleOverlay
         public string StartMap;
     }
 
+    internal static class TranslationWindowContent
+    {
+        internal static string Build(List<OverlayLabel> source)
+        {
+            if (source == null || source.Count == 0) return "";
+            List<OverlayLabel> ordered = new List<OverlayLabel>(source);
+            ordered.Sort(delegate(OverlayLabel left, OverlayLabel right) {
+                int row = left.Bounds.Top.CompareTo(right.Bounds.Top);
+                return Math.Abs(left.Bounds.Top - right.Bounds.Top) <=
+                    Math.Max(left.Bounds.Height, right.Bounds.Height) * 0.55f
+                    ? left.Bounds.Left.CompareTo(right.Bounds.Left) : row;
+            });
+            HashSet<string> seen = new HashSet<string>(StringComparer.Ordinal);
+            StringBuilder result = new StringBuilder();
+            foreach (OverlayLabel label in ordered)
+            {
+                string text = RegexWhitespace(label.Text);
+                if (text.Length == 0 || !seen.Add(text)) continue;
+                if (result.Length > 0) result.AppendLine();
+                result.Append(text);
+                if (text.Length >= 20) result.AppendLine();
+            }
+            return result.ToString().Trim();
+        }
+
+        private static string RegexWhitespace(string value)
+        {
+            if (String.IsNullOrWhiteSpace(value)) return "";
+            StringBuilder result = new StringBuilder();
+            bool spacing = false;
+            foreach (char valueChar in value.Trim())
+            {
+                if (Char.IsWhiteSpace(valueChar)) { spacing = true; continue; }
+                if (spacing && result.Length > 0) result.Append(' ');
+                spacing = false;
+                result.Append(valueChar);
+            }
+            return result.ToString();
+        }
+    }
+
+    internal sealed class TranslationWindowForm : Form
+    {
+        private readonly OverlayForm overlay;
+        private readonly TextBox content = new TextBox();
+        private readonly Label status = new Label();
+        private bool allowClose;
+        private string displayedText = "";
+
+        internal TranslationWindowForm(OverlayForm owner)
+        {
+            overlay = owner;
+            Text = "枫语幕 · 当前画面翻译";
+            Icon = Program.AppIcon;
+            ShowInTaskbar = false;
+            TopMost = true;
+            StartPosition = FormStartPosition.Manual;
+            FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            MinimumSize = new Size(320, 240);
+            Size = new Size(430, 560);
+            BackColor = Color.FromArgb(18, 18, 22);
+            Font = new Font("Microsoft YaHei UI", 9.0f);
+
+            Panel header = new Panel {
+                Dock = DockStyle.Top, Height = 52,
+                BackColor = Color.FromArgb(30, 41, 59)
+            };
+            Label title = new Label {
+                Text = "当前画面翻译", AutoSize = true,
+                Location = new Point(15, 8), ForeColor = Color.White,
+                Font = new Font("Microsoft YaHei UI", 11.0f, FontStyle.Bold)
+            };
+            status.Text = "整块内容优先 · 自动去重";
+            status.AutoSize = true;
+            status.Location = new Point(16, 31);
+            status.ForeColor = Color.FromArgb(148, 163, 184);
+            header.Controls.Add(title); header.Controls.Add(status);
+
+            content.Dock = DockStyle.Fill;
+            content.Multiline = true;
+            content.ReadOnly = true;
+            content.ScrollBars = ScrollBars.Vertical;
+            content.BorderStyle = BorderStyle.None;
+            content.BackColor = Color.FromArgb(18, 18, 22);
+            content.ForeColor = Color.FromArgb(241, 245, 249);
+            content.Font = new Font("Microsoft YaHei UI", 11.5f);
+            content.Margin = new Padding(14);
+            content.WordWrap = true;
+            content.TabStop = false;
+
+            Panel body = new Panel { Dock = DockStyle.Fill, Padding = new Padding(15, 14, 10, 14) };
+            body.Controls.Add(content);
+            Controls.Add(body); Controls.Add(header);
+            LoadSavedBounds();
+            FormClosing += HandleFormClosing;
+            ResizeEnd += delegate { SaveBounds(); };
+        }
+
+        protected override bool ShowWithoutActivation { get { return true; } }
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams parameters = base.CreateParams;
+                parameters.ExStyle |= 0x08000000; // WS_EX_NOACTIVATE: keep game focus.
+                return parameters;
+            }
+        }
+
+        internal string DisplayedText { get { return displayedText; } }
+
+        internal void SetTranslations(List<OverlayLabel> labels)
+        {
+            string next = TranslationWindowContent.Build(labels);
+            if (String.Equals(next, displayedText, StringComparison.Ordinal)) return;
+            displayedText = next;
+            content.Text = next;
+            content.SelectionStart = 0;
+            content.SelectionLength = 0;
+            int entries = next.Length == 0 ? 0 : next.Split(new string[] { Environment.NewLine },
+                StringSplitOptions.RemoveEmptyEntries).Length;
+            status.Text = entries + " 条可靠译文 · F9 隐藏";
+        }
+
+        internal void ShowPassive()
+        {
+            if (displayedText.Length == 0) { Hide(); return; }
+            if (!Visible) Show();
+        }
+
+        internal void ClosePermanently()
+        {
+            allowClose = true;
+            Close();
+        }
+
+        private void HandleFormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveBounds();
+            if (allowClose || e.CloseReason != CloseReason.UserClosing) return;
+            e.Cancel = true;
+            Hide();
+            if (overlay != null) overlay.ApplyIndependentWindow(false);
+        }
+
+        private void LoadSavedBounds()
+        {
+            Rectangle work = Screen.PrimaryScreen.WorkingArea;
+            Rectangle fallback = new Rectangle(work.Right - Width - 24,
+                work.Top + Math.Max(24, (work.Height - Height) / 2), Width, Height);
+            Rectangle saved = fallback;
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\FengYuMu"))
+                {
+                    if (key != null)
+                    {
+                        int x = Convert.ToInt32(key.GetValue("TranslationWindowX", fallback.X));
+                        int y = Convert.ToInt32(key.GetValue("TranslationWindowY", fallback.Y));
+                        int width = Convert.ToInt32(key.GetValue("TranslationWindowWidth", fallback.Width));
+                        int height = Convert.ToInt32(key.GetValue("TranslationWindowHeight", fallback.Height));
+                        saved = new Rectangle(x, y, Math.Max(320, width), Math.Max(240, height));
+                    }
+                }
+            }
+            catch { saved = fallback; }
+            bool visible = false;
+            foreach (Screen screen in Screen.AllScreens)
+                if (Rectangle.Intersect(screen.WorkingArea, saved).Width >= 100 &&
+                    Rectangle.Intersect(screen.WorkingArea, saved).Height >= 80)
+                { visible = true; break; }
+            Bounds = visible ? saved : fallback;
+        }
+
+        private void SaveBounds()
+        {
+            if (WindowState != FormWindowState.Normal || Width < 320 || Height < 240) return;
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu"))
+                {
+                    key.SetValue("TranslationWindowX", Left, RegistryValueKind.DWord);
+                    key.SetValue("TranslationWindowY", Top, RegistryValueKind.DWord);
+                    key.SetValue("TranslationWindowWidth", Width, RegistryValueKind.DWord);
+                    key.SetValue("TranslationWindowHeight", Height, RegistryValueKind.DWord);
+                }
+            }
+            catch { }
+        }
+    }
+
     internal sealed class MainPanelForm : Form
     {
         private readonly OverlayForm overlay;
@@ -28,6 +220,7 @@ namespace MapleOverlay
         private readonly TrackBar range = new TrackBar();
         private readonly Label rangeValue = new Label();
         private readonly CheckBox continuousTranslation = new CheckBox();
+        private readonly CheckBox independentWindow = new CheckBox();
 
         public MainPanelForm(OverlayForm owner)
         {
@@ -39,7 +232,7 @@ namespace MapleOverlay
             MinimizeBox = true;
             ShowIcon = true;
             Icon = Program.AppIcon;
-            ClientSize = new Size(560, 522);
+            ClientSize = new Size(560, 576);
             BackColor = Color.FromArgb(244, 247, 251);
             Font = new Font("Microsoft YaHei UI", 9.0f);
 
@@ -69,19 +262,19 @@ namespace MapleOverlay
             card.Controls.Add(status); card.Controls.Add(hotkeys);
 
             GroupBox rangeCard = new GroupBox {
-                Text = "翻译范围", Location = new Point(20, 196), Size = new Size(520, 168),
+                Text = "翻译范围与显示", Location = new Point(20, 196), Size = new Size(520, 224),
                 BackColor = Color.White, ForeColor = Color.FromArgb(55, 65, 81)
             };
             range.Minimum = 1; range.Maximum = 3; range.TickStyle = TickStyle.TopLeft;
             range.TickFrequency = 1; range.SmallChange = 1; range.LargeChange = 1;
             range.Location = new Point(15, 19); range.Size = new Size(340, 42);
-            range.Value = overlay == null ? 1 : (int)overlay.TranslationRangeMode;
+            range.Value = overlay == null ? 2 : (int)overlay.TranslationRangeMode;
             rangeValue.Location = new Point(370, 23); rangeValue.Size = new Size(130, 26);
             rangeValue.TextAlign = ContentAlignment.MiddleCenter;
             rangeValue.Font = new Font("Microsoft YaHei UI", 9.5f, FontStyle.Bold);
             rangeValue.ForeColor = Color.FromArgb(37, 99, 235);
             Label rangeLabels = new Label {
-                Text = "最大                              均衡                              最小",
+                Text = "兼容                              推荐                              精简",
                 Location = new Point(19, 60), Size = new Size(332, 20),
                 ForeColor = Color.FromArgb(107, 114, 128)
             };
@@ -103,20 +296,35 @@ namespace MapleOverlay
                 Location = new Point(35, 119), Size = new Size(460, 24),
                 ForeColor = Color.FromArgb(107, 114, 128)
             };
+            independentWindow.Text = "独立翻译浮窗（集中显示，减少遮挡）";
+            independentWindow.AutoSize = false;
+            independentWindow.Location = new Point(18, 148);
+            independentWindow.Size = new Size(480, 28);
+            independentWindow.ForeColor = Color.FromArgb(31, 41, 55);
+            independentWindow.Checked = overlay != null && overlay.IndependentWindowEnabled;
+            independentWindow.CheckedChanged += delegate {
+                if (overlay != null) overlay.ApplyIndependentWindow(independentWindow.Checked);
+            };
+            Label independentHint = new Label {
+                Text = "可拖动、缩放、置顶；关闭浮窗即恢复原位覆盖。",
+                Location = new Point(35, 180), Size = new Size(460, 24),
+                ForeColor = Color.FromArgb(107, 114, 128)
+            };
+            rangeCard.Controls.Add(independentHint); rangeCard.Controls.Add(independentWindow);
             rangeCard.Controls.Add(continuousHint); rangeCard.Controls.Add(continuousTranslation);
             rangeCard.Controls.Add(rangeValue); rangeCard.Controls.Add(rangeLabels); rangeCard.Controls.Add(range);
 
-            Button ready = MakeButton("缩到托盘，开始使用", new Point(20, 378), new Size(520, 42), true);
+            Button ready = MakeButton("缩到托盘，开始使用", new Point(20, 434), new Size(520, 42), true);
             ready.Click += delegate { Hide(); };
-            Button dictionary = MakeButton("词库", new Point(20, 432), new Size(160, 38), false);
+            Button dictionary = MakeButton("词库", new Point(20, 488), new Size(160, 38), false);
             dictionary.Click += delegate { overlay.ShowDictionaryEditor(); };
-            Button shortcut = MakeButton("快捷键", new Point(200, 432), new Size(160, 38), false);
+            Button shortcut = MakeButton("快捷键", new Point(200, 488), new Size(160, 38), false);
             shortcut.Click += delegate { overlay.ShowHotkeyEditor(); };
-            Button ai = MakeButton("AI 聊天翻译", new Point(380, 432), new Size(160, 38), false);
+            Button ai = MakeButton("AI 聊天翻译", new Point(380, 488), new Size(160, 38), false);
             ai.Click += delegate { overlay.ShowChatTranslator(); };
             Label hint = new Label {
                 Text = "持续自动；F8 手动刷新，F9 隐藏；关闭后仍在托盘。",
-                Location = new Point(22, 478), Size = new Size(516, 32),
+                Location = new Point(22, 534), Size = new Size(516, 32),
                 ForeColor = Color.FromArgb(107, 114, 128), TextAlign = ContentAlignment.MiddleLeft
             };
 
@@ -154,13 +362,15 @@ namespace MapleOverlay
                 range.Value = (int)overlay.TranslationRangeMode;
             if (overlay != null && continuousTranslation.Checked != overlay.ContinuousTranslationEnabled)
                 continuousTranslation.Checked = overlay.ContinuousTranslationEnabled;
+            if (overlay != null && independentWindow.Checked != overlay.IndependentWindowEnabled)
+                independentWindow.Checked = overlay.IndependentWindowEnabled;
             RefreshRangeText();
         }
 
         private void RefreshRangeText()
         {
-            rangeValue.Text = range.Value == 1 ? "范围最大" :
-                (range.Value == 2 ? "均衡" : "范围最小");
+            rangeValue.Text = range.Value == 1 ? "兼容最大" :
+                (range.Value == 2 ? "推荐均衡" : "精简最小");
         }
     }
 
@@ -238,7 +448,7 @@ namespace MapleOverlay
             Label plus1 = new Label { Text = "+", Location = new Point(296, 30), AutoSize = true };
             Label plus2 = new Label { Text = "+", Location = new Point(296, 72), AutoSize = true };
             Label gamepadHint = new Label {
-                Text = "支持单键/双键；松开后才能再次触发。兼容 XInput。",
+                Text = "支持单键或双键同时按；松开后才能再次触发。兼容 XInput。",
                 Location = new Point(14, 110), Size = new Size(520, 28), ForeColor = Color.DimGray
             };
             showGamepadFirst.SelectedIndexChanged += delegate { UpdateGamepadSecondBoxes(); };

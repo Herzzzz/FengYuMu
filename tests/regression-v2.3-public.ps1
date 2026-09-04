@@ -26,8 +26,10 @@ $cases = @(
     },
     [pscustomobject]@{
         Name='公开样本：药水商店'; File='shop-potions.png'; Cursor=''
-        Expected=@('全部@','怪物@','特殊药水@','红头巾@','金币@')
-        Forbidden=@(); Budget=1300
+        # A list without an open tooltip is fourth priority. Keep the reliably identified
+        # item name, but do not count repeated ALL/MESO or the OCR typo Honster as success.
+        Expected=@('红头巾@')
+        Forbidden=@('全部@','怪物@','金币@'); Budget=1300
     }
 )
 

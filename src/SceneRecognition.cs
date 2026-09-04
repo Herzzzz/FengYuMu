@@ -103,9 +103,42 @@ namespace MapleOverlay
             int consecutiveFailures)
         {
             if (consecutiveFailures > 0)
-                return Math.Min(2600, 900 + consecutiveFailures * 450);
-            if (panelVisible) return 550;
-            return Math.Min(1350, 450 + Math.Max(0, consecutiveMisses) * 225);
+                return Math.Min(2600, 800 + consecutiveFailures * 400);
+            if (panelVisible) return 240;
+            return Math.Min(900, 260 + Math.Max(0, consecutiveMisses) * 160);
+        }
+
+        internal static bool ShouldRunProbe(bool automatic, bool restoringVisibleResult,
+            bool forcedBenchmarkProbe)
+        {
+            // A visible panel was already confirmed on the preceding cycle. Re-running the
+            // preliminary full-screen OCR only delayed updates; do one fresh precise pass and
+            // let an empty result close the panel. Idle screens still use the cheap probe.
+            return forcedBenchmarkProbe || (automatic && !restoringVisibleResult);
+        }
+    }
+
+    internal static class CharacterPanelPolicy
+    {
+        internal static bool IsInformation(string text)
+        {
+            string normalized = TranslationStore.Normalize(text);
+            return normalized.Contains("character info") ||
+                normalized.Contains("citizenship") ||
+                (normalized.Contains("request party") && normalized.Contains("request trade"));
+        }
+
+        internal static bool IsStatistics(string text)
+        {
+            string normalized = TranslationStore.Normalize(text);
+            if (IsInformation(normalized)) return false;
+            if (normalized.Contains("character stat")) return true;
+            string padded = " " + normalized + " ";
+            string[] statWords = new string[] { " name ", " job ", " level ", " hp ", " mp ",
+                " exp ", " fame ", " str ", " dex ", " int ", " luk ", " accuracy ", " evasion " };
+            int anchors = 0;
+            foreach (string word in statWords) if (padded.Contains(word)) anchors++;
+            return anchors >= 5;
         }
     }
 
@@ -134,6 +167,7 @@ namespace MapleOverlay
             string normalized = TranslationStore.Normalize(text);
             string padded = " " + normalized + " ";
             SceneEvidence evidence = new SceneEvidence();
+            bool playerChat = LooksLikePlayerChat(text);
 
             int characterAnchors = CountTokens(padded, new string[] {
                 " character stat ", " character stats ", " character info ",
@@ -143,20 +177,26 @@ namespace MapleOverlay
             });
             evidence.StrongCharacter = normalized.Contains("character stat") ||
                 normalized.Contains("character info") || characterAnchors >= 5;
-            if (evidence.StrongCharacter || characterAnchors >= 2)
+            // HP/MP occur permanently in the bottom HUD and can also be duplicated by a
+            // captured stream layout. They are not a character panel without a real header
+            // or several independent character fields.
+            if (evidence.StrongCharacter || characterAnchors >= 4)
                 evidence.Kinds |= SceneKind.Character;
 
             evidence.SkillHeader = normalized.Contains("skill inventory") ||
                 normalized.EndsWith(" skills", StringComparison.Ordinal) ||
                 normalized.EndsWith(" techniques", StringComparison.Ordinal);
+            bool knownSkillDetail = false;
+            bool skillName = !playerChat && translations != null &&
+                translations.ClassifySkillText(text, out knownSkillDetail);
             evidence.SkillDetail = normalized.Contains("master level") ||
                 normalized.Contains("required skill") ||
-                normalized.Contains("current level") || normalized.Contains("next level");
-            bool skillName = translations != null && translations.LooksLikeSkillTextStart(text);
+                normalized.Contains("current level") || normalized.Contains("next level") ||
+                knownSkillDetail;
             if (evidence.SkillHeader || evidence.SkillDetail || skillName)
                 evidence.Kinds |= SceneKind.Skill;
 
-            evidence.TaskId = translations == null ? "" : translations.DetectTaskId(text);
+            evidence.TaskId = playerChat || translations == null ? "" : translations.DetectTaskId(text);
             evidence.QuestHeader = normalized == "quest" || normalized == "quest log" ||
                 normalized.Contains("quest helper") ||
                 (normalized.Contains("quest") && (normalized.Contains("available") ||
@@ -168,7 +208,8 @@ namespace MapleOverlay
             evidence.ItemHeader = normalized.Contains("item list") ||
                 normalized.Contains("item inventory") || normalized.Contains("equipment inventory") ||
                 normalized == "item" || normalized == "list";
-            evidence.ItemDetail = (translations != null && translations.LooksLikeItemTextStart(text)) ||
+            evidence.ItemDetail = (!playerChat && translations != null &&
+                translations.LooksLikeItemDetailText(text)) ||
                 LooksLikeEquipmentStructure(normalized);
             if (evidence.ItemHeader || evidence.ItemDetail)
                 evidence.Kinds |= SceneKind.Item;
@@ -180,7 +221,7 @@ namespace MapleOverlay
                 evidence.Kinds |= SceneKind.Shop | SceneKind.Item;
 
             evidence.DialogueAnchor = includeDialogueAnchors && IsDialogueAnchor(normalized);
-            evidence.DialogueText = includeDialogueAnchors && LooksLikeKnownDialogue(text,
+            evidence.DialogueText = includeDialogueAnchors && !playerChat && LooksLikeKnownDialogue(text,
                 normalized, translations);
             if (evidence.DialogueAnchor || evidence.DialogueText)
                 evidence.Kinds |= SceneKind.Dialogue;
@@ -215,6 +256,17 @@ namespace MapleOverlay
                     if ((evidence.Kinds & kind) != 0)
                         snapshot.Add(kind, EvidenceScore(evidence, kind));
             }
+            // Windows OCR sometimes splits one NPC sentence into several OcrLine objects even
+            // though OcrResult.Text reconstructs it correctly. Use the combined text only to
+            // recover a dictionary-backed dialogue signal; do not promote item/character words
+            // from unrelated HUD regions into a panel scene.
+            if (includeDialogueAnchors && !snapshot.IsStrong(SceneKind.Dialogue) &&
+                !String.IsNullOrWhiteSpace(result.Text))
+            {
+                SceneEvidence combined = Classify(result.Text, translations, true);
+                if (combined.DialogueAnchor || combined.DialogueText)
+                    snapshot.Add(SceneKind.Dialogue, EvidenceScore(combined, SceneKind.Dialogue));
+            }
             return snapshot;
         }
 
@@ -225,10 +277,45 @@ namespace MapleOverlay
                 normalized == "end chat" || normalized.Contains("end conversation");
         }
 
+        internal static bool LooksLikePlayerChat(string text)
+        {
+            if (String.IsNullOrWhiteSpace(text)) return false;
+            string raw = text.Trim();
+            string lower = raw.ToLowerInvariant();
+            string[] tradeMarkers = new string[] { "s>", "b>", "t>", "w>" };
+            foreach (string marker in tradeMarkers)
+            {
+                int markerIndex = lower.IndexOf(marker, StringComparison.Ordinal);
+                if (markerIndex >= 1 && markerIndex <= 36) return true;
+            }
+            int colon = raw.IndexOf(':');
+            if (colon < 1 || colon > 32 || colon >= raw.Length - 1) return false;
+
+            string prefix = TranslationStore.Normalize(raw.Substring(0, colon));
+            if (prefix.Length < 1 || prefix.Length > 26) return false;
+            string paddedPrefix = " " + prefix + " ";
+            string[] structuredPrefixes = new string[] {
+                " type ", " category ", " req ", " required ", " level ", " name ",
+                " job ", " hp ", " mp ", " exp ", " fame ", " str ", " dex ",
+                " int ", " luk ", " weapon attack ", " magic attack ",
+                " weapon def ", " magic def ", " attack speed ", " accuracy ",
+                " avoidability ", " current level ", " next level ", " master level "
+            };
+            foreach (string structured in structuredPrefixes)
+                if (paddedPrefix == structured || paddedPrefix.StartsWith(structured,
+                    StringComparison.Ordinal)) return false;
+
+            int words = prefix.Split(new char[] { ' ' },
+                StringSplitOptions.RemoveEmptyEntries).Length;
+            if (words > 5) return false;
+            string body = raw.Substring(colon + 1).Trim();
+            return body.Length >= 2;
+        }
+
         private static bool LooksLikeKnownDialogue(string text, string normalized,
             TranslationStore translations)
         {
-            if (translations == null || normalized.Length < 18 || normalized.Length > 260)
+            if (translations == null || normalized.Length < 18 || normalized.Length > 800)
                 return false;
             string padded = " " + normalized + " ";
             bool conversational = padded.Contains(" i ") || padded.Contains(" you ") ||
@@ -239,7 +326,13 @@ namespace MapleOverlay
             foreach (MatchResult match in translations.FindInterfaceTextMatches(text))
             {
                 int matched = match.Entry == null ? 0 : match.Entry.Normalized.Length;
-                if (matched >= 18 && matched * 10 >= normalized.Length * 6) return true;
+                if (matched < 18) continue;
+                // Windows OCR can flatten the dialogue sentence together with the minimap,
+                // announcement and HUD into one long line. An exact long dictionary phrase is
+                // still a valid dialogue anchor even when it covers less than 60% of that line.
+                bool exactLongPhrase = matched >= 22 && normalized.IndexOf(
+                    match.Entry.Normalized, StringComparison.Ordinal) >= 0;
+                if (exactLongPhrase || matched * 10 >= normalized.Length * 6) return true;
             }
             return false;
         }

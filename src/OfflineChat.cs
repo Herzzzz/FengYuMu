@@ -748,10 +748,12 @@ namespace MapleOverlay
             chatRegion = ChatRegionSettings.LoadAbsolute();
         }
 
-        internal void UpdateChatRegion(Rectangle region)
+        internal void UpdateChatRegion(Rectangle region, ChatRegionOrigin origin)
         {
             chatRegion = region;
-            if (IsHandleCreated) status.Text = "聊天区已按当前游戏窗口同步 " + region.Width + "×" + region.Height;
+            if (IsHandleCreated)
+                status.Text = (origin == ChatRegionOrigin.Manual ? "手动聊天区" : "首次快捷键自动聊天区") +
+                    "已按当前游戏窗口同步 " + region.Width + "×" + region.Height;
         }
 
         private async Task BindRegionAsync()
@@ -765,7 +767,7 @@ namespace MapleOverlay
                 if (selector.ShowDialog() == DialogResult.OK)
                 {
                     chatRegion = selector.SelectedScreenRegion;
-                    ChatRegionSettings.Save(chatRegion, game);
+                    ChatRegionSettings.SaveManual(chatRegion, game);
                     previousChatFrame.Clear(); pendingChatLines.Clear();
                     status.Text = "聊天区已统一绑定 " + chatRegion.Width + "×" + chatRegion.Height +
                         "｜框内AI翻译，F8跳过";
