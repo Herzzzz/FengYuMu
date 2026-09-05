@@ -45,7 +45,7 @@ foreach ($required in @(
 }
 foreach ($required in @(
     'ChatRegionSettings.SaveManual(chatRegion, game)',
-    'await overlay.CaptureTextAsync(chatRegion)',
+    'await overlay.CaptureChatAsync(chatRegion)',
     '首次快捷键自动聊天区')) {
     if (-not $chatSource.Contains($required)) { throw "AI聊天区接入缺少：$required" }
 }

@@ -11,5 +11,6 @@ dictionary_ui_test.txt
 .bench/
 .video-review-5420/
 continuous_benchmark.txt
+chat_style_benchmark.txt
 tests/video-dictionary-review/*.exe
 release-notes-v2.0*.md

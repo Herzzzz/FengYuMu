@@ -10,6 +10,142 @@ using Microsoft.Win32;
 
 namespace MapleOverlay
 {
+    internal enum ChatVisualKind
+    {
+        Chat = 0,
+        System = 1,
+        Megaphone = 2,
+        SuperMegaphone = 3
+    }
+
+    internal sealed class ChatVisualStyle
+    {
+        internal ChatVisualKind Kind;
+        internal Color ForeColor;
+        internal Color BackColor;
+        internal bool HasBackground;
+
+        internal static ChatVisualStyle Default
+        {
+            get
+            {
+                return new ChatVisualStyle {
+                    Kind = ChatVisualKind.Chat,
+                    ForeColor = Color.FromArgb(241, 245, 249),
+                    BackColor = Color.FromArgb(18, 18, 22),
+                    HasBackground = false
+                };
+            }
+        }
+    }
+
+    internal static class ChatVisualStylePolicy
+    {
+        internal static ChatVisualStyle FromSample(string sourceText, Color sampledForeground,
+            Color sampledBackground, bool coloredBackground)
+        {
+            bool broadcast = coloredBackground || LooksLikeBroadcast(sourceText);
+            bool system = LooksLikeSystem(sourceText);
+            bool blueMegaphone = coloredBackground && IsBlueMegaphoneBackground(sampledBackground);
+            Color background = sampledBackground.IsEmpty
+                ? Color.FromArgb(172, 46, 112) : sampledBackground;
+            Color foreground = sampledForeground.IsEmpty
+                ? (system ? Color.FromArgb(255, 214, 92) : Color.FromArgb(241, 245, 249))
+                : sampledForeground;
+
+            if (broadcast)
+            {
+                background = MakeReadableBackground(background);
+                foreground = EnsureContrast(foreground, background);
+            }
+            else
+                foreground = MakeReadableOnDark(foreground);
+
+            ChatVisualKind kind = blueMegaphone ? ChatVisualKind.Megaphone :
+                (broadcast ? ChatVisualKind.SuperMegaphone :
+                    (system ? ChatVisualKind.System : ChatVisualKind.Chat));
+            return new ChatVisualStyle {
+                Kind = kind,
+                ForeColor = foreground,
+                BackColor = background,
+                HasBackground = broadcast
+            };
+        }
+
+        private static bool IsBlueMegaphoneBackground(Color color)
+        {
+            return !color.IsEmpty && color.R >= 105 && color.G >= 125 && color.B >= 130 &&
+                color.G >= color.R + 12 && color.B >= color.R + 20;
+        }
+
+        internal static bool LooksLikeBroadcast(string value)
+        {
+            string text = (value ?? "").ToLowerInvariant();
+            return text.IndexOf("megaphone", StringComparison.Ordinal) >= 0 ||
+                text.IndexOf("gift-filled message", StringComparison.Ordinal) >= 0 ||
+                text.IndexOf("super message", StringComparison.Ordinal) >= 0 ||
+                text.IndexOf("[world]", StringComparison.Ordinal) >= 0 ||
+                text.IndexOf("喇叭", StringComparison.Ordinal) >= 0 ||
+                text.IndexOf("广播", StringComparison.Ordinal) >= 0;
+        }
+
+        private static bool LooksLikeSystem(string value)
+        {
+            string text = (value ?? "").ToLowerInvariant();
+            return text.IndexOf("[notice]", StringComparison.Ordinal) >= 0 ||
+                text.IndexOf("system", StringComparison.Ordinal) >= 0 ||
+                text.IndexOf("系统公告", StringComparison.Ordinal) >= 0 ||
+                text.IndexOf("公告", StringComparison.Ordinal) == 0;
+        }
+
+        private static Color MakeReadableOnDark(Color color)
+        {
+            int maximum = Math.Max(color.R, Math.Max(color.G, color.B));
+            if (maximum < 24) return Color.FromArgb(226, 232, 240);
+            if (maximum >= 168) return Color.FromArgb(color.R, color.G, color.B);
+            double factor = 168.0 / Math.Max(1, maximum);
+            return Color.FromArgb(Math.Min(255, (int)Math.Round(color.R * factor)),
+                Math.Min(255, (int)Math.Round(color.G * factor)),
+                Math.Min(255, (int)Math.Round(color.B * factor)));
+        }
+
+        private static Color MakeReadableBackground(Color color)
+        {
+            int maximum = Math.Max(color.R, Math.Max(color.G, color.B));
+            if (maximum < 58) return Color.FromArgb(132, 38, 91);
+            if (maximum <= 205) return Color.FromArgb(color.R, color.G, color.B);
+            double factor = 205.0 / maximum;
+            return Color.FromArgb((int)Math.Round(color.R * factor),
+                (int)Math.Round(color.G * factor), (int)Math.Round(color.B * factor));
+        }
+
+        private static Color EnsureContrast(Color foreground, Color background)
+        {
+            double foregroundLight = Luminance(foreground);
+            double backgroundLight = Luminance(background);
+            if (Math.Abs(foregroundLight - backgroundLight) >= 58)
+                return Color.FromArgb(foreground.R, foreground.G, foreground.B);
+            if (backgroundLight >= 128)
+            {
+                double target = Math.Max(22, backgroundLight - 68);
+                double factor = target / Math.Max(1, foregroundLight);
+                return Color.FromArgb(Math.Max(0, Math.Min(255, (int)Math.Round(foreground.R * factor))),
+                    Math.Max(0, Math.Min(255, (int)Math.Round(foreground.G * factor))),
+                    Math.Max(0, Math.Min(255, (int)Math.Round(foreground.B * factor))));
+            }
+            double blend = Math.Min(1.0, (backgroundLight + 82 - foregroundLight) /
+                Math.Max(1, 255 - foregroundLight));
+            return Color.FromArgb((int)Math.Round(foreground.R + (255 - foreground.R) * blend),
+                (int)Math.Round(foreground.G + (255 - foreground.G) * blend),
+                (int)Math.Round(foreground.B + (255 - foreground.B) * blend));
+        }
+
+        private static double Luminance(Color value)
+        {
+            return value.R * 0.299 + value.G * 0.587 + value.B * 0.114;
+        }
+    }
+
     internal sealed class TaskDictionaryRow
     {
         public string English;
@@ -20,32 +156,22 @@ namespace MapleOverlay
         public string StartMap;
     }
 
-    internal static class TranslationWindowContent
+    internal static class AiTranslationWindowContent
     {
-        internal static string Build(List<OverlayLabel> source)
+        internal static string Append(string existing, string translation)
         {
-            if (source == null || source.Count == 0) return "";
-            List<OverlayLabel> ordered = new List<OverlayLabel>(source);
-            ordered.Sort(delegate(OverlayLabel left, OverlayLabel right) {
-                int row = left.Bounds.Top.CompareTo(right.Bounds.Top);
-                return Math.Abs(left.Bounds.Top - right.Bounds.Top) <=
-                    Math.Max(left.Bounds.Height, right.Bounds.Height) * 0.55f
-                    ? left.Bounds.Left.CompareTo(right.Bounds.Left) : row;
-            });
-            HashSet<string> seen = new HashSet<string>(StringComparer.Ordinal);
-            StringBuilder result = new StringBuilder();
-            foreach (OverlayLabel label in ordered)
+            string next = Normalize(translation);
+            if (next.Length == 0) return existing ?? "";
+            string current = existing ?? "";
+            if (current.Length > 12000)
             {
-                string text = RegexWhitespace(label.Text);
-                if (text.Length == 0 || !seen.Add(text)) continue;
-                if (result.Length > 0) result.AppendLine();
-                result.Append(text);
-                if (text.Length >= 20) result.AppendLine();
+                int cut = current.IndexOf('\n', Math.Max(0, current.Length - 8000));
+                current = cut >= 0 ? current.Substring(cut + 1) : current.Substring(current.Length - 8000);
             }
-            return result.ToString().Trim();
+            return current.Length == 0 ? next : current.TrimEnd() + Environment.NewLine + next;
         }
 
-        private static string RegexWhitespace(string value)
+        private static string Normalize(string value)
         {
             if (String.IsNullOrWhiteSpace(value)) return "";
             StringBuilder result = new StringBuilder();
@@ -61,18 +187,20 @@ namespace MapleOverlay
         }
     }
 
-    internal sealed class TranslationWindowForm : Form
+    internal sealed class AiTranslationWindowForm : Form
     {
         private readonly OverlayForm overlay;
-        private readonly TextBox content = new TextBox();
+        private readonly RichTextBox content = new RichTextBox();
         private readonly Label status = new Label();
+        private readonly Font contentRegularFont = new Font("Microsoft YaHei UI", 11.5f, FontStyle.Regular);
+        private readonly Font contentBroadcastFont = new Font("Microsoft YaHei UI", 11.5f, FontStyle.Bold);
         private bool allowClose;
         private string displayedText = "";
 
-        internal TranslationWindowForm(OverlayForm owner)
+        internal AiTranslationWindowForm(OverlayForm owner)
         {
             overlay = owner;
-            Text = "枫语幕 · 当前画面翻译";
+            Text = "枫语幕 · AI实时翻译";
             Icon = Program.AppIcon;
             ShowInTaskbar = false;
             TopMost = true;
@@ -88,11 +216,11 @@ namespace MapleOverlay
                 BackColor = Color.FromArgb(30, 41, 59)
             };
             Label title = new Label {
-                Text = "当前画面翻译", AutoSize = true,
+                Text = "AI实时聊天翻译", AutoSize = true,
                 Location = new Point(15, 8), ForeColor = Color.White,
                 Font = new Font("Microsoft YaHei UI", 11.0f, FontStyle.Bold)
             };
-            status.Text = "整块内容优先 · 自动去重";
+            status.Text = "等待聊天区出现新消息";
             status.AutoSize = true;
             status.Location = new Point(16, 31);
             status.ForeColor = Color.FromArgb(148, 163, 184);
@@ -101,11 +229,11 @@ namespace MapleOverlay
             content.Dock = DockStyle.Fill;
             content.Multiline = true;
             content.ReadOnly = true;
-            content.ScrollBars = ScrollBars.Vertical;
+            content.ScrollBars = RichTextBoxScrollBars.Vertical;
             content.BorderStyle = BorderStyle.None;
             content.BackColor = Color.FromArgb(18, 18, 22);
             content.ForeColor = Color.FromArgb(241, 245, 249);
-            content.Font = new Font("Microsoft YaHei UI", 11.5f);
+            content.Font = contentRegularFont;
             content.Margin = new Padding(14);
             content.WordWrap = true;
             content.TabStop = false;
@@ -116,6 +244,7 @@ namespace MapleOverlay
             LoadSavedBounds();
             FormClosing += HandleFormClosing;
             ResizeEnd += delegate { SaveBounds(); };
+            Disposed += delegate { contentRegularFont.Dispose(); contentBroadcastFont.Dispose(); };
         }
 
         protected override bool ShowWithoutActivation { get { return true; } }
@@ -132,17 +261,41 @@ namespace MapleOverlay
 
         internal string DisplayedText { get { return displayedText; } }
 
-        internal void SetTranslations(List<OverlayLabel> labels)
+        internal void AppendTranslation(string translation)
         {
-            string next = TranslationWindowContent.Build(labels);
-            if (String.Equals(next, displayedText, StringComparison.Ordinal)) return;
-            displayedText = next;
-            content.Text = next;
-            content.SelectionStart = 0;
+            AppendTranslation(translation, ChatVisualStyle.Default);
+        }
+
+        internal void AppendTranslation(string translation, ChatVisualStyle style)
+        {
+            string next = AiTranslationWindowContent.Append("", translation);
+            if (next.Length == 0) return;
+            if (style == null) style = ChatVisualStyle.Default;
+            if (content.TextLength > 12000)
+            {
+                int cut = content.Text.IndexOf('\n', Math.Max(0, content.TextLength - 8000));
+                content.Select(0, cut >= 0 ? cut + 1 : Math.Max(0, content.TextLength - 8000));
+                content.SelectedText = "";
+            }
+            content.SelectionStart = content.TextLength;
             content.SelectionLength = 0;
-            int entries = next.Length == 0 ? 0 : next.Split(new string[] { Environment.NewLine },
-                StringSplitOptions.RemoveEmptyEntries).Length;
-            status.Text = entries + " 条可靠译文 · F9 隐藏";
+            if (content.TextLength > 0) content.AppendText(Environment.NewLine);
+            content.SelectionStart = content.TextLength;
+            content.SelectionColor = style.ForeColor;
+            content.SelectionBackColor = style.HasBackground ? style.BackColor : content.BackColor;
+            bool megaphone = style.Kind == ChatVisualKind.Megaphone ||
+                style.Kind == ChatVisualKind.SuperMegaphone;
+            content.SelectionFont = megaphone ? contentBroadcastFont : contentRegularFont;
+            content.AppendText(style.HasBackground ? "  " + next + "  " : next);
+            content.SelectionBackColor = content.BackColor;
+            content.SelectionColor = content.ForeColor;
+            displayedText = content.Text;
+            content.ScrollToCaret();
+            status.Text = style.Kind == ChatVisualKind.Megaphone
+                ? "普通喇叭译文已按蓝底显示"
+                : (style.Kind == ChatVisualKind.SuperMegaphone
+                    ? "超级喇叭译文已按粉底显示"
+                    : "AI新译文已按聊天来源颜色显示");
         }
 
         internal void ShowPassive()
@@ -163,7 +316,7 @@ namespace MapleOverlay
             if (allowClose || e.CloseReason != CloseReason.UserClosing) return;
             e.Cancel = true;
             Hide();
-            if (overlay != null) overlay.ApplyIndependentWindow(false);
+            if (overlay != null) overlay.ApplyAiChatFloatingWindow(false);
         }
 
         private void LoadSavedBounds()
@@ -178,10 +331,14 @@ namespace MapleOverlay
                 {
                     if (key != null)
                     {
-                        int x = Convert.ToInt32(key.GetValue("TranslationWindowX", fallback.X));
-                        int y = Convert.ToInt32(key.GetValue("TranslationWindowY", fallback.Y));
-                        int width = Convert.ToInt32(key.GetValue("TranslationWindowWidth", fallback.Width));
-                        int height = Convert.ToInt32(key.GetValue("TranslationWindowHeight", fallback.Height));
+                        int x = Convert.ToInt32(key.GetValue("AiChatWindowX",
+                            key.GetValue("TranslationWindowX", fallback.X)));
+                        int y = Convert.ToInt32(key.GetValue("AiChatWindowY",
+                            key.GetValue("TranslationWindowY", fallback.Y)));
+                        int width = Convert.ToInt32(key.GetValue("AiChatWindowWidth",
+                            key.GetValue("TranslationWindowWidth", fallback.Width)));
+                        int height = Convert.ToInt32(key.GetValue("AiChatWindowHeight",
+                            key.GetValue("TranslationWindowHeight", fallback.Height)));
                         saved = new Rectangle(x, y, Math.Max(320, width), Math.Max(240, height));
                     }
                 }
@@ -202,10 +359,10 @@ namespace MapleOverlay
             {
                 using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu"))
                 {
-                    key.SetValue("TranslationWindowX", Left, RegistryValueKind.DWord);
-                    key.SetValue("TranslationWindowY", Top, RegistryValueKind.DWord);
-                    key.SetValue("TranslationWindowWidth", Width, RegistryValueKind.DWord);
-                    key.SetValue("TranslationWindowHeight", Height, RegistryValueKind.DWord);
+                    key.SetValue("AiChatWindowX", Left, RegistryValueKind.DWord);
+                    key.SetValue("AiChatWindowY", Top, RegistryValueKind.DWord);
+                    key.SetValue("AiChatWindowWidth", Width, RegistryValueKind.DWord);
+                    key.SetValue("AiChatWindowHeight", Height, RegistryValueKind.DWord);
                 }
             }
             catch { }
@@ -296,17 +453,17 @@ namespace MapleOverlay
                 Location = new Point(35, 119), Size = new Size(460, 24),
                 ForeColor = Color.FromArgb(107, 114, 128)
             };
-            independentWindow.Text = "独立翻译浮窗（集中显示，减少遮挡）";
+            independentWindow.Text = "AI实时翻译独立浮窗（跟随聊天颜色）";
             independentWindow.AutoSize = false;
             independentWindow.Location = new Point(18, 148);
             independentWindow.Size = new Size(480, 28);
             independentWindow.ForeColor = Color.FromArgb(31, 41, 55);
-            independentWindow.Checked = overlay != null && overlay.IndependentWindowEnabled;
+            independentWindow.Checked = overlay != null && overlay.AiChatFloatingWindowEnabled;
             independentWindow.CheckedChanged += delegate {
-                if (overlay != null) overlay.ApplyIndependentWindow(independentWindow.Checked);
+                if (overlay != null) overlay.ApplyAiChatFloatingWindow(independentWindow.Checked);
             };
             Label independentHint = new Label {
-                Text = "可拖动、缩放、置顶；关闭浮窗即恢复原位覆盖。",
+                Text = "只显示AI聊天译文；F8仍按游戏原位置覆盖。",
                 Location = new Point(35, 180), Size = new Size(460, 24),
                 ForeColor = Color.FromArgb(107, 114, 128)
             };
@@ -362,8 +519,8 @@ namespace MapleOverlay
                 range.Value = (int)overlay.TranslationRangeMode;
             if (overlay != null && continuousTranslation.Checked != overlay.ContinuousTranslationEnabled)
                 continuousTranslation.Checked = overlay.ContinuousTranslationEnabled;
-            if (overlay != null && independentWindow.Checked != overlay.IndependentWindowEnabled)
-                independentWindow.Checked = overlay.IndependentWindowEnabled;
+            if (overlay != null && independentWindow.Checked != overlay.AiChatFloatingWindowEnabled)
+                independentWindow.Checked = overlay.AiChatFloatingWindowEnabled;
             RefreshRangeText();
         }
 

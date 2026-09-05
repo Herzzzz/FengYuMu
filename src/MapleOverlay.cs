@@ -39,6 +39,7 @@ namespace MapleOverlay
         internal static bool Benchmark;
         internal static string BenchmarkIconPath;
         internal static string BenchmarkImagePath;
+        internal static string BenchmarkChatImagePath;
         internal static string BenchmarkText;
         internal static bool BenchmarkUi;
         internal static int BenchmarkBestIconDistance = 65;
@@ -140,6 +141,11 @@ namespace MapleOverlay
                     BenchmarkIconPath = arg.Substring("--benchmark-icon=".Length);
                 else if (arg.StartsWith("--benchmark-image=", StringComparison.OrdinalIgnoreCase))
                     BenchmarkImagePath = arg.Substring("--benchmark-image=".Length);
+                else if (arg.StartsWith("--chat-style-benchmark=", StringComparison.OrdinalIgnoreCase))
+                {
+                    Benchmark = true;
+                    BenchmarkChatImagePath = arg.Substring("--chat-style-benchmark=".Length);
+                }
                 else if (arg.StartsWith("--benchmark-text=", StringComparison.OrdinalIgnoreCase))
                     BenchmarkText = arg.Substring("--benchmark-text=".Length);
                 else if (arg.StartsWith("--benchmark-cursor=", StringComparison.OrdinalIgnoreCase))
@@ -202,23 +208,29 @@ namespace MapleOverlay
                 {
                     Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
                     if (File.Exists(uiErrorPath)) File.Delete(uiErrorPath);
-                    List<OverlayLabel> sample = new List<OverlayLabel> {
-                        new OverlayLabel { Text = "需要等级：50", Bounds = new RectangleF(20, 40, 130, 24) },
-                        new OverlayLabel { Text = "需要力量：20", Bounds = new RectangleF(20, 70, 130, 24) },
-                        new OverlayLabel { Text = "需要等级：50", Bounds = new RectangleF(280, 40, 130, 24) },
-                        new OverlayLabel { Text = "这是一段完整对话译文。浮窗集中显示可靠结果，不再把零碎词铺满游戏画面。",
-                            Bounds = new RectangleF(20, 130, 400, 70), Wrap = true }
-                    };
-                    using (TranslationWindowForm window = new TranslationWindowForm(null))
+                    using (AiTranslationWindowForm window = new AiTranslationWindowForm(null))
                     {
-                        window.SetTranslations(sample);
+                        window.AppendTranslation("Arthur：欢迎来到射手村。",
+                            ChatVisualStylePolicy.FromSample("Arthur: hello", Color.FromArgb(95, 225, 125),
+                                Color.Empty, false));
+                        window.AppendTranslation("Joey：活动魔盒要交到哪里？",
+                            ChatVisualStylePolicy.FromSample("Joey: where do I bring the magic box?",
+                                Color.FromArgb(81, 120, 149), Color.FromArgb(141, 170, 179), true));
+                        window.AppendTranslation("DunkChai：你手机里有骨头吗？",
+                            ChatVisualStylePolicy.FromSample("DunkChai's Gift-filled Message:",
+                                Color.FromArgb(156, 77, 113),
+                                Color.FromArgb(205, 159, 173), true));
                         window.Show();
+                        Application.DoEvents();
+                        window.Refresh();
+                        Thread.Sleep(180);
                         Application.DoEvents();
                         using (Bitmap bitmap = new Bitmap(window.Width, window.Height,
                             PixelFormat.Format32bppArgb))
                         {
-                            window.DrawToBitmap(bitmap, new Rectangle(System.Drawing.Point.Empty,
-                                bitmap.Size));
+                            using (Graphics graphics = Graphics.FromImage(bitmap))
+                                graphics.CopyFromScreen(window.Left, window.Top, 0, 0,
+                                    bitmap.Size, CopyPixelOperation.SourceCopy);
                             window.Hide();
                             bitmap.Save(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                                 "translation_window_ui_test.png"), ImageFormat.Png);
@@ -229,6 +241,20 @@ namespace MapleOverlay
                 {
                     File.WriteAllText(uiErrorPath, ex.ToString(), Encoding.UTF8);
                     Environment.ExitCode = 3;
+                }
+                return;
+            }
+            if (!String.IsNullOrEmpty(BenchmarkChatImagePath))
+            {
+                try
+                {
+                    Application.Run(new OverlayForm());
+                }
+                catch (Exception ex)
+                {
+                    File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                        "chat_style_benchmark.txt"), "ERROR " + ex, Encoding.UTF8);
+                    Environment.ExitCode = 4;
                 }
                 return;
             }
@@ -1443,6 +1469,53 @@ namespace MapleOverlay
         Manual = 2
     }
 
+    internal sealed class ChatCaptureLine
+    {
+        internal string Text = "";
+        internal ChatVisualStyle Style = ChatVisualStyle.Default;
+    }
+
+    internal sealed class ChatCaptureFrame
+    {
+        internal string Text = "";
+        internal readonly List<ChatCaptureLine> Lines = new List<ChatCaptureLine>();
+
+        internal ChatVisualStyle FindStyle(string parsedLine)
+        {
+            string parsed = Normalize(parsedLine);
+            if (parsed.Length == 0) return ChatVisualStyle.Default;
+            ChatCaptureLine best = null;
+            int bestScore = 0;
+            foreach (ChatCaptureLine candidate in Lines)
+            {
+                string source = Normalize(candidate.Text);
+                if (source.Length == 0) continue;
+                int score = source.IndexOf(parsed, StringComparison.Ordinal) >= 0 ||
+                    parsed.IndexOf(source, StringComparison.Ordinal) >= 0
+                    ? Math.Min(source.Length, parsed.Length) : SharedPrefix(source, parsed);
+                if (score > bestScore) { bestScore = score; best = candidate; }
+            }
+            return best != null && bestScore >= Math.Min(5, parsed.Length)
+                ? best.Style : ChatVisualStylePolicy.FromSample(parsedLine, Color.Empty, Color.Empty, false);
+        }
+
+        private static string Normalize(string value)
+        {
+            StringBuilder result = new StringBuilder();
+            foreach (char item in (value ?? "").ToLowerInvariant())
+                if (Char.IsLetterOrDigit(item)) result.Append(item);
+            return result.ToString();
+        }
+
+        private static int SharedPrefix(string left, string right)
+        {
+            int maximum = Math.Min(left.Length, right.Length);
+            int count = 0;
+            while (count < maximum && left[count] == right[count]) count++;
+            return count;
+        }
+    }
+
     internal static class ChatRegionSettings
     {
         private const int Scale = 10000;
@@ -1931,7 +2004,7 @@ namespace MapleOverlay
         private readonly System.Windows.Forms.Timer continuousTranslationTimer = new System.Windows.Forms.Timer();
         private TranslationRangeMode translationRangeMode = TranslationRangeMode.Balanced;
         private bool continuousTranslationEnabled;
-        private bool independentWindowEnabled;
+        private bool aiChatFloatingWindowEnabled;
         private int continuousTranslationMisses;
         private int continuousTranslationFailures;
         private DateTime continuousTranslationSuppressedUntilUtc = DateTime.MinValue;
@@ -1941,7 +2014,6 @@ namespace MapleOverlay
         private HotkeyForm hotkeyEditor;
         private OfflineChatForm chatTranslator;
         private MainPanelForm mainPanel;
-        private TranslationWindowForm translationWindow;
         private RegisteredWaitHandle activationWait;
 
         [DllImport("user32.dll")] private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint modifiers, uint key);
@@ -1992,7 +2064,6 @@ namespace MapleOverlay
             DoubleBuffered = true;
 
             LoadSettings();
-            if (Program.Benchmark || Program.BenchmarkUi) independentWindowEnabled = false;
             gamepadTimer.Interval = 25;
             gamepadTimer.Tick += delegate { PollGamepadShortcuts(); };
             continuousTranslationTimer.Interval = 260;
@@ -2002,6 +2073,12 @@ namespace MapleOverlay
 
             BuildTray();
             Shown += async delegate {
+                if (!String.IsNullOrEmpty(Program.BenchmarkChatImagePath))
+                {
+                    await RunChatStyleBenchmarkAsync(Program.BenchmarkChatImagePath);
+                    Close();
+                    return;
+                }
                 SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) |
                     WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE);
                 bool h1 = RegisterHotKey(Handle, HOTKEY_SHOW, showModifiers, (uint)showKey);
@@ -2045,6 +2122,26 @@ namespace MapleOverlay
                     Close();
                 }
             };
+        }
+
+        private async Task RunChatStyleBenchmarkAsync(string imagePath)
+        {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            ChatCaptureFrame frame = await AnalyzeChatImageAsync(imagePath);
+            stopwatch.Stop();
+            StringBuilder report = new StringBuilder();
+            report.Append("elapsed_ms=").Append(stopwatch.ElapsedMilliseconds)
+                .Append(" lines=").Append(frame.Lines.Count).AppendLine();
+            foreach (ChatCaptureLine line in frame.Lines)
+                report.Append(line.Style.HasBackground ? "BAND" : "TEXT")
+                    .Append('/').Append(line.Style.Kind)
+                    .Append(" fg=").Append(line.Style.ForeColor.R).Append(',')
+                    .Append(line.Style.ForeColor.G).Append(',').Append(line.Style.ForeColor.B)
+                    .Append(" bg=").Append(line.Style.BackColor.R).Append(',')
+                    .Append(line.Style.BackColor.G).Append(',').Append(line.Style.BackColor.B)
+                    .Append(" | ").AppendLine(line.Text);
+            File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                "chat_style_benchmark.txt"), report.ToString(), new UTF8Encoding(false));
         }
 
         private void ReadContinuousBenchmarkCycle(List<int> elapsedValues,
@@ -2119,8 +2216,10 @@ namespace MapleOverlay
                     translationRangeMode = (TranslationRangeMode)savedRange;
                 continuousTranslationEnabled = Convert.ToInt32(
                     key.GetValue("ContinuousTranslationEnabled", 0), CultureInfo.InvariantCulture) != 0;
-                independentWindowEnabled = Convert.ToInt32(
-                    key.GetValue("IndependentWindowEnabled", 0), CultureInfo.InvariantCulture) != 0;
+                aiChatFloatingWindowEnabled = Convert.ToInt32(
+                    key.GetValue("AiChatFloatingWindowEnabled",
+                        key.GetValue("IndependentWindowEnabled", 1)),
+                    CultureInfo.InvariantCulture) != 0;
             }
         }
 
@@ -2169,7 +2268,7 @@ namespace MapleOverlay
         internal string HideGamepadShortcutDescription { get { return hideGamepadShortcut.ToString(); } }
         internal TranslationRangeMode TranslationRangeMode { get { return translationRangeMode; } }
         internal bool ContinuousTranslationEnabled { get { return continuousTranslationEnabled; } }
-        internal bool IndependentWindowEnabled { get { return independentWindowEnabled; } }
+        internal bool AiChatFloatingWindowEnabled { get { return aiChatFloatingWindowEnabled; } }
 
         internal void ApplyTranslationRangeMode(TranslationRangeMode mode)
         {
@@ -2194,33 +2293,19 @@ namespace MapleOverlay
             if (mainPanel != null && !mainPanel.IsDisposed) mainPanel.RefreshStatus();
         }
 
-        internal void ApplyIndependentWindow(bool enabled)
+        internal void ApplyAiChatFloatingWindow(bool enabled)
         {
-            independentWindowEnabled = enabled;
+            aiChatFloatingWindowEnabled = enabled;
             using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu"))
-                key.SetValue("IndependentWindowEnabled", enabled ? 1 : 0,
+                key.SetValue("AiChatFloatingWindowEnabled", enabled ? 1 : 0,
                     RegistryValueKind.DWord);
-            ShowCurrentTranslations();
+            if (chatTranslator != null && !chatTranslator.IsDisposed)
+                chatTranslator.ApplyFloatingWindow(enabled);
             if (mainPanel != null && !mainPanel.IsDisposed) mainPanel.RefreshStatus();
         }
 
         private void ShowCurrentTranslations()
         {
-            if (!visibleTranslation || labels.Count == 0)
-            {
-                if (translationWindow != null && !translationWindow.IsDisposed) translationWindow.Hide();
-                Invalidate();
-                return;
-            }
-            if (independentWindowEnabled && !Program.Benchmark && !Program.BenchmarkUi)
-            {
-                if (translationWindow == null || translationWindow.IsDisposed)
-                    translationWindow = new TranslationWindowForm(this);
-                translationWindow.SetTranslations(labels);
-                translationWindow.ShowPassive();
-            }
-            else if (translationWindow != null && !translationWindow.IsDisposed)
-                translationWindow.Hide();
             Invalidate();
         }
 
@@ -2387,6 +2472,7 @@ namespace MapleOverlay
                 // Keeping it here makes AI fully lazy and isolates failures from F8 translation.
                 if (chatTranslator == null || chatTranslator.IsDisposed)
                     chatTranslator = new OfflineChatForm(this, baseDir);
+                chatTranslator.ApplyFloatingWindow(aiChatFloatingWindowEnabled);
                 chatTranslator.Show();
                 chatTranslator.Activate();
             }
@@ -2538,7 +2624,6 @@ namespace MapleOverlay
             string recognitionPlanText = "范围最大（兼容路径）";
             // Screen results are never reused. Every F8 starts from an empty overlay and a fresh capture.
             visibleTranslation = false;
-            if (translationWindow != null && !translationWindow.IsDisposed) translationWindow.Hide();
             if (!restoreExistingOverlay) labels.Clear();
             Invalidate();
             // Invalidate only queues a repaint. Force that repaint through the desktop compositor
@@ -3079,20 +3164,156 @@ namespace MapleOverlay
             return Screen.PrimaryScreen.Bounds;
         }
 
-        internal async Task<string> CaptureTextAsync(Rectangle screen)
+        internal async Task<ChatCaptureFrame> CaptureChatAsync(Rectangle screen)
         {
-            if (screen.Width < 80 || screen.Height < 40) return "";
+            ChatCaptureFrame frame = new ChatCaptureFrame();
+            if (screen.Width < 80 || screen.Height < 40) return frame;
             using (Bitmap bitmap = new Bitmap(screen.Width, screen.Height, PixelFormat.Format32bppArgb))
             {
                 using (Graphics graphics = Graphics.FromImage(bitmap))
                     graphics.CopyFromScreen(screen.Left, screen.Top, 0, 0, screen.Size, CopyPixelOperation.SourceCopy);
-                float scale;
-                using (Bitmap prepared = PrepareForOcr(bitmap, out scale, false, 1800.0f))
-                {
-                    OcrResult result = await RecognizeAsync(prepared);
-                    return result.Text ?? "";
-                }
+                return await AnalyzeChatBitmapAsync(bitmap);
             }
+        }
+
+        internal async Task<ChatCaptureFrame> AnalyzeChatImageAsync(string imagePath)
+        {
+            if (String.IsNullOrWhiteSpace(imagePath) || !File.Exists(imagePath))
+                return new ChatCaptureFrame();
+            using (Image source = Image.FromFile(imagePath))
+            using (Bitmap bitmap = new Bitmap(source.Width, source.Height, PixelFormat.Format32bppArgb))
+            {
+                using (Graphics graphics = Graphics.FromImage(bitmap)) graphics.DrawImageUnscaled(source, 0, 0);
+                return await AnalyzeChatBitmapAsync(bitmap);
+            }
+        }
+
+        private async Task<ChatCaptureFrame> AnalyzeChatBitmapAsync(Bitmap bitmap)
+        {
+            ChatCaptureFrame frame = new ChatCaptureFrame();
+            float scale;
+            using (Bitmap prepared = PrepareForOcr(bitmap, out scale, false, 1800.0f))
+            {
+                OcrResult result = await RecognizeAsync(prepared);
+                frame.Text = result.Text ?? "";
+                foreach (OcrLine line in result.Lines)
+                {
+                    string text = (line.Text ?? "").Trim();
+                    if (text.Length == 0) continue;
+                    frame.Lines.Add(new ChatCaptureLine {
+                        Text = text,
+                        Style = SampleChatVisualStyle(bitmap, line, scale)
+                    });
+                }
+                return frame;
+            }
+        }
+
+        internal async Task<string> CaptureTextAsync(Rectangle screen)
+        {
+            ChatCaptureFrame frame = await CaptureChatAsync(screen);
+            return frame.Text;
+        }
+
+        private sealed class ColorCluster
+        {
+            internal int Count;
+            internal long Red;
+            internal long Green;
+            internal long Blue;
+        }
+
+        private sealed class DominantColorSample
+        {
+            internal Color Color = Color.Empty;
+            internal double Coverage;
+        }
+
+        private static ChatVisualStyle SampleChatVisualStyle(Bitmap bitmap, OcrLine line, float scale)
+        {
+            RectangleF raw = GetOcrLineBounds(line);
+            if (raw.IsEmpty || scale <= 0)
+                return ChatVisualStylePolicy.FromSample(line.Text, Color.Empty, Color.Empty, false);
+            Rectangle text = Rectangle.FromLTRB((int)Math.Floor(raw.Left / scale),
+                (int)Math.Floor(raw.Top / scale), (int)Math.Ceiling(raw.Right / scale),
+                (int)Math.Ceiling(raw.Bottom / scale));
+            text = Rectangle.Intersect(text, new Rectangle(0, 0, bitmap.Width, bitmap.Height));
+            if (text.Width < 2 || text.Height < 2)
+                return ChatVisualStylePolicy.FromSample(line.Text, Color.Empty, Color.Empty, false);
+
+            Rectangle backdropArea = Rectangle.FromLTRB(Math.Max(0, text.Left - 10),
+                Math.Max(0, text.Top - 3), Math.Min(bitmap.Width, text.Right + 10),
+                Math.Min(bitmap.Height, text.Bottom + 3));
+            DominantColorSample backdrop = SampleDominantColor(bitmap, backdropArea, Color.Empty, false);
+            DominantColorSample foreground = SampleDominantColor(bitmap, text, backdrop.Color, true);
+            int saturation = backdrop.Color.IsEmpty ? 0 :
+                Math.Max(backdrop.Color.R, Math.Max(backdrop.Color.G, backdrop.Color.B)) -
+                Math.Min(backdrop.Color.R, Math.Min(backdrop.Color.G, backdrop.Color.B));
+            // Classic regular megaphones use a pale blue band; super megaphones use
+            // a warm pink band. Both are full-row backgrounds in the supplied videos.
+            bool pinkSuperMegaphoneBand = !backdrop.Color.IsEmpty && backdrop.Color.R >= 95 &&
+                backdrop.Color.R >= backdrop.Color.G + 12 &&
+                backdrop.Color.R >= backdrop.Color.B - 12;
+            bool blueMegaphoneBand = !backdrop.Color.IsEmpty && backdrop.Color.R >= 105 &&
+                backdrop.Color.G >= 125 && backdrop.Color.B >= 130 &&
+                backdrop.Color.G >= backdrop.Color.R + 12 &&
+                backdrop.Color.B >= backdrop.Color.R + 20;
+            bool coloredBackground = !backdrop.Color.IsEmpty && saturation >= 28 &&
+                backdrop.Coverage >= 0.18 && (pinkSuperMegaphoneBand || blueMegaphoneBand);
+            return ChatVisualStylePolicy.FromSample(line.Text, foreground.Color,
+                backdrop.Color, coloredBackground);
+        }
+
+        private static DominantColorSample SampleDominantColor(Bitmap bitmap, Rectangle area,
+            Color background, bool foreground)
+        {
+            Dictionary<int, ColorCluster> clusters = new Dictionary<int, ColorCluster>();
+            int total = 0;
+            int step = area.Width * area.Height > 30000 ? 2 : 1;
+            for (int y = area.Top; y < area.Bottom; y += step)
+                for (int x = area.Left; x < area.Right; x += step)
+                {
+                    Color pixel = bitmap.GetPixel(x, y);
+                    if (pixel.A < 100) continue;
+                    if (foreground && !background.IsEmpty)
+                    {
+                        int distance = Math.Abs(pixel.R - background.R) +
+                            Math.Abs(pixel.G - background.G) + Math.Abs(pixel.B - background.B);
+                        if (distance < 86) continue;
+                    }
+                    int key = (pixel.R >> 5) << 6 | (pixel.G >> 5) << 3 | (pixel.B >> 5);
+                    ColorCluster cluster;
+                    if (!clusters.TryGetValue(key, out cluster))
+                    {
+                        cluster = new ColorCluster();
+                        clusters[key] = cluster;
+                    }
+                    cluster.Count++; cluster.Red += pixel.R;
+                    cluster.Green += pixel.G; cluster.Blue += pixel.B; total++;
+                }
+            ColorCluster best = null;
+            double bestScore = -1;
+            foreach (ColorCluster cluster in clusters.Values)
+            {
+                double score = cluster.Count;
+                if (foreground)
+                {
+                    Color average = Color.FromArgb((int)(cluster.Red / cluster.Count),
+                        (int)(cluster.Green / cluster.Count), (int)(cluster.Blue / cluster.Count));
+                    int saturation = Math.Max(average.R, Math.Max(average.G, average.B)) -
+                        Math.Min(average.R, Math.Min(average.G, average.B));
+                    int brightness = Math.Max(average.R, Math.Max(average.G, average.B));
+                    // Prefer the coloured glyph fill over its black/white outline.
+                    score *= 1.0 + saturation / 28.0 + brightness / 510.0;
+                }
+                if (score > bestScore) { bestScore = score; best = cluster; }
+            }
+            DominantColorSample result = new DominantColorSample();
+            if (best == null || best.Count == 0) return result;
+            result.Color = Color.FromArgb((int)(best.Red / best.Count),
+                (int)(best.Green / best.Count), (int)(best.Blue / best.Count));
+            result.Coverage = total == 0 ? 0 : (double)best.Count / total;
+            return result;
         }
 
         private static Bitmap PrepareForOcr(Bitmap source, out float scale, bool grayscale,
@@ -5254,7 +5475,7 @@ namespace MapleOverlay
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            if (shuttingDown || !visibleTranslation || independentWindowEnabled) return;
+            if (shuttingDown || !visibleTranslation) return;
             try
             {
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
@@ -5360,8 +5581,6 @@ namespace MapleOverlay
             tray.Visible = false;
             tray.Dispose();
             if (mainPanel != null && !mainPanel.IsDisposed) mainPanel.Dispose();
-            if (translationWindow != null && !translationWindow.IsDisposed)
-                translationWindow.ClosePermanently();
             if (chatTranslator != null && !chatTranslator.IsDisposed) chatTranslator.StopService();
             base.OnFormClosed(e);
             overlayFont.Dispose();

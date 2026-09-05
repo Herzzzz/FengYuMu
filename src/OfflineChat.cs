@@ -174,7 +174,9 @@ namespace MapleOverlay
     {
         private const int Port = 17891;
         private readonly string baseDir;
+        private readonly object startupLock = new object();
         private Process process;
+        private Task<bool> startupTask;
         private string cachedServerPath;
         private string cachedModelPath;
         public string Status { get; private set; }
@@ -243,9 +245,20 @@ namespace MapleOverlay
         {
             cachedServerPath = null;
             cachedModelPath = null;
+            startupTask = null;
         }
 
-        public async Task<bool> EnsureStartedAsync()
+        public Task<bool> EnsureStartedAsync()
+        {
+            lock (startupLock)
+            {
+                if (startupTask == null || startupTask.IsCompleted)
+                    startupTask = EnsureStartedCoreAsync();
+                return startupTask;
+            }
+        }
+
+        private async Task<bool> EnsureStartedCoreAsync()
         {
             if (await PingAsync()) { Status = "本地AI已就绪"; return true; }
             string server = FindServer(), model = FindModel();
@@ -254,18 +267,20 @@ namespace MapleOverlay
                 Status = "未安装AI模型包";
                 return false;
             }
-            // The bundled Qwen3 4B model fits comfortably on the supported Vulkan GPUs.
+            // The selected Qwen3 model normally fits on supported Vulkan GPUs.
             // Try a full offload first, while retaining the old partial/CPU fallbacks.
             int[] gpuLayers = new int[] { 99, 32, 12, 0 };
             foreach (int layers in gpuLayers)
             {
                 try
                 {
-                    int threads = Math.Max(2, Math.Min(6, Environment.ProcessorCount / 2));
+                    // The game is light on modern PCs. Keep two logical cores free, then
+                    // spend the remaining moderate headroom on lower chat latency.
+                    int threads = Math.Max(2, Math.Min(10, Environment.ProcessorCount - 2));
                     ProcessStartInfo info = new ProcessStartInfo(server,
                         "-m \"" + model + "\" --host 127.0.0.1 --port " + Port +
-                        " -ngl " + layers + " -c 1024 -b 256 -ub 128 -t " + threads + " -tb " + threads +
-                        " --parallel 1 --prio 0 --poll 50 --poll-batch 50 --no-webui");
+                        " -ngl " + layers + " -c 1280 -b 512 -ub 256 -t " + threads + " -tb " + threads +
+                        " --parallel 1 --prio 1 --poll 80 --poll-batch 80 --no-webui");
                     info.WorkingDirectory = Path.GetDirectoryName(server);
                     info.UseShellExecute = false;
                     info.CreateNoWindow = true;
@@ -577,6 +592,12 @@ namespace MapleOverlay
 
     internal sealed class OfflineChatForm : Form
     {
+        private sealed class PendingChatLine
+        {
+            internal string Text = "";
+            internal ChatVisualStyle Style = ChatVisualStyle.Default;
+        }
+
         private readonly OverlayForm overlay;
         private readonly string dictionaryPath;
         private readonly string candidatesPath;
@@ -594,7 +615,9 @@ namespace MapleOverlay
         private readonly System.Windows.Forms.Timer releaseTimer = new System.Windows.Forms.Timer();
         private readonly HashSet<string> protectedPlayerNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private readonly List<string> recentChatMessages = new List<string>();
-        private readonly Queue<string> pendingChatLines = new Queue<string>();
+        private readonly Queue<PendingChatLine> pendingChatLines = new Queue<PendingChatLine>();
+        private readonly Dictionary<string, string> translationCache = new Dictionary<string, string>(StringComparer.Ordinal);
+        private readonly Queue<string> translationCacheOrder = new Queue<string>();
         private List<string> previousChatFrame = new List<string>();
         private readonly List<KeyValuePair<string, string>> glossaryEntries = new List<KeyValuePair<string, string>>();
         private readonly HashSet<string> contextOnlyGlossaryKeys =
@@ -609,6 +632,8 @@ namespace MapleOverlay
         private string lastSource = "";
         private string lastTranslation = "";
         private bool lastWasOnline;
+        private bool floatingWindowEnabled;
+        private AiTranslationWindowForm floatingWindow;
         private DateTime lastAiUse = DateTime.MinValue;
 
         public OfflineChatForm(OverlayForm owner, string baseDir)
@@ -624,7 +649,7 @@ namespace MapleOverlay
             Size = new Size(600, 560); MinimumSize = new Size(520, 480);
             Font = new Font("Microsoft YaHei UI", 9.0f);
             BuildUi(); LoadRegion();
-            timer.Interval = 500;
+            timer.Interval = 280;
             timer.Tick += async delegate { await PollChatAsync(); };
             releaseTimer.Interval = 30000;
             releaseTimer.Tick += delegate {
@@ -639,10 +664,20 @@ namespace MapleOverlay
                 Rectangle work = Screen.FromControl(this).WorkingArea;
                 Location = new Point(Math.Max(work.Left, work.Right - Width - 18), work.Top + 55);
                 RefreshAiStatus();
+                Task<bool> warmup = ai.IsInstalled ? ai.EnsureStartedAsync() : null;
                 await InitializeKnowledgeInBackgroundAsync(false);
+                if (warmup != null)
+                {
+                    bool ready = await warmup;
+                    status.Text = ready ? "AI已预热｜热态翻译约数百毫秒" : ai.Status;
+                }
             };
             FormClosing += delegate(object sender, FormClosingEventArgs e) {
-                if (e.CloseReason == CloseReason.UserClosing) { e.Cancel = true; Hide(); live = false; timer.Stop(); }
+                if (e.CloseReason == CloseReason.UserClosing)
+                {
+                    e.Cancel = true; Hide(); live = false; timer.Stop();
+                    if (floatingWindow != null && !floatingWindow.IsDisposed) floatingWindow.Hide();
+                }
             };
             Disposed += delegate { outputOriginalFont.Dispose(); outputTranslationFont.Dispose(); };
         }
@@ -657,7 +692,7 @@ namespace MapleOverlay
             root.RowStyles.Add(new RowStyle(SizeType.Absolute, 45));
             FlowLayoutPanel tools = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = true };
             liveButton.Text = "开始实时翻译"; liveButton.AutoSize = true;
-            liveButton.Click += delegate { ToggleLive(); };
+            liveButton.Click += async delegate { await ToggleLiveAsync(); };
             Button once = new Button { Text = "单次识别翻译（兼容模式）", AutoSize = true };
             once.Click += async delegate { await PollChatAsync(true); };
             Button bind = new Button { Text = "框选/调整游戏聊天区", AutoSize = true };
@@ -756,9 +791,22 @@ namespace MapleOverlay
                     "已按当前游戏窗口同步 " + region.Width + "×" + region.Height;
         }
 
+        internal void ApplyFloatingWindow(bool enabled)
+        {
+            floatingWindowEnabled = enabled;
+            if (!enabled)
+            {
+                if (floatingWindow != null && !floatingWindow.IsDisposed) floatingWindow.Hide();
+                return;
+            }
+            if (live && floatingWindow != null && !floatingWindow.IsDisposed && floatingWindow.DisplayedText.Length > 0)
+                floatingWindow.ShowPassive();
+        }
+
         private async Task BindRegionAsync()
         {
             live = false; timer.Stop(); Hide();
+            if (floatingWindow != null && !floatingWindow.IsDisposed) floatingWindow.Hide();
             await Task.Delay(3000);
             Rectangle game = OverlayForm.GetForegroundCaptureBounds();
             Rectangle initial = ChatRegionSettings.ResolveForGame(game);
@@ -776,12 +824,23 @@ namespace MapleOverlay
             Show(); Activate();
         }
 
-        private void ToggleLive()
+        private async Task ToggleLiveAsync()
         {
             if (chatRegion.Width < 80) { MessageBox.Show("请先点击“框选/调整游戏聊天区”，倒计时内切回游戏后调整边框。", "实时聊天翻译"); return; }
             live = !live;
             liveButton.Text = live ? "停止实时翻译" : "开始实时翻译";
-            if (live) timer.Start(); else timer.Stop();
+            if (live)
+            {
+                status.Text = "正在预热AI，同时开始监听聊天…";
+                timer.Start();
+                bool ready = await ai.EnsureStartedAsync();
+                if (live) status.Text = ready ? "AI已预热｜280ms快速监听" : ai.Status;
+            }
+            else
+            {
+                timer.Stop();
+                if (floatingWindow != null && !floatingWindow.IsDisposed) floatingWindow.Hide();
+            }
         }
 
         private async Task PollChatAsync(bool forceOnce = false)
@@ -790,15 +849,17 @@ namespace MapleOverlay
             captureBusy = true;
             try
             {
-                string text = await overlay.CaptureTextAsync(chatRegion);
-                List<string> lines = ParseChatLines(text);
+                ChatCaptureFrame capture = await overlay.CaptureChatAsync(chatRegion);
+                List<string> lines = ParseChatLines(capture.Text);
                 List<string> newLines = GetNewChatLines(previousChatFrame, lines);
                 previousChatFrame = lines;
                 // Frame differencing already preserves genuine repeated messages while
                 // suppressing a static OCR frame. Text-based queue filtering would swallow
                 // a real duplicate sent while the first copy is still being translated.
                 foreach (string line in newLines)
-                    if (line.Length >= 3) pendingChatLines.Enqueue(line);
+                    if (line.Length >= 3) pendingChatLines.Enqueue(new PendingChatLine {
+                        Text = line, Style = capture.FindStyle(line)
+                    });
                 status.Text = pendingChatLines.Count > 0 ? "检测到新消息，待翻译 " + pendingChatLines.Count + " 条" : status.Text;
             }
             catch (Exception ex) { status.Text = ex.Message; }
@@ -814,7 +875,8 @@ namespace MapleOverlay
             {
                 while (pendingChatLines.Count > 0)
                 {
-                    string line = pendingChatLines.Dequeue();
+                    PendingChatLine pending = pendingChatLines.Dequeue();
+                    string line = pending.Text;
                     string speakerPrefix, message;
                     SplitSpeaker(line, out speakerPrefix, out message);
                     string cleanedMessage = NormalizeCommonChatOcr(message);
@@ -825,13 +887,18 @@ namespace MapleOverlay
                     string translated;
                     if (!TryExactGlossaryTranslation(protectedMessage, out translated))
                     {
-                        string context = String.Join("\n", recentChatMessages.ToArray());
-                        translated = await ai.TranslateAsync(protectedMessage, "自动识别（中英日韩）", "中文", glossary, context);
-                        translated = await ReviewOnlineIfEnabled(protectedMessage, translated, "中文", glossary);
+                        string cacheKey = NormalizeChatPhrase(cleanedMessage);
+                        if (!translationCache.TryGetValue(cacheKey, out translated))
+                        {
+                            string context = String.Join("\n", recentChatMessages.ToArray());
+                            translated = await ai.TranslateAsync(protectedMessage, "自动识别（中英日韩）", "中文", glossary, context);
+                            translated = await ReviewOnlineIfEnabled(protectedMessage, translated, "中文", glossary);
+                            RememberTranslation(cacheKey, translated);
+                        }
                     }
                     translated = RestorePlayerNames(translated, nameTokens);
                     lastSource = message; lastTranslation = translated;
-                    AppendTranslation(line, speakerPrefix + translated);
+                    AppendTranslation(line, speakerPrefix + translated, pending.Style);
                     recentChatMessages.Add(cleanedMessage);
                     if (recentChatMessages.Count > 4) recentChatMessages.RemoveAt(0);
                     status.Text = pendingChatLines.Count == 0 ? "新消息已翻译" : "正在翻译，剩余 " + pendingChatLines.Count + " 条";
@@ -979,7 +1046,7 @@ namespace MapleOverlay
                 translated = await ReviewOnlineIfEnabled(protectedMessage, translated, Convert.ToString(target.SelectedItem), glossary);
                 translated = RestorePlayerNames(translated, nameTokens);
                 lastSource = message; lastTranslation = translated;
-                AppendTranslation(value, speakerPrefix + translated);
+                AppendTranslation(value, speakerPrefix + translated, ChatVisualStyle.Default);
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, "AI翻译失败"); }
             finally { busy = false; }
@@ -1164,8 +1231,9 @@ namespace MapleOverlay
             catch (Exception ex) { status.Text = "在线复核失败，保留本地译文：" + ex.Message; return local; }
         }
 
-        private void AppendTranslation(string original, string translation)
+        private void AppendTranslation(string original, string translation, ChatVisualStyle visualStyle)
         {
+            if (visualStyle == null) visualStyle = ChatVisualStyle.Default;
             if (output.TextLength > 24000)
             {
                 output.Select(0, Math.Min(8000, output.TextLength));
@@ -1179,13 +1247,25 @@ namespace MapleOverlay
             output.SelectionColor = Color.FromArgb(255, 183, 77);
             output.SelectionFont = outputTranslationFont;
             output.AppendText("中文  ");
-            output.SelectionColor = Color.FromArgb(132, 255, 170);
+            output.SelectionColor = visualStyle.ForeColor;
+            output.SelectionBackColor = visualStyle.HasBackground
+                ? visualStyle.BackColor : output.BackColor;
             output.SelectionFont = outputTranslationFont;
-            output.AppendText(translation.Trim() + Environment.NewLine);
+            output.AppendText(visualStyle.HasBackground
+                ? "  " + translation.Trim() + "  " + Environment.NewLine
+                : translation.Trim() + Environment.NewLine);
+            output.SelectionBackColor = output.BackColor;
             output.SelectionColor = Color.FromArgb(62, 70, 82);
             output.SelectionFont = outputOriginalFont;
             output.AppendText("────────────────────────" + Environment.NewLine);
             output.SelectionStart = output.TextLength; output.ScrollToCaret();
+            if (floatingWindowEnabled && live)
+            {
+                if (floatingWindow == null || floatingWindow.IsDisposed)
+                    floatingWindow = new AiTranslationWindowForm(overlay);
+                floatingWindow.AppendTranslation(translation, visualStyle);
+                floatingWindow.ShowPassive();
+            }
         }
 
         private void AddCandidate()
@@ -1198,7 +1278,22 @@ namespace MapleOverlay
         }
 
         private static string Clean(string value) { return (value ?? "").Replace('\t', ' ').Replace('\r', ' ').Replace('\n', ' ').Trim(); }
-        public void StopService() { timer.Stop(); releaseTimer.Stop(); ai.Stop(); }
+        public void StopService()
+        {
+            timer.Stop(); releaseTimer.Stop(); ai.Stop();
+            if (floatingWindow != null && !floatingWindow.IsDisposed)
+                floatingWindow.ClosePermanently();
+        }
+
+        private void RememberTranslation(string key, string translation)
+        {
+            if (String.IsNullOrEmpty(key) || String.IsNullOrWhiteSpace(translation) ||
+                translationCache.ContainsKey(key)) return;
+            translationCache[key] = translation;
+            translationCacheOrder.Enqueue(key);
+            while (translationCacheOrder.Count > 256)
+                translationCache.Remove(translationCacheOrder.Dequeue());
+        }
     }
 
     internal sealed class CorrectionReviewForm : Form
