@@ -80,11 +80,15 @@ foreach ($required in @(
     'Queue<PendingChatLine>',
     'Style = capture.FindStyle(line)',
     'floatingWindow.AppendTranslation(translation, visualStyle)',
-    'internal void ApplyFloatingWindow(bool enabled)')) {
+    'internal void ApplyFloatingWindow(bool enabled)',
+    'internal bool HideForScreenshotCapture()',
+    'internal void RestoreAfterScreenshotCapture()',
+    'overlay.ApplyAiChatFloatingWindow(true)',
+    'ShowFloatingWindowPassive()')) {
     if (-not $chatSource.Contains($required)) { throw "AI浮窗链路缺少：$required" }
 }
 foreach ($required in @(
-    'AI实时翻译独立浮窗（跟随聊天颜色）',
+    'AI实时翻译会自动打开独立浮窗（跟随聊天颜色）',
     'RichTextBox content',
     'FormBorderStyle = FormBorderStyle.None',
     'Opacity = 0.92d',
@@ -96,6 +100,9 @@ foreach ($required in @(
     'ChatVisualKind.SuperMegaphone',
     'overlay.ApplyAiChatFloatingWindow')) {
     if (-not $forms.Contains($required)) { throw "AI浮窗界面缺少：$required" }
+}
+if ($forms.Contains('CheckBox independentWindow')) {
+    throw 'AI实时翻译独立浮窗仍要求用户勾选开关'
 }
 if ($overlaySource.Contains('!visibleTranslation || aiChatFloatingWindowEnabled')) {
     throw 'AI浮窗仍在抑制F8原位覆盖'
@@ -114,6 +121,11 @@ $missingAiRoot = Join-Path $repoRoot 'tests\__ai_close_behavior_no_model__'
 $chatWindow = $offlineConstructor.Invoke([object[]]@($null, [string]$missingAiRoot))
 $floatingWindow = $floatingConstructor.Invoke([object[]]@($null))
 try {
+    $showPassive = $floatingType.GetMethod('ShowPassive', $constructorFlags)
+    $showPassive.Invoke($floatingWindow, @()) | Out-Null
+    [System.Windows.Forms.Application]::DoEvents()
+    if (-not $floatingWindow.Visible) { throw '开始实时翻译时空白等待态浮窗没有立即出现' }
+    $floatingWindow.Hide()
     $appendTranslation = $floatingType.GetMethod('AppendTranslation', $constructorFlags,
         $null, [Type[]]@([string]), $null)
     [void]$appendTranslation.Invoke($floatingWindow, @('Arthur：主窗口关闭后仍继续显示。'))

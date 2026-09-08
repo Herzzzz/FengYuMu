@@ -65,8 +65,11 @@ foreach ($required in @(
     '-c 1280 -b 512 -ub 256',
     '--parallel 1 --prio 1 --poll 80 --poll-batch 80',
     'Task<bool> warmup = ai.IsInstalled ? ai.EnsureStartedAsync() : null',
-    'if (floatingWindowEnabled && live)')) {
+    'firstLiveCapture = true',
+    'int first = Math.Max(0, lines.Count - 2)',
+    'DetectChatSourceLanguage(cleanedMessage)',
+    '{ "temperature", 0.0 }, { "top_p", 0.7 }, { "max_tokens", 96 }')) {
     if (-not $source.Contains($required)) { throw "AI实时翻译性能或隔离路径缺少：$required" }
 }
 
-Write-Output 'AI实时翻译：280ms监听、模型预热、启动去重、256条缓存、普通/超级喇叭实帧分类通过'
+Write-Output 'AI实时翻译：280ms监听、模型预热、首帧仅最新2条、确定性96-token翻译、启动去重、256条缓存、普通/超级喇叭实帧分类通过'

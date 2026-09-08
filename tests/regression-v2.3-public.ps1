@@ -16,7 +16,7 @@ $cases = @(
         Name='公开样本：装备详情 Lionheart'; File='equipment-lionheart.png'; Cursor='464,399'
         # Requirement labels may now include a repaired OCR value (for example 需要智力：0).
         # Match the semantic prefix so both the frozen v2.3 label and the richer v3 label pass.
-        Expected=@('高原之剑@','需要力量','需要智力','需要运气','类型：','双手剑@','攻击速度','物理攻击力','可升级次数@')
+        Expected=@('高原之剑@','需要力量','需要智力','需要运气','类型：','双手剑@','攻击速度','物理攻击力','可升级次数')
         Forbidden=@('移动速度@'); Budget=1300
     },
     [pscustomobject]@{

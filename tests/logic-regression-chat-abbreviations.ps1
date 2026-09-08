@@ -42,9 +42,10 @@ $cs=Get-Content (Join-Path $root 'src\OfflineChat.cs') -Raw -Encoding UTF8
 $l=$cs.IndexOf('private void LoadGlossary()')
 $b=$cs.IndexOf('private async Task InitializeKnowledgeInBackgroundAsync')
 if($l -lt 0 -or $b -le $l -or $cs.Substring($l,$b-$l).Contains('MapleKnowledgeInitializer.Initialize')){throw '聊天词库仍同步初始化AI知识'}
-foreach($x in @('cachedServerPath','cachedModelPath','contextOnlyGlossaryKeys','可靠的聊天缩写必须按术语表和上下文展开')){
+foreach($x in @('cachedServerPath','cachedModelPath','contextOnlyGlossaryKeys','可靠的聊天缩写必须按术语表展开')){
     if(-not $cs.Contains($x)){throw "实现缺少：$x"}
 }
+if($cs.Contains('chatContext')){throw '实时AI仍会把历史原句拼入当前消息，可能造成重复和串句'}
 $mo=Get-Content (Join-Path $root 'src\MapleOverlay.cs') -Raw -Encoding UTF8
 if(-not $mo.Contains('File.ReadLines(path, Encoding.UTF8)')){throw '主词库未使用流式读取'}
 Write-Output '聊天缩写隔离、多义词保护、低卡顿加载回归：通过'

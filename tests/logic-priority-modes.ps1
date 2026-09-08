@@ -87,6 +87,7 @@ foreach ($required in @(
     'translationRangeMode != TranslationRangeMode.Maximum',
     'FindPanelCrops(result, ocrScale, screen)',
     'RecognitionPriorityPlanner.TargetLongEdge',
+    'long hoverReviewDeadline = tooltipLocal.IsEmpty ? 780 : 1250',
     'TranslationRangeMode", (int)mode',
     '范围最大（兼容路径）')) {
     if (-not $source.Contains($required)) { throw "缺少三档范围安全基线：$required" }

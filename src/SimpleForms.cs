@@ -362,7 +362,6 @@ namespace MapleOverlay
 
         internal void ShowPassive()
         {
-            if (displayedText.Length == 0) { Hide(); return; }
             if (!Visible) Show();
         }
 
@@ -451,7 +450,6 @@ namespace MapleOverlay
         private readonly TrackBar range = new TrackBar();
         private readonly Label rangeValue = new Label();
         private readonly CheckBox continuousTranslation = new CheckBox();
-        private readonly CheckBox independentWindow = new CheckBox();
 
         public MainPanelForm(OverlayForm owner)
         {
@@ -527,14 +525,11 @@ namespace MapleOverlay
                 Location = new Point(35, 119), Size = new Size(460, 24),
                 ForeColor = Color.FromArgb(107, 114, 128)
             };
-            independentWindow.Text = "AI实时翻译独立浮窗（跟随聊天颜色）";
-            independentWindow.AutoSize = false;
-            independentWindow.Location = new Point(18, 148);
-            independentWindow.Size = new Size(480, 28);
-            independentWindow.ForeColor = Color.FromArgb(31, 41, 55);
-            independentWindow.Checked = overlay != null && overlay.AiChatFloatingWindowEnabled;
-            independentWindow.CheckedChanged += delegate {
-                if (overlay != null) overlay.ApplyAiChatFloatingWindow(independentWindow.Checked);
+            Label independentWindow = new Label {
+                Text = "AI实时翻译会自动打开独立浮窗（跟随聊天颜色）",
+                AutoSize = false, Location = new Point(18, 148), Size = new Size(480, 28),
+                ForeColor = Color.FromArgb(31, 41, 55),
+                Font = new Font("Microsoft YaHei UI", 9.0f, FontStyle.Bold)
             };
             Label independentHint = new Label {
                 Text = "只显示AI聊天译文；F8仍按游戏原位置覆盖。",
@@ -589,12 +584,12 @@ namespace MapleOverlay
             string gamepadHide = overlay == null ? "未绑定" : overlay.HideGamepadShortcutDescription;
             hotkeys.Text = "键盘 " + showKey + " / " + hideKey +
                 "    手柄 " + gamepadShow + " / " + gamepadHide;
+            if (overlay != null && overlay.HotkeyRegistrationStatus.Length > 0)
+                hotkeys.Text = overlay.HotkeyRegistrationStatus;
             if (overlay != null && range.Value != (int)overlay.TranslationRangeMode)
                 range.Value = (int)overlay.TranslationRangeMode;
             if (overlay != null && continuousTranslation.Checked != overlay.ContinuousTranslationEnabled)
                 continuousTranslation.Checked = overlay.ContinuousTranslationEnabled;
-            if (overlay != null && independentWindow.Checked != overlay.AiChatFloatingWindowEnabled)
-                independentWindow.Checked = overlay.AiChatFloatingWindowEnabled;
             RefreshRangeText();
         }
 
@@ -758,7 +753,7 @@ namespace MapleOverlay
                     MessageBox.Show("手柄呼出和缩回组合会同时触发，请换成不重叠的按键。", "快捷键");
                     return;
                 }
-                overlay.ApplyHotkeys(sk, sm, hk, hm);
+                if (!overlay.ApplyHotkeys(sk, sm, hk, hm)) return;
                 overlay.ApplyGamepadShortcuts(gs, gh);
                 using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu"))
                 {

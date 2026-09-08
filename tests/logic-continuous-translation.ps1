@@ -53,6 +53,12 @@ foreach ($required in @(
     'ShowTranslationAsync(true)',
     'GetWindowThreadProcessId',
     'continuousTranslationSuppressedUntilUtc',
+    'manualTranslationPending',
+    'while (processing && requestId == manualTranslationRequestId && !shuttingDown)',
+    'if (automatic && manualTranslationPending) return;',
+    'internal bool ApplyHotkeys',
+    'await Task.Delay(120)',
+    '已恢复原来的可用设置',
     'return ShowTranslationAsync(false)',
     'ContinuousTranslationPolicy.ShouldTranslate',
     '--benchmark-scene-probe',
@@ -66,9 +72,12 @@ foreach ($required in @(
     'overlay.ApplyContinuousTranslation')) {
     if (-not $forms.Contains($required)) { throw "持续翻译主界面缺少：$required" }
 }
+if (-not $forms.Contains('if (!overlay.ApplyHotkeys(sk, sm, hk, hm)) return;')) {
+    throw '冲突快捷键注册失败后仍会保存无效设置'
+}
 foreach ($forbidden in @('ReadProcessMemory','WriteProcessMemory','CreateRemoteThread',
     'VirtualAllocEx','SetWindowsHookEx','SendInput')) {
     if (($source + $forms).Contains($forbidden)) { throw "安全边界失败：$forbidden" }
 }
 
-Write-Output '持续自动翻译：默认关闭、面板门控、快速轮询、空闲/失败退避、F8 兼容路径与安全边界通过'
+Write-Output '持续自动翻译：默认关闭、面板门控、快速轮询、空闲/失败退避、F8手动请求抢占持续扫描与安全边界通过'

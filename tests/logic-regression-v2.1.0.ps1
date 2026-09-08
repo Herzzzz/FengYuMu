@@ -42,6 +42,8 @@ $rush = 'Rushes forward a certain distance in the direction you are facing. If t
 Assert-Translation '突进说明' (Invoke-Store 'FindSkillTextMatches' @($rush, '1321003')) '最多可攻击4只'
 $quest = 'I arn now under the tutelage of the famous sword master Mai in A Split Road For my first lesson she told me to hunt Blue Snails Shroorns and Fed Snails Mai also said to meet up with Biggs in Southperrv tor a useful quest'
 Assert-Translation '任务整段' (Invoke-Store 'FindTaskMatches' @($quest, '1009')) '岔路口'
+$questWithTitleAndNoise = "Mai's Training Blue Snail Red Snail I am now under the tutelage of the famous sword master Mai in A Split Road For my first lesson she told me to hunt Blue Snails Shtoorns and Fed Snails Mai also said to meet up with Biggs stores lande Cugine Lila in Southperry for a useful quest"
+Assert-Translation '任务标题不得压住长说明' (Invoke-Store 'FindTaskMatches' @($questWithTitleAndNoise, '1009')) '岔路口'
 
 # 通用人物/装备面板词条必须完整，且 OCR 常见形变仍能容错。
 Assert-Translation '人物名称' (Invoke-Store 'FindCharacterStatMatches' @('NAME')) '名称'

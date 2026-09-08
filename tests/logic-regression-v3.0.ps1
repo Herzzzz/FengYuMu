@@ -36,6 +36,8 @@ Assert-Structured 'REQ LEV : 2S REQ STR : O REQ DEX : O REQ INT : O REQ LUK : O'
 Assert-Structured 'REQ LEV : SO REQ STR : O REQ DEX : O REQ INT : O REQ LUK : O' $true $false `
     @('需要等级：50','需要力量：0','需要敏捷：0','需要智力：0','需要运气：0')
 Assert-Structured 'MAGIC 38' $true $false @('魔法防御力：38')
+Assert-Structured 'INT : +14' $true $false @('智力：+14')
+Assert-Structured 'NUMBER OF UPGRADES AVAILABLE : 7' $true $false @('可升级次数：7')
 Assert-NotStructured 'Spearman' $true $false
 Assert-NotStructured 'Bowman' $true $false
 Assert-NotStructured 'Assassin Wizard Cleric Bowman Thief Pirate' $false $false
@@ -59,6 +61,8 @@ $sceneType = $assembly.GetType('MapleOverlay.SceneClassifier', $true)
 $classify = $sceneType.GetMethod('Classify', [Reflection.BindingFlags]'Static,NonPublic,Public')
 $looksLikePlayerChat = $sceneType.GetMethod('LooksLikePlayerChat',
     [Reflection.BindingFlags]'Static,NonPublic,Public')
+$looksLikeEquipmentStat = $overlayType.GetMethod('LooksLikeEquipmentStatText',
+    [Reflection.BindingFlags]'Static,NonPublic')
 foreach ($case in @(
     [pscustomobject]@{ Text='[Master Level : 30]'; Flag='Skill' },
     [pscustomobject]@{ Text='REQ LEV : 50 REQ STR : 0'; Flag='Item' },
@@ -96,9 +100,15 @@ foreach ($chatLine in @(
         throw "聊天中的物品名仍被误判成装备场景：$chatLine -> $kinds"
     }
 }
-foreach ($structuredLine in @('REQ LEV : 50 REQ STR : 0', 'Type: Hat')) {
+foreach ($structuredLine in @('REQ LEV : 50 REQ STR : 0', 'Type: Hat', '•INT : +14',
+    '• NUMBER OF UPGRADES AVAILABLE : O')) {
     if ([bool]$looksLikePlayerChat.Invoke($null, @($structuredLine))) {
         throw "装备结构行被错误隔离成聊天：$structuredLine"
+    }
+}
+foreach ($equipmentLine in @('•INT : +14', '• NUMBER OF UPGRADES AVAILABLE : O')) {
+    if (-not [bool]$looksLikeEquipmentStat.Invoke($null, @($equipmentLine))) {
+        throw "装备字段结构未识别：$equipmentLine"
     }
 }
 $itemDescription = 'A legendary potion. Restores 35% of HP and MP, but due to its powerful effect, there is a cooldown before it can be used again.'

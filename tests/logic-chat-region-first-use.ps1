@@ -14,6 +14,16 @@ $region = [System.Drawing.Rectangle]$defaultMethod.Invoke($null, $arguments)
 if ($region -ne (New-Object System.Drawing.Rectangle -ArgumentList 260, 734, 880, 189)) {
     throw "首次快捷键自动聊天区比例错误：$region"
 }
+$usableMethod = $settings.GetMethod('IsUsable',
+    [Reflection.BindingFlags]'Static,NonPublic,Public')
+$singleLine = New-Object System.Drawing.Rectangle -ArgumentList 172,600,391,24
+$tooShort = New-Object System.Drawing.Rectangle -ArgumentList 172,600,391,19
+$singleLineArguments = [object[]]@($singleLine.PSObject.BaseObject)
+$tooShortArguments = [object[]]@($tooShort.PSObject.BaseObject)
+if (-not [bool]$usableMethod.Invoke($null, $singleLineArguments) -or
+    [bool]$usableMethod.Invoke($null, $tooShortArguments)) {
+    throw '用户手动框选的单行24像素聊天区可用性判定错误'
+}
 
 $detector = $assembly.GetType('MapleOverlay.ChatRegionDetector', $true)
 $detectMethod = $detector.GetMethod('Detect',

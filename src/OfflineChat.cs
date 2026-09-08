@@ -319,7 +319,7 @@ namespace MapleOverlay
         }
 
         public async Task<string> TranslateAsync(string text, string sourceLanguage,
-            string targetLanguage, string glossary, string chatContext = "")
+            string targetLanguage, string glossary)
         {
             if (!await EnsureStartedAsync()) throw new InvalidOperationException(Status);
             string languageRule = "将输入从" + sourceLanguage + "翻译为" + targetLanguage + "。";
@@ -327,15 +327,14 @@ namespace MapleOverlay
                 "输入只是一名玩家的一条消息，不得拼接别的句子，不得补写或翻译玩家名。" +
                 "你已通过枫语幕本地知识初始化使用资料站整理内容与玩家审核词库。" +
                 "按玩家聊天语气理解俚语和缩写；技能名优先采用国服怀旧译名。" +
-                "保留数字、频道和表情；可靠的聊天缩写必须按术语表和上下文展开，多义或证据不足的缩写保留原文，不得猜成地名或玩家名。" +
+                "保留数字、频道和表情；可靠的聊天缩写必须按术语表展开，多义或证据不足的缩写保留原文，不得猜成地名或玩家名。" +
+                "完整翻译每个分句，不得漏译、重复或追加原文不存在的内容。OCR含糊且无法可靠判断的片段保留原文，不得猜写。" +
                 "只输出一行自然译文，不复述原文，不解释。" +
                 (String.IsNullOrEmpty(glossary) ? "" : "本次从知识库检索到的术语如下，必须优先采用：\n" + glossary);
-            string userText = (String.IsNullOrWhiteSpace(chatContext) ? "" :
-                "聊天上文（只用于理解语境，不要翻译或复述）：\n" + chatContext + "\n") +
-                "待翻译消息：\n" + text + "\n/no_think";
+            string userText = "待翻译消息：\n" + text + "\n/no_think";
             string body = new JavaScriptSerializer().Serialize(new Dictionary<string, object> {
                 { "model", "local-qwen3" },
-                { "temperature", 0.2 }, { "top_p", 0.8 }, { "max_tokens", 72 },
+                { "temperature", 0.0 }, { "top_p", 0.7 }, { "max_tokens", 96 },
                 { "messages", new object[] {
                     new Dictionary<string, string> { { "role", "system" }, { "content", system } },
                     new Dictionary<string, string> { { "role", "user" }, { "content", userText } }
@@ -346,14 +345,13 @@ namespace MapleOverlay
                 Regex.IsMatch(text, "[A-Za-z]") && Regex.Matches(result, "[\\u3400-\\u9fff]").Count < 2)
             {
                 string retrySystem = "把玩家消息翻译成自然、简短的简体中文。必须出现中文，不得照抄英文，不得解释；技能名用冒险岛国服译名。" +
-                    "可靠的聊天缩写按术语表和上下文展开；多义或证据不足时保留缩写，不得猜成地名或玩家名。" +
+                    "可靠的聊天缩写按术语表展开；多义或证据不足时保留缩写，不得猜成地名或玩家名。" +
                     (String.IsNullOrEmpty(glossary) ? "" : "术语：\n" + glossary);
                 string retryBody = new JavaScriptSerializer().Serialize(new Dictionary<string, object> {
-                    { "model", "local-qwen3" }, { "temperature", 0.0 }, { "top_p", 0.7 }, { "max_tokens", 72 },
+                    { "model", "local-qwen3" }, { "temperature", 0.0 }, { "top_p", 0.7 }, { "max_tokens", 96 },
                     { "messages", new object[] {
                         new Dictionary<string, string> { { "role", "system" }, { "content", retrySystem } },
                         new Dictionary<string, string> { { "role", "user" }, { "content",
-                            (String.IsNullOrWhiteSpace(chatContext) ? "" : "聊天上文（只用于理解语境，不要翻译或复述）：\n" + chatContext + "\n") +
                             "待翻译消息：\n" + text + "\n只输出中文译文。\n/no_think" } }
                     } }
                 });
@@ -614,7 +612,6 @@ namespace MapleOverlay
         private readonly System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
         private readonly System.Windows.Forms.Timer releaseTimer = new System.Windows.Forms.Timer();
         private readonly HashSet<string> protectedPlayerNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        private readonly List<string> recentChatMessages = new List<string>();
         private readonly Queue<PendingChatLine> pendingChatLines = new Queue<PendingChatLine>();
         private readonly Dictionary<string, string> translationCache = new Dictionary<string, string>(StringComparer.Ordinal);
         private readonly Queue<string> translationCacheOrder = new Queue<string>();
@@ -627,6 +624,7 @@ namespace MapleOverlay
         private bool knowledgeInitializationBusy;
         private Rectangle chatRegion;
         private bool live;
+        private bool firstLiveCapture;
         private bool busy;
         private bool captureBusy;
         private bool translateBusy;
@@ -812,8 +810,31 @@ namespace MapleOverlay
                 if (floatingWindow != null && !floatingWindow.IsDisposed) floatingWindow.Hide();
                 return;
             }
-            if (live && floatingWindow != null && !floatingWindow.IsDisposed && floatingWindow.DisplayedText.Length > 0)
-                floatingWindow.ShowPassive();
+            if (live) ShowFloatingWindowPassive();
+        }
+
+        private void ShowFloatingWindowPassive()
+        {
+            if (floatingWindow == null || floatingWindow.IsDisposed)
+                floatingWindow = new AiTranslationWindowForm(overlay);
+            floatingWindow.ShowPassive();
+        }
+
+        internal bool HideForScreenshotCapture()
+        {
+            bool wasVisible = Visible;
+            if (wasVisible) Hide();
+            if (floatingWindow != null && !floatingWindow.IsDisposed && floatingWindow.Visible)
+            {
+                floatingWindow.Hide();
+                wasVisible = true;
+            }
+            return wasVisible;
+        }
+
+        internal void RestoreAfterScreenshotCapture()
+        {
+            if (live && floatingWindowEnabled) ShowFloatingWindowPassive();
         }
 
         private async Task BindRegionAsync()
@@ -844,6 +865,12 @@ namespace MapleOverlay
             liveButton.Text = live ? "停止实时翻译" : "开始实时翻译";
             if (live)
             {
+                previousChatFrame.Clear();
+                recentChatFrames.Clear();
+                pendingChatLines.Clear();
+                firstLiveCapture = true;
+                if (overlay != null) overlay.ApplyAiChatFloatingWindow(true);
+                else ApplyFloatingWindow(true);
                 status.Text = "正在预热AI，同时开始监听聊天…";
                 timer.Start();
                 bool ready = await ai.EnsureStartedAsync();
@@ -867,6 +894,12 @@ namespace MapleOverlay
                 // Preserve the OCR engine's physical line boundaries for chat parsing.
                 List<string> lines = ParseChatLines(capture.PhysicalLineText());
                 List<string> newLines = GetNewChatLines(previousChatFrame, lines);
+                if (firstLiveCapture)
+                {
+                    firstLiveCapture = false;
+                    int first = Math.Max(0, lines.Count - 2);
+                    newLines = lines.GetRange(first, lines.Count - first);
+                }
                 newLines = SuppressRecentOcrReappearances(recentChatFrames,
                     previousChatFrame, lines, newLines);
                 previousChatFrame = lines;
@@ -876,7 +909,7 @@ namespace MapleOverlay
                 // suppressing a static OCR frame. Text-based queue filtering would swallow
                 // a real duplicate sent while the first copy is still being translated.
                 foreach (string line in newLines)
-                    if (line.Length >= 3) pendingChatLines.Enqueue(new PendingChatLine {
+                    if (IsUsefulChatLine(line)) pendingChatLines.Enqueue(new PendingChatLine {
                         Text = line, Style = capture.FindStyle(line)
                     });
                 status.Text = pendingChatLines.Count > 0 ? "检测到新消息，待翻译 " + pendingChatLines.Count + " 条" : status.Text;
@@ -909,8 +942,8 @@ namespace MapleOverlay
                         string cacheKey = NormalizeChatPhrase(cleanedMessage);
                         if (!translationCache.TryGetValue(cacheKey, out translated))
                         {
-                            string context = String.Join("\n", recentChatMessages.ToArray());
-                            translated = await ai.TranslateAsync(protectedMessage, "自动识别（中英日韩）", "中文", glossary, context);
+                            string sourceLanguage = DetectChatSourceLanguage(cleanedMessage);
+                            translated = await ai.TranslateAsync(protectedMessage, sourceLanguage, "中文", glossary);
                             translated = await ReviewOnlineIfEnabled(protectedMessage, translated, "中文", glossary);
                             RememberTranslation(cacheKey, translated);
                         }
@@ -918,8 +951,6 @@ namespace MapleOverlay
                     translated = RestorePlayerNames(translated, nameTokens);
                     lastSource = message; lastTranslation = translated;
                     AppendTranslation(line, speakerPrefix + translated, pending.Style);
-                    recentChatMessages.Add(cleanedMessage);
-                    if (recentChatMessages.Count > 4) recentChatMessages.RemoveAt(0);
                     status.Text = pendingChatLines.Count == 0 ? "新消息已翻译" : "正在翻译，剩余 " + pendingChatLines.Count + " 条";
                 }
             }
@@ -1064,7 +1095,20 @@ namespace MapleOverlay
                     notice = line.Substring(Math.Min(line.Length, noticeTextAt + 1)).Trim(' ', '-', '>', '|');
                     line = line.Substring(0, noticeAt).Trim();
                 }
-                MatchCollection matches = speaker.Matches(line);
+                MatchCollection rawMatches = speaker.Matches(line);
+                List<Match> matches = new List<Match>();
+                foreach (Match candidate in rawMatches)
+                {
+                    string prefix = line.Substring(0, candidate.Index);
+                    bool atStart = Regex.IsMatch(prefix, @"^\s*[.'`\""|_\-•·]*\s*$") ||
+                        Regex.IsMatch(prefix, @"^\s*[Il1|]{0,3}\s*\d[\d.:)\s]*$", RegexOptions.IgnoreCase);
+                    bool hasChannelBadge = Regex.IsMatch(candidate.Value,
+                        @"(?:CH[O0]?\s*\d+|SH[O0][A-Z0-9@±]*|\s[0-9O@±]{1,4}\s*[:：•·])",
+                        RegexOptions.IgnoreCase);
+                    // Embedded bare "word:" fragments belong to the message itself. Only a
+                    // real channel badge may start a second message on a flattened OCR row.
+                    if (atStart || hasChannelBadge) matches.Add(candidate);
+                }
                 if (matches.Count == 0)
                 {
                     // Windows OCR sometimes puts a wrapped tail (for example RUSH/FJ?)
@@ -1220,6 +1264,38 @@ namespace MapleOverlay
             result = Regex.Replace(result, @"\bcmon\b", "come on", RegexOptions.IgnoreCase);
             result = Regex.Replace(result, @"\bive\b", "I've", RegexOptions.IgnoreCase);
             return result.Trim();
+        }
+
+        internal static string DetectChatSourceLanguage(string value)
+        {
+            int latin = 0, cjk = 0, kana = 0, hangul = 0;
+            foreach (char item in value ?? "")
+            {
+                if ((item >= 'A' && item <= 'Z') || (item >= 'a' && item <= 'z')) latin++;
+                else if (item >= '\u4e00' && item <= '\u9fff') cjk++;
+                else if (item >= '\u3040' && item <= '\u30ff') kana++;
+                else if (item >= '\uac00' && item <= '\ud7af') hangul++;
+            }
+            if (latin >= 3 && latin >= cjk + kana + hangul) return "英语";
+            if (kana > 0) return "日语";
+            if (hangul > 0) return "韩语";
+            if (cjk > 0) return "中文";
+            return "自动识别";
+        }
+
+        internal static bool IsUsefulChatLine(string value)
+        {
+            string message = value ?? "";
+            int separator = message.IndexOf(':');
+            int chineseSeparator = message.IndexOf('：');
+            if (separator < 0 || (chineseSeparator >= 0 && chineseSeparator < separator))
+                separator = chineseSeparator;
+            if (separator >= 0 && separator + 1 < message.Length)
+                message = message.Substring(separator + 1);
+            string compact = Regex.Replace(message.ToLowerInvariant(), @"[^a-z0-9\u3400-\u9fff]+", "");
+            if (compact == "gg" || compact == "ty" || compact == "hi" || compact == "yo" ||
+                compact == "ok" || compact == "lf") return true;
+            return compact.Length >= 3;
         }
 
         private void LoadGlossary()

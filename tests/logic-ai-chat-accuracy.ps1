@@ -32,10 +32,37 @@ if ($overlap.Count -ne 2 -or $overlap[0] -notlike 'Pobe:*' -or
     throw "装备面板文字混入AI聊天：$($overlap -join ' | ')"
 }
 
+$internalColon = @(Invoke-Parse 'Raea CH01: 3 words: Suck my D')
+if ($internalColon.Count -ne 1 -or $internalColon[0] -ne 'Raea: 3 words: Suck my D') {
+    throw "消息正文中的words冒号被误当成第二名玩家：$($internalColon -join ' | ')"
+}
+$itemNoise = @(Invoke-Parse "Lunar Pixie:s Moonpiece`nStar Pixie's Starpiece")
+if ($itemNoise.Count -ne 0) {
+    throw "物品名中的Pixie's被误当成玩家：$($itemNoise -join ' | ')"
+}
+$flattened = @(Invoke-Parse 'Chadson CH01: hello TugaStyle CH02: hi')
+if ($flattened.Count -ne 2 -or $flattened[0] -notlike 'Chadson:*' -or
+    $flattened[1] -notlike 'TugaStyle:*') {
+    throw "同一OCR行里的两个带频道聊天没有拆开：$($flattened -join ' | ')"
+}
+
+$detectLanguage = $chatType.GetMethod('DetectChatSourceLanguage', $flags)
+if ([string]$detectLanguage.Invoke($null, @('first it was the JR wraiths')) -ne '英语' -or
+    [string]$detectLanguage.Invoke($null, @('今天组队吗')) -ne '中文') {
+    throw 'AI聊天源语言快速判定失败'
+}
+$usefulLine = $chatType.GetMethod('IsUsefulChatLine', $flags)
+if ([bool]$usefulLine.Invoke($null, @('wolfly: u t')) -or
+    -not [bool]$usefulLine.Invoke($null, @('Player: gg')) -or
+    -not [bool]$usefulLine.Invoke($null, @('WOIffy: first it was the JR wraiths'))) {
+    throw '短OCR碎片过滤误伤有效聊天或放过无效碎片'
+}
+
 $fixtures = @(
     @{ Name='broadcast'; File='ai-chat-cloudpark-broadcast.png'; Required='PARSED \| CupidKillsNL:'; Forbidden='PARSED \| SYBUA:' },
     @{ Name='history'; File='ai-chat-cloudpark-history.png'; Required='PARSED \| Arrowshot:'; Forbidden='PARSED \| Arrow:' },
-    @{ Name='equipment-overlap'; File='ai-chat-cloudpark-equipment-overlap.png'; Required='PARSED \| MisoSMELLS:'; Forbidden='PARSED \| (?:Accuracy|Enhancements|Remaining|Weapon Def):' }
+    @{ Name='equipment-overlap'; File='ai-chat-cloudpark-equipment-overlap.png'; Required='PARSED \| MisoSMELLS:'; Forbidden='PARSED \| (?:Accuracy|Enhancements|Remaining|Weapon Def):' },
+    @{ Name='user-feedback-20260908'; File='ai-chat-user-feedback-20260908.png'; Required='PARSED \| WOIffy:'; Forbidden='PARSED \| (?:Pixie|words):' }
 )
 foreach ($fixture in $fixtures) {
     $image = Join-Path $repoRoot (Join-Path 'tests\fixtures' $fixture.File)
@@ -93,4 +120,4 @@ if ($sequenceAdded -ne 5) {
     throw "连续视频帧防重复失效：11帧应产生5条真正新增，实际$sequenceAdded条"
 }
 
-Write-Output "AI聊天准确性：3张问题实图 + $($sweepImages.Count)张跨视频实图通过，广覆盖命中${sweepParsedFrames}帧/${sweepParsedLines}行，连续11帧仅保留${sequenceAdded}条真正新增"
+Write-Output "AI聊天准确性：4张问题实图（含用户新反馈）+ $($sweepImages.Count)张跨视频实图通过，广覆盖命中${sweepParsedFrames}帧/${sweepParsedLines}行，连续11帧仅保留${sequenceAdded}条真正新增"
