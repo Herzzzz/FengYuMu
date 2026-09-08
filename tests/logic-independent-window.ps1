@@ -86,6 +86,11 @@ foreach ($required in @(
 foreach ($required in @(
     'AI实时翻译独立浮窗（跟随聊天颜色）',
     'RichTextBox content',
+    'FormBorderStyle = FormBorderStyle.None',
+    'Opacity = 0.92d',
+    'WmNcHitTest',
+    'HtBottomRight',
+    'AiChatWindowLayoutVersion',
     'SelectionBackColor',
     'ChatVisualKind.Megaphone',
     'ChatVisualKind.SuperMegaphone',
@@ -94,6 +99,44 @@ foreach ($required in @(
 }
 if ($overlaySource.Contains('!visibleTranslation || aiChatFloatingWindowEnabled')) {
     throw 'AI浮窗仍在抑制F8原位覆盖'
+}
+
+Add-Type -AssemblyName System.Windows.Forms
+$offlineType = $assembly.GetType('MapleOverlay.OfflineChatForm', $true)
+$overlayType = $assembly.GetType('MapleOverlay.OverlayForm', $true)
+$floatingType = $assembly.GetType('MapleOverlay.AiTranslationWindowForm', $true)
+$constructorFlags = [Reflection.BindingFlags]'Instance,NonPublic,Public'
+$offlineConstructor = $offlineType.GetConstructor($constructorFlags, $null,
+    [Type[]]@($overlayType, [string]), $null)
+$floatingConstructor = $floatingType.GetConstructor($constructorFlags, $null,
+    [Type[]]@($overlayType), $null)
+$missingAiRoot = Join-Path $repoRoot 'tests\__ai_close_behavior_no_model__'
+$chatWindow = $offlineConstructor.Invoke([object[]]@($null, [string]$missingAiRoot))
+$floatingWindow = $floatingConstructor.Invoke([object[]]@($null))
+try {
+    $appendTranslation = $floatingType.GetMethod('AppendTranslation', $constructorFlags,
+        $null, [Type[]]@([string]), $null)
+    [void]$appendTranslation.Invoke($floatingWindow, @('Arthur：主窗口关闭后仍继续显示。'))
+    $offlineType.GetField('floatingWindow', $constructorFlags).SetValue($chatWindow, $floatingWindow)
+    $offlineType.GetField('floatingWindowEnabled', $constructorFlags).SetValue($chatWindow, $true)
+    $offlineType.GetField('live', $constructorFlags).SetValue($chatWindow, $true)
+    $liveTimer = $offlineType.GetField('timer', $constructorFlags).GetValue($chatWindow)
+    $liveTimer.Start()
+    $chatWindow.Show()
+    $floatingWindow.Show()
+    [System.Windows.Forms.Application]::DoEvents()
+    $chatWindow.Close()
+    [System.Windows.Forms.Application]::DoEvents()
+    if ($chatWindow.Visible -or
+        -not [bool]$offlineType.GetField('live', $constructorFlags).GetValue($chatWindow) -or
+        -not $liveTimer.Enabled -or -not $floatingWindow.Visible) {
+        throw '关闭AI主窗口后，后台实时翻译或独立浮窗被错误停止'
+    }
+}
+finally {
+    $offlineType.GetMethod('StopService', $constructorFlags).Invoke($chatWindow, @()) | Out-Null
+    $chatWindow.Dispose()
+    if (-not $floatingWindow.IsDisposed) { $floatingWindow.Dispose() }
 }
 
 $errorPath = Join-Path $repoRoot 'translation_window_ui_test_error.txt'
@@ -108,4 +151,4 @@ if (-not (Test-Path -LiteralPath $imagePath) -or (Get-Item -LiteralPath $imagePa
     throw 'AI浮窗界面截图未生成或内容为空'
 }
 
-Write-Output 'AI实时浮窗：来源颜色、蓝底普通喇叭、粉底超级喇叭、到达顺序、置顶无焦点与F8隔离通过'
+Write-Output 'AI实时浮窗：主窗口关闭不断流、自由缩放、半透明游戏风格、来源颜色、蓝底普通喇叭、粉底超级喇叭、置顶无焦点与F8隔离通过'

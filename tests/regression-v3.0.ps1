@@ -17,6 +17,7 @@ $exe = Join-Path $repoRoot '枫语幕.exe'
 & (Join-Path $PSScriptRoot 'logic-regression-v3.0.ps1')
 & (Join-Path $PSScriptRoot 'logic-continuous-translation.ps1')
 & (Join-Path $PSScriptRoot 'logic-independent-window.ps1')
+& (Join-Path $PSScriptRoot 'logic-ai-chat-accuracy.ps1')
 & (Join-Path $PSScriptRoot 'logic-ai-chat-performance.ps1')
 & (Join-Path $PSScriptRoot 'logic-overlay-paint-safety.ps1')
 & (Join-Path $PSScriptRoot 'logic-chat-region-first-use.ps1')

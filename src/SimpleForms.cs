@@ -189,9 +189,23 @@ namespace MapleOverlay
 
     internal sealed class AiTranslationWindowForm : Form
     {
+        private const int ResizeBorder = 7;
+        private const int WmNcHitTest = 0x0084;
+        private const int HtClient = 1;
+        private const int HtCaption = 2;
+        private const int HtLeft = 10;
+        private const int HtRight = 11;
+        private const int HtTop = 12;
+        private const int HtTopLeft = 13;
+        private const int HtTopRight = 14;
+        private const int HtBottom = 15;
+        private const int HtBottomLeft = 16;
+        private const int HtBottomRight = 17;
         private readonly OverlayForm overlay;
         private readonly RichTextBox content = new RichTextBox();
         private readonly Label status = new Label();
+        private readonly Panel header = new Panel();
+        private readonly Label closeButton = new Label();
         private readonly Font contentRegularFont = new Font("Microsoft YaHei UI", 11.5f, FontStyle.Regular);
         private readonly Font contentBroadcastFont = new Font("Microsoft YaHei UI", 11.5f, FontStyle.Bold);
         private bool allowClose;
@@ -205,40 +219,63 @@ namespace MapleOverlay
             ShowInTaskbar = false;
             TopMost = true;
             StartPosition = FormStartPosition.Manual;
-            FormBorderStyle = FormBorderStyle.SizableToolWindow;
-            MinimumSize = new Size(320, 240);
-            Size = new Size(430, 560);
-            BackColor = Color.FromArgb(18, 18, 22);
+            FormBorderStyle = FormBorderStyle.None;
+            MinimumSize = new Size(300, 150);
+            Size = new Size(560, 280);
+            Opacity = 0.92d;
+            Padding = new Padding(1);
+            BackColor = Color.FromArgb(91, 111, 131);
             Font = new Font("Microsoft YaHei UI", 9.0f);
 
-            Panel header = new Panel {
-                Dock = DockStyle.Top, Height = 52,
-                BackColor = Color.FromArgb(30, 41, 59)
-            };
+            header.Dock = DockStyle.Top;
+            header.Height = 44;
+            header.BackColor = Color.FromArgb(43, 57, 72);
             Label title = new Label {
                 Text = "AI实时聊天翻译", AutoSize = true,
-                Location = new Point(15, 8), ForeColor = Color.White,
-                Font = new Font("Microsoft YaHei UI", 11.0f, FontStyle.Bold)
+                Location = new Point(12, 5), ForeColor = Color.FromArgb(244, 247, 250),
+                Font = new Font("Microsoft YaHei UI", 10.0f, FontStyle.Bold)
             };
             status.Text = "等待聊天区出现新消息";
-            status.AutoSize = true;
-            status.Location = new Point(16, 31);
-            status.ForeColor = Color.FromArgb(148, 163, 184);
-            header.Controls.Add(title); header.Controls.Add(status);
+            status.AutoSize = false;
+            status.Location = new Point(13, 24);
+            status.Size = new Size(Width - 58, 17);
+            status.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
+            status.AutoEllipsis = true;
+            status.ForeColor = Color.FromArgb(178, 193, 207);
+            closeButton.Text = "×";
+            closeButton.TabStop = false;
+            closeButton.BackColor = header.BackColor;
+            closeButton.ForeColor = Color.FromArgb(235, 240, 245);
+            closeButton.Font = new Font("Segoe UI", 11.0f, FontStyle.Regular);
+            closeButton.TextAlign = ContentAlignment.MiddleCenter;
+            closeButton.Cursor = Cursors.Hand;
+            closeButton.Size = new Size(36, 30);
+            closeButton.Dock = DockStyle.Right;
+            closeButton.MouseEnter += delegate { closeButton.BackColor = Color.FromArgb(184, 72, 72); };
+            closeButton.MouseLeave += delegate { closeButton.BackColor = header.BackColor; };
+            closeButton.Click += delegate { Close(); };
+            header.Resize += delegate {
+                status.Width = Math.Max(80, header.ClientSize.Width - closeButton.Width - 20);
+            };
+            header.Controls.Add(title); header.Controls.Add(status); header.Controls.Add(closeButton);
 
             content.Dock = DockStyle.Fill;
             content.Multiline = true;
             content.ReadOnly = true;
             content.ScrollBars = RichTextBoxScrollBars.Vertical;
             content.BorderStyle = BorderStyle.None;
-            content.BackColor = Color.FromArgb(18, 18, 22);
+            content.BackColor = Color.FromArgb(38, 46, 55);
             content.ForeColor = Color.FromArgb(241, 245, 249);
             content.Font = contentRegularFont;
             content.Margin = new Padding(14);
             content.WordWrap = true;
             content.TabStop = false;
 
-            Panel body = new Panel { Dock = DockStyle.Fill, Padding = new Padding(15, 14, 10, 14) };
+            Panel body = new Panel {
+                Dock = DockStyle.Fill,
+                Padding = new Padding(12, 9, 8, 10),
+                BackColor = Color.FromArgb(38, 46, 55)
+            };
             body.Controls.Add(content);
             Controls.Add(body); Controls.Add(header);
             LoadSavedBounds();
@@ -248,6 +285,31 @@ namespace MapleOverlay
         }
 
         protected override bool ShowWithoutActivation { get { return true; } }
+
+        protected override void WndProc(ref Message message)
+        {
+            base.WndProc(ref message);
+            if (message.Msg != WmNcHitTest || (int)message.Result != HtClient ||
+                WindowState != FormWindowState.Normal) return;
+            int packed = unchecked((int)(long)message.LParam);
+            Point screenPoint = new Point((short)(packed & 0xffff), (short)((packed >> 16) & 0xffff));
+            Point clientPoint = PointToClient(screenPoint);
+            bool left = clientPoint.X <= ResizeBorder;
+            bool right = clientPoint.X >= ClientSize.Width - ResizeBorder;
+            bool top = clientPoint.Y <= ResizeBorder;
+            bool bottom = clientPoint.Y >= ClientSize.Height - ResizeBorder;
+            if (left && top) message.Result = (IntPtr)HtTopLeft;
+            else if (right && top) message.Result = (IntPtr)HtTopRight;
+            else if (left && bottom) message.Result = (IntPtr)HtBottomLeft;
+            else if (right && bottom) message.Result = (IntPtr)HtBottomRight;
+            else if (left) message.Result = (IntPtr)HtLeft;
+            else if (right) message.Result = (IntPtr)HtRight;
+            else if (top) message.Result = (IntPtr)HtTop;
+            else if (bottom) message.Result = (IntPtr)HtBottom;
+            else if (header.Bounds.Contains(clientPoint) &&
+                !closeButton.ClientRectangle.Contains(closeButton.PointToClient(screenPoint)))
+                message.Result = (IntPtr)HtCaption;
+        }
 
         protected override CreateParams CreateParams
         {
@@ -335,11 +397,14 @@ namespace MapleOverlay
                             key.GetValue("TranslationWindowX", fallback.X)));
                         int y = Convert.ToInt32(key.GetValue("AiChatWindowY",
                             key.GetValue("TranslationWindowY", fallback.Y)));
-                        int width = Convert.ToInt32(key.GetValue("AiChatWindowWidth",
-                            key.GetValue("TranslationWindowWidth", fallback.Width)));
-                        int height = Convert.ToInt32(key.GetValue("AiChatWindowHeight",
-                            key.GetValue("TranslationWindowHeight", fallback.Height)));
-                        saved = new Rectangle(x, y, Math.Max(320, width), Math.Max(240, height));
+                        int layoutVersion = Convert.ToInt32(key.GetValue("AiChatWindowLayoutVersion", 0));
+                        int width = layoutVersion >= 2
+                            ? Convert.ToInt32(key.GetValue("AiChatWindowWidth", fallback.Width))
+                            : fallback.Width;
+                        int height = layoutVersion >= 2
+                            ? Convert.ToInt32(key.GetValue("AiChatWindowHeight", fallback.Height))
+                            : fallback.Height;
+                        saved = new Rectangle(x, y, Math.Max(300, width), Math.Max(150, height));
                     }
                 }
             }
@@ -349,12 +414,20 @@ namespace MapleOverlay
                 if (Rectangle.Intersect(screen.WorkingArea, saved).Width >= 100 &&
                     Rectangle.Intersect(screen.WorkingArea, saved).Height >= 80)
                 { visible = true; break; }
-            Bounds = visible ? saved : fallback;
+            Rectangle selected = visible ? saved : fallback;
+            Rectangle targetWork = Screen.FromRectangle(selected).WorkingArea;
+            int selectedWidth = Math.Min(selected.Width, targetWork.Width);
+            int selectedHeight = Math.Min(selected.Height, targetWork.Height);
+            int selectedX = Math.Max(targetWork.Left,
+                Math.Min(selected.X, targetWork.Right - selectedWidth));
+            int selectedY = Math.Max(targetWork.Top,
+                Math.Min(selected.Y, targetWork.Bottom - selectedHeight));
+            Bounds = new Rectangle(selectedX, selectedY, selectedWidth, selectedHeight);
         }
 
         private void SaveBounds()
         {
-            if (WindowState != FormWindowState.Normal || Width < 320 || Height < 240) return;
+            if (WindowState != FormWindowState.Normal || Width < 300 || Height < 150) return;
             try
             {
                 using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu"))
@@ -363,6 +436,7 @@ namespace MapleOverlay
                     key.SetValue("AiChatWindowY", Top, RegistryValueKind.DWord);
                     key.SetValue("AiChatWindowWidth", Width, RegistryValueKind.DWord);
                     key.SetValue("AiChatWindowHeight", Height, RegistryValueKind.DWord);
+                    key.SetValue("AiChatWindowLayoutVersion", 2, RegistryValueKind.DWord);
                 }
             }
             catch { }

@@ -619,6 +619,7 @@ namespace MapleOverlay
         private readonly Dictionary<string, string> translationCache = new Dictionary<string, string>(StringComparer.Ordinal);
         private readonly Queue<string> translationCacheOrder = new Queue<string>();
         private List<string> previousChatFrame = new List<string>();
+        private readonly List<List<string>> recentChatFrames = new List<List<string>>();
         private readonly List<KeyValuePair<string, string>> glossaryEntries = new List<KeyValuePair<string, string>>();
         private readonly HashSet<string> contextOnlyGlossaryKeys =
             new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -675,8 +676,13 @@ namespace MapleOverlay
             FormClosing += delegate(object sender, FormClosingEventArgs e) {
                 if (e.CloseReason == CloseReason.UserClosing)
                 {
-                    e.Cancel = true; Hide(); live = false; timer.Stop();
-                    if (floatingWindow != null && !floatingWindow.IsDisposed) floatingWindow.Hide();
+                    // The control window is only a settings/history surface. Closing it must
+                    // not stop live capture or take the in-game translation window with it.
+                    e.Cancel = true;
+                    Hide();
+                    if (live && floatingWindowEnabled && floatingWindow != null &&
+                        !floatingWindow.IsDisposed && floatingWindow.DisplayedText.Length > 0)
+                        floatingWindow.ShowPassive();
                 }
             };
             Disposed += delegate { outputOriginalFont.Dispose(); outputTranslationFont.Dispose(); };
@@ -785,7 +791,14 @@ namespace MapleOverlay
 
         internal void UpdateChatRegion(Rectangle region, ChatRegionOrigin origin)
         {
+            bool changed = chatRegion != region;
             chatRegion = region;
+            if (changed)
+            {
+                previousChatFrame.Clear();
+                recentChatFrames.Clear();
+                pendingChatLines.Clear();
+            }
             if (IsHandleCreated)
                 status.Text = (origin == ChatRegionOrigin.Manual ? "手动聊天区" : "首次快捷键自动聊天区") +
                     "已按当前游戏窗口同步 " + region.Width + "×" + region.Height;
@@ -816,7 +829,7 @@ namespace MapleOverlay
                 {
                     chatRegion = selector.SelectedScreenRegion;
                     ChatRegionSettings.SaveManual(chatRegion, game);
-                    previousChatFrame.Clear(); pendingChatLines.Clear();
+                    previousChatFrame.Clear(); recentChatFrames.Clear(); pendingChatLines.Clear();
                     status.Text = "聊天区已统一绑定 " + chatRegion.Width + "×" + chatRegion.Height +
                         "｜框内AI翻译，F8跳过";
                 }
@@ -850,9 +863,15 @@ namespace MapleOverlay
             try
             {
                 ChatCaptureFrame capture = await overlay.CaptureChatAsync(chatRegion);
-                List<string> lines = ParseChatLines(capture.Text);
+                // OcrResult.Text may flatten unrelated visual rows into one sentence.
+                // Preserve the OCR engine's physical line boundaries for chat parsing.
+                List<string> lines = ParseChatLines(capture.PhysicalLineText());
                 List<string> newLines = GetNewChatLines(previousChatFrame, lines);
+                newLines = SuppressRecentOcrReappearances(recentChatFrames,
+                    previousChatFrame, lines, newLines);
                 previousChatFrame = lines;
+                recentChatFrames.Add(new List<string>(lines));
+                while (recentChatFrames.Count > 3) recentChatFrames.RemoveAt(0);
                 // Frame differencing already preserves genuine repeated messages while
                 // suppressing a static OCR frame. Text-based queue filtering would swallow
                 // a real duplicate sent while the first copy is still being translated.
@@ -947,6 +966,38 @@ namespace MapleOverlay
             return added;
         }
 
+        internal static List<string> SuppressRecentOcrReappearances(
+            IList<List<string>> recentFrames, List<string> previous, List<string> current,
+            List<string> candidates)
+        {
+            List<string> filtered = new List<string>();
+            if (candidates == null || candidates.Count == 0) return filtered;
+            foreach (string candidate in candidates)
+            {
+                int previousCount = CountSimilarChatLines(previous, candidate);
+                int currentCount = CountSimilarChatLines(current, candidate);
+                int olderMaximum = 0;
+                if (recentFrames != null)
+                    foreach (List<string> frame in recentFrames)
+                        olderMaximum = Math.Max(olderMaximum,
+                            CountSimilarChatLines(frame, candidate));
+                // One OCR miss must not make an older line look newly appended. A genuine
+                // repeated post raises the occurrence count and therefore still passes.
+                if (previousCount == 0 && olderMaximum > 0 &&
+                    currentCount <= olderMaximum) continue;
+                filtered.Add(candidate);
+            }
+            return filtered;
+        }
+
+        private static int CountSimilarChatLines(List<string> lines, string target)
+        {
+            if (lines == null || lines.Count == 0) return 0;
+            int count = 0;
+            foreach (string line in lines) if (SameChatLine(line, target)) count++;
+            return count;
+        }
+
         private static string ChatIdentity(string value)
         {
             string identity = Regex.Replace((value ?? "").ToLowerInvariant(), @"[^a-z0-9\u3400-\u9fff]+", "");
@@ -987,11 +1038,21 @@ namespace MapleOverlay
             List<string> output = new List<string>();
             if (String.IsNullOrWhiteSpace(ocrText)) return output;
             string[] physicalLines = ocrText.Replace("\r", "").Split('\n');
-            Regex speaker = new Regex(@"(?<![A-Za-z0-9_])([A-Za-z][A-Za-z0-9_]{2,23}?)(?:(?:CH[O0]?\d+|SH[O0][A-Z0-9@±]*)\s*[:：•·]?|\s+(?:CH(?:O|0)?\s*\d+|SH(?:O|0)[^\s:：•·]{0,8}|[0-9O@±]{1,4})\s*[:：•·]?|\s*[:：•·])\s*", RegexOptions.IgnoreCase);
+            // SHOT/SHOUT and similar message words must never be mistaken for the
+            // SHO±9 channel badge. A bare O/0 badge is accepted only with a colon.
+            Regex speaker = new Regex(@"(?<![A-Za-z0-9_])([A-Za-z][A-Za-z0-9_]{2,23}?)(?:(?:CH[O0]?\d+|SH[O0](?=[0-9@±])[A-Z0-9@±]*)\s*[:：•·]?|\s+(?:CH(?:O|0)?\s*\d+|SH[O0](?=[0-9@±])[A-Z0-9@±]*)\s*[:：•·]?|\s+[0-9O@±]{1,4}\s*[:：•·]|\s*[:：•·])\s*", RegexOptions.IgnoreCase);
             foreach (string sourceLine in physicalLines)
             {
                 string line = Regex.Replace(sourceLine.Trim(), @"\s+", " ");
                 if (line.Length < 2) continue;
+                if (IsStructuredUiNoise(line)) continue;
+                string presence;
+                if (TryParseChatPresence(line, out presence))
+                {
+                    output.Add(presence);
+                    continue;
+                }
+                line = RepairChatSpeakerMarker(line);
                 int noticeAt = line.IndexOf("[Notice]", StringComparison.OrdinalIgnoreCase);
                 if (noticeAt < 0 && Regex.IsMatch(line, @"^\[[^\]]{2,12}\]\s*Money\s+lost\s+through\s+cash\s+transactions", RegexOptions.IgnoreCase))
                     noticeAt = line.IndexOf(']') + 1;
@@ -1007,8 +1068,9 @@ namespace MapleOverlay
                 if (matches.Count == 0)
                 {
                     // Windows OCR sometimes puts a wrapped tail (for example RUSH/FJ?)
-                    // on the next physical line. Attach only short tails to the previous message.
-                    if (output.Count > 0 && line.Length <= 80 && !line.StartsWith("["))
+                    // on the next physical line. Require a long preceding message so panel
+                    // labels and isolated HUD fragments cannot leak into AI translation.
+                    if (output.Count > 0 && IsLikelyWrappedChatTail(output[output.Count - 1], line))
                         output[output.Count - 1] = output[output.Count - 1] + " " + line;
                 }
                 else for (int i = 0; i < matches.Count; i++)
@@ -1027,6 +1089,63 @@ namespace MapleOverlay
                 if (notice.Length >= 2) output.Add("系统公告: " + notice);
             }
             return output;
+        }
+
+        private static string RepairChatSpeakerMarker(string value)
+        {
+            string line = value ?? "";
+            // MapleStory renders a small channel icon after a name; at video scale it is
+            // often read as (). Quotes around the first glyph are another common wobble.
+            line = Regex.Replace(line,
+                @"^['`""]?([A-Za-z])['`""]?([A-Za-z0-9_]{2,22})\s*\(\)\s*[:：]?\s*",
+                "$1$2: ", RegexOptions.IgnoreCase);
+            // Character names cannot contain spaces. Repair one OCR-inserted space only
+            // when a short O/0 channel badge and colon prove that this is a chat prefix.
+            line = Regex.Replace(line,
+                @"^([A-Za-z][A-Za-z0-9_]{1,11})\s+([A-Za-z][A-Za-z0-9_]{1,11})\s+([0-9O@±]{1,4})\s*[:：•·]",
+                "$1$2 $3:", RegexOptions.IgnoreCase);
+            return line;
+        }
+
+        private static bool TryParseChatPresence(string value, out string parsed)
+        {
+            parsed = "";
+            string line = value ?? "";
+            Match tagged = Regex.Match(line,
+                @"^[\[\(_|]?\s*(?<kind>friend|friehd|lhiend|buddy|guild|party|alliance)\s*[\]\)l_]*\s+(?<name>[A-Za-z][A-Za-z0-9_]{2,23})\s+has.{0,14}\s+(?<state>in|out)\.?$",
+                RegexOptions.IgnoreCase);
+            if (!tagged.Success) return false;
+            string kind = tagged.Groups["kind"].Value.ToLowerInvariant();
+            if (kind == "friehd" || kind == "lhiend") kind = "friend";
+            string label = Char.ToUpperInvariant(kind[0]) + kind.Substring(1);
+            parsed = tagged.Groups["name"].Value + ": [" + label + "] has logged " +
+                tagged.Groups["state"].Value.ToLowerInvariant() + ".";
+            return true;
+        }
+
+        internal static bool IsStructuredUiNoise(string value)
+        {
+            string line = Regex.Replace((value ?? "").TrimStart(' ', '•', '·', '-', '*'), @"\s+", " ");
+            if (line.Length == 0) return true;
+            return Regex.IsMatch(line,
+                @"^(?:(?:weapon|magic|physical)\s+)?(?:attack|def(?:ense)?|accuracy|avoidability|speed|jump|enhancements?|remaining\s+enhancements?|type|level|job|name|fame|max\s*hp|max\s*mp|str|dex|int|luk|ability\s+points?|skill\s+points?)\s*\.?\s*[:：]",
+                RegexOptions.IgnoreCase) ||
+                Regex.IsMatch(line,
+                @"^(?:req(?:uired)?\s+)?(?:lev(?:el)?|str|dex|int|luk|fam)\s*[:：]?\s*[+\-]?\d+\b",
+                RegexOptions.IgnoreCase) ||
+                Regex.IsMatch(line, @"^(?:beginner|warrior|magician|bowman|thief)(?:\s+(?:warrior|magician|bowman|thief))*$",
+                    RegexOptions.IgnoreCase);
+        }
+
+        private static bool IsLikelyWrappedChatTail(string previous, string value)
+        {
+            string line = (value ?? "").Trim();
+            if (line.Length < 2 || line.Length > 100 || previous == null || previous.Length < 55 ||
+                line.StartsWith("[") || IsStructuredUiNoise(line)) return false;
+            if (Regex.IsMatch(line, @"^[A-Za-z][A-Za-z0-9_]{2,23}\s*[:：]")) return false;
+            int textCharacters = 0;
+            foreach (char item in line) if (Char.IsLetterOrDigit(item)) textCharacters++;
+            return textCharacters >= Math.Max(3, line.Length / 3);
         }
 
         private async Task TranslateManualAsync()
@@ -1178,10 +1297,10 @@ namespace MapleOverlay
                 remaining = remaining.Substring(timestamp.Length);
                 message = remaining;
             }
-            Match match = Regex.Match(remaining, @"^(\s*(?:\[[^\]]{1,20}\]\s*)?(?:<[^>]{1,24}>|[^:：]{1,24})\s*[:：]\s*)(.+)$");
+            Match match = Regex.Match(remaining, @"^(\s*(?:\[[^\]]{1,20}\]\s*)?(?:<[^>]{1,48}>|[^:：]{1,48})\s*[:：]\s*)(.+)$");
             if (!match.Success)
             {
-                match = Regex.Match(remaining, @"^(\s*<([^>]{1,24})>\s*)(.+)$");
+                match = Regex.Match(remaining, @"^(\s*<([^>]{1,48})>\s*)(.+)$");
                 if (!match.Success) return;
             }
             string speakerPrefix = match.Groups[1].Value;
@@ -1189,7 +1308,7 @@ namespace MapleOverlay
             message = match.Groups[match.Groups.Count - 1].Value;
             string name = Regex.Replace(speakerPrefix, @"^\s*(?:\[[^\]]+\]\s*)?", "");
             name = name.Trim().TrimEnd(':', '：').Trim().Trim('<', '>').Trim();
-            if (name.Length >= 3 && name.Length <= 24) protectedPlayerNames.Add(name);
+            if (name.Length >= 3 && name.Length <= 48) protectedPlayerNames.Add(name);
         }
 
         private string ProtectPlayerNames(string message, out Dictionary<string, string> tokens)

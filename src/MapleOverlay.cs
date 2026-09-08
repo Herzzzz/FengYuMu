@@ -50,6 +50,19 @@ namespace MapleOverlay
         internal static bool BenchmarkSceneProbe;
         internal static int BenchmarkContinuousCycles;
 
+        [StructLayout(LayoutKind.Sequential)]
+        private struct ProgramWindowRect
+        {
+            internal int Left;
+            internal int Top;
+            internal int Right;
+            internal int Bottom;
+        }
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool GetWindowRect(IntPtr handle, out ProgramWindowRect rectangle);
+
         private static Icon LoadAppIcon()
         {
             try
@@ -210,6 +223,10 @@ namespace MapleOverlay
                     if (File.Exists(uiErrorPath)) File.Delete(uiErrorPath);
                     using (AiTranslationWindowForm window = new AiTranslationWindowForm(null))
                     {
+                        window.Size = new System.Drawing.Size(620, 300);
+                        Rectangle work = Screen.FromControl(window).WorkingArea;
+                        window.Location = new System.Drawing.Point(work.Right - window.Width - 24,
+                            work.Top + Math.Max(24, (work.Height - window.Height) / 2));
                         window.AppendTranslation("Arthur：欢迎来到射手村。",
                             ChatVisualStylePolicy.FromSample("Arthur: hello", Color.FromArgb(95, 225, 125),
                                 Color.Empty, false));
@@ -225,11 +242,16 @@ namespace MapleOverlay
                         window.Refresh();
                         Thread.Sleep(180);
                         Application.DoEvents();
-                        using (Bitmap bitmap = new Bitmap(window.Width, window.Height,
+                        ProgramWindowRect physical;
+                        if (!GetWindowRect(window.Handle, out physical))
+                            throw new InvalidOperationException("无法读取AI浮窗实际屏幕边界");
+                        int physicalWidth = Math.Max(1, physical.Right - physical.Left);
+                        int physicalHeight = Math.Max(1, physical.Bottom - physical.Top);
+                        using (Bitmap bitmap = new Bitmap(physicalWidth, physicalHeight,
                             PixelFormat.Format32bppArgb))
                         {
                             using (Graphics graphics = Graphics.FromImage(bitmap))
-                                graphics.CopyFromScreen(window.Left, window.Top, 0, 0,
+                                graphics.CopyFromScreen(physical.Left, physical.Top, 0, 0,
                                     bitmap.Size, CopyPixelOperation.SourceCopy);
                             window.Hide();
                             bitmap.Save(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
@@ -1480,6 +1502,19 @@ namespace MapleOverlay
         internal string Text = "";
         internal readonly List<ChatCaptureLine> Lines = new List<ChatCaptureLine>();
 
+        internal string PhysicalLineText()
+        {
+            if (Lines.Count == 0) return Text ?? "";
+            StringBuilder result = new StringBuilder();
+            foreach (ChatCaptureLine line in Lines)
+            {
+                if (String.IsNullOrWhiteSpace(line.Text)) continue;
+                if (result.Length > 0) result.AppendLine();
+                result.Append(line.Text.Trim());
+            }
+            return result.ToString();
+        }
+
         internal ChatVisualStyle FindStyle(string parsedLine)
         {
             string parsed = Normalize(parsedLine);
@@ -1492,7 +1527,8 @@ namespace MapleOverlay
                 if (source.Length == 0) continue;
                 int score = source.IndexOf(parsed, StringComparison.Ordinal) >= 0 ||
                     parsed.IndexOf(source, StringComparison.Ordinal) >= 0
-                    ? Math.Min(source.Length, parsed.Length) : SharedPrefix(source, parsed);
+                    ? Math.Min(source.Length, parsed.Length)
+                    : Math.Max(SharedPrefix(source, parsed), LongestSharedRun(source, parsed));
                 if (score > bestScore) { bestScore = score; best = candidate; }
             }
             return best != null && bestScore >= Math.Min(5, parsed.Length)
@@ -1513,6 +1549,25 @@ namespace MapleOverlay
             int count = 0;
             while (count < maximum && left[count] == right[count]) count++;
             return count;
+        }
+
+        private static int LongestSharedRun(string left, string right)
+        {
+            if (left.Length == 0 || right.Length == 0) return 0;
+            int[] previous = new int[right.Length + 1];
+            int[] current = new int[right.Length + 1];
+            int best = 0;
+            for (int i = 1; i <= left.Length; i++)
+            {
+                for (int j = 1; j <= right.Length; j++)
+                {
+                    current[j] = left[i - 1] == right[j - 1] ? previous[j - 1] + 1 : 0;
+                    if (current[j] > best) best = current[j];
+                }
+                int[] swap = previous; previous = current; current = swap;
+                Array.Clear(current, 0, current.Length);
+            }
+            return best;
         }
     }
 
@@ -2140,6 +2195,8 @@ namespace MapleOverlay
                     .Append(" bg=").Append(line.Style.BackColor.R).Append(',')
                     .Append(line.Style.BackColor.G).Append(',').Append(line.Style.BackColor.B)
                     .Append(" | ").AppendLine(line.Text);
+            foreach (string parsed in OfflineChatForm.ParseChatLines(frame.PhysicalLineText()))
+                report.Append("PARSED | ").AppendLine(parsed);
             File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                 "chat_style_benchmark.txt"), report.ToString(), new UTF8Encoding(false));
         }
