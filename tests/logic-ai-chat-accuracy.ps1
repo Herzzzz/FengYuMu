@@ -51,6 +51,15 @@ if ([string]$detectLanguage.Invoke($null, @('first it was the JR wraiths')) -ne 
     [string]$detectLanguage.Invoke($null, @('今天组队吗')) -ne '中文') {
     throw 'AI聊天源语言快速判定失败'
 }
+$plausible = $chatType.GetMethod('IsPlausibleChatTranslation', $flags)
+$multiLine = '第一行' + [Environment]::NewLine + '第二行'
+if ([bool]$plausible.Invoke($null, @('forsen', '玩家0')) -or
+    [bool]$plausible.Invoke($null, @('short line', $multiLine)) -or
+    [bool]$plausible.Invoke($null, @('offer', ('无关内容' * 30))) -or
+    -not [bool]$plausible.Invoke($null, @('So much anger just like the good old days',
+        '这么生气，真像过去的美好时光！'))) {
+    throw 'AI聊天译文防乱猜/防长段幻觉边界错误'
+}
 $usefulLine = $chatType.GetMethod('IsUsefulChatLine', $flags)
 if ([bool]$usefulLine.Invoke($null, @('wolfly: u t')) -or
     -not [bool]$usefulLine.Invoke($null, @('Player: gg')) -or
@@ -62,7 +71,8 @@ $fixtures = @(
     @{ Name='broadcast'; File='ai-chat-cloudpark-broadcast.png'; Required='PARSED \| CupidKillsNL:'; Forbidden='PARSED \| SYBUA:' },
     @{ Name='history'; File='ai-chat-cloudpark-history.png'; Required='PARSED \| Arrowshot:'; Forbidden='PARSED \| Arrow:' },
     @{ Name='equipment-overlap'; File='ai-chat-cloudpark-equipment-overlap.png'; Required='PARSED \| MisoSMELLS:'; Forbidden='PARSED \| (?:Accuracy|Enhancements|Remaining|Weapon Def):' },
-    @{ Name='user-feedback-20260908'; File='ai-chat-user-feedback-20260908.png'; Required='PARSED \| WOIffy:'; Forbidden='PARSED \| (?:Pixie|words):' }
+    @{ Name='user-feedback-20260908'; File='ai-chat-user-feedback-20260908.png'; Required='PARSED \| WOIffy:'; Forbidden='PARSED \| (?:Pixie|words):' },
+    @{ Name='f8-conflict-20260909'; File='ai-chat-f8-conflict-20260909.png'; Required='PARSED \| (?:TwoBows: forsen|Kuniv: S> Wooden Tops offer)'; Forbidden='PARSED \| (?:forsen|Woonst3r):' }
 )
 foreach ($fixture in $fixtures) {
     $image = Join-Path $repoRoot (Join-Path 'tests\fixtures' $fixture.File)
@@ -72,6 +82,37 @@ foreach ($fixture in $fixtures) {
     $report = Get-Content (Join-Path $repoRoot 'chat_style_benchmark.txt') -Raw -Encoding UTF8
     if ($report -notmatch $fixture.Required) { throw "$($fixture.Name) 实图未识别关键聊天行：$report" }
     if ($report -match $fixture.Forbidden) { throw "$($fixture.Name) 实图仍有错误聊天行：$report" }
+}
+
+$dictionaryRows = Get-Content (Join-Path $repoRoot '枫语幕词库.tsv') -Encoding UTF8
+foreach ($entry in @(
+    @{ Source='forsen'; Target='forsen' },
+    @{ Source='Wooden Tops'; Target='木制陀螺' },
+    @{ Source='S> Wooden Tops offer'; Target='出售木制陀螺，请报价' })) {
+    $prefix = $entry.Source + [char]9 + $entry.Target + [char]9
+    $matches = @($dictionaryRows | Where-Object { $_.StartsWith($prefix, [StringComparison]::OrdinalIgnoreCase) })
+    if ($matches.Count -ne 1) {
+        throw "用户实图聊天词条不是唯一精确命中：$($entry.Source) => $($matches.Count)"
+    }
+}
+
+$instanceFlags = [Reflection.BindingFlags]'Instance,NonPublic,Public'
+$overlayType = $assembly.GetType('MapleOverlay.OverlayForm', $true)
+$constructor = $chatType.GetConstructor($instanceFlags, $null,
+    [Type[]]@($overlayType, [string]), $null)
+$chatForm = $constructor.Invoke([object[]]@($null, [string]$repoRoot))
+try {
+    $exact = $chatType.GetMethod('TryExactGlossaryTranslation', $instanceFlags)
+    foreach ($entry in @(
+        @{ Source='forsen'; Target='forsen' },
+        @{ Source='S> Wooden Tops offer'; Target='出售木制陀螺，请报价' })) {
+        $invoke = [object[]]@([string]$entry.Source, '')
+        if (-not [bool]$exact.Invoke($chatForm, $invoke) -or $invoke[1] -ne $entry.Target) {
+            throw "用户实图聊天短语未绕过模型精确翻译：$($entry.Source) => $($invoke[1])"
+        }
+    }
+} finally {
+    $chatForm.Dispose()
 }
 
 $sweepFolder = Join-Path $repoRoot 'tests\fixtures\ai-chat-sweep'
@@ -120,4 +161,4 @@ if ($sequenceAdded -ne 5) {
     throw "连续视频帧防重复失效：11帧应产生5条真正新增，实际$sequenceAdded条"
 }
 
-Write-Output "AI聊天准确性：4张问题实图（含用户新反馈）+ $($sweepImages.Count)张跨视频实图通过，广覆盖命中${sweepParsedFrames}帧/${sweepParsedLines}行，连续11帧仅保留${sequenceAdded}条真正新增"
+Write-Output "AI聊天准确性：5张问题实图（含用户新反馈）+ $($sweepImages.Count)张跨视频实图通过，广覆盖命中${sweepParsedFrames}帧/${sweepParsedLines}行，连续11帧仅保留${sequenceAdded}条真正新增"

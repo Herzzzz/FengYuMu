@@ -68,7 +68,7 @@ if (-not $formsSource.Contains('Icon = Program.AppIcon')) {
     throw '主界面没有使用枫语幕应用图标'
 }
 if ($formsSource.Contains('MakeButton("隐藏当前翻译"')) {
-    throw '主界面仍保留与 F9 重复的隐藏翻译大按钮'
+    throw '主界面仍保留多余的隐藏翻译大按钮'
 }
 
 $buildSource = Get-Content (Join-Path $repoRoot 'src\build.ps1') -Raw -Encoding UTF8

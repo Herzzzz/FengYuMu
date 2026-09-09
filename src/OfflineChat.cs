@@ -628,6 +628,7 @@ namespace MapleOverlay
         private bool busy;
         private bool captureBusy;
         private bool translateBusy;
+        private int screenshotCaptureSuspendCount;
         private string lastSource = "";
         private string lastTranslation = "";
         private bool lastWasOnline;
@@ -798,7 +799,7 @@ namespace MapleOverlay
                 pendingChatLines.Clear();
             }
             if (IsHandleCreated)
-                status.Text = (origin == ChatRegionOrigin.Manual ? "手动聊天区" : "首次快捷键自动聊天区") +
+                status.Text = (origin == ChatRegionOrigin.Manual ? "手动聊天区" : "F9自动聊天区") +
                     "已按当前游戏窗口同步 " + region.Width + "×" + region.Height;
         }
 
@@ -820,8 +821,10 @@ namespace MapleOverlay
             floatingWindow.ShowPassive();
         }
 
-        internal bool HideForScreenshotCapture()
+        internal async Task<bool> PrepareForScreenshotCaptureAsync()
         {
+            screenshotCaptureSuspendCount++;
+            timer.Stop();
             bool wasVisible = Visible;
             if (wasVisible) Hide();
             if (floatingWindow != null && !floatingWindow.IsDisposed && floatingWindow.Visible)
@@ -829,12 +832,21 @@ namespace MapleOverlay
                 floatingWindow.Hide();
                 wasVisible = true;
             }
+            // AI live capture and F8/F9 use the same Windows OCR engine. Wait for an active
+            // chat capture to leave it before the fresh screenshot starts.
+            while (captureBusy && !IsDisposed) await Task.Delay(15);
             return wasVisible;
         }
 
         internal void RestoreAfterScreenshotCapture()
         {
-            if (live && floatingWindowEnabled) ShowFloatingWindowPassive();
+            if (screenshotCaptureSuspendCount > 0) screenshotCaptureSuspendCount--;
+            if (screenshotCaptureSuspendCount != 0) return;
+            if (live)
+            {
+                timer.Start();
+                if (floatingWindowEnabled) ShowFloatingWindowPassive();
+            }
         }
 
         private async Task BindRegionAsync()
@@ -860,7 +872,7 @@ namespace MapleOverlay
 
         private async Task ToggleLiveAsync()
         {
-            if (chatRegion.Width < 80) { MessageBox.Show("请先点击“框选/调整游戏聊天区”，倒计时内切回游戏后调整边框。", "实时聊天翻译"); return; }
+            if (chatRegion.Width < 80) { MessageBox.Show("请先按 F9 自动对齐聊天框，或点击“框选/调整游戏聊天区”手动设置。", "实时聊天翻译"); return; }
             live = !live;
             liveButton.Text = live ? "停止实时翻译" : "开始实时翻译";
             if (live)
@@ -885,7 +897,7 @@ namespace MapleOverlay
 
         private async Task PollChatAsync(bool forceOnce = false)
         {
-            if ((!live && !forceOnce) || captureBusy) return;
+            if ((!live && !forceOnce) || captureBusy || screenshotCaptureSuspendCount > 0) return;
             captureBusy = true;
             try
             {
@@ -944,7 +956,16 @@ namespace MapleOverlay
                         {
                             string sourceLanguage = DetectChatSourceLanguage(cleanedMessage);
                             translated = await ai.TranslateAsync(protectedMessage, sourceLanguage, "中文", glossary);
-                            translated = await ReviewOnlineIfEnabled(protectedMessage, translated, "中文", glossary);
+                            if (!IsPlausibleChatTranslation(protectedMessage, translated))
+                                translated = protectedMessage;
+                            else
+                            {
+                                string localTranslation = translated;
+                                string reviewed = await ReviewOnlineIfEnabled(protectedMessage,
+                                    translated, "中文", glossary);
+                                translated = IsPlausibleChatTranslation(protectedMessage, reviewed)
+                                    ? reviewed : localTranslation;
+                            }
                             RememberTranslation(cacheKey, translated);
                         }
                     }
@@ -1266,6 +1287,22 @@ namespace MapleOverlay
             return result.Trim();
         }
 
+        internal static bool IsPlausibleChatTranslation(string source, string translation)
+        {
+            string input = (source ?? "").Trim();
+            string output = (translation ?? "").Trim();
+            if (input.Length == 0 || output.Length == 0) return false;
+            if (output.IndexOf('\r') >= 0 || output.IndexOf('\n') >= 0) return false;
+            if (output.IndexOf("待翻译消息", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                output.IndexOf("翻译说明", StringComparison.OrdinalIgnoreCase) >= 0) return false;
+            int maximum = Math.Max(32, input.Length * 3 + 12);
+            if (output.Length > maximum) return false;
+            // This is a common hallucination for opaque player names and OCR fragments.
+            if (Regex.IsMatch(input, @"^[A-Za-z][A-Za-z0-9_]{2,23}$") &&
+                Regex.IsMatch(output, @"^玩家\s*\d+$")) return false;
+            return true;
+        }
+
         internal static string DetectChatSourceLanguage(string value)
         {
             int latin = 0, cjk = 0, kana = 0, hangul = 0;
@@ -1454,7 +1491,7 @@ namespace MapleOverlay
             output.SelectionFont = outputOriginalFont;
             output.AppendText("────────────────────────" + Environment.NewLine);
             output.SelectionStart = output.TextLength; output.ScrollToCaret();
-            if (floatingWindowEnabled && live)
+            if (floatingWindowEnabled && live && screenshotCaptureSuspendCount == 0)
             {
                 if (floatingWindow == null || floatingWindow.IsDisposed)
                     floatingWindow = new AiTranslationWindowForm(overlay);

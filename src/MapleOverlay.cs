@@ -48,6 +48,7 @@ namespace MapleOverlay
         internal static System.Drawing.Point BenchmarkCursor = System.Drawing.Point.Empty;
         internal static int BenchmarkRangeMode;
         internal static bool BenchmarkSceneProbe;
+        internal static bool BenchmarkHotkeyToggle;
         internal static int BenchmarkContinuousCycles;
 
         [StructLayout(LayoutKind.Sequential)]
@@ -149,6 +150,8 @@ namespace MapleOverlay
             Benchmark = args != null && Array.IndexOf(args, "--benchmark") >= 0;
             BenchmarkUi = args != null && Array.IndexOf(args, "--benchmark-ui") >= 0;
             BenchmarkSceneProbe = args != null && Array.IndexOf(args, "--benchmark-scene-probe") >= 0;
+            BenchmarkHotkeyToggle = args != null && Array.IndexOf(args, "--hotkey-toggle-test") >= 0;
+            if (BenchmarkHotkeyToggle) Benchmark = true;
             if (args != null) foreach (string arg in args)
                 if (arg.StartsWith("--benchmark-icon=", StringComparison.OrdinalIgnoreCase))
                     BenchmarkIconPath = arg.Substring("--benchmark-icon=".Length);
@@ -1616,7 +1619,9 @@ namespace MapleOverlay
 
         public static Rectangle SaveAutomatic(Rectangle suggestedRegion, Rectangle gameBounds)
         {
-            if (HasSelection()) return ResolveForGame(gameBounds);
+            // An explicit F9 realignment may refresh a previously automatic region, but it
+            // must never replace a box that the player positioned manually.
+            if (GetOrigin() == ChatRegionOrigin.Manual) return ResolveForGame(gameBounds);
             Rectangle region = Rectangle.Intersect(suggestedRegion, gameBounds);
             if (region.Width < 80 || region.Height < 30) region = DefaultForGame(gameBounds);
             Save(region, gameBounds, ChatRegionOrigin.Automatic);
@@ -2158,6 +2163,12 @@ namespace MapleOverlay
                     Close();
                     return;
                 }
+                if (Program.BenchmarkHotkeyToggle)
+                {
+                    await RunHotkeyToggleBenchmarkAsync();
+                    Close();
+                    return;
+                }
                 SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) |
                     WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE);
                 bool h1 = RegisterHotKey(Handle, HOTKEY_SHOW, showModifiers, (uint)showKey);
@@ -2175,8 +2186,8 @@ namespace MapleOverlay
                 tray.ShowBalloonTip(2500, "枫语幕已启动",
                     "常规/任务共 " + translations.Count + " 条，任务 " + translations.TaskCount + " 个/文本 " +
                     translations.TaskTextCount + " 条，图标指纹 " + translations.IconCount + " 条，已载入内存。" +
-                    HotkeyText(showKey, showModifiers) + " 呼出，" +
-                    HotkeyText(hideKey, hideModifiers) + " 缩回后台。手柄：呼出 " +
+                    HotkeyText(showKey, showModifiers) + " 翻译开关，" +
+                    HotkeyText(hideKey, hideModifiers) + " 自动对齐聊天框。手柄：翻译 " +
                     showGamepadShortcut + "，缩回 " + hideGamepadShortcut + "。" +
                     "双击托盘图标打开AI实时聊天翻译。" +
                     ((!h1 || !h2) ? "（有快捷键注册失败）" : ""), ToolTipIcon.Info);
@@ -2231,6 +2242,42 @@ namespace MapleOverlay
                 report.Append("PARSED | ").AppendLine(parsed);
             File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                 "chat_style_benchmark.txt"), report.ToString(), new UTF8Encoding(false));
+        }
+
+        private async Task RunHotkeyToggleBenchmarkAsync()
+        {
+            string reportPath = Path.Combine(baseDir, "hotkey_toggle_test.txt");
+            try
+            {
+                await ShowTranslationFromHotkeyAsync();
+                if (!visibleTranslation || labels.Count == 0)
+                    throw new InvalidOperationException("第一次F8未用新截图显示翻译");
+
+                await ShowTranslationFromHotkeyAsync();
+                if (visibleTranslation || labels.Count != 0)
+                    throw new InvalidOperationException("第二次F8未关闭当前翻译");
+
+                Task opening = ShowTranslationFromHotkeyAsync();
+                Task cancel = ShowTranslationFromHotkeyAsync();
+                await cancel;
+                await opening;
+                if (visibleTranslation || labels.Count != 0)
+                    throw new InvalidOperationException("OCR进行中再次按F8后，迟到结果仍重新出现");
+
+                await ShowTranslationFromHotkeyAsync();
+                if (!visibleTranslation || labels.Count == 0)
+                    throw new InvalidOperationException("取消后再次按F8未重新截图翻译");
+
+                File.WriteAllText(reportPath,
+                    "通过：首次显示、再次关闭、处理中取消、取消后重新截图" +
+                    Environment.NewLine + "最终命中=" + labels.Count,
+                    Encoding.UTF8);
+            }
+            catch (Exception ex)
+            {
+                Environment.ExitCode = 3;
+                File.WriteAllText(reportPath, "失败：" + ex, Encoding.UTF8);
+            }
         }
 
         private void ReadContinuousBenchmarkCycle(List<int> elapsedValues,
@@ -2662,6 +2709,13 @@ namespace MapleOverlay
 
         private async Task ShowTranslationFromHotkeyAsync()
         {
+            // F8 is a true toggle. A second press also cancels an OCR pass that has not yet
+            // published results, so a late completion cannot make the overlay reappear.
+            if (manualTranslationPending || visibleTranslation)
+            {
+                HideTranslation();
+                return;
+            }
             int requestId = ++manualTranslationRequestId;
             manualTranslationPending = true;
             bool panelWasVisible = mainPanel != null && !mainPanel.IsDisposed && mainPanel.Visible;
@@ -2669,13 +2723,14 @@ namespace MapleOverlay
             {
                 mainPanel.Hide();
             }
-            bool chatWindowWasVisible = chatTranslator != null && !chatTranslator.IsDisposed &&
-                chatTranslator.HideForScreenshotCapture();
+            bool chatWindowWasVisible = false;
+            if (chatTranslator != null && !chatTranslator.IsDisposed)
+                chatWindowWasVisible = await chatTranslator.PrepareForScreenshotCaptureAsync();
             if (panelWasVisible || chatWindowWasVisible) await Task.Delay(140);
             while (processing && requestId == manualTranslationRequestId && !shuttingDown)
                 await Task.Delay(15);
             if (requestId != manualTranslationRequestId || shuttingDown) return;
-            try { await ShowTranslationAsync(); }
+            try { await ShowTranslationAsync(false, requestId); }
             finally
             {
                 if (requestId == manualTranslationRequestId)
@@ -2687,13 +2742,64 @@ namespace MapleOverlay
             }
         }
 
-        private async Task ToggleAsync()
+        private async Task AutoAlignChatRegionFromHotkeyAsync()
         {
-            if (visibleTranslation)
+            if (ChatRegionSettings.GetOrigin() == ChatRegionOrigin.Manual)
             {
-                HideTranslation();
+                tray.ShowBalloonTip(1800, "聊天框位置未改变",
+                    "当前使用手动框选区域；如需修改，请在AI窗口点击“框选/调整游戏聊天区”。",
+                    ToolTipIcon.Info);
+                return;
             }
-            else await ShowTranslationAsync();
+
+            bool panelWasVisible = mainPanel != null && !mainPanel.IsDisposed && mainPanel.Visible;
+            if (panelWasVisible) mainPanel.Hide();
+            bool chatWindowWasVisible = false;
+            if (chatTranslator != null && !chatTranslator.IsDisposed)
+                chatWindowWasVisible = await chatTranslator.PrepareForScreenshotCaptureAsync();
+            bool ownsProcessing = false;
+            try
+            {
+                if (panelWasVisible || chatWindowWasVisible) await Task.Delay(140);
+                while (processing && !shuttingDown) await Task.Delay(15);
+                if (shuttingDown) return;
+                processing = true;
+                ownsProcessing = true;
+                Rectangle screen = GetForegroundCaptureBounds();
+                using (Bitmap bitmap = new Bitmap(screen.Width, screen.Height,
+                    PixelFormat.Format32bppArgb))
+                {
+                    using (Graphics graphics = Graphics.FromImage(bitmap))
+                        graphics.CopyFromScreen(screen.Left, screen.Top, 0, 0, screen.Size,
+                            CopyPixelOperation.SourceCopy);
+                    float scale;
+                    using (Bitmap prepared = PrepareForOcr(bitmap, out scale, false,
+                        screen.Width >= 1900 ? 2200.0f : 2000.0f))
+                    {
+                        OcrResult result = await RecognizeAsync(prepared);
+                        List<RectangleF> chatLineBounds = FindPlayerChatLineBounds(result,
+                            scale, screen);
+                        Rectangle region = ChatRegionSettings.SaveAutomatic(
+                            ChatRegionDetector.Detect(chatLineBounds, screen), screen);
+                        if (chatTranslator != null && !chatTranslator.IsDisposed)
+                            chatTranslator.UpdateChatRegion(region, ChatRegionOrigin.Automatic);
+                        tray.ShowBalloonTip(1800, "聊天框已自动对齐",
+                            region.Width + "×" + region.Height +
+                            (chatLineBounds.Count > 0 ? "，已按当前聊天行定位。" :
+                                "，未发现可靠聊天行，已使用经典布局。"), ToolTipIcon.Info);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                tray.ShowBalloonTip(2600, "自动对齐失败", ex.Message, ToolTipIcon.Error);
+            }
+            finally
+            {
+                if (ownsProcessing) processing = false;
+                if (chatTranslator != null && !chatTranslator.IsDisposed)
+                    chatTranslator.RestoreAfterScreenshotCapture();
+            }
         }
 
         protected override void WndProc(ref Message m)
@@ -2702,7 +2808,7 @@ namespace MapleOverlay
             {
                 int id = m.WParam.ToInt32();
                 if (id == HOTKEY_SHOW) { Task ignored = ShowTranslationFromHotkeyAsync(); }
-                else if (id == HOTKEY_HIDE) HideTranslation();
+                else if (id == HOTKEY_HIDE) { Task ignored = AutoAlignChatRegionFromHotkeyAsync(); }
             }
             else if (m.Msg == TaskbarCreatedMessage)
             {
@@ -2715,6 +2821,13 @@ namespace MapleOverlay
 
         internal void HideTranslation()
         {
+            if (manualTranslationPending)
+            {
+                manualTranslationPending = false;
+                manualTranslationRequestId++;
+                if (chatTranslator != null && !chatTranslator.IsDisposed)
+                    chatTranslator.RestoreAfterScreenshotCapture();
+            }
             visibleTranslation = false;
             labels.Clear();
             ShowCurrentTranslations();
@@ -2725,10 +2838,22 @@ namespace MapleOverlay
 
         private Task ShowTranslationAsync()
         {
-            return ShowTranslationAsync(false);
+            return ShowTranslationAsync(false, 0);
         }
 
         private async Task ShowTranslationAsync(bool automatic)
+        {
+            await ShowTranslationAsync(automatic, 0);
+        }
+
+        private bool RecognitionWasCancelled(bool automatic, int requestId)
+        {
+            return automatic ? manualTranslationPending :
+                requestId != 0 && (requestId != manualTranslationRequestId ||
+                    !manualTranslationPending);
+        }
+
+        private async Task ShowTranslationAsync(bool automatic, int requestId)
         {
             if (processing) return;
             processing = true;
@@ -2743,7 +2868,8 @@ namespace MapleOverlay
             long fallbackPassDuration = 0;
             long finalizeDuration = 0;
             string recognitionPlanText = "范围最大（兼容路径）";
-            // Screen results are never reused. Every F8 starts from an empty overlay and a fresh capture.
+            // Screen results are never reused. Every F8 activation starts from an empty overlay
+            // and a fresh capture; a second press cancels or hides it.
             visibleTranslation = false;
             if (!restoreExistingOverlay) labels.Clear();
             Invalidate();
@@ -2768,8 +2894,6 @@ namespace MapleOverlay
                 else screen = Program.Benchmark ? new Rectangle(0, 0, 1280, 720) : GetForegroundCaptureBounds();
                 captureBounds = screen;
                 gameBounds = screen;
-                bool lockChatRegionOnFirstUse = !automatic && !Program.Benchmark &&
-                    !ChatRegionSettings.HasSelection();
                 long captureStarted = Program.Benchmark ? stopwatch.ElapsedMilliseconds : 0;
                 using (Bitmap bitmap = new Bitmap(screen.Width, screen.Height, PixelFormat.Format32bppArgb))
                 {
@@ -2821,7 +2945,7 @@ namespace MapleOverlay
                         ShowCurrentTranslations();
                         Update();
                     }
-                    if (automatic && manualTranslationPending) return;
+                    if (RecognitionWasCancelled(automatic, requestId)) return;
                     if (Program.Benchmark) captureDuration = stopwatch.ElapsedMilliseconds - captureStarted;
                     CharacterStatVisualLayout visualCharacter = ClassicSceneVision.FindCharacterStats(bitmap);
                     bool useSceneProbe = ContinuousTranslationPolicy.ShouldRunProbe(automatic,
@@ -2833,7 +2957,7 @@ namespace MapleOverlay
                         using (Bitmap probePrepared = PrepareForOcr(bitmap, out probeScale, false, 1200.0f))
                         {
                             OcrResult probeResult = await RecognizeAsync(probePrepared);
-                            if (automatic && manualTranslationPending) return;
+                            if (RecognitionWasCancelled(automatic, requestId)) return;
                             SceneSnapshot probeSnapshot = SceneClassifier.Analyze(probeResult,
                                 translations, true);
                             recognizedScenes = "快速探测[" + probeSnapshot.Describe() + "]";
@@ -2874,16 +2998,7 @@ namespace MapleOverlay
                     using (Bitmap prepared = PrepareForOcr(bitmap, out ocrScale, false, screen.Width >= 1900 ? 2200.0f : 2000.0f))
                     {
                         OcrResult result = await RecognizeAsync(prepared);
-                        if (automatic && manualTranslationPending) return;
-                        if (lockChatRegionOnFirstUse)
-                        {
-                            List<RectangleF> chatLineBounds = FindPlayerChatLineBounds(result,
-                                ocrScale, gameBounds);
-                            Rectangle chatRegion = ChatRegionSettings.SaveAutomatic(
-                                ChatRegionDetector.Detect(chatLineBounds, gameBounds), gameBounds);
-                            if (chatTranslator != null && !chatTranslator.IsDisposed)
-                                chatTranslator.UpdateChatRegion(chatRegion, ChatRegionSettings.GetOrigin());
-                        }
+                        if (RecognitionWasCancelled(automatic, requestId)) return;
                         SceneSnapshot sceneSnapshot = SceneClassifier.Analyze(result, translations, true);
                         string preciseScenes = sceneSnapshot.Describe();
                         if (visualCharacter != null) preciseScenes += ">人物视觉:200/2";
@@ -3008,7 +3123,7 @@ namespace MapleOverlay
                                     {
                                         captureBounds = hover;
                                         OcrResult hoverResult = await RecognizeAsync(hoverPrepared);
-                                        if (automatic && manualTranslationPending) return;
+                                        if (RecognitionWasCancelled(automatic, requestId)) return;
                                         MergeLabels(next, BuildLabels(hoverResult, hoverScale, hoverPrepared));
                                         if (Program.Benchmark) benchmarkOcrText += " || 光标详情=" + hoverResult.Text;
                                     }
@@ -3086,7 +3201,7 @@ namespace MapleOverlay
                                     {
                                         captureBounds = panelCrop;
                                         OcrResult panelResult = await RecognizeAsync(panelPrepared);
-                                        if (automatic && manualTranslationPending) return;
+                                        if (RecognitionWasCancelled(automatic, requestId)) return;
                                         MergeLabels(next, BuildLabels(panelResult, panelScale, panelPrepared));
                                         if (Program.Benchmark) benchmarkOcrText += " || 面板复核=" + panelResult.Text;
 
@@ -3119,7 +3234,7 @@ namespace MapleOverlay
                                                         panelCrop.Top + equipmentTooltipLocal.Top,
                                                         equipmentTooltipLocal.Width, equipmentTooltipLocal.Height);
                                                     OcrResult tooltipResult = await RecognizeAsync(tooltipPrepared);
-                                                    if (automatic && manualTranslationPending) return;
+                                                    if (RecognitionWasCancelled(automatic, requestId)) return;
                                                     MergeLabels(next, BuildLabels(tooltipResult, tooltipScale,
                                                         tooltipPrepared));
                                                     if (Program.Benchmark)
@@ -3147,7 +3262,7 @@ namespace MapleOverlay
                             using (Bitmap contrastPrepared = PrepareForOcr(bitmap, out secondScale, true))
                             {
                                 OcrResult secondResult = await RecognizeAsync(contrastPrepared);
-                                if (automatic && manualTranslationPending) return;
+                                if (RecognitionWasCancelled(automatic, requestId)) return;
                                 List<OverlayLabel> second = BuildLabels(secondResult, secondScale, prepared);
                                 MergeLabels(next, second);
                                 needsMoreOcr = next.Count < 3 || secondResult.Lines.Count > next.Count + 1;
@@ -3165,7 +3280,7 @@ namespace MapleOverlay
                             using (Bitmap largePrepared = PrepareForOcr(bitmap, out thirdScale, false, 3000.0f))
                             {
                                 OcrResult thirdResult = await RecognizeAsync(largePrepared);
-                                if (automatic && manualTranslationPending) return;
+                                if (RecognitionWasCancelled(automatic, requestId)) return;
                                 MergeLabels(next, BuildLabels(thirdResult, thirdScale, largePrepared));
                                 if (Program.Benchmark)
                                     benchmarkOcrText += " || 三次=" + thirdResult.Text;
@@ -3191,6 +3306,7 @@ namespace MapleOverlay
                         if (Program.Benchmark) finalizeDuration = stopwatch.ElapsedMilliseconds - finalizeStarted;
                     }
                 }
+                if (RecognitionWasCancelled(automatic, requestId)) return;
                 if (automatic && (!continuousTranslationEnabled ||
                     GetForegroundWindow() != automaticSourceWindow))
                 {

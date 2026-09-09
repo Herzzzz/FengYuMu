@@ -12,7 +12,7 @@ $arguments = New-Object 'object[]' 1
 $arguments[0] = $game
 $region = [System.Drawing.Rectangle]$defaultMethod.Invoke($null, $arguments)
 if ($region -ne (New-Object System.Drawing.Rectangle -ArgumentList 260, 734, 880, 189)) {
-    throw "首次快捷键自动聊天区比例错误：$region"
+    throw "F9自动聊天区兜底比例错误：$region"
 }
 $usableMethod = $settings.GetMethod('IsUsable',
     [Reflection.BindingFlags]'Static,NonPublic,Public')
@@ -41,26 +41,41 @@ if ($detected -ne (New-Object System.Drawing.Rectangle -ArgumentList 411, 699, 7
 
 $source = Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -Encoding UTF8
 $chatSource = Get-Content (Join-Path $repoRoot 'src\OfflineChat.cs') -Raw -Encoding UTF8
+$formsSource = Get-Content (Join-Path $repoRoot 'src\SimpleForms.cs') -Raw -Encoding UTF8
 foreach ($required in @(
     'ChatRegionOrigin.Automatic',
     'ChatRegionOrigin.Manual',
-    'if (HasSelection()) return ResolveForGame(gameBounds);',
+    'if (GetOrigin() == ChatRegionOrigin.Manual) return ResolveForGame(gameBounds);',
     'ChatRegionSettings.SaveAutomatic(',
-    'ChatRegionDetector.Detect(chatLineBounds, gameBounds)',
+    'ChatRegionDetector.Detect(chatLineBounds, screen)',
     'FindPlayerChatLineBounds(result,',
+    'AutoAlignChatRegionFromHotkeyAsync',
+    'else if (id == HOTKEY_HIDE) { Task ignored = AutoAlignChatRegionFromHotkeyAsync(); }',
+    'ShowTranslationAsync(false, requestId)',
+    'RecognitionWasCancelled(automatic, requestId)',
     'ChatRegionSettings.ResaveForGame(resolved, gameBounds)',
     'Rectangle chatExclusion = GetChatExclusionBounds()',
     'SceneClassifier.LooksLikePlayerChat(candidate.Text)')) {
-    if (-not $source.Contains($required)) { throw "首次聊天区锁定接入缺少：$required" }
+    if (-not $source.Contains($required)) { throw "F8/F9聊天区接入缺少：$required" }
 }
 foreach ($required in @(
     'ChatRegionSettings.SaveManual(chatRegion, game)',
     'await overlay.CaptureChatAsync(chatRegion)',
-    '首次快捷键自动聊天区')) {
+    'F9自动聊天区')) {
     if (-not $chatSource.Contains($required)) { throw "AI聊天区接入缺少：$required" }
+}
+if ($source.Contains('lockChatRegionOnFirstUse')) {
+    throw 'F8截屏翻译仍偷偷承担首次聊天框自动对齐'
 }
 if ($source.Contains('ChatRegionSettings.Save(resolved, gameBounds)')) {
     throw '游戏窗口缩放仍可能丢失聊天区来源'
 }
+foreach ($required in @(
+    'F8 翻译开/关；F9 自动对齐聊天框',
+    'Text = "翻译开/关："',
+    'Text = "自动对齐聊天框："',
+    '" 翻译 / " + hideKey + " 对齐聊天框"')) {
+    if (-not $formsSource.Contains($required)) { throw "快捷键界面说明未同步：$required" }
+}
 
-Write-Output '聊天区：首次快捷键自动锁定、普通截图排除、AI复用、手动框选永久优先通过'
+Write-Output '聊天区：F9独立自动对齐、F8每次新截屏开关、普通截图排除、AI复用、手动框选永久优先通过'

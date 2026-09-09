@@ -81,8 +81,11 @@ foreach ($required in @(
     'Style = capture.FindStyle(line)',
     'floatingWindow.AppendTranslation(translation, visualStyle)',
     'internal void ApplyFloatingWindow(bool enabled)',
-    'internal bool HideForScreenshotCapture()',
+    'internal async Task<bool> PrepareForScreenshotCaptureAsync()',
     'internal void RestoreAfterScreenshotCapture()',
+    'while (captureBusy && !IsDisposed) await Task.Delay(15)',
+    'captureBusy || screenshotCaptureSuspendCount > 0',
+    'floatingWindowEnabled && live && screenshotCaptureSuspendCount == 0',
     'overlay.ApplyAiChatFloatingWindow(true)',
     'ShowFloatingWindowPassive()')) {
     if (-not $chatSource.Contains($required)) { throw "AI浮窗链路缺少：$required" }

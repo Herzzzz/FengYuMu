@@ -521,7 +521,7 @@ namespace MapleOverlay
                 if (overlay != null) overlay.ApplyContinuousTranslation(continuousTranslation.Checked);
             };
             Label continuousHint = new Label {
-                Text = "默认关闭；开启后智能降频，F8/F9 仍可使用。",
+                Text = "默认关闭；开启后智能降频，F8翻译开关、F9对齐聊天框。",
                 Location = new Point(35, 119), Size = new Size(460, 24),
                 ForeColor = Color.FromArgb(107, 114, 128)
             };
@@ -532,7 +532,7 @@ namespace MapleOverlay
                 Font = new Font("Microsoft YaHei UI", 9.0f, FontStyle.Bold)
             };
             Label independentHint = new Label {
-                Text = "只显示AI聊天译文；F8仍按游戏原位置覆盖。",
+                Text = "只显示AI聊天译文；F8仍独立控制游戏原位置覆盖。",
                 Location = new Point(35, 180), Size = new Size(460, 24),
                 ForeColor = Color.FromArgb(107, 114, 128)
             };
@@ -549,7 +549,7 @@ namespace MapleOverlay
             Button ai = MakeButton("AI 聊天翻译", new Point(380, 488), new Size(160, 38), false);
             ai.Click += delegate { overlay.ShowChatTranslator(); };
             Label hint = new Label {
-                Text = "持续自动；F8 手动刷新，F9 隐藏；关闭后仍在托盘。",
+                Text = "F8 翻译开/关；F9 自动对齐聊天框；关闭后仍在托盘。",
                 Location = new Point(22, 534), Size = new Size(516, 32),
                 ForeColor = Color.FromArgb(107, 114, 128), TextAlign = ContentAlignment.MiddleLeft
             };
@@ -582,8 +582,8 @@ namespace MapleOverlay
             status.Text = "已就绪 · 词库 " + dictionaryCount + " 条 · 任务文本 " + taskCount + " 条";
             string gamepadShow = overlay == null ? "未绑定" : overlay.ShowGamepadShortcutDescription;
             string gamepadHide = overlay == null ? "未绑定" : overlay.HideGamepadShortcutDescription;
-            hotkeys.Text = "键盘 " + showKey + " / " + hideKey +
-                "    手柄 " + gamepadShow + " / " + gamepadHide;
+            hotkeys.Text = "键盘 " + showKey + " 翻译 / " + hideKey + " 对齐聊天框" +
+                "    手柄 " + gamepadShow + " 翻译 / " + gamepadHide + " 隐藏";
             if (overlay != null && overlay.HotkeyRegistrationStatus.Length > 0)
                 hotkeys.Text = overlay.HotkeyRegistrationStatus;
             if (overlay != null && range.Value != (int)overlay.TranslationRangeMode)
@@ -653,10 +653,10 @@ namespace MapleOverlay
         {
             FillKeys(showKey); FillKeys(hideKey);
             GroupBox keyboard = new GroupBox { Text = "键盘快捷键", Location = new Point(16, 12), Size = new Size(558, 142) };
-            Label showLabel = new Label { Text = "呼出翻译：", Location = new Point(14, 29), AutoSize = true };
+            Label showLabel = new Label { Text = "翻译开/关：", Location = new Point(14, 29), AutoSize = true };
             showKey.Location = new Point(115, 25);
             showModifiers.Location = new Point(230, 25); showModifiers.Width = 300;
-            Label hideLabel = new Label { Text = "缩回后台：", Location = new Point(14, 70), AutoSize = true };
+            Label hideLabel = new Label { Text = "自动对齐聊天框：", Location = new Point(14, 70), AutoSize = true };
             hideKey.Location = new Point(115, 66);
             hideModifiers.Location = new Point(230, 66); hideModifiers.Width = 300;
             Label hint = new Label { Text = "右侧可留空；组合键用 + 连接，例如 CTRL+ALT。", Location = new Point(14, 102), Size = new Size(520, 28), ForeColor = Color.DimGray };
@@ -665,8 +665,8 @@ namespace MapleOverlay
             GroupBox gamepad = new GroupBox { Text = "手柄快捷键（独立于键盘）", Location = new Point(16, 162), Size = new Size(558, 150) };
             FillGamepadButtons(showGamepadFirst, false); FillGamepadButtons(showGamepadSecond, true);
             FillGamepadButtons(hideGamepadFirst, false); FillGamepadButtons(hideGamepadSecond, true);
-            Label gamepadShowLabel = new Label { Text = "呼出翻译：", Location = new Point(14, 30), AutoSize = true };
-            Label gamepadHideLabel = new Label { Text = "缩回后台：", Location = new Point(14, 72), AutoSize = true };
+            Label gamepadShowLabel = new Label { Text = "翻译开/关：", Location = new Point(14, 30), AutoSize = true };
+            Label gamepadHideLabel = new Label { Text = "隐藏翻译：", Location = new Point(14, 72), AutoSize = true };
             showGamepadFirst.Location = new Point(115, 26); showGamepadFirst.Width = 170;
             showGamepadSecond.Location = new Point(320, 26); showGamepadSecond.Width = 210;
             hideGamepadFirst.Location = new Point(115, 68); hideGamepadFirst.Width = 170;
