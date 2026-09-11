@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 using Microsoft.Win32;
 
 namespace MapleOverlay
@@ -173,6 +174,7 @@ namespace MapleOverlay
     internal sealed class OfflineAiClient
     {
         private const int Port = 17891;
+        private const uint LcmapSimplifiedChinese = 0x02000000;
         private readonly string baseDir;
         private readonly object startupLock = new object();
         private Process process;
@@ -330,7 +332,8 @@ namespace MapleOverlay
                 "按玩家聊天语气理解俚语和缩写；技能名和物品名优先采用国服怀旧译名。" +
                 "保留数字、频道和表情；可靠的聊天缩写必须按术语表展开，多义或证据不足的缩写保留原文，不得猜成地名或玩家名。" +
                 "完整翻译每个分句，不得漏译、重复或追加原文不存在的内容。OCR含糊且无法可靠判断的片段保留原文，不得猜写。" +
-                "只输出一行自然译文，不复述原文，不解释。" +
+                "参考玩家口语：B> Claw 60%, offer＝收60%拳套攻击卷，请报价；S> Kumbi 200k＝卖雪花镖，20万；Ya Omok players scared?＝怎么，玩五子棋的都怕了？；ima go check now＝我现在去看看。" +
+                "必须使用简体中文，禁止输出繁体字。只输出一行自然译文，不复述原文，不解释。" +
                 (String.IsNullOrEmpty(glossary) ? "" : "本次从知识库检索到的术语如下，必须优先采用：\n" + glossary);
             string userText = "待翻译消息：\n" + text + "\n/no_think";
             string body = new JavaScriptSerializer().Serialize(new Dictionary<string, object> {
@@ -343,7 +346,9 @@ namespace MapleOverlay
             });
             string result = await Task.Factory.StartNew(delegate { return Post(body); });
             if (targetLanguage.IndexOf("中文", StringComparison.OrdinalIgnoreCase) >= 0 &&
-                Regex.IsMatch(text, "[A-Za-z]") && Regex.Matches(result, "[\\u3400-\\u9fff]").Count < 2)
+                Regex.IsMatch(text, "[A-Za-z]") &&
+                (Regex.Matches(result, "[\\u3400-\\u9fff]").Count < 2 ||
+                    LooksLikeInstructionLeak(result)))
             {
                 string retrySystem = "把玩家消息翻译成自然、简短的简体中文。必须出现中文，不得照抄英文，不得解释；操作问句用怎么、能不能等玩家口语；reply、respond、whisper back 表示回复，不能误译成新发消息；物品名前的 stupid、damn 是抱怨语气，不能并入物品名或残留英文；交易消息用收购、出售、交换、求组、报价等常用说法；技能名和物品名用冒险岛国服译名。" +
                     "可靠的聊天缩写按术语表展开；多义或证据不足时保留缩写，不得猜成地名或玩家名。" +
@@ -358,7 +363,35 @@ namespace MapleOverlay
                 });
                 result = await Task.Factory.StartNew(delegate { return Post(retryBody); });
             }
-            return result;
+            return ToSimplifiedChinese(result);
+        }
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        private static extern int LCMapStringEx(string localeName, uint mapFlags,
+            string source, int sourceLength, StringBuilder destination, int destinationLength,
+            IntPtr versionInformation, IntPtr reserved, IntPtr sortHandle);
+
+        internal static string ToSimplifiedChinese(string value)
+        {
+            if (String.IsNullOrEmpty(value)) return value ?? "";
+            try
+            {
+                StringBuilder converted = new StringBuilder(value.Length * 2 + 2);
+                int length = LCMapStringEx("zh-CN", LcmapSimplifiedChinese, value, -1,
+                    converted, converted.Capacity, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+                return length > 0 ? converted.ToString() : value;
+            }
+            catch { return value; }
+        }
+
+        internal static bool LooksLikeInstructionLeak(string value)
+        {
+            string output = value ?? "";
+            return output.IndexOf("待翻译消息", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                output.IndexOf("翻译说明", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                output.IndexOf("只输出中文", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                output.IndexOf("/no_think", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                output.IndexOf("系统提示", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private static string Post(string body)
@@ -614,6 +647,8 @@ namespace MapleOverlay
         private readonly System.Windows.Forms.Timer releaseTimer = new System.Windows.Forms.Timer();
         private readonly HashSet<string> protectedPlayerNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private readonly Queue<PendingChatLine> pendingChatLines = new Queue<PendingChatLine>();
+        private readonly Queue<KeyValuePair<string, DateTime>> recentlyQueuedChatSources =
+            new Queue<KeyValuePair<string, DateTime>>();
         private readonly Dictionary<string, string> translationCache = new Dictionary<string, string>(StringComparer.Ordinal);
         private readonly Queue<string> translationCacheOrder = new Queue<string>();
         private List<string> previousChatFrame = new List<string>();
@@ -650,7 +685,7 @@ namespace MapleOverlay
             Size = new Size(600, 560); MinimumSize = new Size(520, 480);
             Font = new Font("Microsoft YaHei UI", 9.0f);
             BuildUi(); LoadRegion();
-            timer.Interval = 280;
+            timer.Interval = 140;
             timer.Tick += async delegate { await PollChatAsync(); };
             releaseTimer.Interval = 30000;
             releaseTimer.Tick += delegate {
@@ -798,6 +833,7 @@ namespace MapleOverlay
                 previousChatFrame.Clear();
                 recentChatFrames.Clear();
                 pendingChatLines.Clear();
+                recentlyQueuedChatSources.Clear();
             }
             if (IsHandleCreated)
                 status.Text = (origin == ChatRegionOrigin.Manual ? "手动聊天区" : "F9自动聊天区") +
@@ -864,6 +900,7 @@ namespace MapleOverlay
                     chatRegion = selector.SelectedScreenRegion;
                     ChatRegionSettings.SaveManual(chatRegion, game);
                     previousChatFrame.Clear(); recentChatFrames.Clear(); pendingChatLines.Clear();
+                    recentlyQueuedChatSources.Clear();
                     status.Text = "聊天区已统一绑定 " + chatRegion.Width + "×" + chatRegion.Height +
                         "｜框内AI翻译，F8跳过";
                 }
@@ -881,13 +918,14 @@ namespace MapleOverlay
                 previousChatFrame.Clear();
                 recentChatFrames.Clear();
                 pendingChatLines.Clear();
+                recentlyQueuedChatSources.Clear();
                 firstLiveCapture = true;
                 if (overlay != null) overlay.ApplyAiChatFloatingWindow(true);
                 else ApplyFloatingWindow(true);
                 status.Text = "正在预热AI，同时开始监听聊天…";
                 timer.Start();
                 bool ready = await ai.EnsureStartedAsync();
-                if (live) status.Text = ready ? "AI已预热｜280ms快速监听" : ai.Status;
+                if (live) status.Text = ready ? "AI已预热｜140ms快速监听" : ai.Status;
             }
             else
             {
@@ -922,9 +960,13 @@ namespace MapleOverlay
                 // suppressing a static OCR frame. Text-based queue filtering would swallow
                 // a real duplicate sent while the first copy is still being translated.
                 foreach (string line in newLines)
-                    if (IsUsefulChatLine(line)) pendingChatLines.Enqueue(new PendingChatLine {
+                {
+                    if (!IsUsefulChatLine(line) || IsRecentlyQueuedChatSource(line)) continue;
+                    pendingChatLines.Enqueue(new PendingChatLine {
                         Text = line, Style = capture.FindStyle(line)
                     });
+                    RememberQueuedChatSource(line);
+                }
                 status.Text = pendingChatLines.Count > 0 ? "检测到新消息，待翻译 " + pendingChatLines.Count + " 条" : status.Text;
             }
             catch (Exception ex) { status.Text = ex.Message; }
@@ -1058,6 +1100,56 @@ namespace MapleOverlay
             return identity.Replace('0', 'o').Replace('1', 'l');
         }
 
+        private bool IsRecentlyQueuedChatSource(string line)
+        {
+            DateTime cutoff = DateTime.Now - TimeSpan.FromSeconds(8);
+            while (recentlyQueuedChatSources.Count > 0 &&
+                recentlyQueuedChatSources.Peek().Value < cutoff)
+                recentlyQueuedChatSources.Dequeue();
+            foreach (KeyValuePair<string, DateTime> recent in recentlyQueuedChatSources)
+                if (IsSameTranslationSource(recent.Key, line)) return true;
+            return false;
+        }
+
+        private void RememberQueuedChatSource(string line)
+        {
+            recentlyQueuedChatSources.Enqueue(
+                new KeyValuePair<string, DateTime>(line, DateTime.Now));
+            while (recentlyQueuedChatSources.Count > 32) recentlyQueuedChatSources.Dequeue();
+        }
+
+        internal static bool IsSameTranslationSource(string left, string right)
+        {
+            string leftSpeaker, leftMessage, rightSpeaker, rightMessage;
+            SplitChatIdentityParts(left, out leftSpeaker, out leftMessage);
+            SplitChatIdentityParts(right, out rightSpeaker, out rightMessage);
+            if (leftSpeaker.Length > 0 && rightSpeaker.Length > 0 && leftSpeaker != rightSpeaker) return false;
+            string a = ChatIdentity(NormalizeCommonChatOcr(leftMessage));
+            string b = ChatIdentity(NormalizeCommonChatOcr(rightMessage));
+            if (a == b) return true;
+            int longest = Math.Max(a.Length, b.Length), shortest = Math.Min(a.Length, b.Length);
+            if (shortest < 8 || longest - shortest > Math.Max(5, longest / 2)) return false;
+            int limit = Math.Max(3, longest / 4);
+            if (EditDistanceWithin(a, b, limit)) return true;
+            int sharedPrefix = 0;
+            while (sharedPrefix < shortest && a[sharedPrefix] == b[sharedPrefix]) sharedPrefix++;
+            return sharedPrefix >= Math.Min(9, shortest);
+        }
+
+        private static void SplitChatIdentityParts(string value, out string speaker, out string message)
+        {
+            string line = value ?? "";
+            int separator = line.IndexOf(':');
+            int chineseSeparator = line.IndexOf('：');
+            if (separator < 0 || (chineseSeparator >= 0 && chineseSeparator < separator)) separator = chineseSeparator;
+            if (separator > 0)
+            {
+                speaker = ChatIdentity(line.Substring(0, separator));
+                message = line.Substring(separator + 1);
+            }
+            else { speaker = ""; message = line; }
+        }
+
         private static bool SameChatLine(string left, string right)
         {
             string a = ChatIdentity(left), b = ChatIdentity(right);
@@ -1153,9 +1245,17 @@ namespace MapleOverlay
                     if (message.Length < 2) continue;
                     output.Add(name + ": " + message);
                 }
-                if (notice.Length >= 2) output.Add("系统公告: " + notice);
+                if (IsCompleteChatNotice(notice)) output.Add("系统公告: " + notice);
             }
             return output;
+        }
+
+        private static bool IsCompleteChatNotice(string notice)
+        {
+            if (String.IsNullOrWhiteSpace(notice) || notice.Length < 2) return false;
+            if (Regex.IsMatch(notice, @"^Money\s+lost(?:\s+through\s+cash\s+transactions)?\s*$",
+                RegexOptions.IgnoreCase)) return false;
+            return true;
         }
 
         private static string RepairChatSpeakerMarker(string value)
@@ -1177,7 +1277,7 @@ namespace MapleOverlay
         private static bool TryParseChatPresence(string value, out string parsed)
         {
             parsed = "";
-            string line = value ?? "";
+            string line = (value ?? "").TrimEnd(' ', ':');
             Match tagged = Regex.Match(line,
                 @"^[\[\(_|]?\s*(?<kind>friend|friehd|lhiend|buddy|guild|party|alliance)\s*[\]\)l_]*\s+(?<name>[A-Za-z][A-Za-z0-9_]{2,23})\s+has.{0,14}\s+(?<state>in|out)\.?$",
                 RegexOptions.IgnoreCase);
@@ -1285,6 +1385,71 @@ namespace MapleOverlay
                 translation = "怎么回复别人的悄悄话？";
                 return true;
             }
+            if (Regex.IsMatch(line, @"^I['’]?m going to\s+(?:go\s+)?check(?:\s+it)?(?:\s+now)?[.!?]*$",
+                RegexOptions.IgnoreCase))
+            {
+                translation = "我现在去看看。";
+                return true;
+            }
+            Match partyRecruit = Regex.Match(line,
+                @"^need\s+(\d+)\s+more\s+for\s+KPQ[.!?]*$",
+                RegexOptions.IgnoreCase);
+            if (partyRecruit.Success)
+            {
+                translation = "废弃都市组队任务还缺" + partyRecruit.Groups[1].Value + "人。";
+                return true;
+            }
+            if (Regex.IsMatch(line, @"^anyone\s+(?:doing|for)\s+the\s+GM\s+event\s+(?:rn|now)[?!.]*$",
+                RegexOptions.IgnoreCase))
+            {
+                translation = "现在有人做GM活动吗？";
+                return true;
+            }
+            if (Regex.IsMatch(line, @"^I['’]?m\s+farming\s+(?:them|em)\s+(?:rn|now)[.!?]*$",
+                RegexOptions.IgnoreCase))
+            {
+                translation = "我现在在刷这些。";
+                return true;
+            }
+            if (Regex.IsMatch(line, @"^(?:selling|S\s*>)\s+clean\s+gear\s*,?\s*(?:offer|obo)[.!?]*$",
+                RegexOptions.IgnoreCase))
+            {
+                translation = "出售未砸卷装备，请报价。";
+                return true;
+            }
+            if (Regex.IsMatch(line, @"\bOmok\b.*\b(?:players?\s+)?scared\b|\bscared\b.*\bOmok\b",
+                RegexOptions.IgnoreCase))
+            {
+                translation = "怎么，玩五子棋的都怕了？";
+                return true;
+            }
+            if (Regex.IsMatch(line, @"^S\s*>\s*Kumbi\b", RegexOptions.IgnoreCase))
+            {
+                Match price = Regex.Match(line, @"\b(\d+)\s*k\b", RegexOptions.IgnoreCase);
+                int priceThousands;
+                string priceText = "";
+                if (price.Success && Int32.TryParse(price.Groups[1].Value, out priceThousands))
+                    priceText = "，" + (priceThousands % 10 == 0
+                        ? priceThousands / 10 + "万" : priceThousands + "千");
+                translation = "出售雪花镖" + priceText +
+                    (Regex.IsMatch(line, @"\b(?:best offer|obo)\b", RegexOptions.IgnoreCase) ? "，价高者得" : "") + "！";
+                return true;
+            }
+            Match scrollSale = Regex.Match(line,
+                @"^S\s*>.*?(\d+%)\s+Ear LUK.*?(\d+%)\s+OA STR\b",
+                RegexOptions.IgnoreCase);
+            if (scrollSale.Success)
+            {
+                translation = "出售" + scrollSale.Groups[1].Value + "耳环运气卷、" +
+                    scrollSale.Groups[2].Value + "套服力量卷，请报价。";
+                return true;
+            }
+            if (Regex.IsMatch(line, @"^B\s*>.*\bClaw\s+60%", RegexOptions.IgnoreCase) &&
+                Regex.IsMatch(line, @"\b7/7\b", RegexOptions.IgnoreCase))
+            {
+                translation = "收一张60%拳套攻击卷，求好运，7张全成就差这一张了。";
+                return true;
+            }
             translation = "";
             return false;
         }
@@ -1303,6 +1468,15 @@ namespace MapleOverlay
             result = Regex.Replace(result, @"\baswell\b", "as well", RegexOptions.IgnoreCase);
             result = Regex.Replace(result, @"\bcmon\b", "come on", RegexOptions.IgnoreCase);
             result = Regex.Replace(result, @"\bive\b", "I've", RegexOptions.IgnoreCase);
+            result = Regex.Replace(result, @"^\s*(?:ima|irna|lma)\s+go\b", "I'm going to", RegexOptions.IgnoreCase);
+            result = Regex.Replace(result, @"\bchec\*(?=\s|$)", "check", RegexOptions.IgnoreCase);
+            bool trade = Regex.IsMatch(result, @"^\s*(?:[BSWT]\s*>|WTB\b|WTS\b|WTT\b)", RegexOptions.IgnoreCase);
+            if (trade)
+            {
+                result = Regex.Replace(result, @"\b6[0OÖÜ][0OÖÜ]?/0\b", "60%", RegexOptions.IgnoreCase);
+                result = Regex.Replace(result, @"\b1[0O][0O]/0\b", "10%", RegexOptions.IgnoreCase);
+                result = Regex.Replace(result, @"\bEar\s+(?:LI-JK|LUIK|LUKS|I-UK|L[UJI]?K)\b", "Ear LUK", RegexOptions.IgnoreCase);
+            }
             return result.Trim();
         }
 
@@ -1312,8 +1486,7 @@ namespace MapleOverlay
             string output = (translation ?? "").Trim();
             if (input.Length == 0 || output.Length == 0) return false;
             if (output.IndexOf('\r') >= 0 || output.IndexOf('\n') >= 0) return false;
-            if (output.IndexOf("待翻译消息", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                output.IndexOf("翻译说明", StringComparison.OrdinalIgnoreCase) >= 0) return false;
+            if (OfflineAiClient.LooksLikeInstructionLeak(output)) return false;
             int maximum = Math.Max(32, input.Length * 3 + 12);
             if (output.Length > maximum) return false;
             // This is a common hallucination for opaque player names and OCR fragments.
@@ -1477,7 +1650,8 @@ namespace MapleOverlay
                 string reviewed = await OnlineAiClient.ReviewAsync(settings, original, local, targetLanguage, glossary);
                 status.Text = reviewed == local ? "在线AI复核：无需修改" : "在线AI已给出纠错建议";
                 if (reviewed.Length > 0 && reviewed != local) lastWasOnline = true;
-                return reviewed.Length > 0 ? reviewed : local;
+                return reviewed.Length > 0
+                    ? OfflineAiClient.ToSimplifiedChinese(reviewed) : local;
             }
             catch (Exception ex) { status.Text = "在线复核失败，保留本地译文：" + ex.Message; return local; }
         }

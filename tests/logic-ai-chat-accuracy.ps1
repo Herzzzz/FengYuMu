@@ -52,13 +52,31 @@ if ([string]$detectLanguage.Invoke($null, @('first it was the JR wraiths')) -ne 
     throw 'AI聊天源语言快速判定失败'
 }
 $plausible = $chatType.GetMethod('IsPlausibleChatTranslation', $flags)
+$aiType = $assembly.GetType('MapleOverlay.OfflineAiClient', $true)
+$toSimplified = $aiType.GetMethod('ToSimplifiedChinese', $flags)
+$instructionLeak = $aiType.GetMethod('LooksLikeInstructionLeak', $flags)
 $multiLine = '第一行' + [Environment]::NewLine + '第二行'
 if ([bool]$plausible.Invoke($null, @('forsen', '玩家0')) -or
     [bool]$plausible.Invoke($null, @('short line', $multiLine)) -or
+    [bool]$plausible.Invoke($null, @('Tevin', '只输出中文译文。')) -or
+    [bool]$plausible.Invoke($null, @('Tevin', '/no_think')) -or
     [bool]$plausible.Invoke($null, @('offer', ('无关内容' * 30))) -or
     -not [bool]$plausible.Invoke($null, @('So much anger just like the good old days',
         '这么生气，真像过去的美好时光！'))) {
     throw 'AI聊天译文防乱猜/防长段幻觉边界错误'
+}
+if ([string]$toSimplified.Invoke($null, @('請報價，這是測試。')) -ne '请报价，这是测试。' -or
+    -not [bool]$instructionLeak.Invoke($null, @('只输出中文译文。')) -or
+    [bool]$instructionLeak.Invoke($null, @('请报价。'))) {
+    throw 'AI聊天简体转换或提示词泄漏检测失败'
+}
+$normalizeOcr = $chatType.GetMethod('NormalizeCommonChatOcr', $flags)
+foreach ($case in @(
+    @{ Source='ima go chec* now'; Target="I'm going to check now" },
+    @{ Source='S>60Ö/0 Ear LI-JK, 100/0 OA STR'; Target='S>60% Ear LUK, 10% OA STR' },
+    @{ Source='S>600/0 Ear LUKS, 100/0 OA STR'; Target='S>60% Ear LUK, 10% OA STR' })) {
+    $actual = [string]$normalizeOcr.Invoke($null, @($case.Source))
+    if ($actual -ne $case.Target) { throw "聊天OCR通用纠错失败：$($case.Source) => $actual" }
 }
 $knownIntent = $chatType.GetMethod('TryKnownChatIntentTranslation', $flags)
 foreach ($sourceText in @(
@@ -75,12 +93,38 @@ $sendIntentArgs = [object[]]@('How do I whisper someone?', '')
 if ([bool]$knownIntent.Invoke($null, $sendIntentArgs)) {
     throw '发送悄悄话被错误归为回复悄悄话'
 }
+$naturalCases = @(
+    @{ Source="I'm going to check now"; Target='我现在去看看。' },
+    @{ Source='need 2 more for KPQ'; Target='废弃都市组队任务还缺2人。' },
+    @{ Source='anyone doing the GM event rn?'; Target='现在有人做GM活动吗？' },
+    @{ Source='im farming em rn'; Target='我现在在刷这些。' },
+    @{ Source='selling clean gear, offer'; Target='出售未砸卷装备，请报价。' },
+    @{ Source='Ya Omok players scared?'; Target='怎么，玩五子棋的都怕了？' },
+    @{ Source='S>Kumbi, 200k or best offer!'; Target='出售雪花镖，20万，价高者得！' },
+    @{ Source='S>Kumbi 15k'; Target='出售雪花镖，15千！' },
+    @{ Source='S>60% Ear LUK, 10% OA STR'; Target='出售60%耳环运气卷、10%套服力量卷，请报价。' },
+    @{ Source='S>30% Ear LUK, 70% OA STR'; Target='出售30%耳环运气卷、70%套服力量卷，请报价。' },
+    @{ Source='B>Claw 60% With Good Luck, 1 more for 7/7'; Target='收一张60%拳套攻击卷，求好运，7张全成就差这一张了。' })
+foreach ($case in $naturalCases) {
+    $intentArgs = [object[]]@($case.Source, '')
+    if (-not [bool]$knownIntent.Invoke($null, $intentArgs) -or $intentArgs[1] -ne $case.Target) {
+        throw "玩家口语意图回归失败：$($case.Source) => $($intentArgs[1])"
+    }
+}
 $usefulLine = $chatType.GetMethod('IsUsefulChatLine', $flags)
 if ([bool]$usefulLine.Invoke($null, @('wolfly: u t')) -or
     -not [bool]$usefulLine.Invoke($null, @('Player: gg')) -or
     -not [bool]$usefulLine.Invoke($null, @('WOIffy: first it was the JR wraiths'))) {
     throw '短OCR碎片过滤误伤有效聊天或放过无效碎片'
 }
+$sameSource = $chatType.GetMethod('IsSameTranslationSource', $flags)
+if (-not [bool]$sameSource.Invoke($null, @('tor: ima go chec* now', 'tor: Ima go r, ec')) -or
+    [bool]$sameSource.Invoke($null, @('tor: ima go check now', 'Tevin: ima go check now')) -or
+    [bool]$sameSource.Invoke($null, @('tor: ima go check now', 'tor: selling some scrolls'))) {
+    throw '同一OCR消息变体防重复边界错误'
+}
+$partialNotice = @(Invoke-Parse "[Notice] Money lost")
+if ($partialNotice.Count -ne 0) { throw "残缺系统公告不应送入AI：$($partialNotice -join ' | ')" }
 
 $fixtures = @(
     @{ Name='broadcast'; File='ai-chat-cloudpark-broadcast.png'; Required='PARSED \| CupidKillsNL:'; Forbidden='PARSED \| SYBUA:' },
@@ -104,7 +148,14 @@ foreach ($entry in @(
     @{ Source='forsen'; Target='forsen' },
     @{ Source='Wooden Tops'; Target='木制陀螺' },
     @{ Source='S> Wooden Tops offer'; Target='出售木制陀螺，请报价' },
-    @{ Source='How do you whisper back someone?'; Target='怎么回复别人的悄悄话？' })) {
+    @{ Source='How do you whisper back someone?'; Target='怎么回复别人的悄悄话？' },
+    @{ Source='Omok'; Target='五子棋' },
+    @{ Source='Kumbi'; Target='雪花镖' },
+    @{ Source='Ear LUK'; Target='耳环运气卷轴' },
+    @{ Source='OA STR'; Target='套服力量卷轴' },
+    @{ Source='GFA'; Target='手套攻击卷轴' },
+    @{ Source='CFA'; Target='拳套攻击卷轴' },
+    @{ Source='best offer'; Target='价高者得' })) {
     $prefix = $entry.Source + [char]9 + $entry.Target + [char]9
     $matches = @($dictionaryRows | Where-Object { $_.StartsWith($prefix, [StringComparison]::OrdinalIgnoreCase) })
     if ($matches.Count -ne 1) {

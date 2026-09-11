@@ -38,7 +38,7 @@ $constructor = $offlineType.GetConstructor($instance, $null,
 $form = $constructor.Invoke([object[]]@($null, [string]$repoRoot))
 try {
     $timer = $offlineType.GetField('timer', $instance).GetValue($form)
-    if ($timer.Interval -ne 280) { throw "AI聊天轮询不是280ms：$($timer.Interval)" }
+    if ($timer.Interval -ne 140) { throw "AI聊天轮询不是140ms：$($timer.Interval)" }
 
     $remember = $offlineType.GetMethod('RememberTranslation', $instance)
     foreach ($index in 0..299) {
@@ -60,8 +60,9 @@ if ($null -eq $aiType.GetField('startupLock', $instance) -or
 }
 
 $source = Get-Content (Join-Path $repoRoot 'src\OfflineChat.cs') -Raw -Encoding UTF8
+$overlaySource = Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -Encoding UTF8
 foreach ($required in @(
-    'timer.Interval = 280',
+    'timer.Interval = 140',
     '-c 1280 -b 512 -ub 256',
     '--parallel 1 --prio 1 --poll 80 --poll-batch 80',
     'Task<bool> warmup = ai.IsInstalled ? ai.EnsureStartedAsync() : null',
@@ -71,5 +72,8 @@ foreach ($required in @(
     '{ "temperature", 0.0 }, { "top_p", 0.7 }, { "max_tokens", 96 }')) {
     if (-not $source.Contains($required)) { throw "AI实时翻译性能或隔离路径缺少：$required" }
 }
+if (-not $overlaySource.Contains('PrepareForOcr(bitmap, out scale, false, 1800.0f)')) {
+    throw 'AI聊天OCR没有保留实图胜出的1800紧裁缩放'
+}
 
-Write-Output 'AI实时翻译：280ms监听、模型预热、首帧仅最新2条、确定性96-token翻译、启动去重、256条缓存、普通/超级喇叭实帧分类通过'
+Write-Output 'AI实时翻译：140ms监听、1800实图优选紧裁OCR、模型预热、首帧仅最新2条、OCR变体短时去重、确定性96-token翻译、256条缓存、普通/超级喇叭实帧分类通过'

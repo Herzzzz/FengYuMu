@@ -23,7 +23,11 @@ $samples = @(
     @{ Source='Anyone know a fix?'; Required='办法|解决' },
     @{ Source='Clicking NPC shows no dialogue window disables all controls.'; Required='NPC'; Required2='对话' },
     @{ Source='is already in a party'; Glossary='Party = 队伍'; Required='队伍|组队' },
-    @{ Source='How do you whisper back someone?'; Glossary='WHISPER = 悄悄话'; Required='悄悄话|私聊'; Forbidden='悄悄话给某人|私聊给某人' }
+    @{ Source='How do you whisper back someone?'; Glossary='WHISPER = 悄悄话'; Required='悄悄话|私聊'; Forbidden='悄悄话给某人|私聊给某人' },
+    @{ Source='selling clean gear, offer'; Glossary="clean = 未砸卷`noffer = 请报价"; Required='未砸卷'; Required2='报价' },
+    @{ Source='anyone doing the GM event rn?'; Glossary="GM event = GM活动`nrn = 现在"; Required='GM活动|活动' },
+    @{ Source='need 2 more for KPQ'; Glossary='KPQ = 废弃都市组队任务'; Required='废弃都市组队任务' },
+    @{ Source='im farming em rn'; Glossary="farming = 刷材料`nrn = 现在"; Required='刷|打'; Required2='现在' }
 )
 $rows = @()
 try {
@@ -65,4 +69,4 @@ finally {
 }
 
 $rows | Format-Table -AutoSize -Wrap
-Write-Output "8B实机翻译通过：8条跨场景聊天；冷启动 $($rows[0].Milliseconds)ms；热态最大 $((($rows | Select-Object -Skip 1).Milliseconds | Measure-Object -Maximum).Maximum)ms"
+Write-Output "8B实机翻译通过：$($samples.Count)条跨场景聊天；冷启动 $($rows[0].Milliseconds)ms；热态最大 $((($rows | Select-Object -Skip 1).Milliseconds | Measure-Object -Maximum).Maximum)ms"
