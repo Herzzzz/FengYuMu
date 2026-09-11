@@ -97,6 +97,12 @@ foreach ($required in @(
     'Opacity = 0.92d',
     'WmNcHitTest',
     'HtBottomRight',
+    'header.MouseDown += BeginWindowDrag',
+    'title.MouseDown += BeginWindowDrag',
+    'status.MouseDown += BeginWindowDrag',
+    'StartWindowDrag',
+    'MoveWindowDrag',
+    'FinishWindowDrag',
     'AiChatWindowLayoutVersion',
     'SelectionBackColor',
     'ChatVisualKind.Megaphone',
@@ -128,6 +134,23 @@ try {
     $showPassive.Invoke($floatingWindow, @()) | Out-Null
     [System.Windows.Forms.Application]::DoEvents()
     if (-not $floatingWindow.Visible) { throw '开始实时翻译时空白等待态浮窗没有立即出现' }
+    $originalBounds = $floatingWindow.Bounds
+    $headerControl = $floatingType.GetField('header', $constructorFlags).GetValue($floatingWindow)
+    $startDrag = $floatingType.GetMethod('StartWindowDrag', $constructorFlags)
+    $moveDrag = $floatingType.GetMethod('MoveWindowDrag', $constructorFlags)
+    $finishDrag = $floatingType.GetMethod('FinishWindowDrag', $constructorFlags)
+    $dragStartPoint = New-Object System.Drawing.Point -ArgumentList 500,400
+    $dragMovePoint = New-Object System.Drawing.Point -ArgumentList 537,429
+    $startDrag.Invoke($floatingWindow, [object[]]@($headerControl,
+        $dragStartPoint.PSObject.BaseObject)) | Out-Null
+    $moveDrag.Invoke($floatingWindow, [object[]]@($dragMovePoint.PSObject.BaseObject)) | Out-Null
+    $expectedLocation = New-Object System.Drawing.Point -ArgumentList `
+        ($originalBounds.X + 37),($originalBounds.Y + 29)
+    if ($floatingWindow.Location -ne $expectedLocation) {
+        throw "AI浮窗顶部拖动没有改变窗口坐标：$($floatingWindow.Location)"
+    }
+    $floatingWindow.Bounds = $originalBounds
+    $finishDrag.Invoke($floatingWindow, @()) | Out-Null
     $floatingWindow.Hide()
     $appendTranslation = $floatingType.GetMethod('AppendTranslation', $constructorFlags,
         $null, [Type[]]@([string]), $null)
@@ -166,4 +189,4 @@ if (-not (Test-Path -LiteralPath $imagePath) -or (Get-Item -LiteralPath $imagePa
     throw 'AI浮窗界面截图未生成或内容为空'
 }
 
-Write-Output 'AI实时浮窗：主窗口关闭不断流、自由缩放、半透明游戏风格、来源颜色、蓝底普通喇叭、粉底超级喇叭、置顶无焦点与F8隔离通过'
+Write-Output 'AI实时浮窗：顶部拖动、主窗口关闭不断流、自由缩放、半透明游戏风格、来源颜色、蓝底普通喇叭、粉底超级喇叭、置顶无焦点与F8隔离通过'

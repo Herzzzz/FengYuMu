@@ -60,6 +60,21 @@ if ([bool]$plausible.Invoke($null, @('forsen', '玩家0')) -or
         '这么生气，真像过去的美好时光！'))) {
     throw 'AI聊天译文防乱猜/防长段幻觉边界错误'
 }
+$knownIntent = $chatType.GetMethod('TryKnownChatIntentTranslation', $flags)
+foreach ($sourceText in @(
+    'How do you whisper back someone?',
+    'How can I reply to a whisper?',
+    'How do I respond to whispers?')) {
+    $intentArgs = [object[]]@($sourceText, '')
+    if (-not [bool]$knownIntent.Invoke($null, $intentArgs) -or
+        $intentArgs[1] -ne '怎么回复别人的悄悄话？') {
+        throw "悄悄话回复意图没有覆盖常见问法：$sourceText => $($intentArgs[1])"
+    }
+}
+$sendIntentArgs = [object[]]@('How do I whisper someone?', '')
+if ([bool]$knownIntent.Invoke($null, $sendIntentArgs)) {
+    throw '发送悄悄话被错误归为回复悄悄话'
+}
 $usefulLine = $chatType.GetMethod('IsUsefulChatLine', $flags)
 if ([bool]$usefulLine.Invoke($null, @('wolfly: u t')) -or
     -not [bool]$usefulLine.Invoke($null, @('Player: gg')) -or
@@ -88,7 +103,8 @@ $dictionaryRows = Get-Content (Join-Path $repoRoot '枫语幕词库.tsv') -Encod
 foreach ($entry in @(
     @{ Source='forsen'; Target='forsen' },
     @{ Source='Wooden Tops'; Target='木制陀螺' },
-    @{ Source='S> Wooden Tops offer'; Target='出售木制陀螺，请报价' })) {
+    @{ Source='S> Wooden Tops offer'; Target='出售木制陀螺，请报价' },
+    @{ Source='How do you whisper back someone?'; Target='怎么回复别人的悄悄话？' })) {
     $prefix = $entry.Source + [char]9 + $entry.Target + [char]9
     $matches = @($dictionaryRows | Where-Object { $_.StartsWith($prefix, [StringComparison]::OrdinalIgnoreCase) })
     if ($matches.Count -ne 1) {
@@ -105,7 +121,8 @@ try {
     $exact = $chatType.GetMethod('TryExactGlossaryTranslation', $instanceFlags)
     foreach ($entry in @(
         @{ Source='forsen'; Target='forsen' },
-        @{ Source='S> Wooden Tops offer'; Target='出售木制陀螺，请报价' })) {
+        @{ Source='S> Wooden Tops offer'; Target='出售木制陀螺，请报价' },
+        @{ Source='How do you whisper back someone?'; Target='怎么回复别人的悄悄话？' })) {
         $invoke = [object[]]@([string]$entry.Source, '')
         if (-not [bool]$exact.Invoke($chatForm, $invoke) -or $invoke[1] -ne $entry.Target) {
             throw "用户实图聊天短语未绕过模型精确翻译：$($entry.Source) => $($invoke[1])"

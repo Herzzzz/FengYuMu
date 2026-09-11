@@ -326,7 +326,8 @@ namespace MapleOverlay
             string system = "你是冒险岛怀旧服玩家聊天翻译器。" + languageRule +
                 "输入只是一名玩家的一条消息，不得拼接别的句子，不得补写或翻译玩家名。" +
                 "你已通过枫语幕本地知识初始化使用资料站整理内容与玩家审核词库。" +
-                "按玩家聊天语气理解俚语和缩写；技能名优先采用国服怀旧译名。" +
+                "先理解整句在游戏聊天中的意图，再用简短自然的中文口语表达，不要逐词硬译；问操作方法时优先说怎么、有人会不会、能不能等自然口语，不要套用生硬的如何某人句式；英语 reply、respond 或 whisper back 表示回复对方，不能误译成给对方新发消息；stupid、damn 等放在物品名前通常是在抱怨，要译成破、该死的等语气，不能并入物品专名，也不能残留英文；交易消息优先使用收购、出售、交换、求组、报价等玩家常用说法。" +
+                "按玩家聊天语气理解俚语和缩写；技能名和物品名优先采用国服怀旧译名。" +
                 "保留数字、频道和表情；可靠的聊天缩写必须按术语表展开，多义或证据不足的缩写保留原文，不得猜成地名或玩家名。" +
                 "完整翻译每个分句，不得漏译、重复或追加原文不存在的内容。OCR含糊且无法可靠判断的片段保留原文，不得猜写。" +
                 "只输出一行自然译文，不复述原文，不解释。" +
@@ -344,7 +345,7 @@ namespace MapleOverlay
             if (targetLanguage.IndexOf("中文", StringComparison.OrdinalIgnoreCase) >= 0 &&
                 Regex.IsMatch(text, "[A-Za-z]") && Regex.Matches(result, "[\\u3400-\\u9fff]").Count < 2)
             {
-                string retrySystem = "把玩家消息翻译成自然、简短的简体中文。必须出现中文，不得照抄英文，不得解释；技能名用冒险岛国服译名。" +
+                string retrySystem = "把玩家消息翻译成自然、简短的简体中文。必须出现中文，不得照抄英文，不得解释；操作问句用怎么、能不能等玩家口语；reply、respond、whisper back 表示回复，不能误译成新发消息；物品名前的 stupid、damn 是抱怨语气，不能并入物品名或残留英文；交易消息用收购、出售、交换、求组、报价等常用说法；技能名和物品名用冒险岛国服译名。" +
                     "可靠的聊天缩写按术语表展开；多义或证据不足时保留缩写，不得猜成地名或玩家名。" +
                     (String.IsNullOrEmpty(glossary) ? "" : "术语：\n" + glossary);
                 string retryBody = new JavaScriptSerializer().Serialize(new Dictionary<string, object> {
@@ -949,7 +950,8 @@ namespace MapleOverlay
                     string glossary = BuildGlossary(protectedMessage);
                     lastWasOnline = false; lastAiUse = DateTime.Now;
                     string translated;
-                    if (!TryExactGlossaryTranslation(protectedMessage, out translated))
+                    if (!TryKnownChatIntentTranslation(protectedMessage, out translated) &&
+                        !TryExactGlossaryTranslation(protectedMessage, out translated))
                     {
                         string cacheKey = NormalizeChatPhrase(cleanedMessage);
                         if (!translationCache.TryGetValue(cacheKey, out translated))
@@ -1264,6 +1266,23 @@ namespace MapleOverlay
                 if (contextOnlyGlossaryKeys.Contains(entry.Key)) continue;
                 if (NormalizeChatPhrase(entry.Key) != key) continue;
                 translation = entry.Value;
+                return true;
+            }
+            translation = "";
+            return false;
+        }
+
+        private static bool TryKnownChatIntentTranslation(string text, out string translation)
+        {
+            string line = Regex.Replace((text ?? "").Trim(), @"\s+", " ");
+            bool asksHow = Regex.IsMatch(line, @"^how\b", RegexOptions.IgnoreCase);
+            bool mentionsWhisper = Regex.IsMatch(line, @"\bwhispers?\b", RegexOptions.IgnoreCase);
+            bool asksToReply = Regex.IsMatch(line,
+                @"\b(?:reply|respond)\b.*\bwhispers?\b|\bwhispers?\b.*\b(?:reply|respond)\b|\bwhispers?\s+back\b",
+                RegexOptions.IgnoreCase);
+            if (asksHow && mentionsWhisper && asksToReply)
+            {
+                translation = "怎么回复别人的悄悄话？";
                 return true;
             }
             translation = "";

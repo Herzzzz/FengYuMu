@@ -12,7 +12,7 @@ $st = $a.GetType('MapleOverlay.TranslationStore', $true)
 $sc = $st.GetConstructor([Reflection.BindingFlags]'Instance,NonPublic,Public', $null, [Type[]]@([string]), $null)
 $s = $sc.Invoke([object[]]@([string](Join-Path $root '枫语幕词库.tsv')))
 $st.GetMethod('Load').Invoke($s, @()) | Out-Null
-foreach ($term in @('PQ','KPQ','RJPQ','R>PQ','WTB','WATK')) {
+foreach ($term in @('PQ','KPQ','RJPQ','R>PQ','T>','WTB','WATK')) {
     if (@($st.GetMethod('FindMatches').Invoke($s, @($term))).Count) { throw "聊天词污染F8：$term" }
 }
 $ft = $a.GetType('MapleOverlay.OfflineChatForm', $true)
@@ -29,12 +29,13 @@ Check 'PQ' '组队任务'
 Check 'KPQ' '废弃都市组队任务'
 Check 'RJPQ' '罗密欧与朱丽叶组队任务'
 Check 'R>PQ' '招募组队任务队员'
+Check 'T>' '交换'
 Check 'WTB' '想收购'
 $multi=[object[]]@('RPQ',$null)
 if([bool]$exact.Invoke($f,$multi)){throw 'RPQ不应脱离上下文硬翻'}
 if([string]$norm.Invoke($null,@('R>PQ')) -eq [string]$norm.Invoke($null,@('RPQ'))){throw 'R>PQ/RPQ发生碰撞'}
-$g=[string]$build.Invoke($f,@('R>PQ KPQ RPQ'))
-foreach($x in @('R>PQ = 招募组队任务队员','KPQ = 废弃都市组队任务','RPQ = 组队任务招募（具体含义需结合上下文）')){
+$g=[string]$build.Invoke($f,@('T> Int Bamboo Hat for Dex Bamboo Hat R>PQ KPQ RPQ'))
+foreach($x in @('T> = 交换','R>PQ = 招募组队任务队员','KPQ = 废弃都市组队任务','RPQ = 组队任务招募（具体含义需结合上下文）')){
     if(-not $g.Contains($x)){throw "AI上下文缺少：$x"}
 }
 $f.Dispose()

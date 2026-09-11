@@ -45,12 +45,23 @@ Assert-NotStructured 'Assassin Wizard Cleric Bowman Thief Pirate' $false $false
 $characterPolicy = $assembly.GetType('MapleOverlay.CharacterPanelPolicy', $true)
 $isInformation = $characterPolicy.GetMethod('IsInformation', [Reflection.BindingFlags]'Static,NonPublic,Public')
 $isStatistics = $characterPolicy.GetMethod('IsStatistics', [Reflection.BindingFlags]'Static,NonPublic,Public')
-$characterInfo = 'CHARACTER INFO CITIZENSHIP LEVEL JOB FAME GUILD REQUEST PARTY REQUEST TRADE SHOW PET INFO'
+$characterInfo = 'CHARACTER INFO CITIZENSHIP LEVEL JOB FAME GUILD REQUEST PARTY REQUEST TRADE SHOW PET INFO CLOSENESS'
 if (-not [bool]$isInformation.Invoke($null, @($characterInfo))) {
     throw '角色信息面板未被识别'
 }
 if ([bool]$isStatistics.Invoke($null, @($characterInfo))) {
     throw '角色信息面板仍被错误归入角色属性面板'
+}
+$overlaySource = Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -Encoding UTF8
+foreach ($required in @('IsVisualCharacterInformationPanel(',
+    'normalized.Contains("closeness")',
+    'visualCharacter = null;')) {
+    if (-not $overlaySource.Contains($required)) {
+        throw "角色/宠物信息面板缺少视觉属性网格隔离：$required"
+    }
+}
+if (-not $overlaySource.Contains('IsStructuredPanelFieldLabel(')) {
+    throw '结构化等级/数值标签缺少去重保护'
 }
 $characterStats = 'CHARACTER STAT NAME JOB LEVEL HP MP EXP FAME STR DEX INT LUK ACCURACY EVASION'
 if (-not [bool]$isStatistics.Invoke($null, @($characterStats))) {

@@ -209,6 +209,10 @@ namespace MapleOverlay
         private readonly Font contentRegularFont = new Font("Microsoft YaHei UI", 11.5f, FontStyle.Regular);
         private readonly Font contentBroadcastFont = new Font("Microsoft YaHei UI", 11.5f, FontStyle.Bold);
         private bool allowClose;
+        private bool dragging;
+        private Point dragPointerOrigin;
+        private Point dragWindowOrigin;
+        private Control dragCaptureTarget;
         private string displayedText = "";
 
         internal AiTranslationWindowForm(OverlayForm owner)
@@ -230,10 +234,12 @@ namespace MapleOverlay
             header.Dock = DockStyle.Top;
             header.Height = 44;
             header.BackColor = Color.FromArgb(43, 57, 72);
+            header.Cursor = Cursors.SizeAll;
             Label title = new Label {
                 Text = "AI实时聊天翻译", AutoSize = true,
                 Location = new Point(12, 5), ForeColor = Color.FromArgb(244, 247, 250),
-                Font = new Font("Microsoft YaHei UI", 10.0f, FontStyle.Bold)
+                Font = new Font("Microsoft YaHei UI", 10.0f, FontStyle.Bold),
+                Cursor = Cursors.SizeAll
             };
             status.Text = "等待聊天区出现新消息";
             status.AutoSize = false;
@@ -242,6 +248,7 @@ namespace MapleOverlay
             status.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
             status.AutoEllipsis = true;
             status.ForeColor = Color.FromArgb(178, 193, 207);
+            status.Cursor = Cursors.SizeAll;
             closeButton.Text = "×";
             closeButton.TabStop = false;
             closeButton.BackColor = header.BackColor;
@@ -257,6 +264,15 @@ namespace MapleOverlay
             header.Resize += delegate {
                 status.Width = Math.Max(80, header.ClientSize.Width - closeButton.Width - 20);
             };
+            header.MouseDown += BeginWindowDrag;
+            header.MouseMove += ContinueWindowDrag;
+            header.MouseUp += EndWindowDrag;
+            title.MouseDown += BeginWindowDrag;
+            title.MouseMove += ContinueWindowDrag;
+            title.MouseUp += EndWindowDrag;
+            status.MouseDown += BeginWindowDrag;
+            status.MouseMove += ContinueWindowDrag;
+            status.MouseUp += EndWindowDrag;
             header.Controls.Add(title); header.Controls.Add(status); header.Controls.Add(closeButton);
 
             content.Dock = DockStyle.Fill;
@@ -369,6 +385,49 @@ namespace MapleOverlay
         {
             allowClose = true;
             Close();
+        }
+
+        private void BeginWindowDrag(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left) return;
+            StartWindowDrag(sender as Control, Control.MousePosition);
+        }
+
+        private void ContinueWindowDrag(object sender, MouseEventArgs e)
+        {
+            if (!dragging || (e.Button & MouseButtons.Left) == 0) return;
+            MoveWindowDrag(Control.MousePosition);
+        }
+
+        private void EndWindowDrag(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left) FinishWindowDrag();
+        }
+
+        private void StartWindowDrag(Control captureTarget, Point pointerPosition)
+        {
+            if (captureTarget == null) return;
+            dragging = true;
+            dragPointerOrigin = pointerPosition;
+            dragWindowOrigin = Location;
+            dragCaptureTarget = captureTarget;
+            captureTarget.Capture = true;
+        }
+
+        private void MoveWindowDrag(Point pointerPosition)
+        {
+            if (!dragging) return;
+            Location = new Point(dragWindowOrigin.X + pointerPosition.X - dragPointerOrigin.X,
+                dragWindowOrigin.Y + pointerPosition.Y - dragPointerOrigin.Y);
+        }
+
+        private void FinishWindowDrag()
+        {
+            if (!dragging) return;
+            dragging = false;
+            if (dragCaptureTarget != null) dragCaptureTarget.Capture = false;
+            dragCaptureTarget = null;
+            SaveBounds();
         }
 
         private void HandleFormClosing(object sender, FormClosingEventArgs e)

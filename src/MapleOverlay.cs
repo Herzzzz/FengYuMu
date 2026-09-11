@@ -2999,6 +2999,11 @@ namespace MapleOverlay
                     {
                         OcrResult result = await RecognizeAsync(prepared);
                         if (RecognitionWasCancelled(automatic, requestId)) return;
+                        // CHARACTER INFO uses a similar magenta row pattern to CHARACTER STAT.
+                        // When its own title/pet anchors fall inside the visually detected panel,
+                        // the colour detector must not project the full STR/DEX/stat grid over it.
+                        if (visualCharacter != null && IsVisualCharacterInformationPanel(
+                            visualCharacter, result, ocrScale)) visualCharacter = null;
                         SceneSnapshot sceneSnapshot = SceneClassifier.Analyze(result, translations, true);
                         string preciseScenes = sceneSnapshot.Describe();
                         if (visualCharacter != null) preciseScenes += ">人物视觉:200/2";
@@ -3746,6 +3751,27 @@ namespace MapleOverlay
                 output[i].StableLayout = true;
         }
 
+        private static bool IsVisualCharacterInformationPanel(CharacterStatVisualLayout layout,
+            OcrResult result, float ocrScale)
+        {
+            if (layout == null || result == null || ocrScale <= 0) return false;
+            RectangleF panel = layout.Crop;
+            panel.Inflate(30.0f * layout.Scale, 30.0f * layout.Scale);
+            foreach (OcrLine line in result.Lines)
+            {
+                string normalized = TranslationStore.Normalize(line.Text);
+                bool informationAnchor = normalized.Contains("character info") ||
+                    normalized.Contains("citizenship") || normalized.Contains("show pet info") ||
+                    normalized.Contains("closeness");
+                if (!informationAnchor) continue;
+                RectangleF raw = GetOcrLineBounds(line);
+                PointF center = new PointF((raw.Left + raw.Width / 2.0f) / ocrScale,
+                    (raw.Top + raw.Height / 2.0f) / ocrScale);
+                if (panel.Contains(center)) return true;
+            }
+            return false;
+        }
+
         private void AddCharacterStatHoverHelp(List<OverlayLabel> output,
             CharacterStatVisualLayout layout, Rectangle tooltipLocal,
             System.Drawing.Point screenPointer, Rectangle screen)
@@ -4489,15 +4515,21 @@ namespace MapleOverlay
                 AddExactLabels(output, new List<OcrLine> { line }, line.Text, matches, ocrScale);
             }
             // A preceding multi-line dictionary match may advance lineIndex past a compact
-            // equipment row even though OCR captured that row correctly. Revisit only rows
-            // with explicit stat structure so their live values are not reduced to bare labels.
+            // equipment or skill-level row even though OCR captured that row correctly.
+            // Revisit only explicit structured prefixes so ordinary dialogue numbers cannot
+            // be mistaken for live panel values.
             foreach (OcrLine line in allLines)
             {
-                if (!LooksLikeEquipmentStatText(line.Text)) continue;
                 string structured;
-                if (TryTranslateStructuredLine(line.Text, true, false, out structured))
+                if (LooksLikeEquipmentStatText(line.Text) &&
+                    TryTranslateStructuredLine(line.Text, true, false, out structured))
                     AddWholeLineLabel(output, line, structured, ocrScale,
                         structured.Length > 24);
+                bool skillLevel = line.Text.IndexOf("master level", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    line.Text.IndexOf("current level", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    line.Text.IndexOf("next level", StringComparison.OrdinalIgnoreCase) >= 0;
+                if (skillLevel && TryTranslateStructuredLine(line.Text, false, true, out structured))
+                    AddWholeLineLabel(output, line, structured, ocrScale, false);
             }
             MergeAdjacentLongLabels(output);
             MergeOverlappingSameTextLabels(output);
@@ -5241,7 +5273,6 @@ namespace MapleOverlay
                 if (TryTranslateStructuredLine(CombineVisualRow(row), false, true, out structured))
                     AddDetailBlockLabel(output, row, structured, ocrScale);
             }
-
             // Names and fixed labels (Master/Current/Next Level) are
             // resolved independently from the long description so one OCR wobble cannot
             // hide the entire tooltip.
@@ -5484,7 +5515,8 @@ namespace MapleOverlay
                 for (int j = 0; j < labels.Count; j++)
                 {
                     if (i == j || labels[i].Text.Length >= labels[j].Text.Length) continue;
-                    if (IsCharacterStatLabel(labels[i].Text)) continue;
+                    if (IsCharacterStatLabel(labels[i].Text) ||
+                        IsStructuredPanelFieldLabel(labels[i].Text)) continue;
                     string shorter = Regex.Replace(labels[i].Text, @"\s+", "");
                     string longer = Regex.Replace(labels[j].Text, @"\s+", "");
                     RectangleF overlap = RectangleF.Intersect(labels[i].Bounds, labels[j].Bounds);
@@ -5509,6 +5541,20 @@ namespace MapleOverlay
                     labels.RemoveAt(i); break;
                 }
             }
+        }
+
+        private static bool IsStructuredPanelFieldLabel(string text)
+        {
+            if (String.IsNullOrEmpty(text)) return false;
+            string[] prefixes = new string[] {
+                "最高等级", "当前等级", "下一级", "需要等级", "需要力量", "需要敏捷",
+                "需要智力", "需要运气", "需要人气", "可用职业", "类型", "攻击速度",
+                "物理攻击力", "魔法攻击力", "物理防御力", "魔法防御力", "命中率",
+                "回避率", "移动速度", "跳跃力", "剩余强化次数", "可升级次数"
+            };
+            foreach (string prefix in prefixes)
+                if (text.StartsWith(prefix, StringComparison.Ordinal)) return true;
+            return false;
         }
 
         private Rectangle GetChatExclusionBounds()
