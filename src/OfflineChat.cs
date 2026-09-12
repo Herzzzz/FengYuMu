@@ -97,10 +97,21 @@ namespace MapleOverlay
 
     internal sealed class OnlineAiSettings
     {
-        public string Endpoint = "";
-        public string Model = "";
+        public const string DefaultProvider = "豆包 2.0 Lite（推荐）";
+        public const string DefaultEndpoint = "https://ark.cn-beijing.volces.com/api/v3/responses";
+        public const string DefaultModel = "doubao-seed-2-0-lite-260215";
+        public string Provider = DefaultProvider;
+        public string Endpoint = DefaultEndpoint;
+        public string Model = DefaultModel;
         public string ApiKey = "";
-        public bool IsReady { get { return Endpoint.StartsWith("http", StringComparison.OrdinalIgnoreCase) && Model.Length > 0; } }
+        public bool IsReady
+        {
+            get
+            {
+                return Endpoint.StartsWith("https://", StringComparison.OrdinalIgnoreCase) &&
+                    Model.Length > 0 && ApiKey.Length > 0;
+            }
+        }
 
         public static OnlineAiSettings Load()
         {
@@ -108,8 +119,18 @@ namespace MapleOverlay
             using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\FengYuMu\OnlineAI"))
             {
                 if (key == null) return value;
-                value.Endpoint = Convert.ToString(key.GetValue("Endpoint", ""));
-                value.Model = Convert.ToString(key.GetValue("Model", ""));
+                value.Endpoint = Convert.ToString(key.GetValue("Endpoint", DefaultEndpoint));
+                value.Model = Convert.ToString(key.GetValue("Model", DefaultModel));
+                object storedProvider = key.GetValue("Provider", null);
+                value.Provider = Convert.ToString(storedProvider);
+                if (value.Provider.Length == 0)
+                {
+                    bool legacyCustom = !String.Equals(value.Endpoint, DefaultEndpoint,
+                        StringComparison.OrdinalIgnoreCase) ||
+                        !String.Equals(value.Model, DefaultModel,
+                            StringComparison.OrdinalIgnoreCase);
+                    value.Provider = legacyCustom ? "自定义兼容接口" : DefaultProvider;
+                }
                 string protectedKey = Convert.ToString(key.GetValue("ApiKey", ""));
                 try
                 {
@@ -125,49 +146,189 @@ namespace MapleOverlay
         {
             using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu\OnlineAI"))
             {
-                key.SetValue("Endpoint", Endpoint); key.SetValue("Model", Model);
+                key.SetValue("Provider", Provider); key.SetValue("Endpoint", Endpoint);
+                key.SetValue("Model", Model);
                 string encrypted = ApiKey.Length == 0 ? "" : Convert.ToBase64String(ProtectedData.Protect(Encoding.UTF8.GetBytes(ApiKey), null, DataProtectionScope.CurrentUser));
                 key.SetValue("ApiKey", encrypted);
             }
+        }
+
+        public static void Clear()
+        {
+            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu\OnlineAI"))
+            {
+                key.SetValue("Provider", DefaultProvider);
+                key.SetValue("Endpoint", DefaultEndpoint);
+                key.SetValue("Model", DefaultModel);
+                key.DeleteValue("ApiKey", false);
+            }
+        }
+    }
+
+    internal sealed class OnlineAiPreset
+    {
+        internal string Name;
+        internal string Endpoint;
+        internal string Model;
+        internal string ApplyUrl;
+        internal string PlainHint;
+    }
+
+    internal static class OnlineAiPresets
+    {
+        internal static readonly OnlineAiPreset[] All = new OnlineAiPreset[] {
+            new OnlineAiPreset {
+                Name = OnlineAiSettings.DefaultProvider,
+                Endpoint = OnlineAiSettings.DefaultEndpoint,
+                Model = OnlineAiSettings.DefaultModel,
+                ApplyUrl = "https://console.volcengine.com/ark/region:ark+cn-beijing/apikey",
+                PlainHint = "国内连接通常快，短句效果和费用比较均衡；需要火山方舟账号并开通模型。"
+            },
+            new OnlineAiPreset {
+                Name = "DeepSeek V4 Flash（快速）",
+                Endpoint = "https://api.deepseek.com/v1/chat/completions",
+                Model = "deepseek-v4-flash",
+                ApplyUrl = "https://platform.deepseek.com/api_keys",
+                PlainHint = "短句速度快、理解口语不错；需要 DeepSeek 开放平台账号和可用余额。"
+            },
+            new OnlineAiPreset {
+                Name = "智谱 GLM-4-Flash（免费备用）",
+                Endpoint = "https://open.bigmodel.cn/api/paas/v4/chat/completions",
+                Model = "glm-4-flash-250414",
+                ApplyUrl = "https://bigmodel.cn/usercenter/proj-mgmt/apikeys",
+                PlainHint = "官方提供免费 API，适合先试用；繁忙时速度和译文稳定性可能不如前两项。"
+            },
+            new OnlineAiPreset {
+                Name = "自定义兼容接口",
+                Endpoint = "https://",
+                Model = "",
+                ApplyUrl = "",
+                PlainHint = "仅给已经知道接口地址和模型名的用户使用；普通玩家不用选这一项。"
+            }
+        };
+
+        internal static OnlineAiPreset Find(string name)
+        {
+            foreach (OnlineAiPreset item in All)
+                if (String.Equals(item.Name, name, StringComparison.Ordinal)) return item;
+            return All[0];
         }
     }
 
     internal static class OnlineAiClient
     {
-        public static Task<string> ReviewAsync(OnlineAiSettings settings, string source, string localTranslation, string target, string glossary)
+        public static Task<string> TranslateAsync(OnlineAiSettings settings, string source,
+            string target, string glossary)
         {
             return Task.Factory.StartNew(delegate {
-                string system = "你是冒险岛怀旧服翻译校对员。根据聊天语境、俚语和术语表纠正本地AI译文。目标语言是" + target + "。只输出最终译文，不解释。";
-                string user = "原文：" + source + "\n本地AI译文：" + localTranslation +
-                    (glossary.Length > 0 ? "\n术语表：\n" + glossary : "");
-                string body = new JavaScriptSerializer().Serialize(new Dictionary<string, object> {
-                    { "model", settings.Model }, { "temperature", 0.1 }, { "max_tokens", 256 },
-                    { "messages", new object[] {
-                        new Dictionary<string, string> { { "role", "system" }, { "content", system } },
-                        new Dictionary<string, string> { { "role", "user" }, { "content", user } }
-                    } }
-                });
+                string body = BuildRequestBody(settings, source, target, glossary);
                 byte[] data = Encoding.UTF8.GetBytes(body);
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(settings.Endpoint);
-                request.Method = "POST"; request.ContentType = "application/json"; request.Timeout = 30000; request.ContentLength = data.Length;
-                if (settings.ApiKey.Length > 0) request.Headers[HttpRequestHeader.Authorization] = "Bearer " + settings.ApiKey;
+                request.Method = "POST"; request.ContentType = "application/json";
+                request.Timeout = 12000; request.ReadWriteTimeout = 12000;
+                request.KeepAlive = true; request.ContentLength = data.Length;
+                request.Headers[HttpRequestHeader.Authorization] = "Bearer " + settings.ApiKey;
                 using (Stream stream = request.GetRequestStream()) stream.Write(data, 0, data.Length);
                 string json;
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 using (StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8)) json = reader.ReadToEnd();
                 Dictionary<string, object> root = new JavaScriptSerializer().Deserialize<Dictionary<string, object>>(json);
-                object choicesValue = root["choices"];
-                object[] choices = choicesValue as object[];
-                if (choices == null)
-                {
-                    System.Collections.ArrayList list = choicesValue as System.Collections.ArrayList;
-                    if (list != null) choices = list.ToArray();
-                }
-                if (choices == null || choices.Length == 0) throw new InvalidOperationException("在线AI返回为空");
-                Dictionary<string, object> choice = (Dictionary<string, object>)choices[0];
-                Dictionary<string, object> message = (Dictionary<string, object>)choice["message"];
-                return Regex.Replace(Convert.ToString(message["content"]), "<think>[\\s\\S]*?</think>", "", RegexOptions.IgnoreCase).Trim();
+                string translated = ExtractText(root);
+                translated = Regex.Replace(translated, "<think>[\\s\\S]*?</think>", "",
+                    RegexOptions.IgnoreCase).Trim();
+                translated = Regex.Replace(translated, @"^(?:最终译文|译文|中文)\s*[:：]\s*", "",
+                    RegexOptions.IgnoreCase).Trim().Trim('`', '"');
+                translated = Regex.Replace(translated, @"[\r\n]+", " ").Trim();
+                if (translated.Length == 0) throw new InvalidOperationException("联网AI没有返回译文");
+                return translated;
             });
+        }
+
+        internal static string BuildRequestBody(OnlineAiSettings settings, string source,
+            string target, string glossary)
+        {
+            string system =
+                "你是冒险岛怀旧服国际服老玩家兼聊天翻译。把一名玩家的一条聊天翻成自然、简短的" + target +
+                "游戏口语，先理解整句意图，禁止逐词硬译。结合冒险岛的地图、职业、装备、技能、任务、" +
+                "组队任务、交易缩写和玩家俚语理解；B>、S>、WTB、WTS分别按收购、出售等玩家说法处理。" +
+                "混合大小写、数字或无空格的专有词可能是玩家ID，句尾称呼也可能是玩家ID，证据不足就保留原文；" +
+                "__FYM_PLAYER_数字__占位符必须原样保留。保留数字、频道、表情和语气，不得漏译、重复或编造。" +
+                "例：How do you whisper back someone?＝怎么回复别人的悄悄话？；" +
+                "which event is it i JUST went to orbis bro BriskIcedTea＝这是哪个活动啊兄弟？我刚去了天空之城，BriskIcedTea。" +
+                "只输出一行最终译文，不要输出分析、思考、解释、标题、原文、注释、前缀或引号。";
+            string user = "只翻译下面这一条玩家聊天：\n" + source +
+                (glossary.Length > 0 ? "\n这句话命中的冒险岛词库术语（必须优先采用）：\n" + glossary : "");
+            bool responsesApi = settings.Endpoint.TrimEnd('/').EndsWith("/responses",
+                StringComparison.OrdinalIgnoreCase);
+            Dictionary<string, object> requestBody = new Dictionary<string, object> {
+                { "model", settings.Model }, { "temperature", 0.1 }
+            };
+            if (responsesApi)
+            {
+                requestBody["instructions"] = system;
+                requestBody["input"] = user;
+                requestBody["max_output_tokens"] = 160;
+                requestBody["thinking"] = new Dictionary<string, string> { { "type", "disabled" } };
+            }
+            else
+            {
+                requestBody["max_tokens"] = 160;
+                if (settings.Model.StartsWith("deepseek-", StringComparison.OrdinalIgnoreCase))
+                    requestBody["thinking"] = new Dictionary<string, string> { { "type", "disabled" } };
+                if (settings.Model.StartsWith("glm-", StringComparison.OrdinalIgnoreCase))
+                    requestBody["do_sample"] = false;
+                requestBody["messages"] = new object[] {
+                    new Dictionary<string, string> { { "role", "system" }, { "content", system } },
+                    new Dictionary<string, string> { { "role", "user" }, { "content", user } }
+                };
+            }
+            return new JavaScriptSerializer().Serialize(requestBody);
+        }
+
+        private static string ExtractText(Dictionary<string, object> root)
+        {
+            object value;
+            if (root.TryGetValue("output_text", out value) && Convert.ToString(value).Length > 0)
+                return Convert.ToString(value);
+            if (root.TryGetValue("choices", out value))
+            {
+                object[] choices = AsArray(value);
+                if (choices.Length > 0)
+                {
+                    Dictionary<string, object> choice = choices[0] as Dictionary<string, object>;
+                    object messageValue;
+                    if (choice != null && choice.TryGetValue("message", out messageValue))
+                    {
+                        Dictionary<string, object> message = messageValue as Dictionary<string, object>;
+                        object contentValue;
+                        if (message != null && message.TryGetValue("content", out contentValue))
+                            return Convert.ToString(contentValue);
+                    }
+                }
+            }
+            if (root.TryGetValue("output", out value))
+                foreach (object outputItem in AsArray(value))
+                {
+                    Dictionary<string, object> item = outputItem as Dictionary<string, object>;
+                    object contentValue;
+                    if (item == null || !item.TryGetValue("content", out contentValue)) continue;
+                    foreach (object contentItem in AsArray(contentValue))
+                    {
+                        Dictionary<string, object> content = contentItem as Dictionary<string, object>;
+                        object textValue;
+                        if (content != null && content.TryGetValue("text", out textValue) &&
+                            Convert.ToString(textValue).Length > 0) return Convert.ToString(textValue);
+                    }
+                }
+            throw new InvalidOperationException("联网AI返回格式中没有找到最终译文");
+        }
+
+        private static object[] AsArray(object value)
+        {
+            object[] array = value as object[];
+            if (array != null) return array;
+            System.Collections.ArrayList list = value as System.Collections.ArrayList;
+            return list == null ? new object[0] : list.ToArray();
         }
     }
 
@@ -632,17 +793,13 @@ namespace MapleOverlay
 
         private readonly OverlayForm overlay;
         private readonly string dictionaryPath;
-        private readonly string candidatesPath;
         private readonly OfflineAiClient ai;
         private readonly RichTextBox output = new RichTextBox();
         private readonly Font outputOriginalFont = new Font("Microsoft YaHei UI", 9.0f, FontStyle.Regular);
         private readonly Font outputTranslationFont = new Font("Microsoft YaHei UI", 10.5f, FontStyle.Bold);
-        private readonly TextBox input = new TextBox();
-        private readonly ComboBox source = new ComboBox();
-        private readonly ComboBox target = new ComboBox();
         private readonly Label status = new Label();
         private readonly Button liveButton = new Button();
-        private readonly CheckBox onlineReview = new CheckBox();
+        private readonly Label cloudMode = new Label();
         private readonly System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
         private readonly System.Windows.Forms.Timer releaseTimer = new System.Windows.Forms.Timer();
         private readonly HashSet<string> protectedPlayerNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -661,13 +818,9 @@ namespace MapleOverlay
         private Rectangle chatRegion;
         private bool live;
         private bool firstLiveCapture;
-        private bool busy;
         private bool captureBusy;
         private bool translateBusy;
         private int screenshotCaptureSuspendCount;
-        private string lastSource = "";
-        private string lastTranslation = "";
-        private bool lastWasOnline;
         private bool floatingWindowEnabled;
         private AiTranslationWindowForm floatingWindow;
         private DateTime lastAiUse = DateTime.MinValue;
@@ -676,7 +829,6 @@ namespace MapleOverlay
         {
             overlay = owner;
             dictionaryPath = Path.Combine(baseDir, "枫语幕词库.tsv");
-            candidatesPath = Path.Combine(baseDir, "枫语幕纠错候选.tsv");
             ai = new OfflineAiClient(baseDir);
             LoadGlossary();
             Text = "枫语幕｜AI实时聊天翻译｜@奇怪小鸭";
@@ -700,13 +852,15 @@ namespace MapleOverlay
                 Rectangle work = Screen.FromControl(this).WorkingArea;
                 Location = new Point(Math.Max(work.Left, work.Right - Width - 18), work.Top + 55);
                 RefreshAiStatus();
-                Task<bool> warmup = ai.IsInstalled ? ai.EnsureStartedAsync() : null;
+                OnlineAiSettings online = OnlineAiSettings.Load();
+                Task<bool> warmup = !online.IsReady && ai.IsInstalled ? ai.EnsureStartedAsync() : null;
                 await InitializeKnowledgeInBackgroundAsync(false);
                 if (warmup != null)
                 {
                     bool ready = await warmup;
                     status.Text = ready ? "AI已预热｜热态翻译约数百毫秒" : ai.Status;
                 }
+                else if (online.IsReady) status.Text = "联网AI已就绪｜离线模型仅在联网失败时启动";
             };
             FormClosing += delegate(object sender, FormClosingEventArgs e) {
                 if (e.CloseReason == CloseReason.UserClosing)
@@ -717,7 +871,7 @@ namespace MapleOverlay
                     Hide();
                     if (live && floatingWindowEnabled && floatingWindow != null &&
                         !floatingWindow.IsDisposed && floatingWindow.DisplayedText.Length > 0)
-                        floatingWindow.ShowPassive();
+                        floatingWindow.ShowPassiveIfAllowed();
                 }
             };
             Disposed += delegate { outputOriginalFont.Dispose(); outputTranslationFont.Dispose(); };
@@ -725,65 +879,21 @@ namespace MapleOverlay
 
         private void BuildUi()
         {
-            TableLayoutPanel root = new TableLayoutPanel { Dock = DockStyle.Fill, Padding = new Padding(10), RowCount = 5, ColumnCount = 1 };
-            root.RowStyles.Add(new RowStyle(SizeType.Absolute, 76));
-            root.RowStyles.Add(new RowStyle(SizeType.Percent, 62));
-            root.RowStyles.Add(new RowStyle(SizeType.Absolute, 38));
-            root.RowStyles.Add(new RowStyle(SizeType.Percent, 38));
-            root.RowStyles.Add(new RowStyle(SizeType.Absolute, 45));
+            TableLayoutPanel root = new TableLayoutPanel { Dock = DockStyle.Fill, Padding = new Padding(10), RowCount = 2, ColumnCount = 1 };
+            root.RowStyles.Add(new RowStyle(SizeType.Absolute, 86));
+            root.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
             FlowLayoutPanel tools = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = true };
             liveButton.Text = "开始实时翻译"; liveButton.AutoSize = true;
             liveButton.Click += async delegate { await ToggleLiveAsync(); };
-            Button once = new Button { Text = "单次识别翻译（兼容模式）", AutoSize = true };
-            once.Click += async delegate { await PollChatAsync(true); };
-            Button bind = new Button { Text = "框选/调整游戏聊天区", AutoSize = true };
+            Button bind = new Button { Text = "聊天框位置", AutoSize = true };
             bind.Click += async delegate { await BindRegionAsync(); };
-            Button review = new Button { Text = "审核AI纠错", AutoSize = true };
-            review.Click += async delegate {
-                using (CorrectionReviewForm form = new CorrectionReviewForm(dictionaryPath, candidatesPath)) form.ShowDialog(this);
-                overlay.ReloadDictionary();
-                LoadGlossary();
-                await InitializeKnowledgeInBackgroundAsync(true);
-            };
-            status.AutoSize = true; status.Padding = new Padding(8, 7, 0, 0); status.ForeColor = Color.DarkGreen;
-            Button onlineSettings = new Button { Text = "联网复核（可选）", AutoSize = true };
+            Button onlineSettings = new Button { Text = "联网AI设置", AutoSize = true };
             onlineSettings.Click += delegate {
                 using (OnlineAiForm form = new OnlineAiForm()) form.ShowDialog(this);
-                RefreshOnlineReviewState();
+                translationCache.Clear(); translationCacheOrder.Clear();
+                RefreshCloudAiState();
             };
-            Button syncKnowledge = new Button { Text = "同步AI词库", AutoSize = true };
-            syncKnowledge.Click += async delegate {
-                LoadGlossary();
-                await InitializeKnowledgeInBackgroundAsync(true);
-                KnowledgeInitializationResult result = knowledge;
-                status.Text = result == null ? "请先安装AI模型" :
-                    (result.Changed ? "AI已切换到新词库 " : "AI词库已是最新版 ") + result.Entries + "条";
-            };
-            tools.Controls.Add(liveButton); tools.Controls.Add(once); tools.Controls.Add(bind); tools.Controls.Add(review); tools.Controls.Add(onlineSettings); tools.Controls.Add(syncKnowledge); tools.Controls.Add(status);
-            root.Controls.Add(tools, 0, 0);
-
-            output.Dock = DockStyle.Fill; output.ReadOnly = true; output.BorderStyle = BorderStyle.FixedSingle;
-            output.ScrollBars = RichTextBoxScrollBars.Vertical; output.BackColor = Color.FromArgb(24, 27, 32); output.ForeColor = Color.White;
-            output.DetectUrls = false; output.Font = outputOriginalFont;
-            output.Text = "实时AI翻译功能来自 @奇怪小鸭\r\n\r\n";
-            root.Controls.Add(output, 0, 1);
-
-            FlowLayoutPanel languages = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = false };
-            languages.Controls.Add(new Label { Text = "手动翻译：", AutoSize = true, Padding = new Padding(0, 7, 0, 0) });
-            FillLanguages(source); FillLanguages(target); source.SelectedIndex = 0; target.SelectedIndex = 1;
-            languages.Controls.Add(source); languages.Controls.Add(new Label { Text = "→", AutoSize = true, Padding = new Padding(3, 7, 3, 0) }); languages.Controls.Add(target);
-            root.Controls.Add(languages, 0, 2);
-
-            input.Dock = DockStyle.Fill; input.Multiline = true; input.ScrollBars = ScrollBars.Vertical;
-            root.Controls.Add(input, 0, 3);
-            FlowLayoutPanel actions = new FlowLayoutPanel { Dock = DockStyle.Fill, FlowDirection = FlowDirection.RightToLeft, WrapContents = false };
-            Button translate = new Button { Text = "AI翻译", AutoSize = true };
-            translate.Click += async delegate { await TranslateManualAsync(); };
-            Button copy = new Button { Text = "复制译文", AutoSize = true };
-            copy.Click += delegate { if (lastTranslation.Length > 0) Clipboard.SetText(lastTranslation); };
-            Button correct = new Button { Text = "加入纠错候选", AutoSize = true };
-            correct.Click += delegate { AddCandidate(); };
-            Button install = new Button { Text = "安装/选择离线AI模型", AutoSize = true };
+            Button install = new Button { Text = "离线备用模型", AutoSize = true };
             install.Click += async delegate {
                 ai.Stop();
                 using (AiInstallForm form = new AiInstallForm(ai.AiRoot, dictionaryPath)) form.ShowDialog(this);
@@ -791,17 +901,21 @@ namespace MapleOverlay
                 LoadGlossary(); RefreshAiStatus();
                 await InitializeKnowledgeInBackgroundAsync(false);
             };
-            onlineReview.AutoSize = true; onlineReview.Padding = new Padding(0, 6, 5, 0);
-            RefreshOnlineReviewState();
-            actions.Controls.Add(translate); actions.Controls.Add(copy); actions.Controls.Add(correct); actions.Controls.Add(install); actions.Controls.Add(onlineReview);
-            root.Controls.Add(actions, 0, 4);
-            Controls.Add(root);
-        }
+            status.AutoSize = true; status.Padding = new Padding(8, 7, 0, 0); status.ForeColor = Color.DarkGreen;
+            cloudMode.AutoSize = true; cloudMode.Padding = new Padding(8, 7, 0, 0);
+            cloudMode.ForeColor = Color.FromArgb(37, 99, 235);
+            tools.Controls.Add(liveButton); tools.Controls.Add(bind); tools.Controls.Add(onlineSettings);
+            tools.Controls.Add(install); tools.Controls.Add(cloudMode);
+            tools.Controls.Add(status);
+            root.Controls.Add(tools, 0, 0);
 
-        private static void FillLanguages(ComboBox box)
-        {
-            box.DropDownStyle = ComboBoxStyle.DropDownList; box.Width = 105;
-            box.Items.AddRange(new object[] { "自动识别", "中文", "英语", "日语", "韩语" });
+            output.Dock = DockStyle.Fill; output.ReadOnly = true; output.BorderStyle = BorderStyle.FixedSingle;
+            output.ScrollBars = RichTextBoxScrollBars.Vertical; output.BackColor = Color.FromArgb(24, 27, 32); output.ForeColor = Color.White;
+            output.DetectUrls = false; output.Font = outputOriginalFont;
+            output.Text = "准备好了。配好联网AI后会直接使用；联网失败时自动改用离线备用。\r\n\r\n";
+            root.Controls.Add(output, 0, 1);
+            RefreshCloudAiState();
+            Controls.Add(root);
         }
 
         private void RefreshAiStatus()
@@ -811,12 +925,12 @@ namespace MapleOverlay
                 : "未安装模型包";
         }
 
-        private void RefreshOnlineReviewState()
+        private void RefreshCloudAiState()
         {
-            bool ready = OnlineAiSettings.Load().IsReady;
-            onlineReview.Enabled = ready;
-            onlineReview.Text = ready ? "使用联网复核" : "联网复核未配置";
-            if (!ready) onlineReview.Checked = false;
+            OnlineAiSettings settings = OnlineAiSettings.Load();
+            cloudMode.Text = settings.IsReady
+                ? "当前：" + settings.Provider + "｜联网优先"
+                : "当前：离线模式｜点“联网AI设置”可提速提准";
         }
 
         private void LoadRegion()
@@ -858,6 +972,18 @@ namespace MapleOverlay
             floatingWindow.ShowPassive();
         }
 
+        internal bool IsLiveTranslationRunning { get { return live; } }
+
+        internal bool RestoreFloatingWindowFromTray()
+        {
+            if (!live) return false;
+            floatingWindowEnabled = true;
+            if (floatingWindow == null || floatingWindow.IsDisposed)
+                floatingWindow = new AiTranslationWindowForm(overlay);
+            floatingWindow.ShowPassive();
+            return true;
+        }
+
         internal async Task<bool> PrepareForScreenshotCaptureAsync()
         {
             screenshotCaptureSuspendCount++;
@@ -882,7 +1008,8 @@ namespace MapleOverlay
             if (live)
             {
                 timer.Start();
-                if (floatingWindowEnabled) ShowFloatingWindowPassive();
+                if (floatingWindowEnabled && floatingWindow != null && !floatingWindow.IsDisposed)
+                    floatingWindow.ShowPassiveIfAllowed();
             }
         }
 
@@ -922,15 +1049,23 @@ namespace MapleOverlay
                 firstLiveCapture = true;
                 if (overlay != null) overlay.ApplyAiChatFloatingWindow(true);
                 else ApplyFloatingWindow(true);
-                status.Text = "正在预热AI，同时开始监听聊天…";
                 timer.Start();
-                bool ready = await ai.EnsureStartedAsync();
-                if (live) status.Text = ready ? "AI已预热｜140ms快速监听" : ai.Status;
+                OnlineAiSettings online = OnlineAiSettings.Load();
+                if (online.IsReady)
+                {
+                    status.Text = online.Provider + "已就绪｜140ms快速监听";
+                }
+                else
+                {
+                    status.Text = "正在预热离线AI，同时开始监听聊天…";
+                    bool ready = await ai.EnsureStartedAsync();
+                    if (live) status.Text = ready ? "离线AI已预热｜140ms快速监听" : ai.Status;
+                }
             }
             else
             {
                 timer.Stop();
-                if (floatingWindow != null && !floatingWindow.IsDisposed) floatingWindow.Hide();
+                if (floatingWindow != null && !floatingWindow.IsDisposed) floatingWindow.HideForStop();
             }
         }
 
@@ -990,7 +1125,7 @@ namespace MapleOverlay
                     Dictionary<string, string> nameTokens;
                     string protectedMessage = ProtectPlayerNames(cleanedMessage, out nameTokens);
                     string glossary = BuildGlossary(protectedMessage);
-                    lastWasOnline = false; lastAiUse = DateTime.Now;
+                    lastAiUse = DateTime.Now;
                     string translated;
                     if (!TryKnownChatIntentTranslation(protectedMessage, out translated) &&
                         !TryExactGlossaryTranslation(protectedMessage, out translated))
@@ -999,28 +1134,55 @@ namespace MapleOverlay
                         if (!translationCache.TryGetValue(cacheKey, out translated))
                         {
                             string sourceLanguage = DetectChatSourceLanguage(cleanedMessage);
-                            translated = await ai.TranslateAsync(protectedMessage, sourceLanguage, "中文", glossary);
-                            if (!IsPlausibleChatTranslation(protectedMessage, translated))
-                                translated = protectedMessage;
-                            else
-                            {
-                                string localTranslation = translated;
-                                string reviewed = await ReviewOnlineIfEnabled(protectedMessage,
-                                    translated, "中文", glossary);
-                                translated = IsPlausibleChatTranslation(protectedMessage, reviewed)
-                                    ? reviewed : localTranslation;
-                            }
+                            translated = await TranslateWithPreferredAiAsync(protectedMessage,
+                                sourceLanguage, glossary);
                             RememberTranslation(cacheKey, translated);
                         }
                     }
                     translated = RestorePlayerNames(translated, nameTokens);
-                    lastSource = message; lastTranslation = translated;
                     AppendTranslation(line, speakerPrefix + translated, pending.Style);
                     status.Text = pendingChatLines.Count == 0 ? "新消息已翻译" : "正在翻译，剩余 " + pendingChatLines.Count + " 条";
                 }
             }
             catch (Exception ex) { status.Text = ex.Message; }
             finally { translateBusy = false; }
+        }
+
+        private async Task<string> TranslateWithPreferredAiAsync(string source,
+            string sourceLanguage, string glossary)
+        {
+            OnlineAiSettings online = OnlineAiSettings.Load();
+            if (online.IsReady)
+            {
+                try
+                {
+                    string translated = await OnlineAiClient.TranslateAsync(online, source,
+                        "简体中文", glossary);
+                    translated = OfflineAiClient.ToSimplifiedChinese(translated);
+                    if (IsPlausibleChatTranslation(source, translated))
+                    {
+                        status.Text = online.Provider + "已翻译";
+                        return translated;
+                    }
+                    status.Text = online.Provider + "返回异常，自动改用离线备用";
+                }
+                catch
+                {
+                    status.Text = online.Provider + "连接失败，自动改用离线备用";
+                }
+            }
+            try
+            {
+                string translated = await ai.TranslateAsync(source, sourceLanguage, "中文", glossary);
+                return IsPlausibleChatTranslation(source, translated) ? translated : source;
+            }
+            catch
+            {
+                status.Text = online.IsReady
+                    ? "联网和离线备用都不可用，已保留原文"
+                    : "请先配置联网AI或安装离线备用模型";
+                return source;
+            }
         }
 
         internal static List<string> GetNewChatLines(List<string> previous, List<string> current)
@@ -1315,29 +1477,6 @@ namespace MapleOverlay
             return textCharacters >= Math.Max(3, line.Length / 3);
         }
 
-        private async Task TranslateManualAsync()
-        {
-            string value = input.Text.Trim(); if (value.Length == 0 || busy) return;
-            busy = true;
-            try
-            {
-                string speakerPrefix, message;
-                SplitSpeaker(value, out speakerPrefix, out message);
-                Dictionary<string, string> nameTokens;
-                string protectedMessage = ProtectPlayerNames(message, out nameTokens);
-                string glossary = BuildGlossary(protectedMessage);
-                lastWasOnline = false;
-                lastAiUse = DateTime.Now;
-                string translated = await ai.TranslateAsync(protectedMessage, Convert.ToString(source.SelectedItem), Convert.ToString(target.SelectedItem), glossary);
-                translated = await ReviewOnlineIfEnabled(protectedMessage, translated, Convert.ToString(target.SelectedItem), glossary);
-                translated = RestorePlayerNames(translated, nameTokens);
-                lastSource = message; lastTranslation = translated;
-                AppendTranslation(value, speakerPrefix + translated, ChatVisualStyle.Default);
-            }
-            catch (Exception ex) { MessageBox.Show(ex.Message, "AI翻译失败"); }
-            finally { busy = false; }
-        }
-
         private string BuildGlossary(string text)
         {
             StringBuilder result = new StringBuilder(); int count = 0;
@@ -1489,6 +1628,8 @@ namespace MapleOverlay
             if (OfflineAiClient.LooksLikeInstructionLeak(output)) return false;
             int maximum = Math.Max(32, input.Length * 3 + 12);
             if (output.Length > maximum) return false;
+            if (Regex.Matches(input, "[A-Za-z]").Count >= 3 &&
+                Regex.Matches(output, "[\\u3400-\\u9fff]").Count == 0) return false;
             // This is a common hallucination for opaque player names and OCR fragments.
             if (Regex.IsMatch(input, @"^[A-Za-z][A-Za-z0-9_]{2,23}$") &&
                 Regex.IsMatch(output, @"^玩家\s*\d+$")) return false;
@@ -1640,22 +1781,6 @@ namespace MapleOverlay
             return result;
         }
 
-        private async Task<string> ReviewOnlineIfEnabled(string original, string local, string targetLanguage, string glossary)
-        {
-            if (!onlineReview.Checked) return local;
-            OnlineAiSettings settings = OnlineAiSettings.Load();
-            if (!settings.IsReady) { onlineReview.Checked = false; RefreshOnlineReviewState(); status.Text = "联网复核未配置，继续使用离线译文"; return local; }
-            try
-            {
-                string reviewed = await OnlineAiClient.ReviewAsync(settings, original, local, targetLanguage, glossary);
-                status.Text = reviewed == local ? "在线AI复核：无需修改" : "在线AI已给出纠错建议";
-                if (reviewed.Length > 0 && reviewed != local) lastWasOnline = true;
-                return reviewed.Length > 0
-                    ? OfflineAiClient.ToSimplifiedChinese(reviewed) : local;
-            }
-            catch (Exception ex) { status.Text = "在线复核失败，保留本地译文：" + ex.Message; return local; }
-        }
-
         private void AppendTranslation(string original, string translation, ChatVisualStyle visualStyle)
         {
             if (visualStyle == null) visualStyle = ChatVisualStyle.Default;
@@ -1689,20 +1814,10 @@ namespace MapleOverlay
                 if (floatingWindow == null || floatingWindow.IsDisposed)
                     floatingWindow = new AiTranslationWindowForm(overlay);
                 floatingWindow.AppendTranslation(translation, visualStyle);
-                floatingWindow.ShowPassive();
+                floatingWindow.ShowPassiveIfAllowed();
             }
         }
 
-        private void AddCandidate()
-        {
-            if (lastSource.Length == 0 || lastTranslation.Length == 0) { MessageBox.Show("请先完成一次翻译。", "AI纠错候选"); return; }
-            string row = Clean(lastSource) + "\t" + Clean(lastTranslation) + "\t" +
-                (lastWasOnline ? "在线AI纠错-待审核" : "本地AI建议-待审核") + "\t" + DateTime.Now.ToString("s") + Environment.NewLine;
-            File.AppendAllText(candidatesPath, row, new UTF8Encoding(true));
-            status.Text = "已加入纠错候选，正式词库尚未改变";
-        }
-
-        private static string Clean(string value) { return (value ?? "").Replace('\t', ' ').Replace('\r', ' ').Replace('\n', ' ').Trim(); }
         public void StopService()
         {
             timer.Stop(); releaseTimer.Stop(); ai.Stop();
@@ -1718,63 +1833,6 @@ namespace MapleOverlay
             translationCacheOrder.Enqueue(key);
             while (translationCacheOrder.Count > 256)
                 translationCache.Remove(translationCacheOrder.Dequeue());
-        }
-    }
-
-    internal sealed class CorrectionReviewForm : Form
-    {
-        private readonly string dictionaryPath, candidatesPath;
-        private readonly DataGridView grid = new DataGridView();
-        public CorrectionReviewForm(string dictionary, string candidates)
-        {
-            dictionaryPath = dictionary; candidatesPath = candidates;
-            Text = "审核AI纠错候选"; Size = new Size(900, 560); StartPosition = FormStartPosition.CenterParent;
-            Font = new Font("Microsoft YaHei UI", 9.0f);
-            grid.Dock = DockStyle.Fill; grid.AllowUserToAddRows = false; grid.RowHeadersVisible = false;
-            grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect; grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            grid.Columns.Add("Source", "原文"); grid.Columns.Add("Translation", "AI建议译文"); grid.Columns.Add("State", "状态"); grid.Columns.Add("Time", "时间");
-            FlowLayoutPanel tools = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 42 };
-            Button accept = new Button { Text = "审核通过并写入正式词库", AutoSize = true };
-            accept.Click += delegate { AcceptSelected(); };
-            Button delete = new Button { Text = "删除候选", AutoSize = true };
-            delete.Click += delegate { foreach (DataGridViewRow row in grid.SelectedRows) grid.Rows.Remove(row); SaveCandidates(); };
-            tools.Controls.Add(accept); tools.Controls.Add(delete);
-            Controls.Add(grid); Controls.Add(tools); LoadRows();
-        }
-        private void LoadRows()
-        {
-            grid.Rows.Clear(); if (!File.Exists(candidatesPath)) return;
-            foreach (string line in File.ReadAllLines(candidatesPath, Encoding.UTF8)) { string[] p = line.Split('\t'); if (p.Length >= 2) grid.Rows.Add(p[0], p[1], p.Length > 2 ? p[2] : "待审核", p.Length > 3 ? p[3] : ""); }
-        }
-        private void AcceptSelected()
-        {
-            if (grid.SelectedRows.Count == 0) return;
-            List<string> dictionary = new List<string>(File.ReadAllLines(dictionaryPath, Encoding.UTF8));
-            foreach (DataGridViewRow selected in grid.SelectedRows)
-            {
-                string source = Convert.ToString(selected.Cells[0].Value).Trim(), translated = Convert.ToString(selected.Cells[1].Value).Trim();
-                bool replaced = false;
-                for (int i = 0; i < dictionary.Count; i++)
-                {
-                    if (dictionary[i].StartsWith("#")) continue;
-                    string[] p = dictionary[i].Split('\t');
-                    if (p.Length > 0 && String.Equals(p[0].Trim(), source, StringComparison.OrdinalIgnoreCase))
-                    {
-                        string category = p.Length > 2 ? p[2] : "AI纠错-玩家审核";
-                        dictionary[i] = source + "\t" + translated + "\t" + category + (p.Length > 3 ? "\t" + p[3] : ""); replaced = true; break;
-                    }
-                }
-                if (!replaced) dictionary.Add(source + "\t" + translated + "\tAI纠错-玩家审核");
-                grid.Rows.Remove(selected);
-            }
-            File.WriteAllLines(dictionaryPath, dictionary.ToArray(), new UTF8Encoding(true)); SaveCandidates();
-            MessageBox.Show("已写入正式词库；关闭审核窗口后会立即重新载入内存。", "审核完成");
-        }
-        private void SaveCandidates()
-        {
-            StringBuilder b = new StringBuilder();
-            foreach (DataGridViewRow row in grid.Rows) b.Append(Convert.ToString(row.Cells[0].Value)).Append('\t').Append(Convert.ToString(row.Cells[1].Value)).Append('\t').Append(Convert.ToString(row.Cells[2].Value)).Append('\t').Append(Convert.ToString(row.Cells[3].Value)).AppendLine();
-            File.WriteAllText(candidatesPath, b.ToString(), new UTF8Encoding(true));
         }
     }
 
@@ -2154,39 +2212,137 @@ namespace MapleOverlay
 
     internal sealed class OnlineAiForm : Form
     {
+        private readonly ComboBox provider = new ComboBox();
         private readonly TextBox endpoint = new TextBox();
         private readonly TextBox model = new TextBox();
         private readonly TextBox apiKey = new TextBox();
+        private readonly Label providerHint = new Label();
+        private readonly Label testStatus = new Label();
+
         public OnlineAiForm()
         {
-            Text = "可选：联网AI复核设置"; StartPosition = FormStartPosition.CenterParent;
+            Text = "联网AI实时翻译（不用租服务器）"; StartPosition = FormStartPosition.CenterParent;
             FormBorderStyle = FormBorderStyle.FixedDialog; MaximizeBox = false; MinimizeBox = false;
-            ClientSize = new Size(650, 338); Font = new Font("Microsoft YaHei UI", 9.0f);
+            ClientSize = new Size(760, 560); Font = new Font("Microsoft YaHei UI", 9.0f);
             OnlineAiSettings value = OnlineAiSettings.Load();
-            Label summary = new Label { Location = new Point(24, 18), Size = new Size(596, 48), ForeColor = Color.DarkGreen,
-                Text = "不填写也能正常使用：截图覆盖、词库翻译和离线AI均不依赖此处。\r\n只有你自愿使用第三方联网接口复核译文时才需要配置。" };
-            AddField("接口地址：", endpoint, 78); AddField("模型名称：", model, 124); AddField("API密钥：", apiKey, 170);
-            endpoint.Text = value.Endpoint; model.Text = value.Model; apiKey.Text = value.ApiKey; apiKey.UseSystemPasswordChar = true;
-            Label hint = new Label { Location = new Point(24, 212), Size = new Size(596, 58), ForeColor = Color.DimGray,
-                Text = "支持 OpenAI 兼容的 /v1/chat/completions 接口。枫语幕不会内置或共享他人的密钥，也不能保证第三方服务永久免费。密钥仅用 Windows 当前账户加密保存，不写入词库。" };
-            Button offline = new Button { Text = "保持离线模式", Location = new Point(382, 286), Size = new Size(126, 32) };
-            offline.Click += delegate { DialogResult = DialogResult.Cancel; Close(); };
-            Button save = new Button { Text = "保存设置", Location = new Point(522, 286), Size = new Size(98, 32) };
-            save.Click += delegate {
-                OnlineAiSettings settings = new OnlineAiSettings { Endpoint = endpoint.Text.Trim(), Model = model.Text.Trim(), ApiKey = apiKey.Text.Trim() };
-                bool any = settings.Endpoint.Length > 0 || settings.Model.Length > 0 || settings.ApiKey.Length > 0;
-                if (any && (settings.Endpoint.Length == 0 || settings.Model.Length == 0))
-                { MessageBox.Show("如需联网复核，请至少填写接口地址和模型名称；否则请清空三项并保持离线模式。", "联网AI设置"); return; }
-                if (settings.Endpoint.Length > 0 && !settings.Endpoint.StartsWith("https://", StringComparison.OrdinalIgnoreCase) && !settings.Endpoint.StartsWith("http://127.0.0.1", StringComparison.OrdinalIgnoreCase))
-                { MessageBox.Show("远程接口必须使用 HTTPS。", "在线AI设置"); return; }
-                settings.Save(); DialogResult = DialogResult.OK; Close();
+            Label heading = new Label {
+                Text = "选一家 → 申请密钥 → 粘贴 → 保存并测试，以后点“开始实时翻译”就行。",
+                Location = new Point(24, 18), Size = new Size(710, 28),
+                Font = new Font(Font, FontStyle.Bold), ForeColor = Color.FromArgb(22, 101, 52)
             };
-            Controls.Add(summary); Controls.Add(hint); Controls.Add(offline); Controls.Add(save);
+            Label tutorial = new Label {
+                Location = new Point(24, 50), Size = new Size(710, 105),
+                ForeColor = Color.FromArgb(55, 65, 81),
+                Text = "小白教程：\r\n1. 不知道选谁就先用豆包；想先免费试就选智谱。\r\n" +
+                    "2. 点“打开申请页面”，按网页提示注册、开通对应模型并新建 API Key。\r\n" +
+                    "3. 把网页给你的整串 Key 复制到下面，点“保存并测试”。\r\n" +
+                    "不用租服务器，也不用每次打开网页；费用/免费额度由你选的服务商账号结算。"
+            };
+
+            Controls.Add(new Label { Text = "AI服务：", Location = new Point(24, 174), AutoSize = true });
+            provider.Location = new Point(112, 169); provider.Size = new Size(430, 28);
+            provider.DropDownStyle = ComboBoxStyle.DropDownList;
+            foreach (OnlineAiPreset item in OnlineAiPresets.All) provider.Items.Add(item.Name);
+            Button open = new Button { Text = "打开申请页面", Location = new Point(558, 168), Size = new Size(176, 30) };
+            open.Click += delegate { OpenApplyPage(); };
+            providerHint.Location = new Point(112, 202); providerHint.Size = new Size(622, 38);
+            providerHint.ForeColor = Color.FromArgb(75, 85, 99);
+
+            AddField("接口地址：", endpoint, 250);
+            AddField("模型名称：", model, 296);
+            AddField("API Key：", apiKey, 342);
+            apiKey.UseSystemPasswordChar = true;
+
+            Label privacy = new Label {
+                Location = new Point(24, 384), Size = new Size(710, 56),
+                ForeColor = Color.DimGray,
+                Text = "枫语幕只把当前聊天短句、命中的冒险岛词库术语和固定游戏提示词发给你选的服务商。" +
+                    "中间分析不会显示，悬浮窗只给最终译文。Key 用 Windows 当前账户加密保存在本机，不写进词库或压缩包。"
+            };
+            testStatus.Location = new Point(24, 449); testStatus.Size = new Size(710, 25);
+            testStatus.ForeColor = Color.FromArgb(37, 99, 235);
+
+            Button offline = new Button { Text = "清除密钥，改用离线", Location = new Point(365, 500), Size = new Size(170, 34) };
+            offline.Click += delegate {
+                OnlineAiSettings.Clear();
+                DialogResult = DialogResult.OK;
+                Close();
+            };
+            Button save = new Button { Text = "保存并测试", Location = new Point(552, 500), Size = new Size(182, 34) };
+            save.Click += async delegate { await SaveAndTestAsync(save); };
+
+            provider.SelectedIndexChanged += delegate { ApplySelectedPreset(); };
+            string savedProvider = value.Provider;
+            if (!provider.Items.Contains(savedProvider)) savedProvider = "自定义兼容接口";
+            provider.SelectedItem = savedProvider;
+            endpoint.Text = value.Endpoint; model.Text = value.Model; apiKey.Text = value.ApiKey;
+            ApplySelectedPresetHintOnly();
+
+            Controls.Add(heading); Controls.Add(tutorial); Controls.Add(provider);
+            Controls.Add(open); Controls.Add(providerHint); Controls.Add(privacy);
+            Controls.Add(testStatus); Controls.Add(offline); Controls.Add(save);
         }
+
         private void AddField(string label, TextBox box, int y)
         {
             Controls.Add(new Label { Text = label, Location = new Point(24, y + 5), AutoSize = true });
-            box.Location = new Point(112, y); box.Size = new Size(508, 27); Controls.Add(box);
+            box.Location = new Point(112, y); box.Size = new Size(622, 27); Controls.Add(box);
+        }
+
+        private void ApplySelectedPreset()
+        {
+            OnlineAiPreset selected = OnlineAiPresets.Find(Convert.ToString(provider.SelectedItem));
+            endpoint.Text = selected.Endpoint;
+            model.Text = selected.Model;
+            ApplySelectedPresetHintOnly();
+        }
+
+        private void ApplySelectedPresetHintOnly()
+        {
+            providerHint.Text = OnlineAiPresets.Find(Convert.ToString(provider.SelectedItem)).PlainHint;
+        }
+
+        private void OpenApplyPage()
+        {
+            string url = OnlineAiPresets.Find(Convert.ToString(provider.SelectedItem)).ApplyUrl;
+            if (url.Length == 0)
+            {
+                MessageBox.Show("自定义接口没有统一申请页面，请向接口提供方获取地址、模型名和 Key。", "联网AI设置");
+                return;
+            }
+            try { Process.Start(new ProcessStartInfo(url) { UseShellExecute = true }); }
+            catch { MessageBox.Show("浏览器没有成功打开，请检查系统默认浏览器。", "联网AI设置"); }
+        }
+
+        private async Task SaveAndTestAsync(Button save)
+        {
+            OnlineAiSettings settings = new OnlineAiSettings {
+                Provider = Convert.ToString(provider.SelectedItem),
+                Endpoint = endpoint.Text.Trim(), Model = model.Text.Trim(), ApiKey = apiKey.Text.Trim()
+            };
+            if (!settings.IsReady)
+            {
+                MessageBox.Show("还差接口地址、模型名或 API Key。按上面的 1、2、3 步补齐就行。", "联网AI设置");
+                return;
+            }
+            save.Enabled = false; testStatus.Text = "正在试连并翻译一句冒险岛聊天……";
+            try
+            {
+                string result = await OnlineAiClient.TranslateAsync(settings,
+                    "How do you whisper back someone?", "简体中文", "whisper = 悄悄话\n");
+                if (!OfflineChatForm.IsPlausibleChatTranslation("How do you whisper back someone?", result) ||
+                    !Regex.IsMatch(result, "[\\u3400-\\u9fff]"))
+                    throw new InvalidOperationException("返回内容不像有效译文");
+                settings.Save();
+                testStatus.Text = "连接成功，已保存。以后直接开始实时翻译。";
+                await Task.Delay(550);
+                DialogResult = DialogResult.OK; Close();
+            }
+            catch
+            {
+                testStatus.Text = "没连通，旧设置没有被覆盖。请检查 Key、模型是否开通和网络。";
+            }
+            finally { save.Enabled = true; }
         }
     }
 }

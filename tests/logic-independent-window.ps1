@@ -87,7 +87,11 @@ foreach ($required in @(
     'captureBusy || screenshotCaptureSuspendCount > 0',
     'floatingWindowEnabled && live && screenshotCaptureSuspendCount == 0',
     'overlay.ApplyAiChatFloatingWindow(true)',
-    'ShowFloatingWindowPassive()')) {
+    'ShowFloatingWindowPassive()',
+    'floatingWindow.ShowPassiveIfAllowed()',
+    'floatingWindow.HideForStop()',
+    'internal bool RestoreFloatingWindowFromTray()',
+    'internal bool IsLiveTranslationRunning')) {
     if (-not $chatSource.Contains($required)) { throw "AI浮窗链路缺少：$required" }
 }
 foreach ($required in @(
@@ -107,11 +111,22 @@ foreach ($required in @(
     'SelectionBackColor',
     'ChatVisualKind.Megaphone',
     'ChatVisualKind.SuperMegaphone',
-    'overlay.ApplyAiChatFloatingWindow')) {
+    'internal bool HiddenByUser',
+    'internal void ShowPassiveIfAllowed()',
+    'internal void HideForStop()')) {
     if (-not $forms.Contains($required)) { throw "AI浮窗界面缺少：$required" }
 }
 if ($forms.Contains('CheckBox independentWindow')) {
     throw 'AI实时翻译独立浮窗仍要求用户勾选开关'
+}
+if ($forms.Contains('overlay.ApplyAiChatFloatingWindow(false)')) {
+    throw '关闭AI悬浮窗仍会永久关闭实时浮窗功能'
+}
+foreach ($required in @(
+    '重新显示AI翻译悬浮窗',
+    'RestoreAiChatFloatingWindowFromTray()',
+    'tray.DoubleClick += delegate { ShowMainPanel(); }')) {
+    if (-not $overlaySource.Contains($required)) { throw "托盘恢复链路缺少：$required" }
 }
 if ($overlaySource.Contains('!visibleTranslation || aiChatFloatingWindowEnabled')) {
     throw 'AI浮窗仍在抑制F8原位覆盖'
@@ -134,6 +149,22 @@ try {
     $showPassive.Invoke($floatingWindow, @()) | Out-Null
     [System.Windows.Forms.Application]::DoEvents()
     if (-not $floatingWindow.Visible) { throw '开始实时翻译时空白等待态浮窗没有立即出现' }
+    $floatingWindow.Close()
+    [System.Windows.Forms.Application]::DoEvents()
+    if ($floatingWindow.Visible -or $floatingWindow.IsDisposed -or
+        -not [bool]$floatingType.GetProperty('HiddenByUser', $constructorFlags).GetValue($floatingWindow, $null)) {
+        throw '点AI悬浮窗红叉后没有仅隐藏并保留后台实时翻译'
+    }
+    $showIfAllowed = $floatingType.GetMethod('ShowPassiveIfAllowed', $constructorFlags)
+    $showIfAllowed.Invoke($floatingWindow, @()) | Out-Null
+    [System.Windows.Forms.Application]::DoEvents()
+    if ($floatingWindow.Visible) { throw '新译文错误地重新弹出了用户手动关闭的悬浮窗' }
+    $showPassive.Invoke($floatingWindow, @()) | Out-Null
+    [System.Windows.Forms.Application]::DoEvents()
+    if (-not $floatingWindow.Visible -or
+        [bool]$floatingType.GetProperty('HiddenByUser', $constructorFlags).GetValue($floatingWindow, $null)) {
+        throw '托盘显式恢复没有重新显示AI悬浮窗'
+    }
     $originalBounds = $floatingWindow.Bounds
     $headerControl = $floatingType.GetField('header', $constructorFlags).GetValue($floatingWindow)
     $startDrag = $floatingType.GetMethod('StartWindowDrag', $constructorFlags)

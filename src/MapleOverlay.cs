@@ -147,6 +147,13 @@ namespace MapleOverlay
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072; // TLS 1.2
             ServicePointManager.Expect100Continue = false;
             ServicePointManager.DefaultConnectionLimit = 4;
+            if (args != null) foreach (string arg in args)
+                if (arg.StartsWith("--apply-update=", StringComparison.OrdinalIgnoreCase))
+                {
+                    Environment.ExitCode = ApplicationUpdater.ApplyPreparedUpdate(
+                        arg.Substring("--apply-update=".Length).Trim('"'));
+                    return;
+                }
             Benchmark = args != null && Array.IndexOf(args, "--benchmark") >= 0;
             BenchmarkUi = args != null && Array.IndexOf(args, "--benchmark-ui") >= 0;
             BenchmarkSceneProbe = args != null && Array.IndexOf(args, "--benchmark-scene-probe") >= 0;
@@ -206,6 +213,36 @@ namespace MapleOverlay
                             panel.Hide();
                             bitmap.Save(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                                 "main_ui_test.png"), ImageFormat.Png);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    File.WriteAllText(uiErrorPath, ex.ToString(), Encoding.UTF8);
+                    Environment.ExitCode = 3;
+                }
+                return;
+            }
+            if (args != null && Array.IndexOf(args, "--online-ai-ui-test") >= 0)
+            {
+                string uiErrorPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                    "online_ai_ui_test_error.txt");
+                try
+                {
+                    Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
+                    if (File.Exists(uiErrorPath)) File.Delete(uiErrorPath);
+                    using (OnlineAiForm panel = new OnlineAiForm())
+                    {
+                        panel.Show();
+                        Application.DoEvents();
+                        using (Bitmap bitmap = new Bitmap(panel.Width, panel.Height,
+                            PixelFormat.Format32bppArgb))
+                        {
+                            panel.DrawToBitmap(bitmap, new Rectangle(System.Drawing.Point.Empty,
+                                bitmap.Size));
+                            panel.Hide();
+                            bitmap.Save(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                                "online_ai_ui_test.png"), ImageFormat.Png);
                         }
                     }
                 }
@@ -2189,8 +2226,9 @@ namespace MapleOverlay
                     HotkeyText(showKey, showModifiers) + " 翻译开关，" +
                     HotkeyText(hideKey, hideModifiers) + " 自动对齐聊天框。手柄：翻译 " +
                     showGamepadShortcut + "，缩回 " + hideGamepadShortcut + "。" +
-                    "双击托盘图标打开AI实时聊天翻译。" +
+                    "双击托盘图标打开主界面；右键可重新显示AI翻译悬浮窗。" +
                     ((!h1 || !h2) ? "（有快捷键注册失败）" : ""), ToolTipIcon.Info);
+                ShowPendingApplicationUpdateResult();
                 BeginSafeWarmup();
                 if (!Program.Benchmark) BeginActivationRecovery();
                 if (!Program.Benchmark) ShowMainPanel();
@@ -2635,6 +2673,79 @@ namespace MapleOverlay
             }
         }
 
+        internal async Task InstallLatestApplicationAsync(Button button)
+        {
+            if (button == null) return;
+            string originalText = button.Text;
+            button.Enabled = false;
+            button.Text = "下载并校验中…";
+            try
+            {
+                PreparedApplicationUpdate update =
+                    await ApplicationUpdater.PrepareLatestAsync(baseDir);
+                if (!update.HasChanges)
+                {
+                    MessageBox.Show("当前三个安装文件已经和 GitHub 最新正式包完全一致，不需要替换。",
+                        "枫语幕一键更新");
+                    return;
+                }
+                button.Text = "正在安全重启…";
+                update.StartInstaller();
+                Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("更新没有动到当前版本。\n\n" + ex.Message +
+                    "\n\n可以稍后重试，也可以继续正常使用。", "枫语幕一键更新");
+            }
+            finally
+            {
+                if (!button.IsDisposed)
+                {
+                    button.Enabled = true;
+                    button.Text = originalText;
+                }
+            }
+        }
+
+        private void ShowPendingApplicationUpdateResult()
+        {
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu"))
+                {
+                    object stored = key.GetValue("ApplicationUpdateSuccess", null);
+                    if (stored == null) return;
+                    bool success = Convert.ToInt32(stored, CultureInfo.InvariantCulture) != 0;
+                    string message = Convert.ToString(key.GetValue("ApplicationUpdateMessage", ""));
+                    string detail = Convert.ToString(key.GetValue("ApplicationUpdateDetail", ""));
+                    key.DeleteValue("ApplicationUpdateSuccess", false);
+                    key.DeleteValue("ApplicationUpdateMessage", false);
+                    key.DeleteValue("ApplicationUpdateDetail", false);
+                    string body = message;
+                    if (!success && detail.Length > 0)
+                        body += "\n" + (detail.Length > 180 ? detail.Substring(0, 180) : detail);
+                    tray.ShowBalloonTip(success ? 3200 : 6000,
+                        success ? "枫语幕更新完成" : "枫语幕更新未完成",
+                        body, success ? ToolTipIcon.Info : ToolTipIcon.Error);
+                }
+            }
+            catch { }
+        }
+
+        internal bool RestoreAiChatFloatingWindowFromTray()
+        {
+            if (chatTranslator == null || chatTranslator.IsDisposed ||
+                !chatTranslator.IsLiveTranslationRunning)
+            {
+                tray.ShowBalloonTip(1800, "AI翻译悬浮窗",
+                    "实时翻译还没开始。先打开“AI实时聊天翻译”，再点开始。", ToolTipIcon.Info);
+                return false;
+            }
+            chatTranslator.RestoreFloatingWindowFromTray();
+            return true;
+        }
+
         private void BuildTray()
         {
             tray.Icon = Program.AppIcon;
@@ -2650,8 +2761,8 @@ namespace MapleOverlay
             hotkeys.Click += delegate { ShowHotkeyEditor(); };
             ToolStripMenuItem chat = new ToolStripMenuItem("AI实时聊天翻译");
             chat.Click += delegate { ShowChatTranslator(); };
-            ToolStripMenuItem syncAi = new ToolStripMenuItem("同步AI词库");
-            syncAi.Click += delegate { SyncAiKnowledge(true); };
+            ToolStripMenuItem restoreChat = new ToolStripMenuItem("重新显示AI翻译悬浮窗");
+            restoreChat.Click += delegate { RestoreAiChatFloatingWindowFromTray(); };
             ToolStripMenuItem exit = new ToolStripMenuItem("退出");
             exit.Click += delegate { Close(); };
             menu.Items.Add(main);
@@ -2659,7 +2770,7 @@ namespace MapleOverlay
             menu.Items.Add(dictionary);
             menu.Items.Add(hotkeys);
             menu.Items.Add(chat);
-            menu.Items.Add(syncAi);
+            menu.Items.Add(restoreChat);
             menu.Items.Add(exit);
             tray.ContextMenuStrip = menu;
             tray.DoubleClick += delegate { ShowMainPanel(); };

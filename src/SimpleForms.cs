@@ -214,6 +214,7 @@ namespace MapleOverlay
         private Point dragWindowOrigin;
         private Control dragCaptureTarget;
         private string displayedText = "";
+        private bool hiddenByUser;
 
         internal AiTranslationWindowForm(OverlayForm owner)
         {
@@ -338,6 +339,7 @@ namespace MapleOverlay
         }
 
         internal string DisplayedText { get { return displayedText; } }
+        internal bool HiddenByUser { get { return hiddenByUser; } }
 
         internal void AppendTranslation(string translation)
         {
@@ -378,7 +380,20 @@ namespace MapleOverlay
 
         internal void ShowPassive()
         {
+            hiddenByUser = false;
+            ShowPassiveIfAllowed();
+        }
+
+        internal void ShowPassiveIfAllowed()
+        {
+            if (hiddenByUser) return;
             if (!Visible) Show();
+        }
+
+        internal void HideForStop()
+        {
+            hiddenByUser = false;
+            Hide();
         }
 
         internal void ClosePermanently()
@@ -435,8 +450,8 @@ namespace MapleOverlay
             SaveBounds();
             if (allowClose || e.CloseReason != CloseReason.UserClosing) return;
             e.Cancel = true;
+            hiddenByUser = true;
             Hide();
-            if (overlay != null) overlay.ApplyAiChatFloatingWindow(false);
         }
 
         private void LoadSavedBounds()
@@ -601,19 +616,22 @@ namespace MapleOverlay
 
             Button ready = MakeButton("缩到托盘，开始使用", new Point(20, 434), new Size(520, 42), true);
             ready.Click += delegate { Hide(); };
-            Button dictionary = MakeButton("词库", new Point(20, 488), new Size(160, 38), false);
+            Button dictionary = MakeButton("词库", new Point(20, 488), new Size(124, 38), false);
             dictionary.Click += delegate { overlay.ShowDictionaryEditor(); };
-            Button shortcut = MakeButton("快捷键", new Point(200, 488), new Size(160, 38), false);
+            Button shortcut = MakeButton("快捷键", new Point(152, 488), new Size(124, 38), false);
             shortcut.Click += delegate { overlay.ShowHotkeyEditor(); };
-            Button ai = MakeButton("AI 聊天翻译", new Point(380, 488), new Size(160, 38), false);
+            Button ai = MakeButton("AI 翻译", new Point(284, 488), new Size(124, 38), false);
             ai.Click += delegate { overlay.ShowChatTranslator(); };
+            Button update = MakeButton("一键更新", new Point(416, 488), new Size(124, 38), false);
+            update.Enabled = overlay != null;
+            update.Click += async delegate { await overlay.InstallLatestApplicationAsync(update); };
             Label hint = new Label {
                 Text = "F8 翻译开/关；F9 自动对齐聊天框；关闭后仍在托盘。",
                 Location = new Point(22, 534), Size = new Size(516, 32),
                 ForeColor = Color.FromArgb(107, 114, 128), TextAlign = ContentAlignment.MiddleLeft
             };
 
-            Controls.Add(hint); Controls.Add(ai); Controls.Add(shortcut); Controls.Add(dictionary);
+            Controls.Add(hint); Controls.Add(update); Controls.Add(ai); Controls.Add(shortcut); Controls.Add(dictionary);
             Controls.Add(ready); Controls.Add(rangeCard); Controls.Add(card); Controls.Add(header);
             FormClosing += delegate(object sender, FormClosingEventArgs e) {
                 if (e.CloseReason == CloseReason.UserClosing) { e.Cancel = true; Hide(); }

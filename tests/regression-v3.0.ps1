@@ -17,6 +17,7 @@ $exe = Join-Path $repoRoot '枫语幕.exe'
 & (Join-Path $PSScriptRoot 'logic-regression-v3.0.ps1')
 & (Join-Path $PSScriptRoot 'logic-continuous-translation.ps1')
 & (Join-Path $PSScriptRoot 'logic-independent-window.ps1')
+& (Join-Path $PSScriptRoot 'logic-online-ai-settings.ps1')
 & (Join-Path $PSScriptRoot 'logic-ai-chat-accuracy.ps1')
 & (Join-Path $PSScriptRoot 'logic-hotkey-toggle.ps1')
 & (Join-Path $PSScriptRoot 'regression-v3.0-character-info-pet.ps1')
@@ -26,6 +27,7 @@ $exe = Join-Path $repoRoot '枫语幕.exe'
 & (Join-Path $PSScriptRoot 'logic-regression-chat-abbreviations.ps1') `
     -ExpectedVersion '3.0.0.0' -ExpectedDisplayVersion 'v3.0'
 & (Join-Path $PSScriptRoot 'logic-regression-v2.2.2-updater.ps1')
+& (Join-Path $PSScriptRoot 'logic-application-updater.ps1')
 & (Join-Path $PSScriptRoot 'gamepad-shortcuts.ps1')
 
 & (Join-Path $PSScriptRoot 'regression-v2.1.0.ps1') `

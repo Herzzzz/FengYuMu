@@ -65,7 +65,9 @@ foreach ($required in @(
     'timer.Interval = 140',
     '-c 1280 -b 512 -ub 256',
     '--parallel 1 --prio 1 --poll 80 --poll-batch 80',
-    'Task<bool> warmup = ai.IsInstalled ? ai.EnsureStartedAsync() : null',
+    'Task<bool> warmup = !online.IsReady && ai.IsInstalled ? ai.EnsureStartedAsync() : null',
+    'if (online.IsReady)',
+    'TranslateWithPreferredAiAsync',
     'firstLiveCapture = true',
     'int first = Math.Max(0, lines.Count - 2)',
     'DetectChatSourceLanguage(cleanedMessage)',
@@ -76,4 +78,4 @@ if (-not $overlaySource.Contains('PrepareForOcr(bitmap, out scale, false, 1800.0
     throw 'AI聊天OCR没有保留实图胜出的1800紧裁缩放'
 }
 
-Write-Output 'AI实时翻译：140ms监听、1800实图优选紧裁OCR、模型预热、首帧仅最新2条、OCR变体短时去重、确定性96-token翻译、256条缓存、普通/超级喇叭实帧分类通过'
+Write-Output 'AI实时翻译：140ms监听、1800实图优选紧裁OCR、联网时跳过本地预热、离线模型按需兜底、首帧仅最新2条、OCR变体短时去重、确定性96-token翻译、256条缓存、普通/超级喇叭实帧分类通过'
