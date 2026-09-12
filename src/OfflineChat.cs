@@ -181,7 +181,7 @@ namespace MapleOverlay
                 Name = OnlineAiSettings.DefaultProvider,
                 Endpoint = OnlineAiSettings.DefaultEndpoint,
                 Model = OnlineAiSettings.DefaultModel,
-                ApplyUrl = "https://console.volcengine.com/ark/region:ark+cn-beijing/apikey",
+                ApplyUrl = "https://console.volcengine.com/ark",
                 PlainHint = "国内连接通常快，短句效果和费用比较均衡；需要火山方舟账号并开通模型。"
             },
             new OnlineAiPreset {
@@ -290,6 +290,9 @@ namespace MapleOverlay
                 StringComparison.OrdinalIgnoreCase) >= 0 ? "火山方舟" : "服务商";
             string lower = (responseText ?? "").ToLowerInvariant();
             string suffix = ExtractSafeErrorCode(responseText);
+            if (lower.Contains("modelnotopen") || lower.Contains("model_not_open") ||
+                lower.Contains("model not open"))
+                return "API Key 已通过验证，但账号还没开通所选模型。点上面的“打开申请页面”→“开通管理”→选择并开通豆包 Seed 2.0 Lite，等一两分钟再测试。" + suffix;
             if (statusCode == 401)
                 return "API Key 不对或复制不完整。请在" + service +
                     "的“API Key 管理”重新创建；不要填 Access Key 或 Secret Key。" + suffix;

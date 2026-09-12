@@ -33,10 +33,14 @@ $describeHttp = $clientType.GetMethod('DescribeHttpFailure', $all)
 $badKey = [string]$describeHttp.Invoke($null, [object[]]@(401, '', '豆包 2.0 Lite（推荐）'))
 $noModel = [string]$describeHttp.Invoke($null, [object[]]@(403,
     '{"error":{"code":"PermissionDenied"}}', '豆包 2.0 Lite（推荐）'))
+$notOpen = [string]$describeHttp.Invoke($null, [object[]]@(404,
+    '{"error":{"code":"ModelNotOpen"}}', '豆包 2.0 Lite（推荐）'))
 $noQuota = [string]$describeHttp.Invoke($null, [object[]]@(429, '', '豆包 2.0 Lite（推荐）'))
 if (-not $badKey.Contains('不要填 Access Key 或 Secret Key') -or
     -not $noModel.Contains('模型未开通') -or
     -not $noModel.Contains('PermissionDenied') -or
+    -not $notOpen.Contains('API Key 已通过验证') -or
+    -not $notOpen.Contains('开通管理') -or
     -not $noQuota.Contains('额度')) {
     throw '联网AI没有把密钥、模型权限和额度错误说明白'
 }
