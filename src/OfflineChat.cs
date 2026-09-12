@@ -244,6 +244,80 @@ namespace MapleOverlay
             });
         }
 
+        internal static string DescribeFailure(Exception error, OnlineAiSettings settings)
+        {
+            while (error is AggregateException && error.InnerException != null)
+                error = error.InnerException;
+            WebException web = error as WebException;
+            if (web != null)
+            {
+                HttpWebResponse response = web.Response as HttpWebResponse;
+                if (response != null)
+                {
+                    int statusCode = (int)response.StatusCode;
+                    string responseText = "";
+                    try
+                    {
+                        using (response)
+                        using (StreamReader reader = new StreamReader(
+                            response.GetResponseStream(), Encoding.UTF8))
+                            responseText = reader.ReadToEnd();
+                    }
+                    catch { }
+                    return DescribeHttpFailure(statusCode, responseText,
+                        settings == null ? "" : settings.Provider);
+                }
+                if (web.Status == WebExceptionStatus.Timeout)
+                    return "连接超时。先确认浏览器能打开服务商页面，再点一次测试。";
+                if (web.Status == WebExceptionStatus.NameResolutionFailure)
+                    return "找不到服务商地址。请检查网络或 DNS，接口地址本身不要手改。";
+                if (web.Status == WebExceptionStatus.ConnectFailure ||
+                    web.Status == WebExceptionStatus.ProxyNameResolutionFailure)
+                    return "网络没有连到服务商。请检查代理或防火墙，再点一次测试。";
+                if (web.Status == WebExceptionStatus.TrustFailure ||
+                    web.Status == WebExceptionStatus.SecureChannelFailure)
+                    return "安全连接失败。请校准 Windows 日期时间并确认已启用 TLS 1.2。";
+            }
+            if (error is InvalidOperationException)
+                return "已经连到服务商，但没有拿到有效译文。请稍后重试或换一家 AI 服务。";
+            return "连接失败。请检查网络后再试；仍失败可换一家 AI 服务。";
+        }
+
+        internal static string DescribeHttpFailure(int statusCode, string responseText,
+            string provider)
+        {
+            string service = provider != null && provider.IndexOf("豆包",
+                StringComparison.OrdinalIgnoreCase) >= 0 ? "火山方舟" : "服务商";
+            string lower = (responseText ?? "").ToLowerInvariant();
+            string suffix = ExtractSafeErrorCode(responseText);
+            if (statusCode == 401)
+                return "API Key 不对或复制不完整。请在" + service +
+                    "的“API Key 管理”重新创建；不要填 Access Key 或 Secret Key。" + suffix;
+            if (statusCode == 403)
+                return "Key 已到达" + service +
+                    "，但模型未开通、没有调用权限或余额不足。先开通所选模型再试。" + suffix;
+            if (statusCode == 404)
+                return "接口地址或模型名不存在。重新选择上面的 AI 服务，可恢复官方地址和模型名。" + suffix;
+            if (statusCode == 429)
+                return "免费额度、余额或调用频率已到上限。稍后重试，或到服务商页面检查额度。" + suffix;
+            if (statusCode == 400 && (lower.Contains("model") ||
+                lower.Contains("endpoint")))
+                return "模型没有开通或模型名无效。请先在服务商页面开通该模型，再重新选择服务。" + suffix;
+            if (statusCode == 400)
+                return "服务商拒绝了请求参数。请重新选择 AI 服务恢复默认设置，再测试。" + suffix;
+            if (statusCode >= 500)
+                return "服务商临时故障。等几十秒再试；仍失败可先换另一家 AI 服务。" + suffix;
+            return "服务商返回错误（HTTP " + statusCode + "）。请稍后重试或换一家 AI 服务。" + suffix;
+        }
+
+        private static string ExtractSafeErrorCode(string responseText)
+        {
+            Match match = Regex.Match(responseText ?? "",
+                "\\\"(?:code|error_code)\\\"\\s*:\\s*\\\"([A-Za-z0-9._-]{1,80})\\\"",
+                RegexOptions.IgnoreCase);
+            return match.Success ? "（错误码：" + match.Groups[1].Value + "）" : "";
+        }
+
         internal static string BuildRequestBody(OnlineAiSettings settings, string source,
             string target, string glossary)
         {
@@ -2235,7 +2309,7 @@ namespace MapleOverlay
                 ForeColor = Color.FromArgb(55, 65, 81),
                 Text = "小白教程：\r\n1. 不知道选谁就先用豆包；想先免费试就选智谱。\r\n" +
                     "2. 点“打开申请页面”，按网页提示注册、开通对应模型并新建 API Key。\r\n" +
-                    "3. 把网页给你的整串 Key 复制到下面，点“保存并测试”。\r\n" +
+                    "3. 把“API Key 管理”页给你的整串 Key 复制到下面；不要填 Access Key 或 Secret Key。\r\n" +
                     "不用租服务器，也不用每次打开网页；费用/免费额度由你选的服务商账号结算。"
             };
 
@@ -2259,7 +2333,7 @@ namespace MapleOverlay
                 Text = "枫语幕只把当前聊天短句、命中的冒险岛词库术语和固定游戏提示词发给你选的服务商。" +
                     "中间分析不会显示，悬浮窗只给最终译文。Key 用 Windows 当前账户加密保存在本机，不写进词库或压缩包。"
             };
-            testStatus.Location = new Point(24, 449); testStatus.Size = new Size(710, 25);
+            testStatus.Location = new Point(24, 449); testStatus.Size = new Size(710, 44);
             testStatus.ForeColor = Color.FromArgb(37, 99, 235);
 
             Button offline = new Button { Text = "清除密钥，改用离线", Location = new Point(365, 500), Size = new Size(170, 34) };
@@ -2338,9 +2412,10 @@ namespace MapleOverlay
                 await Task.Delay(550);
                 DialogResult = DialogResult.OK; Close();
             }
-            catch
+            catch (Exception ex)
             {
-                testStatus.Text = "没连通，旧设置没有被覆盖。请检查 Key、模型是否开通和网络。";
+                testStatus.Text = OnlineAiClient.DescribeFailure(ex, settings);
+                testStatus.ForeColor = Color.FromArgb(185, 28, 28);
             }
             finally { save.Enabled = true; }
         }

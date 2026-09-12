@@ -29,6 +29,17 @@ foreach ($required in @('豆包 2.0 Lite（推荐）','DeepSeek V4 Flash（快�
 }
 
 $build = $clientType.GetMethod('BuildRequestBody', $all)
+$describeHttp = $clientType.GetMethod('DescribeHttpFailure', $all)
+$badKey = [string]$describeHttp.Invoke($null, [object[]]@(401, '', '豆包 2.0 Lite（推荐）'))
+$noModel = [string]$describeHttp.Invoke($null, [object[]]@(403,
+    '{"error":{"code":"PermissionDenied"}}', '豆包 2.0 Lite（推荐）'))
+$noQuota = [string]$describeHttp.Invoke($null, [object[]]@(429, '', '豆包 2.0 Lite（推荐）'))
+if (-not $badKey.Contains('不要填 Access Key 或 Secret Key') -or
+    -not $noModel.Contains('模型未开通') -or
+    -not $noModel.Contains('PermissionDenied') -or
+    -not $noQuota.Contains('额度')) {
+    throw '联网AI没有把密钥、模型权限和额度错误说明白'
+}
 $doubaoBody = [string]$build.Invoke($null, [object[]]@($settings,
     'which event is it i JUST went to orbis bro BriskIcedTea', '简体中文', "Orbis = 天空之城`n"))
 foreach ($required in @('冒险岛怀旧服国际服老玩家','禁止逐词硬译','玩家ID','只输出一行最终译文',
@@ -59,6 +70,7 @@ $chatSource = Get-Content (Join-Path $repoRoot 'src\OfflineChat.cs') -Raw -Encod
 $overlaySource = Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -Encoding UTF8
 foreach ($required in @('联网AI实时翻译（不用租服务器）','小白教程：','打开申请页面','保存并测试',
     '不用租服务器，也不用每次打开网页','接口地址：','模型名称：','API Key：',
+    '不要填 Access Key 或 Secret Key','DescribeFailure(ex, settings)',
     'TranslateWithPreferredAiAsync','连接失败，自动改用离线备用')) {
     if (-not $chatSource.Contains($required)) { throw "联网AI简明界面或主链路缺少：$required" }
 }
