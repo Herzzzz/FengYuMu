@@ -595,7 +595,7 @@ namespace MapleOverlay
                 if (overlay != null) overlay.ApplyContinuousTranslation(continuousTranslation.Checked);
             };
             Label continuousHint = new Label {
-                Text = "默认关闭；开启后智能降频，F8翻译开关、F9对齐聊天框。",
+                Text = "默认关闭；开启后智能降频，F8翻译、F9对齐、F10呼出AI浮窗。",
                 Location = new Point(35, 119), Size = new Size(460, 24),
                 ForeColor = Color.FromArgb(107, 114, 128)
             };
@@ -606,7 +606,7 @@ namespace MapleOverlay
                 Font = new Font("Microsoft YaHei UI", 9.0f, FontStyle.Bold)
             };
             Label independentHint = new Label {
-                Text = "只显示AI聊天译文；F8仍独立控制游戏原位置覆盖。",
+                Text = "只显示AI聊天译文；误关后按F10可重新呼出，F8仍独立截图翻译。",
                 Location = new Point(35, 180), Size = new Size(460, 24),
                 ForeColor = Color.FromArgb(107, 114, 128)
             };
@@ -626,7 +626,7 @@ namespace MapleOverlay
             update.Enabled = overlay != null;
             update.Click += async delegate { await overlay.InstallLatestApplicationAsync(update); };
             Label hint = new Label {
-                Text = "F8 翻译开/关；F9 自动对齐聊天框；关闭后仍在托盘。",
+                Text = "F8 翻译开/关；F9 对齐聊天框；F10 呼出AI悬浮窗；关闭后仍在托盘。",
                 Location = new Point(22, 534), Size = new Size(516, 32),
                 ForeColor = Color.FromArgb(107, 114, 128), TextAlign = ContentAlignment.MiddleLeft
             };
@@ -656,10 +656,12 @@ namespace MapleOverlay
             int taskCount = overlay == null ? 12000 : overlay.TaskEntryCount;
             string showKey = overlay == null ? "F8" : overlay.ShowHotkeyDescription;
             string hideKey = overlay == null ? "F9" : overlay.HideHotkeyDescription;
+            string floatingKey = overlay == null ? "F10" : overlay.FloatingWindowHotkeyDescription;
             status.Text = "已就绪 · 词库 " + dictionaryCount + " 条 · 任务文本 " + taskCount + " 条";
             string gamepadShow = overlay == null ? "未绑定" : overlay.ShowGamepadShortcutDescription;
             string gamepadHide = overlay == null ? "未绑定" : overlay.HideGamepadShortcutDescription;
-            hotkeys.Text = "键盘 " + showKey + " 翻译 / " + hideKey + " 对齐聊天框" +
+            hotkeys.Text = "键盘 " + showKey + " 翻译 / " + hideKey + " 对齐 / " +
+                floatingKey + " AI浮窗" +
                 "    手柄 " + gamepadShow + " 翻译 / " + gamepadHide + " 隐藏";
             if (overlay != null && overlay.HotkeyRegistrationStatus.Length > 0)
                 hotkeys.Text = overlay.HotkeyRegistrationStatus;
@@ -696,8 +698,10 @@ namespace MapleOverlay
         private readonly OverlayForm overlay;
         private readonly ComboBox showKey = new ComboBox();
         private readonly ComboBox hideKey = new ComboBox();
+        private readonly ComboBox floatingWindowKey = new ComboBox();
         private readonly TextBox showModifiers = new TextBox();
         private readonly TextBox hideModifiers = new TextBox();
+        private readonly TextBox floatingWindowModifiers = new TextBox();
         private readonly ComboBox showGamepadFirst = new ComboBox();
         private readonly ComboBox showGamepadSecond = new ComboBox();
         private readonly ComboBox hideGamepadFirst = new ComboBox();
@@ -712,13 +716,16 @@ namespace MapleOverlay
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;
-            ClientSize = new Size(590, 380);
+            ClientSize = new Size(590, 425);
             Font = new Font("Microsoft YaHei UI", 9.0f);
             BuildUi();
             showKey.SelectedItem = overlay == null ? "F8" : overlay.ShowKey.ToString();
             hideKey.SelectedItem = overlay == null ? "F9" : overlay.HideKey.ToString();
+            floatingWindowKey.SelectedItem = overlay == null ? "F10" : overlay.FloatingWindowKey.ToString();
             showModifiers.Text = overlay == null ? "" : OverlayForm.ModifiersText(overlay.ShowModifiers);
             hideModifiers.Text = overlay == null ? "" : OverlayForm.ModifiersText(overlay.HideModifiers);
+            floatingWindowModifiers.Text = overlay == null ? "" :
+                OverlayForm.ModifiersText(overlay.FloatingWindowModifiers);
             SelectGamepadButton(showGamepadFirst, overlay == null ? GamepadButton.None : overlay.ShowGamepadShortcut.First);
             SelectGamepadButton(showGamepadSecond, overlay == null ? GamepadButton.None : overlay.ShowGamepadShortcut.Second);
             SelectGamepadButton(hideGamepadFirst, overlay == null ? GamepadButton.None : overlay.HideGamepadShortcut.First);
@@ -728,18 +735,23 @@ namespace MapleOverlay
 
         private void BuildUi()
         {
-            FillKeys(showKey); FillKeys(hideKey);
-            GroupBox keyboard = new GroupBox { Text = "键盘快捷键", Location = new Point(16, 12), Size = new Size(558, 142) };
+            FillKeys(showKey); FillKeys(hideKey); FillKeys(floatingWindowKey);
+            GroupBox keyboard = new GroupBox { Text = "键盘快捷键", Location = new Point(16, 12), Size = new Size(558, 182) };
             Label showLabel = new Label { Text = "翻译开/关：", Location = new Point(14, 29), AutoSize = true };
             showKey.Location = new Point(115, 25);
             showModifiers.Location = new Point(230, 25); showModifiers.Width = 300;
             Label hideLabel = new Label { Text = "自动对齐聊天框：", Location = new Point(14, 70), AutoSize = true };
             hideKey.Location = new Point(115, 66);
             hideModifiers.Location = new Point(230, 66); hideModifiers.Width = 300;
-            Label hint = new Label { Text = "右侧可留空；组合键用 + 连接，例如 CTRL+ALT。", Location = new Point(14, 102), Size = new Size(520, 28), ForeColor = Color.DimGray };
-            keyboard.Controls.AddRange(new Control[] { showLabel, showKey, showModifiers, hideLabel, hideKey, hideModifiers, hint });
+            Label floatingLabel = new Label { Text = "呼出AI悬浮窗：", Location = new Point(14, 111), AutoSize = true };
+            floatingWindowKey.Location = new Point(115, 107);
+            floatingWindowModifiers.Location = new Point(230, 107); floatingWindowModifiers.Width = 300;
+            Label hint = new Label { Text = "误关悬浮窗时用第三项重新呼出；右侧组合键可留空。", Location = new Point(14, 143), Size = new Size(520, 28), ForeColor = Color.DimGray };
+            keyboard.Controls.AddRange(new Control[] { showLabel, showKey, showModifiers,
+                hideLabel, hideKey, hideModifiers, floatingLabel, floatingWindowKey,
+                floatingWindowModifiers, hint });
 
-            GroupBox gamepad = new GroupBox { Text = "手柄快捷键（独立于键盘）", Location = new Point(16, 162), Size = new Size(558, 150) };
+            GroupBox gamepad = new GroupBox { Text = "手柄快捷键（独立于键盘）", Location = new Point(16, 202), Size = new Size(558, 150) };
             FillGamepadButtons(showGamepadFirst, false); FillGamepadButtons(showGamepadSecond, true);
             FillGamepadButtons(hideGamepadFirst, false); FillGamepadButtons(hideGamepadSecond, true);
             Label gamepadShowLabel = new Label { Text = "翻译开/关：", Location = new Point(14, 30), AutoSize = true };
@@ -759,7 +771,7 @@ namespace MapleOverlay
             gamepad.Controls.AddRange(new Control[] { gamepadShowLabel, showGamepadFirst, plus1, showGamepadSecond,
                 gamepadHideLabel, hideGamepadFirst, plus2, hideGamepadSecond, gamepadHint });
 
-            Button save = new Button { Text = "保存并生效", Location = new Point(410, 326), Size = new Size(164, 38) };
+            Button save = new Button { Text = "保存并生效", Location = new Point(410, 371), Size = new Size(164, 38) };
             save.Click += delegate { SaveSettings(); };
             Controls.AddRange(new Control[] { keyboard, gamepad, save });
         }
@@ -810,9 +822,18 @@ namespace MapleOverlay
             {
                 Keys sk = (Keys)Enum.Parse(typeof(Keys), Convert.ToString(showKey.SelectedItem), true);
                 Keys hk = (Keys)Enum.Parse(typeof(Keys), Convert.ToString(hideKey.SelectedItem), true);
+                Keys fk = (Keys)Enum.Parse(typeof(Keys), Convert.ToString(floatingWindowKey.SelectedItem), true);
                 uint sm = OverlayForm.ParseModifiers(showModifiers.Text);
                 uint hm = OverlayForm.ParseModifiers(hideModifiers.Text);
-                if (sk == hk && sm == hm) { MessageBox.Show("两个功能不能用完全相同的快捷键。", "快捷键"); return; }
+                uint fm = OverlayForm.ParseModifiers(floatingWindowModifiers.Text);
+                bool showMatchesAlign = sk == hk && sm == hm;
+                bool showMatchesFloating = sk == fk && sm == fm;
+                bool alignMatchesFloating = hk == fk && hm == fm;
+                if (showMatchesAlign || showMatchesFloating || alignMatchesFloating)
+                {
+                    MessageBox.Show("三个功能不能使用完全相同的快捷键。", "快捷键");
+                    return;
+                }
                 GamepadButton showFirst = SelectedGamepadButton(showGamepadFirst);
                 GamepadButton showSecond = SelectedGamepadButton(showGamepadSecond);
                 GamepadButton hideFirst = SelectedGamepadButton(hideGamepadFirst);
@@ -830,7 +851,7 @@ namespace MapleOverlay
                     MessageBox.Show("手柄呼出和缩回组合会同时触发，请换成不重叠的按键。", "快捷键");
                     return;
                 }
-                if (!overlay.ApplyHotkeys(sk, sm, hk, hm)) return;
+                if (!overlay.ApplyHotkeys(sk, sm, hk, hm, fk, fm)) return;
                 overlay.ApplyGamepadShortcuts(gs, gh);
                 using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu"))
                 {
@@ -838,6 +859,8 @@ namespace MapleOverlay
                     key.SetValue("ShowModifiers", OverlayForm.ModifiersText(sm));
                     key.SetValue("HideKey", hk.ToString());
                     key.SetValue("HideModifiers", OverlayForm.ModifiersText(hm));
+                    key.SetValue("FloatingWindowKey", fk.ToString());
+                    key.SetValue("FloatingWindowModifiers", OverlayForm.ModifiersText(fm));
                     key.SetValue("GamepadShowShortcut", gs.Serialize());
                     key.SetValue("GamepadHideShortcut", gh.Serialize());
                 }

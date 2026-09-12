@@ -91,11 +91,17 @@ foreach ($required in @(
     'floatingWindow.ShowPassiveIfAllowed()',
     'floatingWindow.HideForStop()',
     'internal bool RestoreFloatingWindowFromTray()',
-    'internal bool IsLiveTranslationRunning')) {
+    'internal bool IsLiveTranslationRunning',
+    'internal void StopLiveTranslation()',
+    'liveSessionVersion')) {
     if (-not $chatSource.Contains($required)) { throw "AI浮窗链路缺少：$required" }
 }
 foreach ($required in @(
     'AI实时翻译会自动打开独立浮窗（跟随聊天颜色）',
+    'Text = "呼出AI悬浮窗："',
+    'floatingWindowKey.SelectedItem = overlay == null ? "F10"',
+    'key.SetValue("FloatingWindowKey", fk.ToString())',
+    'key.SetValue("FloatingWindowModifiers", OverlayForm.ModifiersText(fm))',
     'RichTextBox content',
     'FormBorderStyle = FormBorderStyle.None',
     'Opacity = 0.92d',
@@ -125,6 +131,12 @@ if ($forms.Contains('overlay.ApplyAiChatFloatingWindow(false)')) {
 foreach ($required in @(
     '重新显示AI翻译悬浮窗',
     'RestoreAiChatFloatingWindowFromTray()',
+    'RestoreAiChatFloatingWindowFromHotkey()',
+    'HOTKEY_FLOATING_WINDOW = 1003',
+    'else if (id == HOTKEY_FLOATING_WINDOW) { RestoreAiChatFloatingWindowFromHotkey(); }',
+    'key.GetValue("FloatingWindowKey", "F10")',
+    'key.GetValue("FloatingWindowModifiers", "")',
+    'UnregisterHotKey(Handle, HOTKEY_FLOATING_WINDOW)',
     'tray.DoubleClick += delegate { ShowMainPanel(); }')) {
     if (-not $overlaySource.Contains($required)) { throw "托盘恢复链路缺少：$required" }
 }
@@ -191,8 +203,27 @@ try {
     $offlineType.GetField('live', $constructorFlags).SetValue($chatWindow, $true)
     $liveTimer = $offlineType.GetField('timer', $constructorFlags).GetValue($chatWindow)
     $liveTimer.Start()
+    $restoreFloating = $offlineType.GetMethod('RestoreFloatingWindowFromTray', $constructorFlags)
+    $floatingWindow.Hide()
+    if (-not [bool]$restoreFloating.Invoke($chatWindow, @())) {
+        throw '实时翻译运行时，独立恢复入口没有接受呼出请求'
+    }
+    [System.Windows.Forms.Application]::DoEvents()
+    if (-not $floatingWindow.Visible) { throw '独立恢复入口没有重新显示AI悬浮窗' }
+    $stopLive = $offlineType.GetMethod('StopLiveTranslation', $constructorFlags)
+    $stopLive.Invoke($chatWindow, @()) | Out-Null
+    $stopLive.Invoke($chatWindow, @()) | Out-Null
+    [System.Windows.Forms.Application]::DoEvents()
+    $liveButton = $offlineType.GetField('liveButton', $constructorFlags).GetValue($chatWindow)
+    if ([bool]$offlineType.GetField('live', $constructorFlags).GetValue($chatWindow) -or
+        $liveTimer.Enabled -or $floatingWindow.Visible -or
+        $liveButton.Text -ne '开始实时翻译') {
+        throw '停止实时翻译没有保持幂等，或按钮/计时器/悬浮窗状态仍错位'
+    }
+    $offlineType.GetField('live', $constructorFlags).SetValue($chatWindow, $true)
+    $liveTimer.Start()
+    $restoreFloating.Invoke($chatWindow, @()) | Out-Null
     $chatWindow.Show()
-    $floatingWindow.Show()
     [System.Windows.Forms.Application]::DoEvents()
     $chatWindow.Close()
     [System.Windows.Forms.Application]::DoEvents()
@@ -220,4 +251,4 @@ if (-not (Test-Path -LiteralPath $imagePath) -or (Get-Item -LiteralPath $imagePa
     throw 'AI浮窗界面截图未生成或内容为空'
 }
 
-Write-Output 'AI实时浮窗：顶部拖动、主窗口关闭不断流、自由缩放、半透明游戏风格、来源颜色、蓝底普通喇叭、粉底超级喇叭、置顶无焦点与F8隔离通过'
+Write-Output 'AI实时浮窗：F10独立呼出、停止状态幂等、顶部拖动、主窗口关闭不断流、自由缩放、半透明游戏风格、来源颜色、蓝底普通喇叭、粉底超级喇叭、置顶无焦点与F8隔离通过'

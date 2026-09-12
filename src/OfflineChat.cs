@@ -897,6 +897,7 @@ namespace MapleOverlay
         private bool firstLiveCapture;
         private bool captureBusy;
         private bool translateBusy;
+        private int liveSessionVersion;
         private int screenshotCaptureSuspendCount;
         private bool floatingWindowEnabled;
         private AiTranslationWindowForm floatingWindow;
@@ -1092,8 +1093,8 @@ namespace MapleOverlay
 
         private async Task BindRegionAsync()
         {
-            live = false; timer.Stop(); Hide();
-            if (floatingWindow != null && !floatingWindow.IsDisposed) floatingWindow.Hide();
+            StopLiveTranslation();
+            Hide();
             await Task.Delay(3000);
             Rectangle game = OverlayForm.GetForegroundCaptureBounds();
             Rectangle initial = ChatRegionSettings.ResolveForGame(game);
@@ -1114,45 +1115,60 @@ namespace MapleOverlay
 
         private async Task ToggleLiveAsync()
         {
-            if (chatRegion.Width < 80) { MessageBox.Show("请先按 F9 自动对齐聊天框，或点击“框选/调整游戏聊天区”手动设置。", "实时聊天翻译"); return; }
-            live = !live;
-            liveButton.Text = live ? "停止实时翻译" : "开始实时翻译";
             if (live)
             {
-                previousChatFrame.Clear();
-                recentChatFrames.Clear();
-                pendingChatLines.Clear();
-                recentlyQueuedChatSources.Clear();
-                firstLiveCapture = true;
-                if (overlay != null) overlay.ApplyAiChatFloatingWindow(true);
-                else ApplyFloatingWindow(true);
-                timer.Start();
-                OnlineAiSettings online = OnlineAiSettings.Load();
-                if (online.IsReady)
-                {
-                    status.Text = online.Provider + "已就绪｜140ms快速监听";
-                }
-                else
-                {
-                    status.Text = "正在预热离线AI，同时开始监听聊天…";
-                    bool ready = await ai.EnsureStartedAsync();
-                    if (live) status.Text = ready ? "离线AI已预热｜140ms快速监听" : ai.Status;
-                }
+                StopLiveTranslation();
+                return;
+            }
+            if (chatRegion.Width < 80) { MessageBox.Show("请先按 F9 自动对齐聊天框，或点击“框选/调整游戏聊天区”手动设置。", "实时聊天翻译"); return; }
+            live = true;
+            liveSessionVersion++;
+            liveButton.Text = "停止实时翻译";
+            previousChatFrame.Clear();
+            recentChatFrames.Clear();
+            pendingChatLines.Clear();
+            recentlyQueuedChatSources.Clear();
+            firstLiveCapture = true;
+            if (overlay != null) overlay.ApplyAiChatFloatingWindow(true);
+            else ApplyFloatingWindow(true);
+            timer.Start();
+            OnlineAiSettings online = OnlineAiSettings.Load();
+            if (online.IsReady)
+            {
+                status.Text = online.Provider + "已就绪｜140ms快速监听";
             }
             else
             {
-                timer.Stop();
-                if (floatingWindow != null && !floatingWindow.IsDisposed) floatingWindow.HideForStop();
+                status.Text = "正在预热离线AI，同时开始监听聊天…";
+                int sessionVersion = liveSessionVersion;
+                bool ready = await ai.EnsureStartedAsync();
+                if (live && sessionVersion == liveSessionVersion)
+                    status.Text = ready ? "离线AI已预热｜140ms快速监听" : ai.Status;
             }
+        }
+
+        internal void StopLiveTranslation()
+        {
+            live = false;
+            liveSessionVersion++;
+            timer.Stop();
+            pendingChatLines.Clear();
+            recentlyQueuedChatSources.Clear();
+            liveButton.Text = "开始实时翻译";
+            status.Text = "实时翻译已停止";
+            if (floatingWindow != null && !floatingWindow.IsDisposed)
+                floatingWindow.HideForStop();
         }
 
         private async Task PollChatAsync(bool forceOnce = false)
         {
             if ((!live && !forceOnce) || captureBusy || screenshotCaptureSuspendCount > 0) return;
+            int sessionVersion = liveSessionVersion;
             captureBusy = true;
             try
             {
                 ChatCaptureFrame capture = await overlay.CaptureChatAsync(chatRegion);
+                if (!forceOnce && (!live || sessionVersion != liveSessionVersion)) return;
                 // OcrResult.Text may flatten unrelated visual rows into one sentence.
                 // Preserve the OCR engine's physical line boundaries for chat parsing.
                 List<string> lines = ParseChatLines(capture.PhysicalLineText());
@@ -1183,16 +1199,17 @@ namespace MapleOverlay
             }
             catch (Exception ex) { status.Text = ex.Message; }
             finally { captureBusy = false; }
-            if (!translateBusy) await ProcessPendingChatAsync();
+            if (!translateBusy) await ProcessPendingChatAsync(sessionVersion, forceOnce);
         }
 
-        private async Task ProcessPendingChatAsync()
+        private async Task ProcessPendingChatAsync(int sessionVersion, bool forceOnce)
         {
             if (translateBusy) return;
             translateBusy = true;
             try
             {
-                while (pendingChatLines.Count > 0)
+                while (pendingChatLines.Count > 0 &&
+                    (forceOnce || (live && sessionVersion == liveSessionVersion)))
                 {
                     PendingChatLine pending = pendingChatLines.Dequeue();
                     string line = pending.Text;
@@ -1213,6 +1230,7 @@ namespace MapleOverlay
                             string sourceLanguage = DetectChatSourceLanguage(cleanedMessage);
                             translated = await TranslateWithPreferredAiAsync(protectedMessage,
                                 sourceLanguage, glossary);
+                            if (!forceOnce && (!live || sessionVersion != liveSessionVersion)) return;
                             RememberTranslation(cacheKey, translated);
                         }
                     }
@@ -1897,7 +1915,8 @@ namespace MapleOverlay
 
         public void StopService()
         {
-            timer.Stop(); releaseTimer.Stop(); ai.Stop();
+            StopLiveTranslation();
+            releaseTimer.Stop(); ai.Stop();
             if (floatingWindow != null && !floatingWindow.IsDisposed)
                 floatingWindow.ClosePermanently();
         }

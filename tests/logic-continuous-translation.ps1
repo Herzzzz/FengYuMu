@@ -72,7 +72,7 @@ foreach ($required in @(
     'overlay.ApplyContinuousTranslation')) {
     if (-not $forms.Contains($required)) { throw "持续翻译主界面缺少：$required" }
 }
-if (-not $forms.Contains('if (!overlay.ApplyHotkeys(sk, sm, hk, hm)) return;')) {
+if (-not $forms.Contains('if (!overlay.ApplyHotkeys(sk, sm, hk, hm, fk, fm)) return;')) {
     throw '冲突快捷键注册失败后仍会保存无效设置'
 }
 foreach ($forbidden in @('ReadProcessMemory','WriteProcessMemory','CreateRemoteThread',

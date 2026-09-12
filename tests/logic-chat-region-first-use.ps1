@@ -51,6 +51,7 @@ foreach ($required in @(
     'FindPlayerChatLineBounds(result,',
     'AutoAlignChatRegionFromHotkeyAsync',
     'else if (id == HOTKEY_HIDE) { Task ignored = AutoAlignChatRegionFromHotkeyAsync(); }',
+    'else if (id == HOTKEY_FLOATING_WINDOW) { RestoreAiChatFloatingWindowFromHotkey(); }',
     'ShowTranslationAsync(false, requestId)',
     'RecognitionWasCancelled(automatic, requestId)',
     'ChatRegionSettings.ResaveForGame(resolved, gameBounds)',
@@ -71,11 +72,12 @@ if ($source.Contains('ChatRegionSettings.Save(resolved, gameBounds)')) {
     throw '游戏窗口缩放仍可能丢失聊天区来源'
 }
 foreach ($required in @(
-    'F8 翻译开/关；F9 自动对齐聊天框',
+    'F8 翻译开/关；F9 对齐聊天框；F10 呼出AI悬浮窗',
     'Text = "翻译开/关："',
     'Text = "自动对齐聊天框："',
-    '" 翻译 / " + hideKey + " 对齐聊天框"')) {
+    'Text = "呼出AI悬浮窗："',
+    'floatingKey + " AI浮窗"')) {
     if (-not $formsSource.Contains($required)) { throw "快捷键界面说明未同步：$required" }
 }
 
-Write-Output '聊天区：F9独立自动对齐、F8每次新截屏开关、普通截图排除、AI复用、手动框选永久优先通过'
+Write-Output '聊天区：F9独立自动对齐、F8每次新截屏开关、F10独立呼出AI浮窗、普通截图排除、AI复用、手动框选永久优先通过'

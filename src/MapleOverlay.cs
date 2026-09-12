@@ -2094,6 +2094,7 @@ namespace MapleOverlay
     {
         private const int HOTKEY_SHOW = 1001;
         private const int HOTKEY_HIDE = 1002;
+        private const int HOTKEY_FLOATING_WINDOW = 1003;
         private const int WM_HOTKEY = 0x0312;
         private const int GWL_EXSTYLE = -20;
         private const int WS_EX_TRANSPARENT = 0x20;
@@ -2113,10 +2114,13 @@ namespace MapleOverlay
         private OcrEngine ocr;
         private Keys showKey = Keys.F8;
         private Keys hideKey = Keys.F9;
+        private Keys floatingWindowKey = Keys.F10;
         private bool showHotkeyRegistered;
         private bool hideHotkeyRegistered;
+        private bool floatingWindowHotkeyRegistered;
         private uint showModifiers;
         private uint hideModifiers;
+        private uint floatingWindowModifiers;
         private GamepadShortcut showGamepadShortcut;
         private GamepadShortcut hideGamepadShortcut;
         private readonly GamepadShortcutLatch gamepadLatch = new GamepadShortcutLatch();
@@ -2210,24 +2214,30 @@ namespace MapleOverlay
                     WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE);
                 bool h1 = RegisterHotKey(Handle, HOTKEY_SHOW, showModifiers, (uint)showKey);
                 bool h2 = RegisterHotKey(Handle, HOTKEY_HIDE, hideModifiers, (uint)hideKey);
-                if (!h1 || !h2)
+                bool h3 = RegisterHotKey(Handle, HOTKEY_FLOATING_WINDOW,
+                    floatingWindowModifiers, (uint)floatingWindowKey);
+                if (!h1 || !h2 || !h3)
                 {
                     await Task.Delay(120);
                     if (!h1) h1 = RegisterHotKey(Handle, HOTKEY_SHOW, showModifiers, (uint)showKey);
                     if (!h2) h2 = RegisterHotKey(Handle, HOTKEY_HIDE, hideModifiers, (uint)hideKey);
+                    if (!h3) h3 = RegisterHotKey(Handle, HOTKEY_FLOATING_WINDOW,
+                        floatingWindowModifiers, (uint)floatingWindowKey);
                 }
                 showHotkeyRegistered = h1;
                 hideHotkeyRegistered = h2;
+                floatingWindowHotkeyRegistered = h3;
                 UpdateGamepadPolling();
                 UpdateContinuousTranslationPolling();
                 tray.ShowBalloonTip(2500, "枫语幕已启动",
                     "常规/任务共 " + translations.Count + " 条，任务 " + translations.TaskCount + " 个/文本 " +
                     translations.TaskTextCount + " 条，图标指纹 " + translations.IconCount + " 条，已载入内存。" +
                     HotkeyText(showKey, showModifiers) + " 翻译开关，" +
-                    HotkeyText(hideKey, hideModifiers) + " 自动对齐聊天框。手柄：翻译 " +
+                    HotkeyText(hideKey, hideModifiers) + " 自动对齐聊天框，" +
+                    HotkeyText(floatingWindowKey, floatingWindowModifiers) + " 呼出AI悬浮窗。手柄：翻译 " +
                     showGamepadShortcut + "，缩回 " + hideGamepadShortcut + "。" +
                     "双击托盘图标打开主界面；右键可重新显示AI翻译悬浮窗。" +
-                    ((!h1 || !h2) ? "（有快捷键注册失败）" : ""), ToolTipIcon.Info);
+                    ((!h1 || !h2 || !h3) ? "（有快捷键注册失败）" : ""), ToolTipIcon.Info);
                 ShowPendingApplicationUpdateResult();
                 BeginSafeWarmup();
                 if (!Program.Benchmark) BeginActivationRecovery();
@@ -2379,10 +2389,14 @@ namespace MapleOverlay
                 if (key == null) return;
                 string sk = Convert.ToString(key.GetValue("ShowKey", "F8"));
                 string hk = Convert.ToString(key.GetValue("HideKey", "F9"));
+                string fk = Convert.ToString(key.GetValue("FloatingWindowKey", "F10"));
                 if (Enum.TryParse<Keys>(sk, true, out parsed)) showKey = parsed;
                 if (Enum.TryParse<Keys>(hk, true, out parsed)) hideKey = parsed;
+                if (Enum.TryParse<Keys>(fk, true, out parsed)) floatingWindowKey = parsed;
                 showModifiers = ParseModifiers(Convert.ToString(key.GetValue("ShowModifiers", "")));
                 hideModifiers = ParseModifiers(Convert.ToString(key.GetValue("HideModifiers", "")));
+                floatingWindowModifiers = ParseModifiers(Convert.ToString(
+                    key.GetValue("FloatingWindowModifiers", "")));
                 showGamepadShortcut = GamepadShortcut.Parse(Convert.ToString(key.GetValue("GamepadShowShortcut", "")));
                 hideGamepadShortcut = GamepadShortcut.Parse(Convert.ToString(key.GetValue("GamepadHideShortcut", "")));
                 int savedRange = Convert.ToInt32(key.GetValue("TranslationRangeMode", 2), CultureInfo.InvariantCulture);
@@ -2430,17 +2444,27 @@ namespace MapleOverlay
 
         internal Keys ShowKey { get { return showKey; } }
         internal Keys HideKey { get { return hideKey; } }
+        internal Keys FloatingWindowKey { get { return floatingWindowKey; } }
         internal uint ShowModifiers { get { return showModifiers; } }
         internal uint HideModifiers { get { return hideModifiers; } }
+        internal uint FloatingWindowModifiers { get { return floatingWindowModifiers; } }
         internal GamepadShortcut ShowGamepadShortcut { get { return showGamepadShortcut; } }
         internal GamepadShortcut HideGamepadShortcut { get { return hideGamepadShortcut; } }
         internal int DictionaryEntryCount { get { return translations.Count; } }
         internal int TaskEntryCount { get { return translations.TaskTextCount; } }
         internal string ShowHotkeyDescription { get { return HotkeyText(showKey, showModifiers); } }
         internal string HideHotkeyDescription { get { return HotkeyText(hideKey, hideModifiers); } }
+        internal string FloatingWindowHotkeyDescription
+        {
+            get { return HotkeyText(floatingWindowKey, floatingWindowModifiers); }
+        }
         internal string HotkeyRegistrationStatus
         {
-            get { return showHotkeyRegistered && hideHotkeyRegistered ? "" : "键盘快捷键注册失败，请更换冲突组合"; }
+            get
+            {
+                return showHotkeyRegistered && hideHotkeyRegistered &&
+                    floatingWindowHotkeyRegistered ? "" : "键盘快捷键注册失败，请更换冲突组合";
+            }
         }
         internal string ShowGamepadShortcutDescription { get { return showGamepadShortcut.ToString(); } }
         internal string HideGamepadShortcutDescription { get { return hideGamepadShortcut.ToString(); } }
@@ -2487,26 +2511,37 @@ namespace MapleOverlay
             Invalidate();
         }
 
-        internal bool ApplyHotkeys(Keys newShowKey, uint newShowModifiers, Keys newHideKey, uint newHideModifiers)
+        internal bool ApplyHotkeys(Keys newShowKey, uint newShowModifiers,
+            Keys newHideKey, uint newHideModifiers,
+            Keys newFloatingWindowKey, uint newFloatingWindowModifiers)
         {
             UnregisterHotKey(Handle, HOTKEY_SHOW);
             UnregisterHotKey(Handle, HOTKEY_HIDE);
+            UnregisterHotKey(Handle, HOTKEY_FLOATING_WINDOW);
             bool ok1 = RegisterHotKey(Handle, HOTKEY_SHOW, newShowModifiers, (uint)newShowKey);
             bool ok2 = RegisterHotKey(Handle, HOTKEY_HIDE, newHideModifiers, (uint)newHideKey);
-            if (!ok1 || !ok2)
+            bool ok3 = RegisterHotKey(Handle, HOTKEY_FLOATING_WINDOW,
+                newFloatingWindowModifiers, (uint)newFloatingWindowKey);
+            if (!ok1 || !ok2 || !ok3)
             {
                 UnregisterHotKey(Handle, HOTKEY_SHOW);
                 UnregisterHotKey(Handle, HOTKEY_HIDE);
+                UnregisterHotKey(Handle, HOTKEY_FLOATING_WINDOW);
                 showHotkeyRegistered = RegisterHotKey(Handle, HOTKEY_SHOW, showModifiers, (uint)showKey);
                 hideHotkeyRegistered = RegisterHotKey(Handle, HOTKEY_HIDE, hideModifiers, (uint)hideKey);
+                floatingWindowHotkeyRegistered = RegisterHotKey(Handle,
+                    HOTKEY_FLOATING_WINDOW, floatingWindowModifiers, (uint)floatingWindowKey);
                 MessageBox.Show("快捷键被其他程序占用，已恢复原来的可用设置。", "快捷键设置");
                 if (mainPanel != null && !mainPanel.IsDisposed) mainPanel.RefreshStatus();
                 return false;
             }
             showKey = newShowKey; showModifiers = newShowModifiers;
             hideKey = newHideKey; hideModifiers = newHideModifiers;
+            floatingWindowKey = newFloatingWindowKey;
+            floatingWindowModifiers = newFloatingWindowModifiers;
             showHotkeyRegistered = true;
             hideHotkeyRegistered = true;
+            floatingWindowHotkeyRegistered = true;
             if (mainPanel != null && !mainPanel.IsDisposed) mainPanel.RefreshStatus();
             return true;
         }
@@ -2735,11 +2770,22 @@ namespace MapleOverlay
 
         internal bool RestoreAiChatFloatingWindowFromTray()
         {
+            return RestoreAiChatFloatingWindow();
+        }
+
+        internal bool RestoreAiChatFloatingWindowFromHotkey()
+        {
+            return RestoreAiChatFloatingWindow();
+        }
+
+        private bool RestoreAiChatFloatingWindow()
+        {
             if (chatTranslator == null || chatTranslator.IsDisposed ||
                 !chatTranslator.IsLiveTranslationRunning)
             {
                 tray.ShowBalloonTip(1800, "AI翻译悬浮窗",
-                    "实时翻译还没开始。先打开“AI实时聊天翻译”，再点开始。", ToolTipIcon.Info);
+                    "实时翻译还没开始。先打开“AI实时聊天翻译”，再点“开始实时翻译”。",
+                    ToolTipIcon.Info);
                 return false;
             }
             chatTranslator.RestoreFloatingWindowFromTray();
@@ -2920,6 +2966,7 @@ namespace MapleOverlay
                 int id = m.WParam.ToInt32();
                 if (id == HOTKEY_SHOW) { Task ignored = ShowTranslationFromHotkeyAsync(); }
                 else if (id == HOTKEY_HIDE) { Task ignored = AutoAlignChatRegionFromHotkeyAsync(); }
+                else if (id == HOTKEY_FLOATING_WINDOW) { RestoreAiChatFloatingWindowFromHotkey(); }
             }
             else if (m.Msg == TaskbarCreatedMessage)
             {
@@ -6040,6 +6087,7 @@ namespace MapleOverlay
             labels.Clear();
             UnregisterHotKey(Handle, HOTKEY_SHOW);
             UnregisterHotKey(Handle, HOTKEY_HIDE);
+            UnregisterHotKey(Handle, HOTKEY_FLOATING_WINDOW);
             gamepadTimer.Stop();
             gamepadTimer.Dispose();
             continuousTranslationTimer.Stop();
