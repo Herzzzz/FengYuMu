@@ -324,15 +324,7 @@ namespace MapleOverlay
         internal static string BuildRequestBody(OnlineAiSettings settings, string source,
             string target, string glossary)
         {
-            string system =
-                "你是冒险岛怀旧服国际服老玩家兼聊天翻译。把一名玩家的一条聊天翻成自然、简短的" + target +
-                "游戏口语，先理解整句意图，禁止逐词硬译。结合冒险岛的地图、职业、装备、技能、任务、" +
-                "组队任务、交易缩写和玩家俚语理解；B>、S>、WTB、WTS分别按收购、出售等玩家说法处理。" +
-                "混合大小写、数字或无空格的专有词可能是玩家ID，句尾称呼也可能是玩家ID，证据不足就保留原文；" +
-                "__FYM_PLAYER_数字__占位符必须原样保留。保留数字、频道、表情和语气，不得漏译、重复或编造。" +
-                "例：How do you whisper back someone?＝怎么回复别人的悄悄话？；" +
-                "which event is it i JUST went to orbis bro BriskIcedTea＝这是哪个活动啊兄弟？我刚去了天空之城，BriskIcedTea。" +
-                "只输出一行最终译文，不要输出分析、思考、解释、标题、原文、注释、前缀或引号。";
+            string system = BuildSystemPrompt(target);
             string user = "只翻译下面这一条玩家聊天：\n" + source +
                 (glossary.Length > 0 ? "\n这句话命中的冒险岛词库术语（必须优先采用）：\n" + glossary : "");
             bool responsesApi = settings.Endpoint.TrimEnd('/').EndsWith("/responses",
@@ -360,6 +352,45 @@ namespace MapleOverlay
                 };
             }
             return new JavaScriptSerializer().Serialize(requestBody);
+        }
+
+        internal static string BuildSystemPrompt(string target)
+        {
+            string shared =
+                "你是冒险岛怀旧服国际服老玩家兼聊天翻译。输入只是一名玩家的一条聊天，先理解整句意图，禁止逐词硬译。" +
+                "必须结合冒险岛的地图、职业、装备、怪物、技能、任务、组队任务/PQ、交易缩写和玩家俚语理解。" +
+                "术语表中的英文是国际服正式名或玩家常用简称，中文是对应含义；简称后若带 full 表示它的全称。" +
+                "B>、S>、T>、WTB、WTS、WTT、R>、J>、LF、LFG、LFM、KPQ 等是玩家黑话，不得当普通单词直译。" +
+                "多义项必须结合整句判断；证据不足就保留原文，禁止自己拼出不存在的简称或全称。" +
+                "混合大小写、数字或无空格的专有词可能是玩家ID，句尾称呼也可能是玩家ID，证据不足就保留原文；" +
+                "__FYM_PLAYER_数字__和__FYM_TERM_数字__占位符必须逐字原样保留，不能翻译、展开或删除。" +
+                "保留数字、频道、价格单位、表情和语气，不得漏译、重复或编造。";
+            string finish = "只输出一行最终译文，不要输出分析、思考、解释、标题、原文、注释、前缀或引号。";
+            if ((target ?? "").IndexOf("西班牙", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                (target ?? "").IndexOf("Espa", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return shared +
+                    "把中文改写成简短、自然的拉美西班牙语玩家聊天。地图、装备、怪物、任务、技能及PQ名称优先保留国际服英文正式名或通用简称，" +
+                    "只把周围语气翻成西班牙语；招募、组队和交易尽量沿用国际服通用黑话。原文只说刷怪时禁止擅自添加PQ。" +
+                    "例：废弃三缺一＝R> KPQ 3/4；有人做废弃吗？＝¿Alguien para KPQ?；招人＝Busco gente.；" +
+                    "卖雪花镖20万＝S> Kumbi 200k；我刚到天空之城，有人一起刷小幽灵吗？＝Acabo de llegar a Orbis. ¿Alguien quiere farmear Jr. Wraith?。" + finish;
+            }
+            if ((target ?? "").IndexOf("英", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                (target ?? "").IndexOf("English", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return shared +
+                    "把中文改写成简短、自然、像国际服老玩家会发的英语聊天。优先使用国际服正式名称和真正通行的简称，" +
+                    "招募用R>/LFM/LF1/人数进度，交易用B>/S>/T>/WTB/WTS/WTT；收/求购用B>或WTB，卖/出售用S>或WTS。" +
+                    "不要把中文语序硬搬成英语；原文只说刷怪时禁止擅自添加PQ。" +
+                    "例：废弃三缺一＝R> KPQ 3/4；招人＝R> members；有人做废弃吗？＝Anyone for KPQ?；" +
+                    "卖雪花镖20万＝S> Kumbi 200k。" + finish;
+            }
+            return shared +
+                "把外语翻成自然、简短的简体中文玩家口语；技能名、装备名、怪物名、地图名和任务名优先采用词库中的国服怀旧译名。" +
+                "问操作方法时用怎么、能不能等自然口语；reply、respond、whisper back 表示回复，不能误译成重新发消息。" +
+                "例：How do you whisper back someone?＝怎么回复别人的悄悄话？；" +
+                "which event is it i JUST went to orbis bro BriskIcedTea＝这是哪个活动啊兄弟？我刚去了天空之城，BriskIcedTea。" +
+                finish;
         }
 
         private static string ExtractText(Dictionary<string, object> root)
@@ -562,17 +593,7 @@ namespace MapleOverlay
             string targetLanguage, string glossary)
         {
             if (!await EnsureStartedAsync()) throw new InvalidOperationException(Status);
-            string languageRule = "将输入从" + sourceLanguage + "翻译为" + targetLanguage + "。";
-            string system = "你是冒险岛怀旧服玩家聊天翻译器。" + languageRule +
-                "输入只是一名玩家的一条消息，不得拼接别的句子，不得补写或翻译玩家名。" +
-                "你已通过枫语幕本地知识初始化使用资料站整理内容与玩家审核词库。" +
-                "先理解整句在游戏聊天中的意图，再用简短自然的中文口语表达，不要逐词硬译；问操作方法时优先说怎么、有人会不会、能不能等自然口语，不要套用生硬的如何某人句式；英语 reply、respond 或 whisper back 表示回复对方，不能误译成给对方新发消息；stupid、damn 等放在物品名前通常是在抱怨，要译成破、该死的等语气，不能并入物品专名，也不能残留英文；交易消息优先使用收购、出售、交换、求组、报价等玩家常用说法。" +
-                "按玩家聊天语气理解俚语和缩写；技能名和物品名优先采用国服怀旧译名。" +
-                "保留数字、频道和表情；可靠的聊天缩写必须按术语表展开，多义或证据不足的缩写保留原文，不得猜成地名或玩家名。" +
-                "完整翻译每个分句，不得漏译、重复或追加原文不存在的内容。OCR含糊且无法可靠判断的片段保留原文，不得猜写。" +
-                "参考玩家口语：B> Claw 60%, offer＝收60%拳套攻击卷，请报价；S> Kumbi 200k＝卖雪花镖，20万；Ya Omok players scared?＝怎么，玩五子棋的都怕了？；ima go check now＝我现在去看看。" +
-                "必须使用简体中文，禁止输出繁体字。只输出一行自然译文，不复述原文，不解释。" +
-                (String.IsNullOrEmpty(glossary) ? "" : "本次从知识库检索到的术语如下，必须优先采用：\n" + glossary);
+            string system = BuildSystemPrompt(sourceLanguage, targetLanguage, glossary);
             string userText = "待翻译消息：\n" + text + "\n/no_think";
             string body = new JavaScriptSerializer().Serialize(new Dictionary<string, object> {
                 { "model", "local-qwen3" },
@@ -601,7 +622,42 @@ namespace MapleOverlay
                 });
                 result = await Task.Factory.StartNew(delegate { return Post(retryBody); });
             }
-            return ToSimplifiedChinese(result);
+            return targetLanguage.IndexOf("中文", StringComparison.OrdinalIgnoreCase) >= 0
+                ? ToSimplifiedChinese(result) : result;
+        }
+
+        internal static string BuildSystemPrompt(string sourceLanguage, string targetLanguage,
+            string glossary)
+        {
+            string terms = String.IsNullOrEmpty(glossary) ? "" :
+                "本次只提供当前消息实际命中的术语，必须优先采用；多义项证据不足时保留原文：\n" + glossary;
+            string shared = "你是冒险岛怀旧服国际服老玩家兼聊天翻译。将输入从" + sourceLanguage +
+                "翻译为" + targetLanguage + "。输入只是一名玩家的一条消息，不得拼接别的句子，不得补写或翻译玩家名。" +
+                "先理解整句意图，不要逐词硬译。结合地图、职业、装备、怪物、技能、任务、PQ、交易和玩家黑话；" +
+                "可靠的聊天缩写必须按术语表展开；多义或证据不足的简称必须保留原文，不得猜成地名、职业或玩家名。" +
+                "__FYM_PLAYER_数字__和__FYM_TERM_数字__占位符必须逐字原样保留，不能翻译、展开或删除。" +
+                "保留数字、频道、价格单位和表情，完整翻译每个分句，不得漏译、重复或编造。OCR含糊时保留原文。";
+            if (targetLanguage.IndexOf("西班牙", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                targetLanguage.IndexOf("Espa", StringComparison.OrdinalIgnoreCase) >= 0)
+                return shared +
+                    "用简短自然的拉美西班牙语玩家口吻；地图、装备、怪物、任务、技能和PQ优先保留国际服英文正式名或通用简称，周围语气翻成西班牙语。" +
+                    "招募和交易沿用R>/LFM/LF1、B>/S>/T>/WTB/WTS/WTT等国际服黑话；原文只说刷怪时禁止擅自添加PQ。" +
+                    "参考：废弃三缺一＝R> KPQ 3/4；有人做废弃吗？＝¿Alguien para KPQ?；招人＝Busco gente.；卖雪花镖20万＝S> Kumbi 200k。" +
+                    "只输出一行最终译文，不复述原文，不解释。" + terms;
+            if (targetLanguage.IndexOf("英", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                targetLanguage.IndexOf("English", StringComparison.OrdinalIgnoreCase) >= 0)
+                return shared +
+                    "用简短自然、像国际服老玩家会发的英语；优先使用国际服正式名称和真正通行的简称。" +
+                    "招募用R>/LFM/LF1/人数进度，交易用B>/S>/T>/WTB/WTS/WTT；收/求购用B>或WTB，卖/出售用S>或WTS。" +
+                    "不要照搬中文语序；原文只说刷怪时禁止擅自添加PQ。" +
+                    "参考：废弃三缺一＝R> KPQ 3/4；招人＝R> members；有人做废弃吗？＝Anyone for KPQ?；卖雪花镖20万＝S> Kumbi 200k。" +
+                    "只输出一行最终译文，不复述原文，不解释。" + terms;
+            return shared +
+                "用简短自然的简体中文玩家口语；问操作方法时用怎么、能不能等自然说法；reply、respond、whisper back表示回复。" +
+                "技能、装备、怪物、地图和任务优先用国服怀旧译名；交易用收购、出售、交换、求组、报价等玩家说法。" +
+                "参考：B> Claw 60%, offer＝收60%拳套攻击卷，请报价；S> Kumbi 200k＝卖雪花镖，20万；" +
+                "How do you whisper back someone?＝怎么回复别人的悄悄话？；ima go check now＝我现在去看看。" +
+                "必须使用简体中文。只输出一行最终译文，不复述原文，不解释。" + terms;
         }
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
@@ -877,6 +933,9 @@ namespace MapleOverlay
         private readonly Label status = new Label();
         private readonly Button liveButton = new Button();
         private readonly Label cloudMode = new Label();
+        private readonly ComboBox translationDirection = new ComboBox();
+        private readonly TextBox manualInput = new TextBox();
+        private readonly Button manualTranslate = new Button();
         private readonly System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
         private readonly System.Windows.Forms.Timer releaseTimer = new System.Windows.Forms.Timer();
         private readonly HashSet<string> protectedPlayerNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -888,6 +947,12 @@ namespace MapleOverlay
         private List<string> previousChatFrame = new List<string>();
         private readonly List<List<string>> recentChatFrames = new List<List<string>>();
         private readonly List<KeyValuePair<string, string>> glossaryEntries = new List<KeyValuePair<string, string>>();
+        private readonly Dictionary<string, string> glossaryFullNames =
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        private readonly HashSet<string> lockableGlossaryKeys =
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private readonly HashSet<string> preferredChatAliases =
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private readonly HashSet<string> contextOnlyGlossaryKeys =
             new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private KnowledgeInitializationResult knowledge;
@@ -957,10 +1022,23 @@ namespace MapleOverlay
 
         private void BuildUi()
         {
-            TableLayoutPanel root = new TableLayoutPanel { Dock = DockStyle.Fill, Padding = new Padding(10), RowCount = 2, ColumnCount = 1 };
-            root.RowStyles.Add(new RowStyle(SizeType.Absolute, 86));
+            TableLayoutPanel root = new TableLayoutPanel { Dock = DockStyle.Fill, Padding = new Padding(10), RowCount = 3, ColumnCount = 1 };
+            root.RowStyles.Add(new RowStyle(SizeType.Absolute, 112));
             root.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+            root.RowStyles.Add(new RowStyle(SizeType.Absolute, 42));
             FlowLayoutPanel tools = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = true };
+            Label directionLabel = new Label { Text = "输入框翻译：", AutoSize = true, Padding = new Padding(0, 7, 0, 0) };
+            translationDirection.DropDownStyle = ComboBoxStyle.DropDownList;
+            translationDirection.Width = 185;
+            translationDirection.Items.AddRange(new object[] {
+                "外语 → 中文（看聊天）", "中文 → English（发消息）", "中文 → Español（发消息）"
+            });
+            translationDirection.SelectedIndex = LoadTranslationDirection();
+            translationDirection.SelectedIndexChanged += delegate {
+                SaveTranslationDirection(translationDirection.SelectedIndex);
+                translationCache.Clear(); translationCacheOrder.Clear();
+                status.Text = "输入框已切换为" + translationDirection.SelectedItem + "｜实时悬浮窗仍译成中文";
+            };
             liveButton.Text = "开始实时翻译"; liveButton.AutoSize = true;
             liveButton.Click += async delegate { await ToggleLiveAsync(); };
             Button bind = new Button { Text = "聊天框位置", AutoSize = true };
@@ -982,6 +1060,7 @@ namespace MapleOverlay
             status.AutoSize = true; status.Padding = new Padding(8, 7, 0, 0); status.ForeColor = Color.DarkGreen;
             cloudMode.AutoSize = true; cloudMode.Padding = new Padding(8, 7, 0, 0);
             cloudMode.ForeColor = Color.FromArgb(37, 99, 235);
+            tools.Controls.Add(directionLabel); tools.Controls.Add(translationDirection);
             tools.Controls.Add(liveButton); tools.Controls.Add(bind); tools.Controls.Add(onlineSettings);
             tools.Controls.Add(install); tools.Controls.Add(cloudMode);
             tools.Controls.Add(status);
@@ -992,6 +1071,21 @@ namespace MapleOverlay
             output.DetectUrls = false; output.Font = outputOriginalFont;
             output.Text = "准备好了。配好联网AI后会直接使用；联网失败时自动改用离线备用。\r\n\r\n";
             root.Controls.Add(output, 0, 1);
+
+            TableLayoutPanel manual = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 3, RowCount = 1 };
+            manual.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 76));
+            manual.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            manual.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 112));
+            Label inputLabel = new Label { Text = "输入一句：", Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft };
+            manualInput.Dock = DockStyle.Fill;
+            manualInput.KeyDown += async delegate(object sender, KeyEventArgs e) {
+                if (e.KeyCode == Keys.Enter) { e.SuppressKeyPress = true; await TranslateManualInputAsync(); }
+            };
+            manualTranslate.Text = "翻译并复制"; manualTranslate.Dock = DockStyle.Fill;
+            manualTranslate.Click += async delegate { await TranslateManualInputAsync(); };
+            manual.Controls.Add(inputLabel, 0, 0); manual.Controls.Add(manualInput, 1, 0);
+            manual.Controls.Add(manualTranslate, 2, 0);
+            root.Controls.Add(manual, 0, 2);
             RefreshCloudAiState();
             Controls.Add(root);
         }
@@ -1009,6 +1103,86 @@ namespace MapleOverlay
             cloudMode.Text = settings.IsReady
                 ? "当前：" + settings.Provider + "｜联网优先"
                 : "当前：离线模式｜点“联网AI设置”可提速提准";
+        }
+
+        private static int LoadTranslationDirection()
+        {
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\FengYuMu\AIChat"))
+                {
+                    int value = key == null ? 0 : Convert.ToInt32(key.GetValue("TranslationDirection", 0));
+                    return value >= 0 && value <= 2 ? value : 0;
+                }
+            }
+            catch { return 0; }
+        }
+
+        private static void SaveTranslationDirection(int value)
+        {
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu\AIChat"))
+                    key.SetValue("TranslationDirection", value, RegistryValueKind.DWord);
+            }
+            catch { }
+        }
+
+        private string CurrentTargetLanguage
+        {
+            get
+            {
+                if (translationDirection.SelectedIndex == 1) return "英语";
+                if (translationDirection.SelectedIndex == 2) return "拉美西班牙语";
+                return "简体中文";
+            }
+        }
+
+        private string CurrentSourceLanguage(string value)
+        {
+            return translationDirection.SelectedIndex == 0 ? DetectChatSourceLanguage(value) : "中文";
+        }
+
+        private string CurrentOutputLabel
+        {
+            get
+            {
+                if (translationDirection.SelectedIndex == 1) return "English";
+                if (translationDirection.SelectedIndex == 2) return "Español";
+                return "中文";
+            }
+        }
+
+        private async Task TranslateManualInputAsync()
+        {
+            string source = (manualInput.Text ?? "").Trim();
+            if (source.Length == 0) { status.Text = "先输入一句要发或要看的聊天"; return; }
+            manualTranslate.Enabled = false;
+            try
+            {
+                string target = CurrentTargetLanguage;
+                string translated;
+                if (!TryKnownChatIntentTranslationForTarget(source, target, out translated) &&
+                    !(translationDirection.SelectedIndex == 0 && TryExactGlossaryTranslation(source, out translated)))
+                {
+                    Dictionary<string, string> termTokens;
+                    string protectedSource = ProtectOutboundTerms(source, target, out termTokens);
+                    if (!TryProtectedOutboundTradeIntent(protectedSource, target, termTokens,
+                        out translated) && !TryProtectedOutboundGameIntent(protectedSource,
+                        target, termTokens, out translated))
+                    {
+                        string glossary = BuildGlossaryForTarget(protectedSource, target);
+                        translated = await TranslateWithPreferredAiAsyncForTarget(protectedSource,
+                            CurrentSourceLanguage(source), target, glossary);
+                    }
+                    translated = RestoreProtectedTokens(translated, termTokens);
+                }
+                AppendTranslation(source, translated, ChatVisualStyle.Default, CurrentOutputLabel);
+                try { Clipboard.SetText(translated); } catch { }
+                status.Text = "已翻译并复制，可直接粘贴到游戏";
+            }
+            catch (Exception ex) { status.Text = "翻译失败：" + ex.Message; }
+            finally { manualTranslate.Enabled = true; }
         }
 
         private void LoadRegion()
@@ -1218,13 +1392,14 @@ namespace MapleOverlay
                     string cleanedMessage = NormalizeCommonChatOcr(message);
                     Dictionary<string, string> nameTokens;
                     string protectedMessage = ProtectPlayerNames(cleanedMessage, out nameTokens);
-                    string glossary = BuildGlossary(protectedMessage);
+                    string targetLanguage = "简体中文";
+                    string glossary = BuildGlossaryForTarget(protectedMessage, targetLanguage);
                     lastAiUse = DateTime.Now;
                     string translated;
                     if (!TryKnownChatIntentTranslation(protectedMessage, out translated) &&
                         !TryExactGlossaryTranslation(protectedMessage, out translated))
                     {
-                        string cacheKey = NormalizeChatPhrase(cleanedMessage);
+                        string cacheKey = targetLanguage + "|" + NormalizeChatPhrase(cleanedMessage);
                         if (!translationCache.TryGetValue(cacheKey, out translated))
                         {
                             string sourceLanguage = DetectChatSourceLanguage(cleanedMessage);
@@ -1246,15 +1421,23 @@ namespace MapleOverlay
         private async Task<string> TranslateWithPreferredAiAsync(string source,
             string sourceLanguage, string glossary)
         {
+            return await TranslateWithPreferredAiAsyncForTarget(source, sourceLanguage,
+                "简体中文", glossary);
+        }
+
+        private async Task<string> TranslateWithPreferredAiAsyncForTarget(string source,
+            string sourceLanguage, string targetLanguage, string glossary)
+        {
             OnlineAiSettings online = OnlineAiSettings.Load();
             if (online.IsReady)
             {
                 try
                 {
                     string translated = await OnlineAiClient.TranslateAsync(online, source,
-                        "简体中文", glossary);
-                    translated = OfflineAiClient.ToSimplifiedChinese(translated);
-                    if (IsPlausibleChatTranslation(source, translated))
+                        targetLanguage, glossary);
+                    if (targetLanguage.IndexOf("中文", StringComparison.OrdinalIgnoreCase) >= 0)
+                        translated = OfflineAiClient.ToSimplifiedChinese(translated);
+                    if (IsPlausibleChatTranslationForTarget(source, translated, targetLanguage))
                     {
                         status.Text = online.Provider + "已翻译";
                         return translated;
@@ -1268,8 +1451,8 @@ namespace MapleOverlay
             }
             try
             {
-                string translated = await ai.TranslateAsync(source, sourceLanguage, "中文", glossary);
-                return IsPlausibleChatTranslation(source, translated) ? translated : source;
+                string translated = await ai.TranslateAsync(source, sourceLanguage, targetLanguage, glossary);
+                return IsPlausibleChatTranslationForTarget(source, translated, targetLanguage) ? translated : source;
             }
             catch
             {
@@ -1574,14 +1757,203 @@ namespace MapleOverlay
 
         private string BuildGlossary(string text)
         {
+            return BuildGlossaryForTarget(text, "简体中文");
+        }
+
+        private string BuildGlossaryForTarget(string text, string targetLanguage)
+        {
             StringBuilder result = new StringBuilder(); int count = 0;
+            bool outward = targetLanguage.IndexOf("英", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                targetLanguage.IndexOf("English", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                targetLanguage.IndexOf("西班牙", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                targetLanguage.IndexOf("Espa", StringComparison.OrdinalIgnoreCase) >= 0;
+            if (outward && Regex.IsMatch(text ?? "",
+                @"废弃.*(?:缺|组队|有人|来人|招人)|(?:缺|组队|有人|来人|招人).*废弃",
+                RegexOptions.IgnoreCase))
+            {
+                result.AppendLine("废弃（组队语境） => KPQ (full: Kerning Party Quest)");
+                count++;
+            }
+            List<KeyValuePair<string, string>> matches = new List<KeyValuePair<string, string>>();
             foreach (KeyValuePair<string, string> entry in glossaryEntries)
             {
-                if (count >= 16) break;
+                if (!IsMeaningfulGlossaryTerm(outward ? entry.Value : entry.Key)) continue;
                 if (!ContainsGlossaryTerm(text, entry.Key) && !ContainsGlossaryTerm(text, entry.Value)) continue;
-                result.Append(entry.Key).Append(" = ").Append(entry.Value).AppendLine(); count++;
+                matches.Add(entry);
+            }
+            matches.Sort(delegate(KeyValuePair<string, string> left,
+                KeyValuePair<string, string> right) {
+                if (outward)
+                {
+                    bool leftPreferred = preferredChatAliases.Contains(left.Key);
+                    bool rightPreferred = preferredChatAliases.Contains(right.Key);
+                    if (leftPreferred != rightPreferred) return leftPreferred ? -1 : 1;
+                    int chineseLength = right.Value.Length.CompareTo(left.Value.Length);
+                    if (chineseLength != 0) return chineseLength;
+                    return left.Key.Length.CompareTo(right.Key.Length);
+                }
+                return right.Key.Length.CompareTo(left.Key.Length);
+            });
+            HashSet<string> emitted = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (KeyValuePair<string, string> entry in matches)
+            {
+                if (count >= 16) break;
+                string identity = outward ? entry.Value : entry.Key;
+                if (!emitted.Add(identity)) continue;
+                if (outward) result.Append(entry.Value).Append(" => ").Append(entry.Key);
+                else result.Append(entry.Key).Append(" = ").Append(entry.Value);
+                string fullName;
+                if (glossaryFullNames.TryGetValue(entry.Key, out fullName))
+                    result.Append(" (full: ").Append(fullName).Append(')');
+                result.AppendLine(); count++;
             }
             return result.ToString();
+        }
+
+        private static bool IsMeaningfulGlossaryTerm(string value)
+        {
+            string term = (value ?? "").Trim();
+            if (term.Length < 2) return false;
+            foreach (char item in term)
+                if (Char.IsLetterOrDigit(item)) return true;
+            return false;
+        }
+
+        private string ProtectOutboundTerms(string text, string targetLanguage,
+            out Dictionary<string, string> tokens)
+        {
+            tokens = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            bool outward = targetLanguage.IndexOf("英", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                targetLanguage.IndexOf("English", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                targetLanguage.IndexOf("西班牙", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                targetLanguage.IndexOf("Espa", StringComparison.OrdinalIgnoreCase) >= 0;
+            if (!outward || String.IsNullOrEmpty(text)) return text ?? "";
+            List<KeyValuePair<string, string>> candidates = new List<KeyValuePair<string, string>>();
+            foreach (KeyValuePair<string, string> entry in glossaryEntries)
+            {
+                if (!lockableGlossaryKeys.Contains(entry.Key) ||
+                    !Regex.IsMatch(entry.Value, "[\\u3400-\\u9fff]") ||
+                    !ContainsGlossaryTerm(text, entry.Value)) continue;
+                candidates.Add(entry);
+            }
+            candidates.Sort(delegate(KeyValuePair<string, string> left,
+                KeyValuePair<string, string> right) {
+                bool leftPreferred = preferredChatAliases.Contains(left.Key);
+                bool rightPreferred = preferredChatAliases.Contains(right.Key);
+                if (leftPreferred != rightPreferred) return leftPreferred ? -1 : 1;
+                int length = right.Value.Length.CompareTo(left.Value.Length);
+                if (length != 0) return length;
+                return left.Key.Length.CompareTo(right.Key.Length);
+            });
+            string result = text;
+            HashSet<string> protectedChinese = new HashSet<string>(StringComparer.Ordinal);
+            foreach (KeyValuePair<string, string> entry in candidates)
+            {
+                if (tokens.Count >= 12 || protectedChinese.Contains(entry.Value) ||
+                    !ContainsGlossaryTerm(result, entry.Value)) continue;
+                string token = "__FYM_TERM_" + tokens.Count + "__";
+                result = Regex.Replace(result, Regex.Escape(entry.Value), token,
+                    RegexOptions.IgnoreCase);
+                tokens[token] = entry.Key;
+                protectedChinese.Add(entry.Value);
+            }
+            return result;
+        }
+
+        private static bool TryProtectedOutboundTradeIntent(string text, string targetLanguage,
+            Dictionary<string, string> tokens, out string translation)
+        {
+            bool outward = (targetLanguage ?? "").IndexOf("英", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                (targetLanguage ?? "").IndexOf("English", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                (targetLanguage ?? "").IndexOf("西班牙", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                (targetLanguage ?? "").IndexOf("Espa", StringComparison.OrdinalIgnoreCase) >= 0;
+            if (!outward)
+            {
+                translation = "";
+                return false;
+            }
+            Match match = Regex.Match((text ?? "").Trim(),
+                @"^(?<verb>收|求购|买|卖|出售)\s*(?<item>__FYM_TERM_\d+__)\s*[,， ]*" +
+                @"(?:(?<price>\d+)\s*(?<unit>万|千|[kKmM])?\s*(?:一个|每个|一件|ea)?)?[。.!]?$",
+                RegexOptions.IgnoreCase);
+            if (!match.Success || tokens == null || !tokens.ContainsKey(match.Groups["item"].Value))
+            {
+                translation = "";
+                return false;
+            }
+            string prefix = Regex.IsMatch(match.Groups["verb"].Value, @"^(?:卖|出售)$") ? "S> " : "B> ";
+            string price = match.Groups["price"].Value;
+            string unit = match.Groups["unit"].Value.ToLowerInvariant();
+            if (price.Length > 0 && unit == "万")
+            {
+                int value;
+                if (Int32.TryParse(price, out value)) price = (value * 10).ToString();
+                unit = "k";
+            }
+            else if (unit == "千") unit = "k";
+            translation = prefix + match.Groups["item"].Value +
+                (price.Length > 0 ? " " + price + unit : "");
+            return true;
+        }
+
+        private static bool TryProtectedOutboundGameIntent(string text, string targetLanguage,
+            Dictionary<string, string> tokens, out string translation)
+        {
+            bool spanish = (targetLanguage ?? "").IndexOf("西班牙", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                (targetLanguage ?? "").IndexOf("Espa", StringComparison.OrdinalIgnoreCase) >= 0;
+            bool english = (targetLanguage ?? "").IndexOf("英", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                (targetLanguage ?? "").IndexOf("English", StringComparison.OrdinalIgnoreCase) >= 0;
+            if (!english && !spanish)
+            {
+                translation = "";
+                return false;
+            }
+            string line = (text ?? "").Trim();
+            Match farm = Regex.Match(line,
+                @"^(?:我刚到(?<map>__FYM_TERM_\d+__)[,， ]*)?(?:有(?:没)?人|谁)(?:一起)?" +
+                @"(?:刷|打|练级)(?<mob>__FYM_TERM_\d+__)(?:吗|么)?[?？。.]?$",
+                RegexOptions.IgnoreCase);
+            if (farm.Success && tokens != null && tokens.ContainsKey(farm.Groups["mob"].Value) &&
+                (!farm.Groups["map"].Success || tokens.ContainsKey(farm.Groups["map"].Value)))
+            {
+                string prefix = farm.Groups["map"].Success
+                    ? (spanish ? "Acabo de llegar a " + farm.Groups["map"].Value + ". " :
+                        "Just got to " + farm.Groups["map"].Value + ". ") : "";
+                translation = prefix + (spanish ? "¿Alguien quiere farmear " :
+                    "Anyone want to farm ") + farm.Groups["mob"].Value + "?";
+                return true;
+            }
+            Match quest = Regex.Match(line,
+                @"^(?<quest>__FYM_TERM_\d+__)(?:这个)?任务在哪(?:接|领取|开始)[?？。.]?$",
+                RegexOptions.IgnoreCase);
+            if (quest.Success && tokens != null && tokens.ContainsKey(quest.Groups["quest"].Value))
+            {
+                translation = spanish ? "¿Dónde empiezo la quest " + quest.Groups["quest"].Value + "?" :
+                    "Where do I start the quest " + quest.Groups["quest"].Value + "?";
+                return true;
+            }
+            Match spawn = Regex.Match(line,
+                @"^(?<mob>__FYM_TERM_\d+__)在哪(?:张)?图(?:刷新|出现|刷)[?？。.]?$",
+                RegexOptions.IgnoreCase);
+            if (spawn.Success && tokens != null && tokens.ContainsKey(spawn.Groups["mob"].Value))
+            {
+                translation = spanish ? "¿En qué mapa aparece " + spawn.Groups["mob"].Value + "?" :
+                    "Where does " + spawn.Groups["mob"].Value + " spawn?";
+                return true;
+            }
+            translation = "";
+            return false;
+        }
+
+        private static string RestoreProtectedTokens(string value,
+            Dictionary<string, string> tokens)
+        {
+            string result = value ?? "";
+            if (tokens == null) return result;
+            foreach (KeyValuePair<string, string> item in tokens)
+                result = Regex.Replace(result, Regex.Escape(item.Key), item.Value,
+                    RegexOptions.IgnoreCase);
+            return result;
         }
 
         private static bool ContainsGlossaryTerm(string text, string term)
@@ -1608,7 +1980,61 @@ namespace MapleOverlay
 
         private static bool TryKnownChatIntentTranslation(string text, out string translation)
         {
+            return TryKnownChatIntentTranslationForTarget(text, "简体中文", out translation);
+        }
+
+        private static bool TryKnownChatIntentTranslationForTarget(string text, string targetLanguage,
+            out string translation)
+        {
             string line = Regex.Replace((text ?? "").Trim(), @"\s+", " ");
+            bool spanish = (targetLanguage ?? "").IndexOf("西班牙", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                (targetLanguage ?? "").IndexOf("Espa", StringComparison.OrdinalIgnoreCase) >= 0;
+            bool english = (targetLanguage ?? "").IndexOf("英", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                (targetLanguage ?? "").IndexOf("English", StringComparison.OrdinalIgnoreCase) >= 0;
+            if (english || spanish)
+            {
+                string compact = Regex.Replace(line, @"[\s，。！？、,.!?]+", "");
+                if (Regex.IsMatch(compact,
+                    @"^(?:废弃|废弃都市|废弃都市组队任务|KPQ)(?:三缺一|3缺1|缺一|缺1)$",
+                    RegexOptions.IgnoreCase))
+                {
+                    translation = "R> KPQ 3/4";
+                    return true;
+                }
+                if (Regex.IsMatch(compact,
+                    @"^(?:有人(?:做|打|去)?|有(?:人|队)吗)(?:废弃|废弃都市|废弃都市组队任务|KPQ)(?:吗)?$",
+                    RegexOptions.IgnoreCase) || Regex.IsMatch(compact,
+                    @"^(?:废弃|废弃都市|废弃都市组队任务|KPQ)有人(?:做|打|去)?吗$",
+                    RegexOptions.IgnoreCase))
+                {
+                    translation = spanish ? "¿Alguien para KPQ?" : "Anyone for KPQ?";
+                    return true;
+                }
+                if (Regex.IsMatch(compact, @"^(?:招人|组人|来人|找队员)$"))
+                {
+                    translation = spanish ? "Busco gente." : "R> members";
+                    return true;
+                }
+                Match kumbiSale = Regex.Match(compact,
+                    @"^(?:卖|出售)(?:雪花镖|Kumbi)(\d+)(万|千|k|m)?$",
+                    RegexOptions.IgnoreCase);
+                if (kumbiSale.Success)
+                {
+                    string number = kumbiSale.Groups[1].Value;
+                    string unit = kumbiSale.Groups[2].Value.ToLowerInvariant();
+                    if (unit == "万")
+                    {
+                        int value;
+                        if (Int32.TryParse(number, out value)) number = (value * 10).ToString();
+                        unit = "k";
+                    }
+                    else if (unit == "千") unit = "k";
+                    translation = "S> Kumbi " + number + unit;
+                    return true;
+                }
+                translation = "";
+                return false;
+            }
             bool asksHow = Regex.IsMatch(line, @"^how\b", RegexOptions.IgnoreCase);
             bool mentionsWhisper = Regex.IsMatch(line, @"\bwhispers?\b", RegexOptions.IgnoreCase);
             bool asksToReply = Regex.IsMatch(line,
@@ -1716,6 +2142,12 @@ namespace MapleOverlay
 
         internal static bool IsPlausibleChatTranslation(string source, string translation)
         {
+            return IsPlausibleChatTranslationForTarget(source, translation, "简体中文");
+        }
+
+        internal static bool IsPlausibleChatTranslationForTarget(string source, string translation,
+            string targetLanguage)
+        {
             string input = (source ?? "").Trim();
             string output = (translation ?? "").Trim();
             if (input.Length == 0 || output.Length == 0) return false;
@@ -1723,8 +2155,11 @@ namespace MapleOverlay
             if (OfflineAiClient.LooksLikeInstructionLeak(output)) return false;
             int maximum = Math.Max(32, input.Length * 3 + 12);
             if (output.Length > maximum) return false;
-            if (Regex.Matches(input, "[A-Za-z]").Count >= 3 &&
+            bool targetChinese = (targetLanguage ?? "").IndexOf("中文", StringComparison.OrdinalIgnoreCase) >= 0;
+            if (targetChinese && Regex.Matches(input, "[A-Za-z]").Count >= 3 &&
                 Regex.Matches(output, "[\\u3400-\\u9fff]").Count == 0) return false;
+            if (!targetChinese && Regex.Matches(input, "[\\u3400-\\u9fff]").Count >= 2 &&
+                Regex.Matches(output, "[A-Za-zÁÉÍÓÚÜÑáéíóúüñ¿¡]").Count < 2) return false;
             // This is a common hallucination for opaque player names and OCR fragments.
             if (Regex.IsMatch(input, @"^[A-Za-z][A-Za-z0-9_]{2,23}$") &&
                 Regex.IsMatch(output, @"^玩家\s*\d+$")) return false;
@@ -1766,6 +2201,9 @@ namespace MapleOverlay
         private void LoadGlossary()
         {
             glossaryEntries.Clear();
+            glossaryFullNames.Clear();
+            lockableGlossaryKeys.Clear();
+            preferredChatAliases.Clear();
             contextOnlyGlossaryKeys.Clear();
             knowledge = null;
             if (!File.Exists(dictionaryPath)) return;
@@ -1781,6 +2219,31 @@ namespace MapleOverlay
                 string category = parts.Length > 2 ? parts[2].Trim() : "";
                 if (category.StartsWith("怀旧服-聊天多义缩写", StringComparison.Ordinal))
                     contextOnlyGlossaryKeys.Add(english);
+                if (category.StartsWith("怀旧服-地图", StringComparison.Ordinal) ||
+                    category.StartsWith("怀旧服-装备", StringComparison.Ordinal) ||
+                    category.StartsWith("怀旧服-道具", StringComparison.Ordinal) ||
+                    category.StartsWith("怀旧服-怪物", StringComparison.Ordinal) ||
+                    category.StartsWith("怀旧服-技能", StringComparison.Ordinal) ||
+                    category.StartsWith("怀旧服-任务", StringComparison.Ordinal) ||
+                    category.StartsWith("怀旧服-NPC", StringComparison.Ordinal) ||
+                    category.StartsWith("怀旧服-聊天缩写", StringComparison.Ordinal) ||
+                    category.StartsWith("怀旧服-聊天术语", StringComparison.Ordinal) ||
+                    category.StartsWith("怀旧服-聊天短语", StringComparison.Ordinal))
+                    lockableGlossaryKeys.Add(english);
+                if (!category.StartsWith("怀旧服-聊天多义缩写", StringComparison.Ordinal) &&
+                    (category.StartsWith("怀旧服-聊天缩写", StringComparison.Ordinal) ||
+                     category.StartsWith("怀旧服-聊天术语", StringComparison.Ordinal)))
+                    preferredChatAliases.Add(english);
+                if (category.StartsWith("怀旧服-聊天缩写", StringComparison.Ordinal) &&
+                    parts.Length > 3)
+                {
+                    string detail = parts[3].Trim();
+                    int noteSeparator = detail.IndexOf('；');
+                    if (noteSeparator > 0) detail = detail.Substring(0, noteSeparator).Trim();
+                    if (detail.Length >= 3 && detail.Length <= 64 &&
+                        detail.IndexOf("http", StringComparison.OrdinalIgnoreCase) < 0)
+                        glossaryFullNames[english] = detail;
+                }
                 loaded.Add(new KeyValuePair<string, string>(english, chinese));
                 HashSet<string> values;
                 if (!valuesByEnglish.TryGetValue(english, out values))
@@ -1878,6 +2341,18 @@ namespace MapleOverlay
 
         private void AppendTranslation(string original, string translation, ChatVisualStyle visualStyle)
         {
+            AppendTranslation(original, translation, visualStyle, "中文", true);
+        }
+
+        private void AppendTranslation(string original, string translation, ChatVisualStyle visualStyle,
+            string outputLabel)
+        {
+            AppendTranslation(original, translation, visualStyle, outputLabel, false);
+        }
+
+        private void AppendTranslation(string original, string translation, ChatVisualStyle visualStyle,
+            string outputLabel, bool showInFloatingWindow)
+        {
             if (visualStyle == null) visualStyle = ChatVisualStyle.Default;
             if (output.TextLength > 24000)
             {
@@ -1891,7 +2366,7 @@ namespace MapleOverlay
             output.SelectionStart = output.TextLength;
             output.SelectionColor = Color.FromArgb(255, 183, 77);
             output.SelectionFont = outputTranslationFont;
-            output.AppendText("中文  ");
+            output.AppendText(outputLabel + "  ");
             output.SelectionColor = visualStyle.ForeColor;
             output.SelectionBackColor = visualStyle.HasBackground
                 ? visualStyle.BackColor : output.BackColor;
@@ -1904,7 +2379,7 @@ namespace MapleOverlay
             output.SelectionFont = outputOriginalFont;
             output.AppendText("────────────────────────" + Environment.NewLine);
             output.SelectionStart = output.TextLength; output.ScrollToCaret();
-            if (floatingWindowEnabled && live && screenshotCaptureSuspendCount == 0)
+            if (showInFloatingWindow && floatingWindowEnabled && live && screenshotCaptureSuspendCount == 0)
             {
                 if (floatingWindow == null || floatingWindow.IsDisposed)
                     floatingWindow = new AiTranslationWindowForm(overlay);

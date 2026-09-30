@@ -253,6 +253,37 @@ namespace MapleOverlay
                 }
                 return;
             }
+            if (args != null && Array.IndexOf(args, "--ai-chat-ui-test") >= 0)
+            {
+                string uiErrorPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                    "ai_chat_ui_test_error.txt");
+                try
+                {
+                    Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
+                    if (File.Exists(uiErrorPath)) File.Delete(uiErrorPath);
+                    using (OfflineChatForm panel = new OfflineChatForm(null,
+                        AppDomain.CurrentDomain.BaseDirectory))
+                    {
+                        panel.Show();
+                        Application.DoEvents();
+                        using (Bitmap bitmap = new Bitmap(panel.Width, panel.Height,
+                            PixelFormat.Format32bppArgb))
+                        {
+                            panel.DrawToBitmap(bitmap, new Rectangle(System.Drawing.Point.Empty,
+                                bitmap.Size));
+                            panel.Hide();
+                            bitmap.Save(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                                "ai_chat_ui_test.png"), ImageFormat.Png);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    File.WriteAllText(uiErrorPath, ex.ToString(), Encoding.UTF8);
+                    Environment.ExitCode = 3;
+                }
+                return;
+            }
             if (args != null && Array.IndexOf(args, "--translation-window-ui-test") >= 0)
             {
                 string uiErrorPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
