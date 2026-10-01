@@ -215,6 +215,22 @@ namespace MapleOverlay
         }
     }
 
+    internal static class MapleChatStyleGuide
+    {
+        internal const string ContextRules =
+            "冒险岛聊天中pt表示队伍、ch表示频道、cc通常表示换频道、ks表示抢怪、" +
+            "pc在交易语境表示估价、repot表示补药、rebuff表示重新加状态、rdy表示准备好、" +
+            "short on dps表示队伍缺输出；这些短词必须结合整句，不能按普通英语逐词解释。";
+        internal const string ChineseExamples =
+            "常见玩家短句：any spot?＝还有位置吗？；pt full＝队满了；np, I'll cc＝没事，我换频道；" +
+            "low pots, gotta repot＝药水不多了，我得补药；server's so laggy rn＝服务器现在好卡。";
+        internal const string EnglishExamples =
+            "真实玩家短句优先写any spot?、J> pt、I'll cc、need one more, anyone?、everyone rdy?、" +
+            "gotta repot、deal, trade me等简短说法，不要扩写成书面英语。";
+        internal const string SpanishRules =
+            "KPQ、ch、pt、PM、AFK等国际服通用游戏简称可以保留，但整句话必须翻成西班牙语。";
+    }
+
     internal static class OnlineAiClient
     {
         public static Task<string> TranslateAsync(OnlineAiSettings settings, string source,
@@ -364,7 +380,8 @@ namespace MapleOverlay
                 "多义项必须结合整句判断；证据不足就保留原文，禁止自己拼出不存在的简称或全称。" +
                 "混合大小写、数字或无空格的专有词可能是玩家ID，句尾称呼也可能是玩家ID，证据不足就保留原文；" +
                 "__FYM_PLAYER_数字__和__FYM_TERM_数字__占位符必须逐字原样保留，不能翻译、展开或删除。" +
-                "保留数字、频道、价格单位、表情和语气，不得漏译、重复或编造。";
+                "保留数字、频道、价格单位、表情和语气，不得漏译、重复或编造。" +
+                MapleChatStyleGuide.ContextRules;
             string finish = "只输出一行最终译文，不要输出分析、思考、解释、标题、原文、注释、前缀或引号。";
             if ((target ?? "").IndexOf("西班牙", StringComparison.OrdinalIgnoreCase) >= 0 ||
                 (target ?? "").IndexOf("Espa", StringComparison.OrdinalIgnoreCase) >= 0)
@@ -373,7 +390,8 @@ namespace MapleOverlay
                     "把中文改写成简短、自然的拉美西班牙语玩家聊天。地图、装备、怪物、任务、技能及PQ名称优先保留国际服英文正式名或通用简称，" +
                     "只把周围语气翻成西班牙语；招募、组队和交易尽量沿用国际服通用黑话。原文只说刷怪时禁止擅自添加PQ。" +
                     "例：废弃三缺一＝R> KPQ 3/4；有人做废弃吗？＝¿Alguien para KPQ?；招人＝Busco gente.；" +
-                    "卖雪花镖20万＝S> Kumbi 200k；我刚到天空之城，有人一起刷小幽灵吗？＝Acabo de llegar a Orbis. ¿Alguien quiere farmear Jr. Wraith?。" + finish;
+                    "卖雪花镖20万＝S> Kumbi 200k；我刚到天空之城，有人一起刷小幽灵吗？＝Acabo de llegar a Orbis. ¿Alguien quiere farmear Jr. Wraith?。" +
+                    MapleChatStyleGuide.SpanishRules + finish;
             }
             if ((target ?? "").IndexOf("英", StringComparison.OrdinalIgnoreCase) >= 0 ||
                 (target ?? "").IndexOf("English", StringComparison.OrdinalIgnoreCase) >= 0)
@@ -383,13 +401,14 @@ namespace MapleOverlay
                     "招募用R>/LFM/LF1/人数进度，交易用B>/S>/T>/WTB/WTS/WTT；收/求购用B>或WTB，卖/出售用S>或WTS。" +
                     "不要把中文语序硬搬成英语；原文只说刷怪时禁止擅自添加PQ。" +
                     "例：废弃三缺一＝R> KPQ 3/4；招人＝R> members；有人做废弃吗？＝Anyone for KPQ?；" +
-                    "卖雪花镖20万＝S> Kumbi 200k。" + finish;
+                    "卖雪花镖20万＝S> Kumbi 200k。" + MapleChatStyleGuide.EnglishExamples + finish;
             }
             return shared +
                 "把外语翻成自然、简短的简体中文玩家口语；技能名、装备名、怪物名、地图名和任务名优先采用词库中的国服怀旧译名。" +
                 "问操作方法时用怎么、能不能等自然口语；reply、respond、whisper back 表示回复，不能误译成重新发消息。" +
                 "例：How do you whisper back someone?＝怎么回复别人的悄悄话？；" +
                 "which event is it i JUST went to orbis bro BriskIcedTea＝这是哪个活动啊兄弟？我刚去了天空之城，BriskIcedTea。" +
+                MapleChatStyleGuide.ChineseExamples +
                 finish;
         }
 
@@ -636,13 +655,15 @@ namespace MapleOverlay
                 "先理解整句意图，不要逐词硬译。结合地图、职业、装备、怪物、技能、任务、PQ、交易和玩家黑话；" +
                 "可靠的聊天缩写必须按术语表展开；多义或证据不足的简称必须保留原文，不得猜成地名、职业或玩家名。" +
                 "__FYM_PLAYER_数字__和__FYM_TERM_数字__占位符必须逐字原样保留，不能翻译、展开或删除。" +
-                "保留数字、频道、价格单位和表情，完整翻译每个分句，不得漏译、重复或编造。OCR含糊时保留原文。";
+                "保留数字、频道、价格单位和表情，完整翻译每个分句，不得漏译、重复或编造。OCR含糊时保留原文。" +
+                MapleChatStyleGuide.ContextRules;
             if (targetLanguage.IndexOf("西班牙", StringComparison.OrdinalIgnoreCase) >= 0 ||
                 targetLanguage.IndexOf("Espa", StringComparison.OrdinalIgnoreCase) >= 0)
                 return shared +
                     "用简短自然的拉美西班牙语玩家口吻；地图、装备、怪物、任务、技能和PQ优先保留国际服英文正式名或通用简称，周围语气翻成西班牙语。" +
                     "招募和交易沿用R>/LFM/LF1、B>/S>/T>/WTB/WTS/WTT等国际服黑话；原文只说刷怪时禁止擅自添加PQ。" +
                     "参考：废弃三缺一＝R> KPQ 3/4；有人做废弃吗？＝¿Alguien para KPQ?；招人＝Busco gente.；卖雪花镖20万＝S> Kumbi 200k。" +
+                    MapleChatStyleGuide.SpanishRules +
                     "只输出一行最终译文，不复述原文，不解释。" + terms;
             if (targetLanguage.IndexOf("英", StringComparison.OrdinalIgnoreCase) >= 0 ||
                 targetLanguage.IndexOf("English", StringComparison.OrdinalIgnoreCase) >= 0)
@@ -651,12 +672,14 @@ namespace MapleOverlay
                     "招募用R>/LFM/LF1/人数进度，交易用B>/S>/T>/WTB/WTS/WTT；收/求购用B>或WTB，卖/出售用S>或WTS。" +
                     "不要照搬中文语序；原文只说刷怪时禁止擅自添加PQ。" +
                     "参考：废弃三缺一＝R> KPQ 3/4；招人＝R> members；有人做废弃吗？＝Anyone for KPQ?；卖雪花镖20万＝S> Kumbi 200k。" +
+                    MapleChatStyleGuide.EnglishExamples +
                     "只输出一行最终译文，不复述原文，不解释。" + terms;
             return shared +
                 "用简短自然的简体中文玩家口语；问操作方法时用怎么、能不能等自然说法；reply、respond、whisper back表示回复。" +
                 "技能、装备、怪物、地图和任务优先用国服怀旧译名；交易用收购、出售、交换、求组、报价等玩家说法。" +
                 "参考：B> Claw 60%, offer＝收60%拳套攻击卷，请报价；S> Kumbi 200k＝卖雪花镖，20万；" +
                 "How do you whisper back someone?＝怎么回复别人的悄悄话？；ima go check now＝我现在去看看。" +
+                MapleChatStyleGuide.ChineseExamples +
                 "必须使用简体中文。只输出一行最终译文，不复述原文，不解释。" + terms;
         }
 
@@ -1983,6 +2006,121 @@ namespace MapleOverlay
             return TryKnownChatIntentTranslationForTarget(text, "简体中文", out translation);
         }
 
+        private static readonly Dictionary<string, string> EnglishQuickChat =
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "还有位置吗", "Any spot?" },
+                { "组队吧", "Party up!" },
+                { "求组", "LFG" },
+                { "求加入队伍", "J> pt" },
+                { "你多少级", "What lvl?" },
+                { "没事我换频道", "np, I'll cc." },
+                { "行吧我换频道", "Ok whatever, I'll cc." },
+                { "我来拉怪你守中间", "I'll pull, u stay mid." },
+                { "还缺一人有人吗", "Need one more, anyone?" },
+                { "你准备转什么职业", "What job r u going?" },
+                { "能给我加个状态吗", "Could u buff me pls?" },
+                { "药水不多了我得补药", "Low pots, gotta repot." },
+                { "你太给力了", "Ur the best!" },
+                { "重新加状态", "Rebuff pls." },
+                { "大家准备好了吗", "Everyone rdy?" },
+                { "打得好谢谢大家", "gg ty all!" },
+                { "怎么去魔法密林", "How do I get to Ellinia?" },
+                { "坐出租车", "Take the cab." },
+                { "我应该去哪练级", "Where should I grind?" },
+                { "成交和我交易", "Deal, trade me." },
+                { "要加好友吗", "Wanna add me?" },
+                { "上线了私聊我", "PM me when ur on." },
+                { "暂离马上回来", "brb, afk." },
+                { "抱歉刚掉线了", "Sorry, dc'd." },
+                { "服务器现在好卡", "Server's so laggy rn." },
+                { "回见晚安", "Cya! gn." },
+                { "抱歉我英语不太好在用翻译器", "Sorry, my English isn't great. I'm using a translator." },
+                { "没关系", "No worries." },
+                { "顺便说一句你英语挺好的", "Ur English is fine btw." },
+                { "还缺输出吗", "Short on dps?" }
+            };
+
+        private static readonly Dictionary<string, string> SpanishQuickChat =
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "还有位置吗", "¿Hay espacio?" },
+                { "组队吧", "¿Hacemos party?" },
+                { "求组", "Busco party." },
+                { "求加入队伍", "Busco party." },
+                { "你多少级", "¿Qué nivel eres?" },
+                { "没事我换频道", "Tranqui, cambio de canal." },
+                { "行吧我换频道", "Bueno, cambio de canal." },
+                { "我来拉怪你守中间", "Yo jalo los mobs; tú quédate en medio." },
+                { "还缺一人有人吗", "Falta uno, ¿alguien?" },
+                { "你准备转什么职业", "¿A qué job vas?" },
+                { "能给我加个状态吗", "¿Me das buff, por favor?" },
+                { "药水不多了我得补药", "Me quedan pocas pociones; voy a comprar más." },
+                { "你太给力了", "¡Eres el mejor!" },
+                { "重新加状态", "Rebuff, por favor." },
+                { "大家准备好了吗", "¿Todos listos?" },
+                { "打得好谢谢大家", "gg, ¡gracias a todos!" },
+                { "怎么去魔法密林", "¿Cómo llego a Ellinia?" },
+                { "坐出租车", "Toma el taxi." },
+                { "我应该去哪练级", "¿Dónde debería levelear?" },
+                { "成交和我交易", "Trato hecho, mándame trade." },
+                { "要加好友吗", "¿Me agregas?" },
+                { "上线了私聊我", "Mándame PM cuando te conectes." },
+                { "暂离马上回来", "brb, afk." },
+                { "抱歉刚掉线了", "Perdón, me desconecté." },
+                { "服务器现在好卡", "El servidor tiene mucho lag ahora." },
+                { "回见晚安", "¡Nos vemos! gn." },
+                { "抱歉我英语不太好在用翻译器", "Perdón, mi inglés no es muy bueno. Estoy usando un traductor." },
+                { "没关系", "No te preocupes." },
+                { "顺便说一句你英语挺好的", "Por cierto, tu inglés está bien." },
+                { "还缺输出吗", "¿Les falta daño?" }
+            };
+
+        private static bool TryQuickOutboundChatTranslation(string line, bool spanish,
+            out string translation)
+        {
+            string compact = NormalizeChatPhrase(line);
+            Dictionary<string, string> phrases = spanish ? SpanishQuickChat : EnglishQuickChat;
+            if (phrases.TryGetValue(compact, out translation)) return true;
+
+            Match level = Regex.Match(compact, @"^离(\d+)级还(?:差|要)多久$");
+            if (level.Success)
+            {
+                translation = spanish ? "¿Cuánto falta para lvl " + level.Groups[1].Value + "?" :
+                    "How long till " + level.Groups[1].Value + "?";
+                return true;
+            }
+            Match quantity = Regex.Match(compact, @"^(\d+)个多少钱$");
+            if (quantity.Success)
+            {
+                translation = spanish ? "¿Cuánto por " + quantity.Groups[1].Value + "?" :
+                    "How much for " + quantity.Groups[1].Value + "?";
+                return true;
+            }
+            Match offer = Regex.Match(compact, @"^能(\d+)(万|千|k|m)卖吗$", RegexOptions.IgnoreCase);
+            if (offer.Success)
+            {
+                string price = FormatOutboundPrice(offer.Groups[1].Value, offer.Groups[2].Value);
+                translation = spanish ? "¿Puedes hacerlo por " + price + "?" : "Can u do " + price + "?";
+                return true;
+            }
+            translation = "";
+            return false;
+        }
+
+        private static string FormatOutboundPrice(string number, string unit)
+        {
+            string normalizedUnit = (unit ?? "").ToLowerInvariant();
+            if (normalizedUnit == "万")
+            {
+                int value;
+                if (Int32.TryParse(number, out value)) number = (value * 10).ToString();
+                normalizedUnit = "k";
+            }
+            else if (normalizedUnit == "千") normalizedUnit = "k";
+            return number + normalizedUnit;
+        }
+
         private static bool TryKnownChatIntentTranslationForTarget(string text, string targetLanguage,
             out string translation)
         {
@@ -1993,6 +2131,7 @@ namespace MapleOverlay
                 (targetLanguage ?? "").IndexOf("English", StringComparison.OrdinalIgnoreCase) >= 0;
             if (english || spanish)
             {
+                if (TryQuickOutboundChatTranslation(line, spanish, out translation)) return true;
                 string compact = Regex.Replace(line, @"[\s，。！？、,.!?]+", "");
                 if (Regex.IsMatch(compact,
                     @"^(?:废弃|废弃都市|废弃都市组队任务|KPQ)(?:三缺一|3缺1|缺一|缺1)$",
@@ -2020,16 +2159,8 @@ namespace MapleOverlay
                     RegexOptions.IgnoreCase);
                 if (kumbiSale.Success)
                 {
-                    string number = kumbiSale.Groups[1].Value;
-                    string unit = kumbiSale.Groups[2].Value.ToLowerInvariant();
-                    if (unit == "万")
-                    {
-                        int value;
-                        if (Int32.TryParse(number, out value)) number = (value * 10).ToString();
-                        unit = "k";
-                    }
-                    else if (unit == "千") unit = "k";
-                    translation = "S> Kumbi " + number + unit;
+                    translation = "S> Kumbi " + FormatOutboundPrice(
+                        kumbiSale.Groups[1].Value, kumbiSale.Groups[2].Value);
                     return true;
                 }
                 translation = "";
@@ -2192,9 +2323,11 @@ namespace MapleOverlay
                 separator = chineseSeparator;
             if (separator >= 0 && separator + 1 < message.Length)
                 message = message.Substring(separator + 1);
+            string trimmed = message.Trim();
+            if (Regex.IsMatch(trimmed, @"^(?:J|R|B|S|T|LF)\s*>$", RegexOptions.IgnoreCase)) return true;
             string compact = Regex.Replace(message.ToLowerInvariant(), @"[^a-z0-9\u3400-\u9fff]+", "");
-            if (compact == "gg" || compact == "ty" || compact == "hi" || compact == "yo" ||
-                compact == "ok" || compact == "lf") return true;
+            if (Regex.IsMatch(compact,
+                @"^(?:gg|gj|gl|ty|hi|yo|ok|np|mb|ks|cc|pt|lf|gn|dc|pc)$")) return true;
             return compact.Length >= 3;
         }
 
@@ -2227,8 +2360,7 @@ namespace MapleOverlay
                     category.StartsWith("怀旧服-任务", StringComparison.Ordinal) ||
                     category.StartsWith("怀旧服-NPC", StringComparison.Ordinal) ||
                     category.StartsWith("怀旧服-聊天缩写", StringComparison.Ordinal) ||
-                    category.StartsWith("怀旧服-聊天术语", StringComparison.Ordinal) ||
-                    category.StartsWith("怀旧服-聊天短语", StringComparison.Ordinal))
+                    category.StartsWith("怀旧服-聊天术语", StringComparison.Ordinal))
                     lockableGlossaryKeys.Add(english);
                 if (!category.StartsWith("怀旧服-聊天多义缩写", StringComparison.Ordinal) &&
                     (category.StartsWith("怀旧服-聊天缩写", StringComparison.Ordinal) ||
