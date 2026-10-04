@@ -20,7 +20,7 @@ $winmd = 'C:\Windows\System32\WinMetadata'
   /reference:"$winmd\Windows.Media.winmd" `
   /reference:"$winmd\Windows.Storage.winmd" `
   "$scriptDir\MapleOverlay.cs" "$scriptDir\SceneRecognition.cs" `
-  "$scriptDir\SimpleForms.cs" "$scriptDir\OfflineChat.cs" `
+  "$scriptDir\SimpleForms.cs" "$scriptDir\OutboundChatIntent.cs" "$scriptDir\OfflineChat.cs" `
   "$scriptDir\ApplicationUpdater.cs"
 
 if ($LASTEXITCODE -ne 0) { throw "编译失败，退出码 $LASTEXITCODE" }

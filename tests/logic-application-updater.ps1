@@ -63,7 +63,8 @@ foreach ($name in $files) {
 $source = Get-Content (Join-Path $repoRoot 'src\ApplicationUpdater.cs') -Raw -Encoding UTF8
 foreach ($required in @('FengYuMu/releases/latest','安装包 SHA-256 校验失败',
     'RestoreBackup(manifest)','更新失败，已继续使用更新前版本','File.Replace',
-    '更新路径越过了枫语幕安装目录')) {
+    '更新路径越过了枫语幕安装目录','HTTPS_PROXY','Windows系统代理',
+    '已自动尝试 Windows 系统代理、环境代理和直连','UpdateWebClient')) {
     if (-not $source.Contains($required)) { throw "一键更新安全链路缺少：$required" }
 }
 Remove-ItemProperty -Path 'HKCU:\Software\FengYuMu' -Name ApplicationUpdateSuccess,

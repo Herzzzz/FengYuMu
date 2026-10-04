@@ -9,6 +9,7 @@ $onlineType = $assembly.GetType('MapleOverlay.OnlineAiClient', $true)
 $offlineType = $assembly.GetType('MapleOverlay.OfflineAiClient', $true)
 $chatType = $assembly.GetType('MapleOverlay.OfflineChatForm', $true)
 $overlayType = $assembly.GetType('MapleOverlay.OverlayForm', $true)
+$intentPolicyType = $assembly.GetType('MapleOverlay.OutboundChatIntentPolicy', $true)
 $settings = [Activator]::CreateInstance($settingsType, $true)
 $settingsType.GetField('ApiKey', $all).SetValue($settings, 'test-key')
 
@@ -67,6 +68,61 @@ foreach ($case in $cases) {
 $ambiguous = [object[]]@('MM来吗', '英语', '')
 if ([bool]$known.Invoke($null, $ambiguous)) { throw '多义简称MM被固定规则擅自展开' }
 
+$analyzeIntent = $intentPolicyType.GetMethod('Analyze', $all)
+$buildIntentConstraint = $intentPolicyType.GetMethod('BuildPromptConstraint', $all)
+$normalizeIntent = $intentPolicyType.GetMethod('NormalizeTranslation', $all)
+$intentCases = @(
+    @{ Source='乌鲁城有人缺一个远程吗？'; Expected='PartyJoin' },
+    @{ Source='有队缺牧师吗'; Expected='PartyJoin' },
+    @{ Source='标飞求组废弃'; Expected='PartyJoin' },
+    @{ Source='我是弓手，有队伍缺人吗'; Expected='PartyJoin' },
+    @{ Source='谁的队缺输出'; Expected='PartyJoin' },
+    @{ Source='还缺输出吗'; Expected='PartyJoin' },
+    @{ Source='乌鲁城缺一个远程'; Expected='PartyRecruit' },
+    @{ Source='队伍还缺牧师'; Expected='PartyRecruit' },
+    @{ Source='射手村组队，3缺1'; Expected='PartyRecruit' },
+    @{ Source='招一个标飞'; Expected='PartyRecruit' },
+    @{ Source='还缺一人，有人吗'; Expected='PartyRecruit' },
+    @{ Source='收一面干净枫叶盾'; Expected='Buy' },
+    @{ Source='卖一组日之镖'; Expected='Sell' },
+    @{ Source='枫叶盾换工地手套'; Expected='Trade' },
+    @{ Source='拿枫叶盾换工地手套'; Expected='Trade' },
+    @{ Source='日之镖现在多少钱'; Expected='PriceCheck' },
+    @{ Source='谁能带我去乌鲁城'; Expected='RequestHelp' },
+    @{ Source='我可以帮你过任务'; Expected='OfferHelp' },
+    @{ Source='远程职业厉害吗'; Expected='General' },
+    @{ Source='收一个牧师'; Expected='General' },
+    @{ Source='队伍收人'; Expected='General' },
+    @{ Source='收人'; Expected='General' },
+    @{ Source='有队收牧师吗'; Expected='General' },
+    @{ Source='牧师有队收人吗'; Expected='General' },
+    @{ Source='我想用猫头鹰找一面干净枫叶盾'; Expected='General' }
+)
+foreach ($case in $intentCases) {
+    $intent = $analyzeIntent.Invoke($null, @($case.Source))
+    $kind = [string]$intent.GetType().GetField('Kind', $all).GetValue($intent)
+    if ($kind -ne $case.Expected) {
+        throw "通用玩家意图方向错误：$($case.Source) => $kind，应为 $($case.Expected)"
+    }
+}
+$joinIntent = $analyzeIntent.Invoke($null, @('乌鲁城有人缺一个远程吗？'))
+$joinConstraint = [string]$buildIntentConstraint.Invoke($null, @($joinIntent, '英语'))
+if (-not $joinConstraint.Contains('本人正在求组') -or
+    -not $joinConstraint.Contains('J>') -or -not $joinConstraint.Contains('不得写成R>')) {
+    throw "求组视角没有作为强约束交给模型：$joinConstraint"
+}
+$normalizedJoin = [string]$normalizeIntent.Invoke($null,
+    @('乌鲁城有人缺一个远程吗？', 'LF> ranged at Ulu City?', '英语', $joinIntent))
+if ($normalizedJoin -ne 'J> ranged at Ulu City?') {
+    throw "模型方向写反后没有被通用后处理纠正：$normalizedJoin"
+}
+$recruitIntent = $analyzeIntent.Invoke($null, @('乌鲁城缺一个远程'))
+$normalizedRecruit = [string]$normalizeIntent.Invoke($null,
+    @('乌鲁城缺一个远程', 'LFG Ulu ranged', '英语', $recruitIntent))
+if ($normalizedRecruit -ne 'R> Ulu ranged') {
+    throw "招募被模型写成求组后没有纠正：$normalizedRecruit"
+}
+
 $plausible = $chatType.GetMethod('IsPlausibleChatTranslationForTarget', $all)
 if (-not [bool]$plausible.Invoke($null, @('废弃三缺一','R> KPQ 3/4','英语')) -or
     -not [bool]$plausible.Invoke($null, @('有人做废弃吗','¿Alguien para KPQ?','拉美西班牙语')) -or
@@ -114,6 +170,11 @@ try {
     if ($protectedText -notmatch '__FYM_TERM_\d+__' -or
         $tokenValues -notcontains 'Orbis' -or $tokenValues -notcontains 'Jr. Wraith') {
         throw "地图或怪物正式名没有在交给AI前锁定：$protectedText | $($tokenValues -join ',')"
+    }
+    $jobProtectArgs = [object[]]@('有队缺牧师吗？', '英语', $null)
+    $null = $protectTerms.Invoke($form, $jobProtectArgs)
+    if (@($jobProtectArgs[2].Values) -notcontains 'Cleric') {
+        throw "职业正式名没有在交给AI前锁定：$(@($jobProtectArgs[2].Values) -join ',')"
     }
     $lockEquipmentArgs = [object[]]@('收工地手套，卖雪花镖', '英语', $null)
     $null = $protectTerms.Invoke($form, $lockEquipmentArgs)

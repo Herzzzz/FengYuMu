@@ -23,8 +23,8 @@ using Windows.Storage.Streams;
 
 [assembly: AssemblyTitle("枫语幕")]
 [assembly: AssemblyProduct("枫语幕")]
-[assembly: AssemblyVersion("3.2.0.0")]
-[assembly: AssemblyFileVersion("3.2.0.0")]
+[assembly: AssemblyVersion("3.2.1.0")]
+[assembly: AssemblyFileVersion("3.2.1.0")]
 
 namespace MapleOverlay
 {
@@ -208,16 +208,35 @@ namespace MapleOverlay
                         panel.Show();
                         Application.DoEvents();
                         int requestedScale = 100;
+                        List<int> requestedScales = new List<int>();
+                        bool transitionTest = false;
                         foreach (string arg in args)
                         {
+                            if (arg.StartsWith("--main-ui-test-transition=", StringComparison.OrdinalIgnoreCase))
+                            {
+                                transitionTest = true;
+                                string[] values = arg.Substring("--main-ui-test-transition=".Length).Split(',');
+                                foreach (string value in values)
+                                {
+                                    int parsed;
+                                    if (Int32.TryParse(value, out parsed))
+                                        requestedScales.Add(Math.Max(100, Math.Min(200, parsed)));
+                                }
+                                continue;
+                            }
                             if (!arg.StartsWith("--main-ui-test-scale=", StringComparison.OrdinalIgnoreCase)) continue;
                             Int32.TryParse(arg.Substring("--main-ui-test-scale=".Length), out requestedScale);
                             requestedScale = Math.Max(100, Math.Min(200, requestedScale));
                         }
-                        if (requestedScale != 100)
+                        if (requestedScales.Count == 0) requestedScales.Add(requestedScale);
+                        foreach (int scale in requestedScales)
                         {
-                            panel.ApplyDpiTestScale(requestedScale);
+                            requestedScale = scale;
+                            panel.ApplyDpiTestScale(scale);
                             Application.DoEvents();
+                            string stepResult = panel.RunDpiLayoutSelfTest(scale);
+                            if (!stepResult.StartsWith("OK", StringComparison.Ordinal))
+                                throw new InvalidOperationException(stepResult);
                         }
                         string layoutResult = panel.RunDpiLayoutSelfTest(requestedScale);
                         if (!layoutResult.StartsWith("OK", StringComparison.Ordinal))
@@ -229,8 +248,9 @@ namespace MapleOverlay
                             panel.DrawToBitmap(bitmap, new Rectangle(System.Drawing.Point.Empty, bitmap.Size));
                             panel.Hide();
                             bitmap.Save(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                                requestedScale == 100 ? "main_ui_test.png" :
-                                "main_ui_test_" + requestedScale + ".png"), ImageFormat.Png);
+                                transitionTest ? "main_ui_test_transition.png" :
+                                (requestedScale == 100 ? "main_ui_test.png" :
+                                "main_ui_test_" + requestedScale + ".png")), ImageFormat.Png);
                         }
                     }
                 }
@@ -3077,7 +3097,7 @@ namespace MapleOverlay
         private void BuildTray()
         {
             tray.Icon = Program.AppIcon;
-            tray.Text = "枫语幕 v3.2";
+            tray.Text = "枫语幕 v3.2.1";
             tray.Visible = true;
             ContextMenuStrip menu = new ContextMenuStrip();
             ToolStripMenuItem main = new ToolStripMenuItem("打开主界面");
@@ -3125,7 +3145,7 @@ namespace MapleOverlay
             {
                 tray.Visible = false;
                 tray.Icon = Program.AppIcon;
-                tray.Text = "枫语幕 v3.2（内存待机）";
+                tray.Text = "枫语幕 v3.2.1（内存待机）";
                 tray.Visible = true;
             }
             catch (ObjectDisposedException) { return; }
@@ -3273,7 +3293,7 @@ namespace MapleOverlay
             ShowCurrentTranslations();
             if (continuousTranslationEnabled)
                 continuousTranslationSuppressedUntilUtc = DateTime.UtcNow.AddSeconds(3);
-            tray.Text = "枫语幕 v3.2（低配置优化）";
+            tray.Text = "枫语幕 v3.2.1（低配置优化）";
         }
 
         private Task ShowTranslationAsync()
@@ -3777,7 +3797,7 @@ namespace MapleOverlay
                 visibleTranslation = true;
                 ShowCurrentTranslations();
                 stopwatch.Stop();
-                tray.Text = "枫语幕 v3.2（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
+                tray.Text = "枫语幕 v3.2.1（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
                 if (Program.Benchmark)
                     WriteBenchmarkResult(stopwatch, captureDuration, probePassDuration,
                         mainPassDuration, hoverPassDuration, panelPassDuration,

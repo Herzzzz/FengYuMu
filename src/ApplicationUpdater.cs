@@ -45,6 +45,30 @@ namespace MapleOverlay
 
     internal static class ApplicationUpdater
     {
+        private sealed class UpdateWebClient : WebClient
+        {
+            protected override WebRequest GetWebRequest(Uri address)
+            {
+                WebRequest request = base.GetWebRequest(address);
+                request.Timeout = 12000;
+                HttpWebRequest http = request as HttpWebRequest;
+                if (http != null)
+                {
+                    http.ReadWriteTimeout = 12000;
+                    http.AutomaticDecompression = DecompressionMethods.GZip |
+                        DecompressionMethods.Deflate;
+                    http.KeepAlive = true;
+                }
+                return request;
+            }
+        }
+
+        private sealed class NetworkRoute
+        {
+            internal string Name;
+            internal IWebProxy Proxy;
+        }
+
         private const string LatestReleaseUrl =
             "https://api.github.com/repos/Herzzzz/FengYuMu/releases/latest";
         private const string LatestReleasePage =
@@ -349,37 +373,126 @@ namespace MapleOverlay
 
         private static string DownloadText(string url)
         {
-            using (WebClient client = CreateWebClient()) return client.DownloadString(url);
+            return WithOfficialNetworkRoutes(delegate(WebClient client) {
+                return client.DownloadString(url);
+            });
         }
 
         private static void DownloadFile(string url, string path)
         {
-            using (WebClient client = CreateWebClient()) client.DownloadFile(url, path);
+            WithOfficialNetworkRoutes(delegate(WebClient client) {
+                if (File.Exists(path)) File.Delete(path);
+                client.DownloadFile(url, path);
+                return true;
+            });
         }
 
-        private static WebClient CreateWebClient()
+        private static WebClient CreateWebClient(IWebProxy proxy)
         {
-            WebClient client = new WebClient();
+            WebClient client = new UpdateWebClient();
             client.Encoding = Encoding.UTF8;
-            client.Headers[HttpRequestHeader.UserAgent] = "FengYuMu/3.0";
+            client.Headers[HttpRequestHeader.UserAgent] = "FengYuMu/3.2.1";
+            client.Headers[HttpRequestHeader.Accept] = "application/vnd.github+json, text/plain, */*";
+            client.Proxy = proxy;
             return client;
+        }
+
+        private static T WithOfficialNetworkRoutes<T>(Func<WebClient, T> action)
+        {
+            Exception last = null;
+            foreach (NetworkRoute route in BuildNetworkRoutes())
+            {
+                for (int attempt = 0; attempt < 2; attempt++)
+                {
+                    try
+                    {
+                        using (WebClient client = CreateWebClient(route.Proxy))
+                            return action(client);
+                    }
+                    catch (WebException ex)
+                    {
+                        last = ex;
+                        if (attempt == 0) System.Threading.Thread.Sleep(350);
+                    }
+                }
+            }
+            throw CreateOfficialNetworkError(last);
+        }
+
+        private static List<NetworkRoute> BuildNetworkRoutes()
+        {
+            List<NetworkRoute> routes = new List<NetworkRoute>();
+            HashSet<string> seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            IWebProxy systemProxy = WebRequest.DefaultWebProxy;
+            AddNetworkRoute(routes, seen, "Windows系统代理", systemProxy);
+            foreach (string variable in new string[] { "HTTPS_PROXY", "https_proxy",
+                "HTTP_PROXY", "http_proxy", "ALL_PROXY", "all_proxy" })
+            {
+                string value = Environment.GetEnvironmentVariable(variable);
+                Uri uri;
+                if (String.IsNullOrWhiteSpace(value) || !Uri.TryCreate(value.Trim(),
+                    UriKind.Absolute, out uri) ||
+                    !(uri.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase) ||
+                      uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase))) continue;
+                WebProxy proxy = new WebProxy(uri);
+                proxy.Credentials = CredentialCache.DefaultCredentials;
+                AddNetworkRoute(routes, seen, variable, proxy);
+            }
+            AddNetworkRoute(routes, seen, "直连", null);
+            return routes;
+        }
+
+        private static void AddNetworkRoute(List<NetworkRoute> routes, HashSet<string> seen,
+            string name, IWebProxy proxy)
+        {
+            string key = "DIRECT";
+            if (proxy != null)
+            {
+                try
+                {
+                    Uri destination = new Uri(LatestReleasePage);
+                    Uri address = proxy.GetProxy(destination);
+                    if (address != null && address != destination) key = address.AbsoluteUri;
+                }
+                catch { key = name; }
+            }
+            if (!seen.Add(key)) return;
+            routes.Add(new NetworkRoute { Name = name, Proxy = proxy });
+        }
+
+        private static WebException CreateOfficialNetworkError(Exception inner)
+        {
+            return new WebException(
+                "无法连接 GitHub 官方发布服务器；已自动尝试 Windows 系统代理、环境代理和直连。" +
+                "请确认浏览器能打开 GitHub，或稍后再试。", inner);
         }
 
         private static string ResolveLatestTag()
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(LatestReleasePage);
-            request.Method = "HEAD";
-            request.AllowAutoRedirect = false;
-            request.UserAgent = "FengYuMu/3.0";
-            request.Timeout = 12000;
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            Exception last = null;
+            foreach (NetworkRoute route in BuildNetworkRoutes())
             {
-                string location = response.Headers[HttpResponseHeader.Location] ?? "";
-                Match match = Regex.Match(location, @"/releases/tag/([^/?#]+)",
-                    RegexOptions.IgnoreCase);
-                if (!match.Success) throw new InvalidDataException("无法确定最新正式版本号");
-                return Uri.UnescapeDataString(match.Groups[1].Value);
+                try
+                {
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(LatestReleasePage);
+                    request.Method = "HEAD";
+                    request.AllowAutoRedirect = false;
+                    request.UserAgent = "FengYuMu/3.2.1";
+                    request.Proxy = route.Proxy;
+                    request.Timeout = 12000;
+                    request.ReadWriteTimeout = 12000;
+                    using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                    {
+                        string location = response.Headers[HttpResponseHeader.Location] ?? "";
+                        Match match = Regex.Match(location, @"/releases/tag/([^/?#]+)",
+                            RegexOptions.IgnoreCase);
+                        if (!match.Success) throw new InvalidDataException("无法确定最新正式版本号");
+                        return Uri.UnescapeDataString(match.Groups[1].Value);
+                    }
+                }
+                catch (WebException ex) { last = ex; }
             }
+            throw CreateOfficialNetworkError(last);
         }
 
         private static string ReadString(Dictionary<string, object> value, string key)

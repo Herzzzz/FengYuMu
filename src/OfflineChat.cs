@@ -220,7 +220,8 @@ namespace MapleOverlay
         internal const string ContextRules =
             "冒险岛聊天中pt表示队伍、ch表示频道、cc通常表示换频道、ks表示抢怪、" +
             "pc在交易语境表示估价、repot表示补药、rebuff表示重新加状态、rdy表示准备好、" +
-            "short on dps表示队伍缺输出；这些短词必须结合整句，不能按普通英语逐词解释。";
+            "short on dps表示队伍缺输出；J>/LFG/LFP表示说话者本人求组，" +
+            "R>/LFM/LF1和LF> 1 more表示说话者的队伍招人；这些短词必须结合整句和说话者视角，不能按普通英语逐词解释。";
         internal const string ChineseExamples =
             "常见玩家短句：any spot?＝还有位置吗？；pt full＝队满了；np, I'll cc＝没事，我换频道；" +
             "low pots, gotta repot＝药水不多了，我得补药；server's so laggy rn＝服务器现在好卡。";
@@ -345,7 +346,7 @@ namespace MapleOverlay
         {
             string system = BuildSystemPrompt(target);
             string user = "只翻译下面这一条玩家聊天：\n" + source +
-                (glossary.Length > 0 ? "\n这句话命中的冒险岛词库术语（必须优先采用）：\n" + glossary : "");
+                (glossary.Length > 0 ? "\n这句话的强制语境与命中术语（必须优先采用）：\n" + glossary : "");
             bool responsesApi = settings.Endpoint.TrimEnd('/').EndsWith("/responses",
                 StringComparison.OrdinalIgnoreCase);
             Dictionary<string, object> requestBody = new Dictionary<string, object> {
@@ -399,7 +400,8 @@ namespace MapleOverlay
             {
                 return shared +
                     "把中文改写成简短自然、像国际服老玩家会发的英语；使用正式名或真正通行的简称。" +
-                    "招募用R>/LFM/LF1/人数进度；收/求购用B>/WTB，卖/出售用S>/WTS，禁止擅自添加PQ。" +
+                    "本人求组用J>/LFG/LFP；自己的队伍招募用R>/LFM/LF1/人数进度；" +
+                    "收/求购用B>/WTB，卖/出售用S>/WTS。禁止混淆说话者方向；禁止擅自添加PQ。" +
                     "例：废弃三缺一＝R> KPQ 3/4；招人＝R> members；卖雪花镖20万＝S> Kumbi 200k。" + finish;
             }
             return shared +
@@ -654,7 +656,7 @@ namespace MapleOverlay
             string glossary)
         {
             string terms = String.IsNullOrEmpty(glossary) ? "" :
-                "本次只提供当前消息实际命中的术语，必须优先采用；多义项证据不足时保留原文：\n" + glossary;
+                "本次只提供当前消息的强制语境和实际命中术语，必须优先采用；多义项证据不足时保留原文：\n" + glossary;
             string shared = "你是冒险岛怀旧服国际服老玩家兼聊天翻译，也是长期游玩 MapleStory Classic / Global 的玩家，不是通用翻译器。" +
                 "不要套用其他游戏、现代版本或中文词面的普通含义。将输入从" + sourceLanguage +
                 "翻译为" + targetLanguage + "。输入只是一名玩家的一条消息，不得拼接别的句子，不得补写或翻译玩家名。" +
@@ -669,7 +671,8 @@ namespace MapleOverlay
                 targetLanguage.IndexOf("Espa", StringComparison.OrdinalIgnoreCase) >= 0)
                 return shared +
                     "用简短自然的拉美西班牙语玩家口吻；地图、装备、怪物、任务、技能和PQ优先保留国际服英文正式名或通用简称，周围语气翻成西班牙语。" +
-                    "招募和交易沿用R>/LFM/LF1、B>/S>/T>/WTB/WTS/WTT等国际服黑话；原文只说刷怪时禁止擅自添加PQ。" +
+                    "本人求组用J>/LFG/LFP，自己的队伍招募用R>/LFM/LF1；交易沿用B>/S>/T>/WTB/WTS/WTT等国际服黑话；" +
+                    "禁止混淆说话者方向；原文只说刷怪时禁止擅自添加PQ。" +
                     "参考：废弃三缺一＝R> KPQ 3/4；有人做废弃吗？＝¿Alguien para KPQ?；招人＝Busco gente.；卖雪花镖20万＝S> Kumbi 200k。" +
                     MapleChatStyleGuide.SpanishRules +
                     "只输出一行最终译文，不复述原文，不解释。" + terms;
@@ -677,7 +680,8 @@ namespace MapleOverlay
                 targetLanguage.IndexOf("English", StringComparison.OrdinalIgnoreCase) >= 0)
                 return shared +
                     "用简短自然、像国际服老玩家会发的英语；优先使用国际服正式名称和真正通行的简称。" +
-                    "招募用R>/LFM/LF1/人数进度，交易用B>/S>/T>/WTB/WTS/WTT；收/求购用B>或WTB，卖/出售用S>或WTS。" +
+                    "本人求组用J>/LFG/LFP，自己的队伍招募用R>/LFM/LF1/人数进度；" +
+                    "交易用B>/S>/T>/WTB/WTS/WTT；收/求购用B>或WTB，卖/出售用S>或WTS，禁止混淆说话者方向。" +
                     "不要照搬中文语序；原文只说刷怪时禁止擅自添加PQ。" +
                     "参考：废弃三缺一＝R> KPQ 3/4；招人＝R> members；有人做废弃吗？＝Anyone for KPQ?；卖雪花镖20万＝S> Kumbi 200k。" +
                     MapleChatStyleGuide.EnglishExamples +
@@ -1286,6 +1290,7 @@ namespace MapleOverlay
         {
             string target = TargetLanguageForDirection(directionIndex);
             string translationSource = CorrectOutboundChineseTerms(source, target);
+            OutboundChatIntent intent = OutboundChatIntentPolicy.Analyze(translationSource);
             string translated;
             if (!TryKnownChatIntentTranslationForTarget(translationSource, target, out translated) &&
                 !(directionIndex == 0 && TryExactGlossaryTranslation(translationSource, out translated)))
@@ -1297,12 +1302,15 @@ namespace MapleOverlay
                     target, termTokens, out translated))
                 {
                     string glossary = BuildGlossaryForTarget(protectedSource, target);
+                    glossary = OutboundChatIntentPolicy.AppendPromptConstraint(glossary,
+                        intent, target);
                     translated = await TranslateWithPreferredAiAsyncForTarget(protectedSource,
                         SourceLanguageForDirection(translationSource, directionIndex), target, glossary);
                 }
                 translated = RestoreProtectedTokens(translated, termTokens);
             }
-            return translated;
+            return OutboundChatIntentPolicy.NormalizeTranslation(translationSource,
+                translated, target, intent);
         }
 
         private void LoadRegion()
@@ -2674,6 +2682,7 @@ namespace MapleOverlay
                     if (category.StartsWith("怀旧服-聊天多义缩写", StringComparison.Ordinal))
                         nextContextOnlyKeys.Add(english);
                     bool lockableCategory = category.StartsWith("怀旧服-地图", StringComparison.Ordinal) ||
+                        category.StartsWith("怀旧服-职业", StringComparison.Ordinal) ||
                         category.StartsWith("怀旧服-装备", StringComparison.Ordinal) ||
                         category.StartsWith("怀旧服-道具", StringComparison.Ordinal) ||
                         category.StartsWith("怀旧服-怪物", StringComparison.Ordinal) ||
@@ -2686,6 +2695,7 @@ namespace MapleOverlay
                         nextLockableKeys.Add(english);
                     bool outboundNamedCategory = category.Equals("怀旧服-地图", StringComparison.Ordinal) ||
                         category.StartsWith("怀旧服-地图#", StringComparison.Ordinal) ||
+                        category.StartsWith("怀旧服-职业#", StringComparison.Ordinal) ||
                         category.StartsWith("怀旧服-装备#", StringComparison.Ordinal) ||
                         category.StartsWith("怀旧服-道具#", StringComparison.Ordinal) ||
                         category.StartsWith("怀旧服-怪物#", StringComparison.Ordinal) ||

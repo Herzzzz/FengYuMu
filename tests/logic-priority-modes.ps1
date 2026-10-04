@@ -112,8 +112,8 @@ foreach ($required in @('TrackBar range', 'range.Minimum = 1', 'range.Maximum = 
 foreach ($obsolete in @('兼容最大', '推荐均衡', '精简最小')) {
     if ($forms.Contains($obsolete)) { throw "主界面仍保留旧范围文案：$obsolete" }
 }
-if (-not $forms.Contains('Text = "枫语幕 v3.2", ForeColor = Color.White')) {
-    throw '主界面标题缺少“枫语幕 v3.2”'
+if (-not $forms.Contains('Text = "枫语幕 v3.2.1", ForeColor = Color.White')) {
+    throw '主界面标题缺少“枫语幕 v3.2.1”'
 }
 if ($forms.Contains('稳定识别模式 · 外部截图 OCR · 不修改游戏')) {
     throw '主界面仍保留旧副标题'

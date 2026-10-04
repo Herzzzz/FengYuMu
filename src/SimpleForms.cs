@@ -591,36 +591,60 @@ namespace MapleOverlay
 
     internal sealed class MainPanelForm : Form
     {
+        private sealed class LogicalFont
+        {
+            internal readonly string Family;
+            internal readonly float Size;
+            internal readonly FontStyle Style;
+
+            internal LogicalFont(Font font)
+            {
+                Family = font.FontFamily.Name;
+                Size = font.SizeInPoints;
+                Style = font.Style;
+            }
+        }
+
+        private const int BaseDpi = 96;
+        private readonly Size logicalClientSize = new Size(560, 552);
+        private readonly Dictionary<Control, Rectangle> logicalBounds =
+            new Dictionary<Control, Rectangle>();
+        private readonly Dictionary<Control, Padding> logicalPaddings =
+            new Dictionary<Control, Padding>();
+        private readonly Dictionary<Control, LogicalFont> logicalFonts =
+            new Dictionary<Control, LogicalFont>();
         private readonly OverlayForm overlay;
         private readonly Label status = new Label();
         private readonly Label hotkeys = new Label();
         private readonly TrackBar range = new TrackBar();
         private readonly Label rangeValue = new Label();
         private readonly CheckBox continuousTranslation = new CheckBox();
+        private bool dpiLayoutReady;
+        private bool applyingDpiLayout;
 
         public MainPanelForm(OverlayForm owner)
         {
             overlay = owner;
             AutoScaleDimensions = new SizeF(96.0f, 96.0f);
             AutoScaleMode = AutoScaleMode.Dpi;
-            Text = "枫语幕 v3.2";
+            Text = "枫语幕 v3.2.1";
             StartPosition = FormStartPosition.CenterScreen;
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             MinimizeBox = true;
             ShowIcon = true;
             Icon = Program.AppIcon;
-            ClientSize = new Size(560, 552);
+            ClientSize = logicalClientSize;
             AutoScroll = true;
             BackColor = Color.FromArgb(244, 247, 251);
             Font = new Font("Microsoft YaHei UI", 9.0f);
 
             Panel header = new Panel {
-                Dock = DockStyle.Top, Height = 70,
+                Location = Point.Empty, Size = new Size(560, 70),
                 BackColor = Color.FromArgb(31, 41, 55), Padding = new Padding(22, 16, 22, 10)
             };
             Label title = new Label {
-                Text = "枫语幕 v3.2", ForeColor = Color.White, AutoSize = true,
+                Text = "枫语幕 v3.2.1", ForeColor = Color.White, AutoSize = true,
                 Font = new Font("Microsoft YaHei UI", 20.0f, FontStyle.Bold), Location = new Point(20, 12)
             };
             header.Controls.Add(title);
@@ -705,9 +729,28 @@ namespace MapleOverlay
 
             Controls.Add(hint); Controls.Add(update); Controls.Add(ai); Controls.Add(shortcut); Controls.Add(dictionary);
             Controls.Add(ready); Controls.Add(rangeCard); Controls.Add(card); Controls.Add(header);
+            PerformLayout();
+            CaptureLogicalLayout(this);
+            dpiLayoutReady = true;
+            Shown += delegate { ApplyDpiLayout(GetCurrentDpi(), true, false); };
             FormClosing += delegate(object sender, FormClosingEventArgs e) {
                 if (e.CloseReason == CloseReason.UserClosing) { e.Cancel = true; Hide(); }
             };
+        }
+
+        protected override void WndProc(ref Message message)
+        {
+            const int WmDpiChanged = 0x02E0;
+            int newDpi = 0;
+            if (message.Msg == WmDpiChanged)
+                newDpi = (int)(message.WParam.ToInt64() & 0xffff);
+            base.WndProc(ref message);
+            if (newDpi > 0 && dpiLayoutReady && IsHandleCreated && !IsDisposed)
+            {
+                BeginInvoke((MethodInvoker)delegate {
+                    if (!IsDisposed) ApplyDpiLayout(newDpi, true, false);
+                });
+            }
         }
 
         internal string RunDpiLayoutSelfTest(int scalePercent)
@@ -721,23 +764,99 @@ namespace MapleOverlay
 
         internal void ApplyDpiTestScale(int scalePercent)
         {
-            float factor = Math.Max(1.0f, scalePercent / 100.0f);
-            List<KeyValuePair<Control, Font>> originalFonts = new List<KeyValuePair<Control, Font>>();
-            CollectFonts(this, originalFonts);
-            Scale(new SizeF(factor, factor));
-            foreach (KeyValuePair<Control, Font> item in originalFonts)
-            {
-                Font old = item.Value;
-                item.Key.Font = new Font(old.FontFamily, old.SizeInPoints * factor,
-                    old.Style, GraphicsUnit.Point);
-            }
-            PerformLayout();
+            int dpi = (int)Math.Round(BaseDpi * Math.Max(1.0f, scalePercent / 100.0f));
+            ApplyDpiLayout(dpi, false, true);
         }
 
-        private static void CollectFonts(Control parent, List<KeyValuePair<Control, Font>> fonts)
+        private void CaptureLogicalLayout(Control parent)
         {
-            fonts.Add(new KeyValuePair<Control, Font>(parent, parent.Font));
-            foreach (Control child in parent.Controls) CollectFonts(child, fonts);
+            if (!logicalFonts.ContainsKey(parent))
+                logicalFonts.Add(parent, new LogicalFont(parent.Font));
+            foreach (Control child in parent.Controls)
+            {
+                logicalBounds[child] = child.Bounds;
+                logicalPaddings[child] = child.Padding;
+                CaptureLogicalLayout(child);
+            }
+        }
+
+        private int GetCurrentDpi()
+        {
+            try
+            {
+                using (Graphics graphics = CreateGraphics())
+                    return Math.Max(BaseDpi, (int)Math.Round(graphics.DpiX));
+            }
+            catch { return BaseDpi; }
+        }
+
+        private void ApplyDpiLayout(int dpi, bool constrainToScreen, bool simulateFontScale)
+        {
+            if (!dpiLayoutReady || applyingDpiLayout) return;
+            applyingDpiLayout = true;
+            try
+            {
+                float scale = Math.Max(1.0f, dpi / (float)BaseDpi);
+                SuspendLayout();
+                AutoScrollPosition = Point.Empty;
+                foreach (KeyValuePair<Control, Rectangle> item in logicalBounds)
+                {
+                    Rectangle logical = item.Value;
+                    item.Key.Bounds = new Rectangle(ScaleValue(logical.X, scale),
+                        ScaleValue(logical.Y, scale), ScaleValue(logical.Width, scale),
+                        ScaleValue(logical.Height, scale));
+                    Padding padding;
+                    if (logicalPaddings.TryGetValue(item.Key, out padding))
+                        item.Key.Padding = new Padding(ScaleValue(padding.Left, scale),
+                            ScaleValue(padding.Top, scale), ScaleValue(padding.Right, scale),
+                            ScaleValue(padding.Bottom, scale));
+                }
+                if (simulateFontScale)
+                {
+                    foreach (KeyValuePair<Control, LogicalFont> item in logicalFonts)
+                    {
+                        LogicalFont font = item.Value;
+                        item.Key.Font = new Font(font.Family, font.Size * scale,
+                            font.Style, GraphicsUnit.Point);
+                    }
+                }
+
+                Size contentSize = new Size(ScaleValue(logicalClientSize.Width, scale),
+                    ScaleValue(logicalClientSize.Height, scale));
+                Size windowSize = contentSize;
+                if (constrainToScreen && IsHandleCreated)
+                {
+                    Rectangle work = Screen.FromControl(this).WorkingArea;
+                    int nonClientWidth = Math.Max(0, Width - ClientSize.Width);
+                    int nonClientHeight = Math.Max(0, Height - ClientSize.Height);
+                    int maximumWidth = Math.Max(320, work.Width - nonClientWidth - 16);
+                    int maximumHeight = Math.Max(260, work.Height - nonClientHeight - 16);
+                    windowSize.Width = Math.Min(contentSize.Width, maximumWidth);
+                    windowSize.Height = Math.Min(contentSize.Height, maximumHeight);
+                    if (windowSize.Height < contentSize.Height &&
+                        windowSize.Width + SystemInformation.VerticalScrollBarWidth <= maximumWidth)
+                        windowSize.Width += SystemInformation.VerticalScrollBarWidth;
+                }
+                ClientSize = windowSize;
+                AutoScrollMinSize = contentSize;
+                ResumeLayout(true);
+                KeepInsideCurrentScreen();
+            }
+            finally { applyingDpiLayout = false; }
+        }
+
+        private void KeepInsideCurrentScreen()
+        {
+            if (!IsHandleCreated) return;
+            Rectangle work = Screen.FromControl(this).WorkingArea;
+            int left = Math.Max(work.Left, Math.Min(Left, work.Right - Width));
+            int top = Math.Max(work.Top, Math.Min(Top, work.Bottom - Height));
+            if (left != Left || top != Top) Location = new Point(left, top);
+        }
+
+        private static int ScaleValue(int value, float scale)
+        {
+            return (int)Math.Round(value * scale, MidpointRounding.AwayFromZero);
         }
 
         private static void CheckDpiLayout(Control parent, List<string> problems)
