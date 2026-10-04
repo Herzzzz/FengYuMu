@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Win32;
 
@@ -206,6 +207,9 @@ namespace MapleOverlay
         private readonly Label status = new Label();
         private readonly Panel header = new Panel();
         private readonly Label closeButton = new Label();
+        private readonly TextBox outboundInput = new TextBox();
+        private readonly Button outboundTranslate = new Button();
+        private readonly Func<string, Task<string>> translateOutbound;
         private readonly Font contentRegularFont = new Font("Microsoft YaHei UI", 11.5f, FontStyle.Regular);
         private readonly Font contentBroadcastFont = new Font("Microsoft YaHei UI", 11.5f, FontStyle.Bold);
         private bool allowClose;
@@ -215,17 +219,24 @@ namespace MapleOverlay
         private Control dragCaptureTarget;
         private string displayedText = "";
         private bool hiddenByUser;
+        private bool outboundBusy;
 
-        internal AiTranslationWindowForm(OverlayForm owner)
+        internal AiTranslationWindowForm(OverlayForm owner) : this(owner, null) { }
+
+        internal AiTranslationWindowForm(OverlayForm owner,
+            Func<string, Task<string>> outboundTranslator)
         {
             overlay = owner;
+            translateOutbound = outboundTranslator;
+            AutoScaleDimensions = new SizeF(96.0f, 96.0f);
+            AutoScaleMode = AutoScaleMode.Dpi;
             Text = "枫语幕 · AI实时翻译";
             Icon = Program.AppIcon;
             ShowInTaskbar = false;
             TopMost = true;
             StartPosition = FormStartPosition.Manual;
             FormBorderStyle = FormBorderStyle.None;
-            MinimumSize = new Size(300, 150);
+            MinimumSize = new Size(360, 200);
             Size = new Size(560, 280);
             Opacity = 0.92d;
             Padding = new Padding(1);
@@ -293,7 +304,45 @@ namespace MapleOverlay
                 Padding = new Padding(12, 9, 8, 10),
                 BackColor = Color.FromArgb(38, 46, 55)
             };
-            body.Controls.Add(content);
+            TableLayoutPanel bodyLayout = new TableLayoutPanel {
+                Dock = DockStyle.Fill, RowCount = 2, ColumnCount = 1,
+                BackColor = body.BackColor, Margin = Padding.Empty, Padding = Padding.Empty
+            };
+            bodyLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+            bodyLayout.RowStyles.Add(new RowStyle(SizeType.Absolute,
+                translateOutbound == null ? 0 : 40));
+            bodyLayout.Controls.Add(content, 0, 0);
+            if (translateOutbound != null)
+            {
+                TableLayoutPanel outbound = new TableLayoutPanel {
+                    Dock = DockStyle.Fill, ColumnCount = 3, RowCount = 1,
+                    Margin = new Padding(0, 5, 0, 0), BackColor = body.BackColor
+                };
+                outbound.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 64));
+                outbound.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+                outbound.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 104));
+                Label inputLabel = new Label {
+                    Text = "中文：", Dock = DockStyle.Fill,
+                    TextAlign = ContentAlignment.MiddleLeft,
+                    ForeColor = Color.FromArgb(205, 216, 226)
+                };
+                outboundInput.Dock = DockStyle.Fill;
+                outboundInput.Font = new Font("Microsoft YaHei UI", 9.5f);
+                outboundInput.BackColor = Color.FromArgb(248, 250, 252);
+                outboundInput.KeyDown += async delegate(object sender, KeyEventArgs e) {
+                    if (e.KeyCode != Keys.Enter) return;
+                    e.Handled = true; e.SuppressKeyPress = true;
+                    await SubmitOutboundAsync();
+                };
+                outboundTranslate.Text = "翻译并复制";
+                outboundTranslate.Dock = DockStyle.Fill;
+                outboundTranslate.Click += async delegate { await SubmitOutboundAsync(); };
+                outbound.Controls.Add(inputLabel, 0, 0);
+                outbound.Controls.Add(outboundInput, 1, 0);
+                outbound.Controls.Add(outboundTranslate, 2, 0);
+                bodyLayout.Controls.Add(outbound, 0, 1);
+            }
+            body.Controls.Add(bodyLayout);
             Controls.Add(body); Controls.Add(header);
             LoadSavedBounds();
             FormClosing += HandleFormClosing;
@@ -326,16 +375,6 @@ namespace MapleOverlay
             else if (header.Bounds.Contains(clientPoint) &&
                 !closeButton.ClientRectangle.Contains(closeButton.PointToClient(screenPoint)))
                 message.Result = (IntPtr)HtCaption;
-        }
-
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                CreateParams parameters = base.CreateParams;
-                parameters.ExStyle |= 0x08000000; // WS_EX_NOACTIVATE: keep game focus.
-                return parameters;
-            }
         }
 
         internal string DisplayedText { get { return displayedText; } }
@@ -394,6 +433,40 @@ namespace MapleOverlay
         {
             hiddenByUser = false;
             Hide();
+        }
+
+        private async Task SubmitOutboundAsync()
+        {
+            if (translateOutbound == null || outboundBusy) return;
+            string source = (outboundInput.Text ?? "").Trim();
+            if (source.Length == 0)
+            {
+                status.Text = "先输入一句中文";
+                outboundInput.Focus();
+                return;
+            }
+            outboundBusy = true;
+            outboundTranslate.Enabled = false;
+            status.Text = "正在翻译成英文…";
+            try
+            {
+                string translated = await translateOutbound(source);
+                if (!String.IsNullOrWhiteSpace(translated))
+                {
+                    AppendTranslation("English  " + translated.Trim(), ChatVisualStyle.Default);
+                    status.Text = "已翻译并复制，可直接回游戏粘贴";
+                    outboundInput.SelectAll();
+                }
+            }
+            catch (Exception ex)
+            {
+                status.Text = "翻译失败：" + ex.Message;
+            }
+            finally
+            {
+                outboundBusy = false;
+                outboundTranslate.Enabled = true;
+            }
         }
 
         internal void ClosePermanently()
@@ -528,7 +601,9 @@ namespace MapleOverlay
         public MainPanelForm(OverlayForm owner)
         {
             overlay = owner;
-            Text = "枫语幕 v3.1";
+            AutoScaleDimensions = new SizeF(96.0f, 96.0f);
+            AutoScaleMode = AutoScaleMode.Dpi;
+            Text = "枫语幕 v3.2";
             StartPosition = FormStartPosition.CenterScreen;
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
@@ -536,6 +611,7 @@ namespace MapleOverlay
             ShowIcon = true;
             Icon = Program.AppIcon;
             ClientSize = new Size(560, 552);
+            AutoScroll = true;
             BackColor = Color.FromArgb(244, 247, 251);
             Font = new Font("Microsoft YaHei UI", 9.0f);
 
@@ -544,7 +620,7 @@ namespace MapleOverlay
                 BackColor = Color.FromArgb(31, 41, 55), Padding = new Padding(22, 16, 22, 10)
             };
             Label title = new Label {
-                Text = "枫语幕 v3.1", ForeColor = Color.White, AutoSize = true,
+                Text = "枫语幕 v3.2", ForeColor = Color.White, AutoSize = true,
                 Font = new Font("Microsoft YaHei UI", 20.0f, FontStyle.Bold), Location = new Point(20, 12)
             };
             header.Controls.Add(title);
@@ -634,6 +710,61 @@ namespace MapleOverlay
             };
         }
 
+        internal string RunDpiLayoutSelfTest(int scalePercent)
+        {
+            List<string> problems = new List<string>();
+            CheckDpiLayout(this, problems);
+            return problems.Count == 0
+                ? "OK: " + scalePercent + "% DPI layout"
+                : scalePercent + "% DPI layout: " + String.Join(" | ", problems.ToArray());
+        }
+
+        internal void ApplyDpiTestScale(int scalePercent)
+        {
+            float factor = Math.Max(1.0f, scalePercent / 100.0f);
+            List<KeyValuePair<Control, Font>> originalFonts = new List<KeyValuePair<Control, Font>>();
+            CollectFonts(this, originalFonts);
+            Scale(new SizeF(factor, factor));
+            foreach (KeyValuePair<Control, Font> item in originalFonts)
+            {
+                Font old = item.Value;
+                item.Key.Font = new Font(old.FontFamily, old.SizeInPoints * factor,
+                    old.Style, GraphicsUnit.Point);
+            }
+            PerformLayout();
+        }
+
+        private static void CollectFonts(Control parent, List<KeyValuePair<Control, Font>> fonts)
+        {
+            fonts.Add(new KeyValuePair<Control, Font>(parent, parent.Font));
+            foreach (Control child in parent.Controls) CollectFonts(child, fonts);
+        }
+
+        private static void CheckDpiLayout(Control parent, List<string> problems)
+        {
+            foreach (Control child in parent.Controls)
+            {
+                if (!child.Visible) continue;
+                if (child.Left < -2 || child.Top < -2 ||
+                    child.Right > parent.ClientSize.Width + 2 ||
+                    child.Bottom > parent.ClientSize.Height + 2)
+                {
+                    problems.Add(child.GetType().Name + "越界(" + child.Text + ")");
+                }
+                Label label = child as Label;
+                if (label != null && !label.AutoSize && label.Text.Length > 0)
+                {
+                    Size measured = TextRenderer.MeasureText(label.Text, label.Font,
+                        new Size(Math.Max(1, label.Width), Int32.MaxValue),
+                        TextFormatFlags.WordBreak | TextFormatFlags.NoPadding);
+                    if (measured.Height > label.Height + 3)
+                        problems.Add("文字被截断(" + label.Text + ")");
+                }
+                if (problems.Count < 12 && child.HasChildren) CheckDpiLayout(child, problems);
+                if (problems.Count >= 12) return;
+            }
+        }
+
         private static Button MakeButton(string text, Point location, Size size, bool primary)
         {
             Button button = new Button {
@@ -706,6 +837,8 @@ namespace MapleOverlay
         public HotkeyForm(OverlayForm owner)
         {
             overlay = owner;
+            AutoScaleDimensions = new SizeF(96.0f, 96.0f);
+            AutoScaleMode = AutoScaleMode.Dpi;
             Text = "更改快捷键";
             Icon = SystemIcons.Information;
             StartPosition = FormStartPosition.CenterScreen;
@@ -883,6 +1016,8 @@ namespace MapleOverlay
         public DictionaryOnlyForm(OverlayForm owner, string baseDir)
         {
             overlay = owner;
+            AutoScaleDimensions = new SizeF(96.0f, 96.0f);
+            AutoScaleMode = AutoScaleMode.Dpi;
             path = Path.Combine(baseDir, "枫语幕词库.tsv");
             Text = "打开并更改词库";
             Icon = SystemIcons.Information;
@@ -1370,6 +1505,8 @@ namespace MapleOverlay
 
         public NewTaskForm()
         {
+            AutoScaleDimensions = new SizeF(96.0f, 96.0f);
+            AutoScaleMode = AutoScaleMode.Dpi;
             Text = "新增任务";
             StartPosition = FormStartPosition.CenterParent;
             FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -1420,6 +1557,8 @@ namespace MapleOverlay
 
         public TaskEditorForm(string id, List<TaskDictionaryRow> rows)
         {
+            AutoScaleDimensions = new SizeF(96.0f, 96.0f);
+            AutoScaleMode = AutoScaleMode.Dpi;
             taskId = id;
             source = rows;
             Text = "任务词库编辑｜任务代码 " + id;

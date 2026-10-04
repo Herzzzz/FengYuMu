@@ -90,6 +90,8 @@ foreach ($required in @(
     'ShowFloatingWindowPassive()',
     'floatingWindow.ShowPassiveIfAllowed()',
     'floatingWindow.HideForStop()',
+    'CreateFloatingWindow()',
+    'TranslateFloatingOutboundAsync',
     'internal bool RestoreFloatingWindowFromTray()',
     'internal bool IsLiveTranslationRunning',
     'internal void StopLiveTranslation()',
@@ -121,6 +123,18 @@ foreach ($required in @(
     'internal void ShowPassiveIfAllowed()',
     'internal void HideForStop()')) {
     if (-not $forms.Contains($required)) { throw "AI浮窗界面缺少：$required" }
+}
+foreach ($required in @(
+    'TextBox outboundInput',
+    'Button outboundTranslate',
+    'Func<string, Task<string>> outboundTranslator',
+    'await SubmitOutboundAsync()',
+    'await translateOutbound(source)',
+    'Text = "翻译并复制"')) {
+    if (-not $forms.Contains($required)) { throw "AI浮窗中文输入与自动复制入口缺少：$required" }
+}
+if ($forms.Contains('parameters.ExStyle |= 0x08000000')) {
+    throw 'AI浮窗仍被永久设为WS_EX_NOACTIVATE，中文输入框无法获得键盘焦点'
 }
 if ($forms.Contains('CheckBox independentWindow')) {
     throw 'AI实时翻译独立浮窗仍要求用户勾选开关'

@@ -47,8 +47,14 @@ if (-not $badKey.Contains('不要填 Access Key 或 Secret Key') -or
 $doubaoBody = [string]$build.Invoke($null, [object[]]@($settings,
     'which event is it i JUST went to orbis bro BriskIcedTea', '简体中文', "Orbis = 天空之城`n"))
 foreach ($required in @('冒险岛怀旧服国际服老玩家','禁止逐词硬译','玩家ID','只输出一行最终译文',
-    '不得漏译、重复或编造','Orbis = 天空之城','BriskIcedTea','"thinking":{"type":"disabled"}')) {
+    '不得漏译、重复或编造','Orbis = 天空之城','BriskIcedTea','"thinking":{"type":"disabled"}',
+    '"max_output_tokens":96')) {
     if (-not $doubaoBody.Contains($required)) { throw "豆包逐句请求缺少：$required" }
+}
+$prompt = [string]$clientType.GetMethod('BuildSystemPrompt', $all).Invoke($null,
+    [object[]]@('简体中文'))
+if ($prompt.Length -gt 500) {
+    throw "联网AI逐句提示词再次膨胀：$($prompt.Length) 字符（要求不超过500）"
 }
 foreach ($forbidden in @('本地AI译文','校对员')) {
     if ($doubaoBody.Contains($forbidden)) { throw "联网AI仍暴露中间复核工作：$forbidden" }
@@ -75,7 +81,10 @@ $overlaySource = Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -E
 foreach ($required in @('联网AI实时翻译（不用租服务器）','小白教程：','打开申请页面','保存并测试',
     '不用租服务器，也不用每次打开网页','接口地址：','模型名称：','API Key：',
     '不要填 Access Key 或 Secret Key','DescribeFailure(ex, settings)',
-    'TranslateWithPreferredAiAsync','连接失败，自动改用离线备用')) {
+    'TranslateWithPreferredAiAsync','连接失败，自动改用离线备用',
+    'Task.Run(delegate','batchLimit = forceOnce || !online.IsReady ? 1 : 3',
+    'await Task.WhenAll','tasksByCacheKey','translationGate.WaitAsync()',
+    'translationGate.Release()')) {
     if (-not $chatSource.Contains($required)) { throw "联网AI简明界面或主链路缺少：$required" }
 }
 foreach ($removed in @('联网复核（可选）','单次识别翻译（兼容模式）','审核AI纠错','加入纠错候选')) {
@@ -111,4 +120,4 @@ if (-not (Test-Path -LiteralPath $uiImage) -or (Get-Item -LiteralPath $uiImage).
     throw '联网AI设置界面截图未生成或内容为空'
 }
 
-Write-Output '联网AI设置：豆包默认、DeepSeek快速备选、智谱免费备用、自定义接口、逐句冒险岛提示词、词库术语、非思考最终输出、离线兜底与简明UI通过'
+Write-Output "联网AI设置：豆包默认、DeepSeek快速备选、智谱免费备用、自定义接口、$($prompt.Length)字符精简提示词、最多3路有序并发、词库术语、非思考最终输出、离线兜底与简明UI通过"

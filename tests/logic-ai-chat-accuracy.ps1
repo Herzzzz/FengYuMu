@@ -1,4 +1,5 @@
 $ErrorActionPreference = 'Stop'
+Add-Type -AssemblyName System.Drawing
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $exe = Join-Path $repoRoot '枫语幕.exe'
 $assembly = [Reflection.Assembly]::LoadFile($exe)
@@ -126,6 +127,27 @@ if (-not [bool]$sameSource.Invoke($null, @('tor: ima go chec* now', 'tor: Ima go
 $partialNotice = @(Invoke-Parse "[Notice] Money lost")
 if ($partialNotice.Count -ne 0) { throw "残缺系统公告不应送入AI：$($partialNotice -join ' | ')" }
 
+$styleType = $assembly.GetType('MapleOverlay.ChatVisualStylePolicy', $true)
+$fromSample = $styleType.GetMethod('FromSample', $flags)
+$systemStyle = $fromSample.Invoke($null, @('[Notice] warning',
+    [Drawing.Color]::Empty, [Drawing.Color]::Empty, $false))
+$chatStyle = $fromSample.Invoke($null, @('Arthur: low mp, need to repot',
+    [Drawing.Color]::White, [Drawing.Color]::Empty, $false))
+$ignoreSystem = $chatType.GetMethod('IsIgnoredSystemBroadcast', $flags)
+foreach ($warning in @(
+    '系统公告: You cannot use that skill yet.',
+    "系统公告: You don't have enough MP to use this skill.",
+    'System: Your HP is too low.',
+    'System: Your MP is running low.')) {
+    if (-not [bool]$ignoreSystem.Invoke($null, @($warning, $systemStyle))) {
+        throw "游戏系统技能/HP/MP播报未被过滤：$warning"
+    }
+}
+if ([bool]$ignoreSystem.Invoke($null, @('Arthur: low mp, need to repot', $chatStyle)) -or
+    [bool]$ignoreSystem.Invoke($null, @('系统公告: Channel 3 is now open.', $systemStyle))) {
+    throw '系统播报过滤误伤玩家聊天或普通服务器公告'
+}
+
 $fixtures = @(
     @{ Name='broadcast'; File='ai-chat-cloudpark-broadcast.png'; Required='PARSED \| CupidKillsNL:'; Forbidden='PARSED \| SYBUA:' },
     @{ Name='history'; File='ai-chat-cloudpark-history.png'; Required='PARSED \| Arrowshot:'; Forbidden='PARSED \| Arrow:' },
@@ -229,4 +251,19 @@ if ($sequenceAdded -ne 5) {
     throw "连续视频帧防重复失效：11帧应产生5条真正新增，实际$sequenceAdded条"
 }
 
-Write-Output "AI聊天准确性：5张问题实图（含用户新反馈）+ $($sweepImages.Count)张跨视频实图通过，广覆盖命中${sweepParsedFrames}帧/${sweepParsedLines}行，连续11帧仅保留${sequenceAdded}条真正新增"
+$repeatPrevious = [Collections.Generic.List[string]]::new()
+$repeatPrevious.Add('Arthur: need hs')
+$repeatCurrent = [Collections.Generic.List[string]]::new()
+$repeatCurrent.Add('Arthur: need hs')
+$repeatCurrent.Add('Arthur: need hs')
+$repeatCandidates = @($getNew.Invoke($null, @($repeatPrevious, $repeatCurrent)))
+$repeatRecent = [Activator]::CreateInstance($recentType)
+$repeatRecent.Add([Collections.Generic.List[string]]::new($repeatPrevious))
+$repeatFilterArgs = [object[]]@($repeatRecent, $repeatPrevious, $repeatCurrent,
+    [Collections.Generic.List[string]]::new([string[]]$repeatCandidates))
+$repeatFiltered = @($suppressRecent.Invoke($null, $repeatFilterArgs))
+if ($repeatFiltered.Count -ne 1) {
+    throw "同一玩家真实重复发言被误吞或重复刷屏：应新增1条，实际$($repeatFiltered.Count)条"
+}
+
+Write-Output "AI聊天准确性：系统技能/HP/MP播报过滤、真实重复消息保留、5张问题实图 + $($sweepImages.Count)张跨视频实图通过，连续11帧仅保留${sequenceAdded}条真正新增"

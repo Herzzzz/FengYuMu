@@ -23,8 +23,8 @@ using Windows.Storage.Streams;
 
 [assembly: AssemblyTitle("枫语幕")]
 [assembly: AssemblyProduct("枫语幕")]
-[assembly: AssemblyVersion("3.1.0.0")]
-[assembly: AssemblyFileVersion("3.1.0.0")]
+[assembly: AssemblyVersion("3.2.0.0")]
+[assembly: AssemblyFileVersion("3.2.0.0")]
 
 namespace MapleOverlay
 {
@@ -207,6 +207,21 @@ namespace MapleOverlay
                         panel.RefreshStatus();
                         panel.Show();
                         Application.DoEvents();
+                        int requestedScale = 100;
+                        foreach (string arg in args)
+                        {
+                            if (!arg.StartsWith("--main-ui-test-scale=", StringComparison.OrdinalIgnoreCase)) continue;
+                            Int32.TryParse(arg.Substring("--main-ui-test-scale=".Length), out requestedScale);
+                            requestedScale = Math.Max(100, Math.Min(200, requestedScale));
+                        }
+                        if (requestedScale != 100)
+                        {
+                            panel.ApplyDpiTestScale(requestedScale);
+                            Application.DoEvents();
+                        }
+                        string layoutResult = panel.RunDpiLayoutSelfTest(requestedScale);
+                        if (!layoutResult.StartsWith("OK", StringComparison.Ordinal))
+                            throw new InvalidOperationException(layoutResult);
                         // PerMonitorV2 can resize the form when its handle is first shown. Allocate
                         // the QA bitmap afterwards so high-DPI screenshots are not clipped or scaled.
                         using (Bitmap bitmap = new Bitmap(panel.Width, panel.Height, PixelFormat.Format32bppArgb))
@@ -214,7 +229,8 @@ namespace MapleOverlay
                             panel.DrawToBitmap(bitmap, new Rectangle(System.Drawing.Point.Empty, bitmap.Size));
                             panel.Hide();
                             bitmap.Save(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                                "main_ui_test.png"), ImageFormat.Png);
+                                requestedScale == 100 ? "main_ui_test.png" :
+                                "main_ui_test_" + requestedScale + ".png"), ImageFormat.Png);
                         }
                     }
                 }
@@ -294,7 +310,8 @@ namespace MapleOverlay
                 {
                     Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
                     if (File.Exists(uiErrorPath)) File.Delete(uiErrorPath);
-                    using (AiTranslationWindowForm window = new AiTranslationWindowForm(null))
+                    using (AiTranslationWindowForm window = new AiTranslationWindowForm(null,
+                        delegate(string source) { return Task.FromResult("R> test result"); }))
                     {
                         window.Size = new System.Drawing.Size(620, 300);
                         Rectangle work = Screen.FromControl(window).WorkingArea;
@@ -306,7 +323,7 @@ namespace MapleOverlay
                         window.AppendTranslation("Joey：活动魔盒要交到哪里？",
                             ChatVisualStylePolicy.FromSample("Joey: where do I bring the magic box?",
                                 Color.FromArgb(81, 120, 149), Color.FromArgb(141, 170, 179), true));
-                        window.AppendTranslation("DunkChai：你手机里有骨头吗？",
+                        window.AppendTranslation("DunkChai：射手村组队，3缺1",
                             ChatVisualStylePolicy.FromSample("DunkChai's Gift-filled Message:",
                                 Color.FromArgb(156, 77, 113),
                                 Color.FromArgb(205, 159, 173), true));
@@ -3060,7 +3077,7 @@ namespace MapleOverlay
         private void BuildTray()
         {
             tray.Icon = Program.AppIcon;
-            tray.Text = "枫语幕 v3.1";
+            tray.Text = "枫语幕 v3.2";
             tray.Visible = true;
             ContextMenuStrip menu = new ContextMenuStrip();
             ToolStripMenuItem main = new ToolStripMenuItem("打开主界面");
@@ -3108,7 +3125,7 @@ namespace MapleOverlay
             {
                 tray.Visible = false;
                 tray.Icon = Program.AppIcon;
-                tray.Text = "枫语幕 v3.1（内存待机）";
+                tray.Text = "枫语幕 v3.2（内存待机）";
                 tray.Visible = true;
             }
             catch (ObjectDisposedException) { return; }
@@ -3256,7 +3273,7 @@ namespace MapleOverlay
             ShowCurrentTranslations();
             if (continuousTranslationEnabled)
                 continuousTranslationSuppressedUntilUtc = DateTime.UtcNow.AddSeconds(3);
-            tray.Text = "枫语幕 v3.1（低配置优化）";
+            tray.Text = "枫语幕 v3.2（低配置优化）";
         }
 
         private Task ShowTranslationAsync()
@@ -3760,7 +3777,7 @@ namespace MapleOverlay
                 visibleTranslation = true;
                 ShowCurrentTranslations();
                 stopwatch.Stop();
-                tray.Text = "枫语幕 v3.1（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
+                tray.Text = "枫语幕 v3.2（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
                 if (Program.Benchmark)
                     WriteBenchmarkResult(stopwatch, captureDuration, probePassDuration,
                         mainPassDuration, hoverPassDuration, panelPassDuration,

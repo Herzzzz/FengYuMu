@@ -17,7 +17,8 @@ $englishBody = [string]$buildOnline.Invoke($null, [object[]]@($settings,
     '废弃三缺一', '英语', "废弃都市组队任务 => KPQ (full: Kerning Party Quest)`n"))
 $spanishBody = [string]$buildOnline.Invoke($null, [object[]]@($settings,
     '有人做废弃吗', '拉美西班牙语', "废弃都市组队任务 => KPQ (full: Kerning Party Quest)`n"))
-foreach ($required in @('KPQ 3/4','members','国际服正式名称','Kerning Party Quest')) {
+foreach ($required in @('KPQ 3/4','members','国际服正式名称','Kerning Party Quest',
+    'MapleStory Classic / Global','匹配优先级固定为','禁止按字面创造')) {
     if (-not $englishBody.Contains($required)) { throw "中译英提示词缺少：$required" }
 }
 if (-not $englishBody.Contains('收/求购用') -or -not $englishBody.Contains('禁止擅自添加PQ') -or
@@ -50,6 +51,7 @@ $known = $chatType.GetMethod('TryKnownChatIntentTranslationForTarget', $all)
 $cases = @(
     @{ Source='废弃三缺一'; Target='英语'; Expected='R> KPQ 3/4' },
     @{ Source='废弃都市3缺1'; Target='拉美西班牙语'; Expected='R> KPQ 3/4' },
+    @{ Source='废弃都市组队，3缺1'; Target='英语'; Expected='R> KPQ 3/4' },
     @{ Source='招人'; Target='英语'; Expected='R> members' },
     @{ Source='招人'; Target='拉美西班牙语'; Expected='Busco gente.' },
     @{ Source='有人做废弃吗？'; Target='英语'; Expected='Anyone for KPQ?' },
@@ -82,6 +84,9 @@ try {
     foreach ($required in @('外语 → 中文（看聊天）','中文 → English（发消息）','中文 → Español（发消息）')) {
         if ($items -notcontains $required) { throw "AI翻译方向缺少：$required" }
     }
+    if ($direction.SelectedIndex -lt 0 -or [string]::IsNullOrWhiteSpace([string]$direction.SelectedItem)) {
+        throw 'AI翻译方向下拉框没有默认选中项'
+    }
     if ($null -eq $input -or $button.Text -ne '翻译并复制') {
         throw 'AI翻译页面缺少中文输入或一键复制入口'
     }
@@ -93,6 +98,15 @@ try {
         throw "中文反向术语检索或简称全称缺失：$glossary"
     }
     $protectTerms = $chatType.GetMethod('ProtectOutboundTerms', $all)
+    $correctTerms = $chatType.GetMethod('CorrectOutboundChineseTerms', $all)
+    $correctedItem = [string]$correctTerms.Invoke($form, @('收花蘑菇伞盖 50个', '英语'))
+    if ($correctedItem -ne '收花蘑菇盖 50个') {
+        throw "常见中文术语错字没有在交给AI前纠正：$correctedItem"
+    }
+    foreach ($unchanged in @('收花蘑菇盖50个','明明女士的第一个担心 任务 3缺1')) {
+        $actual = [string]$correctTerms.Invoke($form, @($unchanged, '英语'))
+        if ($actual -ne $unchanged) { throw "正确术语被纠错器误改：$unchanged => $actual" }
+    }
     $protectArgs = [object[]]@('我刚到天空之城，有人一起刷小幽灵吗？', '拉美西班牙语', $null)
     $protectedText = [string]$protectTerms.Invoke($form, $protectArgs)
     $termTokens = $protectArgs[2]
@@ -114,6 +128,19 @@ try {
         $tradeArgs[3] -ne 'B> __FYM_TERM_0__ 100k') {
         throw "收购被错误写成出售或价格单位错误：$($tradeArgs[3])"
     }
+    $correctedTradeProtectArgs = [object[]]@($correctedItem, '英语', $null)
+    $correctedTradeProtected = [string]$protectTerms.Invoke($form, $correctedTradeProtectArgs)
+    $correctedTradeArgs = [object[]]@($correctedTradeProtected, '英语',
+        $correctedTradeProtectArgs[2], '')
+    if (-not [bool]$tradeIntent.Invoke($null, $correctedTradeArgs)) {
+        throw "纠错后的道具收购没有走确定性玩家句式：$correctedTradeProtected"
+    }
+    $restoreTerms = $chatType.GetMethod('RestoreProtectedTokens', $all)
+    $correctedTradeResult = [string]$restoreTerms.Invoke($null,
+        @($correctedTradeArgs[3], $correctedTradeProtectArgs[2]))
+    if ($correctedTradeResult -ne 'B> Orange Mushroom Cap 50') {
+        throw "错词纠正后的正式道具名或数量错误：$correctedTradeResult"
+    }
     $gameIntent = $chatType.GetMethod('TryProtectedOutboundGameIntent', $all)
     $farmArgs = [object[]]@($protectedText, '英语', $termTokens, '')
     if (-not [bool]$gameIntent.Invoke($null, $farmArgs) -or
@@ -126,6 +153,55 @@ try {
     if (-not [bool]$gameIntent.Invoke($null, $taskIntentArgs) -or
         $taskIntentArgs[3] -notlike '*__FYM_TERM_0__?') {
         throw "任务询问没有锁定正式任务名：$($taskIntentArgs[3])"
+    }
+    $recruitProtectArgs = [object[]]@('明明女士的第一个担心 任务 3缺1', '英语', $null)
+    $recruitProtected = [string]$protectTerms.Invoke($form, $recruitProtectArgs)
+    $recruitIntentArgs = [object[]]@($recruitProtected, '英语', $recruitProtectArgs[2], '')
+    if (-not [bool]$gameIntent.Invoke($null, $recruitIntentArgs)) {
+        throw "具体任务名加3缺1没有走通用招募句式：$recruitProtected"
+    }
+    $recruitResult = [string]$restoreTerms.Invoke($null,
+        @($recruitIntentArgs[3], $recruitProtectArgs[2]))
+    if ($recruitResult -ne "R> Mrs. Ming Ming's First Worry 3/4") {
+        throw "具体任务招募没有保留官方任务名或人数：$recruitResult"
+    }
+    $taskRecruitCount = 0
+    $uniqueTaskNames = @{}
+    $uniqueTaskIds = @{}
+    foreach ($line in Get-Content (Join-Path $repoRoot '枫语幕词库.tsv') -Encoding UTF8) {
+        if ($line.StartsWith('#')) { continue }
+        $columns = @($line -split "`t")
+        if ($columns.Count -lt 3 -or $columns[2] -notlike '怀旧服-任务#*' -or
+            [string]::IsNullOrWhiteSpace($columns[1])) { continue }
+        if (-not $uniqueTaskNames.ContainsKey($columns[1])) {
+            $uniqueTaskNames[$columns[1]] = $columns[0]
+        }
+        $taskId = $columns[2].Substring('怀旧服-任务#'.Length)
+        $uniqueTaskIds[$taskId] = $true
+    }
+    foreach ($taskName in $uniqueTaskNames.Keys) {
+        $source = "$taskName 任务 3缺1"
+        $corrected = [string]$correctTerms.Invoke($form, @($source, '英语'))
+        if ($corrected -ne $source) { throw "正式任务名被纠错器误改：$source => $corrected" }
+        $allTaskProtectArgs = [object[]]@($source, '英语', $null)
+        $allTaskProtected = [string]$protectTerms.Invoke($form, $allTaskProtectArgs)
+        $allTaskIntentArgs = [object[]]@($allTaskProtected, '英语', $allTaskProtectArgs[2], '')
+        if (-not [bool]$gameIntent.Invoke($null, $allTaskIntentArgs)) {
+            throw "任务招募通用规则未覆盖：$taskName | $allTaskProtected"
+        }
+        $allTaskResult = [string]$restoreTerms.Invoke($null,
+            @($allTaskIntentArgs[3], $allTaskProtectArgs[2]))
+        $expectedTaskResult = "R> $($uniqueTaskNames[$taskName]) 3/4"
+        if ($allTaskResult -ne $expectedTaskResult) {
+            throw "任务招募没有使用该任务的正式英文名：$taskName => $allTaskResult | 应为 $expectedTaskResult"
+        }
+        $taskRecruitCount++
+    }
+    if ($taskRecruitCount -lt 180) {
+        throw "任务招募全库验证数量异常：$taskRecruitCount"
+    }
+    if ($uniqueTaskIds.Count -ne 187) {
+        throw "当前任务ID审计数量异常：$($uniqueTaskIds.Count)"
     }
     $taskGlossary = [string]$buildGlossary.Invoke($form,
         @('玛雅与奇怪的药这个任务在哪接？', '拉美西班牙语'))
@@ -153,6 +229,12 @@ foreach ($entry in @(
     }
 }
 
+$chatSource = Get-Content (Join-Path $repoRoot 'src\OfflineChat.cs') -Raw -Encoding UTF8
+foreach ($required in @('鸣谢与声明','@奇怪小鸭','四水年华','https://mscw-guidebook.com/',
+    'https://henesys.gg/skills','非官方、非商业翻译辅助工具','不作任何商业用途')) {
+    if (-not $chatSource.Contains($required)) { throw "AI窗口鸣谢或免责声明缺少：$required" }
+}
+
 $uiError = Join-Path $repoRoot 'ai_chat_ui_test_error.txt'
 $uiImage = Join-Path $repoRoot 'ai_chat_ui_test.png'
 Remove-Item -LiteralPath $uiError -Force -ErrorAction SilentlyContinue
@@ -165,4 +247,4 @@ if (-not (Test-Path -LiteralPath $uiImage) -or (Get-Item -LiteralPath $uiImage).
     throw 'AI翻译方向和输入区界面截图未生成或内容为空'
 }
 
-Write-Output 'AI对外翻译：中译英/拉美西语、中文输入并复制、固定玩家黑话、中文反向术语、简称全称和多义项防乱猜通过'
+Write-Output "AI对外翻译：中译英/拉美西语、悬浮输入复用链路、固定玩家黑话、术语纠错及全部$($uniqueTaskIds.Count)个任务ID/$($taskRecruitCount)个唯一任务名招募通过"
