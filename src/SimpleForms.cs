@@ -528,33 +528,29 @@ namespace MapleOverlay
         public MainPanelForm(OverlayForm owner)
         {
             overlay = owner;
-            Text = "枫语幕";
+            Text = "枫语幕 v3.1";
             StartPosition = FormStartPosition.CenterScreen;
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             MinimizeBox = true;
             ShowIcon = true;
             Icon = Program.AppIcon;
-            ClientSize = new Size(560, 576);
+            ClientSize = new Size(560, 552);
             BackColor = Color.FromArgb(244, 247, 251);
             Font = new Font("Microsoft YaHei UI", 9.0f);
 
             Panel header = new Panel {
-                Dock = DockStyle.Top, Height = 94,
+                Dock = DockStyle.Top, Height = 70,
                 BackColor = Color.FromArgb(31, 41, 55), Padding = new Padding(22, 16, 22, 10)
             };
             Label title = new Label {
-                Text = "枫语幕", ForeColor = Color.White, AutoSize = true,
+                Text = "枫语幕 v3.1", ForeColor = Color.White, AutoSize = true,
                 Font = new Font("Microsoft YaHei UI", 20.0f, FontStyle.Bold), Location = new Point(20, 12)
             };
-            Label subtitle = new Label {
-                Text = "稳定识别模式 · 外部截图 OCR · 不修改游戏", ForeColor = Color.FromArgb(191, 219, 254),
-                AutoSize = true, Font = new Font("Microsoft YaHei UI", 9.5f), Location = new Point(22, 58)
-            };
-            header.Controls.Add(title); header.Controls.Add(subtitle);
+            header.Controls.Add(title);
 
             Panel card = new Panel {
-                Location = new Point(20, 110), Size = new Size(520, 76),
+                Location = new Point(20, 86), Size = new Size(520, 76),
                 BackColor = Color.White, BorderStyle = BorderStyle.FixedSingle
             };
             status.AutoSize = false; status.Location = new Point(16, 11); status.Size = new Size(486, 25);
@@ -565,7 +561,7 @@ namespace MapleOverlay
             card.Controls.Add(status); card.Controls.Add(hotkeys);
 
             GroupBox rangeCard = new GroupBox {
-                Text = "翻译范围与显示", Location = new Point(20, 196), Size = new Size(520, 224),
+                Text = "翻译范围与显示", Location = new Point(20, 172), Size = new Size(520, 224),
                 BackColor = Color.White, ForeColor = Color.FromArgb(55, 65, 81)
             };
             range.Minimum = 1; range.Maximum = 3; range.TickStyle = TickStyle.TopLeft;
@@ -577,7 +573,7 @@ namespace MapleOverlay
             rangeValue.Font = new Font("Microsoft YaHei UI", 9.5f, FontStyle.Bold);
             rangeValue.ForeColor = Color.FromArgb(37, 99, 235);
             Label rangeLabels = new Label {
-                Text = "兼容                              推荐                              精简",
+                Text = "翻译更多                    日常推荐                    只翻重点",
                 Location = new Point(19, 60), Size = new Size(332, 20),
                 ForeColor = Color.FromArgb(107, 114, 128)
             };
@@ -614,20 +610,20 @@ namespace MapleOverlay
             rangeCard.Controls.Add(continuousHint); rangeCard.Controls.Add(continuousTranslation);
             rangeCard.Controls.Add(rangeValue); rangeCard.Controls.Add(rangeLabels); rangeCard.Controls.Add(range);
 
-            Button ready = MakeButton("缩到托盘，开始使用", new Point(20, 434), new Size(520, 42), true);
+            Button ready = MakeButton("缩到托盘，开始使用", new Point(20, 410), new Size(520, 42), true);
             ready.Click += delegate { Hide(); };
-            Button dictionary = MakeButton("词库", new Point(20, 488), new Size(124, 38), false);
+            Button dictionary = MakeButton("词库", new Point(20, 464), new Size(124, 38), false);
             dictionary.Click += delegate { overlay.ShowDictionaryEditor(); };
-            Button shortcut = MakeButton("快捷键", new Point(152, 488), new Size(124, 38), false);
+            Button shortcut = MakeButton("快捷键", new Point(152, 464), new Size(124, 38), false);
             shortcut.Click += delegate { overlay.ShowHotkeyEditor(); };
-            Button ai = MakeButton("AI 翻译", new Point(284, 488), new Size(124, 38), false);
+            Button ai = MakeButton("AI 翻译", new Point(284, 464), new Size(124, 38), false);
             ai.Click += delegate { overlay.ShowChatTranslator(); };
-            Button update = MakeButton("一键更新", new Point(416, 488), new Size(124, 38), false);
+            Button update = MakeButton("一键更新", new Point(416, 464), new Size(124, 38), false);
             update.Enabled = overlay != null;
             update.Click += async delegate { await overlay.InstallLatestApplicationAsync(update); };
             Label hint = new Label {
                 Text = "F8 翻译开/关；F9 对齐聊天框；F10 呼出AI悬浮窗；关闭后仍在托盘。",
-                Location = new Point(22, 534), Size = new Size(516, 32),
+                Location = new Point(22, 510), Size = new Size(516, 32),
                 ForeColor = Color.FromArgb(107, 114, 128), TextAlign = ContentAlignment.MiddleLeft
             };
 
@@ -674,8 +670,8 @@ namespace MapleOverlay
 
         private void RefreshRangeText()
         {
-            rangeValue.Text = range.Value == 1 ? "兼容最大" :
-                (range.Value == 2 ? "推荐均衡" : "精简最小");
+            rangeValue.Text = range.Value == 1 ? "翻译更多" :
+                (range.Value == 2 ? "日常推荐" : "只翻重点");
         }
     }
 
@@ -1266,10 +1262,30 @@ namespace MapleOverlay
         {
             try
             {
-                File.WriteAllText(path, SerializeRows(), new UTF8Encoding(true));
+                WriteDictionaryAtomically(path, SerializeRows());
                 overlay.ReloadDictionary(); LoadRows(); status.Text = "已保存并生效";
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, "保存失败"); }
+        }
+
+        private static void WriteDictionaryAtomically(string targetPath, string contents)
+        {
+            string directory = Path.GetDirectoryName(targetPath);
+            if (String.IsNullOrEmpty(directory)) directory = Environment.CurrentDirectory;
+            string temporaryPath = Path.Combine(directory,
+                Path.GetFileName(targetPath) + ".saving-" + Guid.NewGuid().ToString("N"));
+            try
+            {
+                File.WriteAllText(temporaryPath, contents, new UTF8Encoding(true));
+                if (File.Exists(targetPath))
+                    File.Replace(temporaryPath, targetPath, null, true);
+                else
+                    File.Move(temporaryPath, targetPath);
+            }
+            finally
+            {
+                if (File.Exists(temporaryPath)) File.Delete(temporaryPath);
+            }
         }
 
         private void ImportRows()

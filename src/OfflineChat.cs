@@ -969,14 +969,16 @@ namespace MapleOverlay
         private readonly Queue<string> translationCacheOrder = new Queue<string>();
         private List<string> previousChatFrame = new List<string>();
         private readonly List<List<string>> recentChatFrames = new List<List<string>>();
-        private readonly List<KeyValuePair<string, string>> glossaryEntries = new List<KeyValuePair<string, string>>();
-        private readonly Dictionary<string, string> glossaryFullNames =
+        private List<KeyValuePair<string, string>> glossaryEntries = new List<KeyValuePair<string, string>>();
+        private Dictionary<string, string> glossaryExactTranslations =
+            new Dictionary<string, string>(StringComparer.Ordinal);
+        private Dictionary<string, string> glossaryFullNames =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        private readonly HashSet<string> lockableGlossaryKeys =
+        private HashSet<string> lockableGlossaryKeys =
             new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        private readonly HashSet<string> preferredChatAliases =
+        private HashSet<string> preferredChatAliases =
             new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        private readonly HashSet<string> contextOnlyGlossaryKeys =
+        private HashSet<string> contextOnlyGlossaryKeys =
             new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private KnowledgeInitializationResult knowledge;
         private bool knowledgeInitializationBusy;
@@ -1416,7 +1418,6 @@ namespace MapleOverlay
                     Dictionary<string, string> nameTokens;
                     string protectedMessage = ProtectPlayerNames(cleanedMessage, out nameTokens);
                     string targetLanguage = "简体中文";
-                    string glossary = BuildGlossaryForTarget(protectedMessage, targetLanguage);
                     lastAiUse = DateTime.Now;
                     string translated;
                     if (!TryKnownChatIntentTranslation(protectedMessage, out translated) &&
@@ -1425,6 +1426,7 @@ namespace MapleOverlay
                         string cacheKey = targetLanguage + "|" + NormalizeChatPhrase(cleanedMessage);
                         if (!translationCache.TryGetValue(cacheKey, out translated))
                         {
+                            string glossary = BuildGlossaryForTarget(protectedMessage, targetLanguage);
                             string sourceLanguage = DetectChatSourceLanguage(cleanedMessage);
                             translated = await TranslateWithPreferredAiAsync(protectedMessage,
                                 sourceLanguage, glossary);
@@ -1990,13 +1992,7 @@ namespace MapleOverlay
         private bool TryExactGlossaryTranslation(string text, out string translation)
         {
             string key = NormalizeChatPhrase(text);
-            foreach (KeyValuePair<string, string> entry in glossaryEntries)
-            {
-                if (contextOnlyGlossaryKeys.Contains(entry.Key)) continue;
-                if (NormalizeChatPhrase(entry.Key) != key) continue;
-                translation = entry.Value;
-                return true;
-            }
+            if (glossaryExactTranslations.TryGetValue(key, out translation)) return true;
             translation = "";
             return false;
         }
@@ -2333,62 +2329,91 @@ namespace MapleOverlay
 
         private void LoadGlossary()
         {
-            glossaryEntries.Clear();
-            glossaryFullNames.Clear();
-            lockableGlossaryKeys.Clear();
-            preferredChatAliases.Clear();
-            contextOnlyGlossaryKeys.Clear();
-            knowledge = null;
-            if (!File.Exists(dictionaryPath)) return;
+            List<KeyValuePair<string, string>> nextEntries =
+                new List<KeyValuePair<string, string>>();
+            Dictionary<string, string> nextExactTranslations =
+                new Dictionary<string, string>(StringComparer.Ordinal);
+            Dictionary<string, string> nextFullNames =
+                new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            HashSet<string> nextLockableKeys =
+                new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            HashSet<string> nextPreferredAliases =
+                new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            HashSet<string> nextContextOnlyKeys =
+                new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             Dictionary<string, HashSet<string>> valuesByEnglish =
                 new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
             List<KeyValuePair<string, string>> loaded = new List<KeyValuePair<string, string>>();
-            foreach (string raw in File.ReadLines(dictionaryPath, Encoding.UTF8))
+            if (File.Exists(dictionaryPath))
             {
-                if (raw.StartsWith("#")) continue;
-                string[] parts = raw.Split('\t');
-                if (parts.Length < 2 || parts[0].Length < 2 || parts[1].Length == 0) continue;
-                string english = parts[0].Trim(), chinese = parts[1].Trim();
-                string category = parts.Length > 2 ? parts[2].Trim() : "";
-                if (category.StartsWith("怀旧服-聊天多义缩写", StringComparison.Ordinal))
-                    contextOnlyGlossaryKeys.Add(english);
-                if (category.StartsWith("怀旧服-地图", StringComparison.Ordinal) ||
-                    category.StartsWith("怀旧服-装备", StringComparison.Ordinal) ||
-                    category.StartsWith("怀旧服-道具", StringComparison.Ordinal) ||
-                    category.StartsWith("怀旧服-怪物", StringComparison.Ordinal) ||
-                    category.StartsWith("怀旧服-技能", StringComparison.Ordinal) ||
-                    category.StartsWith("怀旧服-任务", StringComparison.Ordinal) ||
-                    category.StartsWith("怀旧服-NPC", StringComparison.Ordinal) ||
-                    category.StartsWith("怀旧服-聊天缩写", StringComparison.Ordinal) ||
-                    category.StartsWith("怀旧服-聊天术语", StringComparison.Ordinal))
-                    lockableGlossaryKeys.Add(english);
-                if (!category.StartsWith("怀旧服-聊天多义缩写", StringComparison.Ordinal) &&
-                    (category.StartsWith("怀旧服-聊天缩写", StringComparison.Ordinal) ||
-                     category.StartsWith("怀旧服-聊天术语", StringComparison.Ordinal)))
-                    preferredChatAliases.Add(english);
-                if (category.StartsWith("怀旧服-聊天缩写", StringComparison.Ordinal) &&
-                    parts.Length > 3)
+                foreach (string raw in File.ReadLines(dictionaryPath, Encoding.UTF8))
                 {
-                    string detail = parts[3].Trim();
-                    int noteSeparator = detail.IndexOf('；');
-                    if (noteSeparator > 0) detail = detail.Substring(0, noteSeparator).Trim();
-                    if (detail.Length >= 3 && detail.Length <= 64 &&
-                        detail.IndexOf("http", StringComparison.OrdinalIgnoreCase) < 0)
-                        glossaryFullNames[english] = detail;
+                    if (raw.StartsWith("#")) continue;
+                    string[] parts = raw.Split('\t');
+                    if (parts.Length < 2 || parts[0].Length < 2 || parts[1].Length == 0) continue;
+                    string english = parts[0].Trim(), chinese = parts[1].Trim();
+                    string category = parts.Length > 2 ? parts[2].Trim() : "";
+                    if (category.StartsWith("怀旧服-聊天多义缩写", StringComparison.Ordinal))
+                        nextContextOnlyKeys.Add(english);
+                    if (category.StartsWith("怀旧服-地图", StringComparison.Ordinal) ||
+                        category.StartsWith("怀旧服-装备", StringComparison.Ordinal) ||
+                        category.StartsWith("怀旧服-道具", StringComparison.Ordinal) ||
+                        category.StartsWith("怀旧服-怪物", StringComparison.Ordinal) ||
+                        category.StartsWith("怀旧服-技能", StringComparison.Ordinal) ||
+                        category.StartsWith("怀旧服-任务", StringComparison.Ordinal) ||
+                        category.StartsWith("怀旧服-NPC", StringComparison.Ordinal) ||
+                        category.StartsWith("怀旧服-聊天缩写", StringComparison.Ordinal) ||
+                        category.StartsWith("怀旧服-聊天术语", StringComparison.Ordinal))
+                        nextLockableKeys.Add(english);
+                    if (!category.StartsWith("怀旧服-聊天多义缩写", StringComparison.Ordinal) &&
+                        (category.StartsWith("怀旧服-聊天缩写", StringComparison.Ordinal) ||
+                         category.StartsWith("怀旧服-聊天术语", StringComparison.Ordinal)))
+                        nextPreferredAliases.Add(english);
+                    if (category.StartsWith("怀旧服-聊天缩写", StringComparison.Ordinal) &&
+                        parts.Length > 3)
+                    {
+                        string detail = parts[3].Trim();
+                        int noteSeparator = detail.IndexOf('；');
+                        if (noteSeparator > 0) detail = detail.Substring(0, noteSeparator).Trim();
+                        if (detail.Length >= 3 && detail.Length <= 64 &&
+                            detail.IndexOf("http", StringComparison.OrdinalIgnoreCase) < 0)
+                            nextFullNames[english] = detail;
+                    }
+                    loaded.Add(new KeyValuePair<string, string>(english, chinese));
+                    HashSet<string> values;
+                    if (!valuesByEnglish.TryGetValue(english, out values))
+                    {
+                        values = new HashSet<string>(StringComparer.Ordinal);
+                        valuesByEnglish.Add(english, values);
+                    }
+                    values.Add(chinese);
                 }
-                loaded.Add(new KeyValuePair<string, string>(english, chinese));
-                HashSet<string> values;
-                if (!valuesByEnglish.TryGetValue(english, out values))
-                {
-                    values = new HashSet<string>(StringComparer.Ordinal); valuesByEnglish.Add(english, values);
-                }
-                values.Add(chinese);
             }
             foreach (KeyValuePair<string, string> entry in loaded)
-                if (valuesByEnglish[entry.Key].Count == 1) glossaryEntries.Add(entry);
-            glossaryEntries.Sort(delegate(KeyValuePair<string, string> left, KeyValuePair<string, string> right) {
+                if (valuesByEnglish[entry.Key].Count == 1) nextEntries.Add(entry);
+            nextEntries.Sort(delegate(KeyValuePair<string, string> left, KeyValuePair<string, string> right) {
                 return right.Key.Length.CompareTo(left.Key.Length);
             });
+            // Preserve the old sorted-list first-match rule while making exact chat
+            // phrases O(1). Context-only abbreviations still require surrounding text.
+            foreach (KeyValuePair<string, string> entry in nextEntries)
+            {
+                if (nextContextOnlyKeys.Contains(entry.Key)) continue;
+                string normalized = NormalizeChatPhrase(entry.Key);
+                if (normalized.Length > 0 && !nextExactTranslations.ContainsKey(normalized))
+                    nextExactTranslations.Add(normalized, entry.Value);
+            }
+            // Publish only after the entire file has been read and indexed. A failed reload
+            // therefore leaves the previous, known-good live glossary untouched.
+            glossaryEntries = nextEntries;
+            glossaryExactTranslations = nextExactTranslations;
+            glossaryFullNames = nextFullNames;
+            lockableGlossaryKeys = nextLockableKeys;
+            preferredChatAliases = nextPreferredAliases;
+            contextOnlyGlossaryKeys = nextContextOnlyKeys;
+            translationCache.Clear();
+            translationCacheOrder.Clear();
+            knowledge = null;
         }
 
         private async Task InitializeKnowledgeInBackgroundAsync(bool force)
@@ -2420,6 +2445,12 @@ namespace MapleOverlay
             }
             RefreshAiStatus();
             return knowledge;
+        }
+
+        internal int ReloadGlossary()
+        {
+            LoadGlossary();
+            return glossaryEntries.Count;
         }
 
         private void SplitSpeaker(string line, out string prefix, out string message)

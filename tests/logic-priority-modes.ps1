@@ -24,13 +24,15 @@ function Assert-Plan($plan, [string[]]$kinds, [double[]]$levels, [string]$name) 
 }
 
 Assert-Plan (Get-Plan $true $true $true $true 3) `
-    @('Detail','Dialogue','OutsideDialogue') @(1.0,0.75,0.5) '均衡四类同屏'
+    @('Detail','Dialogue','OutsideDialogue') @(1.0,1.0,0.5) '均衡四类同屏'
 Assert-Plan (Get-Plan $false $true $true $true 3) `
-    @('Dialogue','OutsideDialogue','CurrentInterface') @(1.0,0.75,0.5) '均衡自动前移'
+    @('Dialogue','OutsideDialogue','CurrentInterface') @(1.0,0.5,0.35) '均衡自动前移'
 Assert-Plan (Get-Plan $true $true $true $true 2) `
-    @('Detail','Dialogue') @(1.0,0.75) '最小范围'
+    @('Detail','Dialogue') @(1.0,1.0) '最小范围'
 Assert-Plan (Get-Plan $false $false $false $true 2) `
     @('CurrentInterface') @(1.0) '仅当前界面'
+Assert-Plan (Get-Plan $false $false $true $true 3) `
+    @('OutsideDialogue','CurrentInterface') @(1.0,0.75) '无前景面板时保留背景层级'
 
 $target = $planner.GetMethod('TargetLongEdge', [Reflection.BindingFlags]'Static,NonPublic,Public')
 $currentInterface = $planner.GetMethod('ShouldUseCurrentInterface', [Reflection.BindingFlags]'Static,NonPublic,Public')
@@ -104,8 +106,17 @@ foreach ($required in @(
     'RestoreTrayIcon(true)')) {
     if (-not $source.Contains($required)) { throw "缺少托盘恢复机制：$required" }
 }
-foreach ($required in @('TrackBar range', 'range.Minimum = 1', 'range.Maximum = 3', '兼容最大', '推荐均衡', '精简最小')) {
+foreach ($required in @('TrackBar range', 'range.Minimum = 1', 'range.Maximum = 3', '翻译更多', '日常推荐', '只翻重点')) {
     if (-not $forms.Contains($required)) { throw "主界面滑动条缺少：$required" }
+}
+foreach ($obsolete in @('兼容最大', '推荐均衡', '精简最小')) {
+    if ($forms.Contains($obsolete)) { throw "主界面仍保留旧范围文案：$obsolete" }
+}
+if (-not $forms.Contains('Text = "枫语幕 v3.1", ForeColor = Color.White')) {
+    throw '主界面标题缺少“枫语幕 v3.1”'
+}
+if ($forms.Contains('稳定识别模式 · 外部截图 OCR · 不修改游戏')) {
+    throw '主界面仍保留旧副标题'
 }
 
 Write-Output '三档范围与托盘恢复：动态优先级、资源级别、分辨率归一化、最大档兼容路径、滑动条和单实例唤回通过'

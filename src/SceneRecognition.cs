@@ -18,7 +18,8 @@ namespace MapleOverlay
         Item = 8,
         Dialogue = 16,
         Shop = 32,
-        Inventory = 64
+        Inventory = 64,
+        Interface = 128
     }
 
     internal sealed class SceneEvidence
@@ -30,6 +31,7 @@ namespace MapleOverlay
         public bool QuestHeader;
         public bool ItemHeader;
         public bool ItemDetail;
+        public bool MainPanelHeader;
         public bool DialogueAnchor;
         public bool DialogueText;
         public string TaskId = "";
@@ -142,11 +144,40 @@ namespace MapleOverlay
         }
     }
 
+    internal static class SettingsPanelPolicy
+    {
+        internal static bool IsOptionsWindow(string text)
+        {
+            string normalized = TranslationStore.Normalize(text);
+            string padded = " " + normalized + " ";
+            if (!padded.Contains(" options ")) return false;
+            string[] tabs = new string[] {
+                " graphics ", " sound ", " game ", " social ", " controller "
+            };
+            foreach (string tab in tabs)
+                if (padded.Contains(tab)) return true;
+
+            // A tight focused crop can lose the tab row while retaining the OPTIONS title.
+            // Require two page-specific controls in that case so an isolated word such as
+            // "Language" cannot turn an unrelated window into a settings panel.
+            string[] controls = new string[] {
+                " resolution ", " vertical sync ", " ui fade ", " master volume ",
+                " hp warning ", " mp warning ", " enemy info ", " screenshot ",
+                " language ", " whispers ", " chat font size ",
+                " enable controller support ", " stick sensitivity ", " d pad slots "
+            };
+            int controlCount = 0;
+            foreach (string control in controls)
+                if (padded.Contains(control)) controlCount++;
+            return controlCount >= 2;
+        }
+    }
+
     internal static class SceneClassifier
     {
         internal static readonly SceneKind[] AtomicKinds = new SceneKind[] {
             SceneKind.Character, SceneKind.Skill, SceneKind.Quest, SceneKind.Item,
-            SceneKind.Dialogue, SceneKind.Shop, SceneKind.Inventory
+            SceneKind.Dialogue, SceneKind.Shop, SceneKind.Inventory, SceneKind.Interface
         };
 
         internal static string Name(SceneKind kind)
@@ -158,6 +189,7 @@ namespace MapleOverlay
             if (kind == SceneKind.Dialogue) return "NPC对话";
             if (kind == SceneKind.Shop) return "商店";
             if (kind == SceneKind.Inventory) return "背包";
+            if (kind == SceneKind.Interface) return "界面窗口";
             return "普通";
         }
 
@@ -220,6 +252,16 @@ namespace MapleOverlay
                 normalized.Contains("seller info"))
                 evidence.Kinds |= SceneKind.Shop | SceneKind.Item;
 
+            // These Classic World windows are neither dialogue nor item details, but they are
+            // still foreground windows. Treating them as the fourth-tier background interface
+            // made the task helper or HUD win the focused OCR pass. The four-tier planner keeps
+            // its ordering; this flag merely puts a real open window into tier two.
+            evidence.MainPanelHeader = normalized == "world map" ||
+                normalized.Contains("crafting journal") ||
+                normalized.Contains("maple user list") || normalized == "buddy list" ||
+                normalized == "options" || SettingsPanelPolicy.IsOptionsWindow(text);
+            if (evidence.MainPanelHeader) evidence.Kinds |= SceneKind.Interface;
+
             evidence.DialogueAnchor = includeDialogueAnchors && IsDialogueAnchor(normalized);
             evidence.DialogueText = includeDialogueAnchors && !playerChat && LooksLikeKnownDialogue(text,
                 normalized, translations);
@@ -241,6 +283,7 @@ namespace MapleOverlay
                 (evidence.DialogueText ? 116 : 65);
             if (kind == SceneKind.Shop) return 132;
             if (kind == SceneKind.Inventory) return 110;
+            if (kind == SceneKind.Interface) return evidence.MainPanelHeader ? 126 : 80;
             return 0;
         }
 
@@ -315,7 +358,7 @@ namespace MapleOverlay
         private static bool LooksLikeKnownDialogue(string text, string normalized,
             TranslationStore translations)
         {
-            if (translations == null || normalized.Length < 18 || normalized.Length > 800)
+            if (translations == null || normalized.Length < 18 || normalized.Length > 6000)
                 return false;
             string padded = " " + normalized + " ";
             bool conversational = padded.Contains(" i ") || padded.Contains(" you ") ||
@@ -323,7 +366,9 @@ namespace MapleOverlay
                 padded.Contains(" me ") || padded.Contains(" dont ") || padded.Contains(" cant ") ||
                 padded.Contains(" ready ");
             if (!conversational) return false;
-            foreach (MatchResult match in translations.FindInterfaceTextMatches(text))
+            List<MatchResult> known = translations.FindDialogueTextMatches(text);
+            if (known.Count == 0) known = translations.FindInterfaceTextMatches(text);
+            foreach (MatchResult match in known)
             {
                 int matched = match.Entry == null ? 0 : match.Entry.Normalized.Length;
                 if (matched < 18) continue;
@@ -353,6 +398,61 @@ namespace MapleOverlay
             int count = 0;
             foreach (string token in tokens) if (padded.Contains(token)) count++;
             return count;
+        }
+    }
+
+    internal static class PanelContextPolicy
+    {
+        internal static bool UseEquipmentSemantics(bool localEquipmentPanel,
+            bool explicitEquipmentStructure)
+        {
+            // A visible inventory or equipment tooltip is scene evidence, not permission to
+            // parse every OCR line on the screen as equipment. Quest journals, chat and other
+            // foreground windows may be open at the same time. Only the panel that actually
+            // owns equipment structure (or a self-identifying REQ/DEF/etc. row) gets equipment
+            // semantics, otherwise ordinary words such as Warrior/Thief can become a bogus
+            // "allowed jobs" label in a neighbouring panel.
+            return localEquipmentPanel || explicitEquipmentStructure;
+        }
+
+        internal static string ResolveTaskId(string focusedDetailText,
+            IList<string> localLines, TranslationStore translations,
+            bool focusedPass, bool mainQuestShell)
+        {
+            // The full-screen pass discovers panels only. It must never lend a task ID to
+            // another region; focused crops establish their own semantic context afterwards.
+            if (!focusedPass || translations == null) return "";
+
+            if (mainQuestShell)
+            {
+                // A quest journal contains many titles in its left list. Only the selected
+                // concrete sub-task title in the right detail pane may choose the active task.
+                // Long prose must never infer it, and a truncated chain title is not unique.
+                return String.IsNullOrWhiteSpace(focusedDetailText)
+                    ? "" : translations.ResolveUniqueTaskTitleId(focusedDetailText);
+            }
+
+            HashSet<string> lineIds = new HashSet<string>(StringComparer.Ordinal);
+            StringBuilder combined = new StringBuilder();
+            if (localLines != null)
+            {
+                foreach (string line in localLines)
+                {
+                    if (String.IsNullOrWhiteSpace(line)) continue;
+                    if (combined.Length > 0) combined.AppendLine();
+                    combined.Append(line);
+                    string lineId = translations.DetectTaskId(line);
+                    if (lineId.Length > 0) lineIds.Add(lineId);
+                }
+            }
+
+            // A side tracker commonly contains several quests. Choosing one of them as a
+            // global context is always wrong, so short independent titles remain translatable
+            // while task-specific prose is deliberately disabled for that crop.
+            if (lineIds.Count > 1) return "";
+            if (lineIds.Count == 1)
+                foreach (string id in lineIds) return id;
+            return combined.Length == 0 ? "" : translations.DetectTaskId(combined.ToString());
         }
     }
 

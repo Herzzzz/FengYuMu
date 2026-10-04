@@ -44,7 +44,8 @@ Assert-Structured '7/lO Blue Snail' '7/10 蓝蜗牛'
 $source = Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -Encoding UTF8
 foreach ($required in @(
     'BeginSafeWarmup',
-    'AI知识将在打开AI功能时按需同步',
+    '截屏与AI实时翻译已立即更新',
+    'AI仍保留上一次的稳定索引',
     '已继续使用上一次的稳定索引',
     'F8词库翻译仍可继续使用',
     'MainPanelForm',
