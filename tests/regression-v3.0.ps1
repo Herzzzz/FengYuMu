@@ -12,7 +12,7 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 $exe = Join-Path $repoRoot '枫语幕.exe'
 
 & (Join-Path $PSScriptRoot 'logic-regression-v2.2.ps1') `
-    -ExpectedVersion '3.2.1.0' -ExpectedDisplayVersion 'v3.2.1'
+    -ExpectedVersion '3.2.2.0' -ExpectedDisplayVersion 'v3.2.2'
 & (Join-Path $PSScriptRoot 'logic-priority-modes.ps1')
 & (Join-Path $PSScriptRoot 'logic-panel-context-isolation.ps1')
 & (Join-Path $PSScriptRoot 'logic-skill-detail-semantics.ps1')
@@ -31,7 +31,7 @@ $exe = Join-Path $repoRoot '枫语幕.exe'
 & (Join-Path $PSScriptRoot 'logic-overlay-paint-safety.ps1')
 & (Join-Path $PSScriptRoot 'logic-chat-region-first-use.ps1')
 & (Join-Path $PSScriptRoot 'logic-regression-chat-abbreviations.ps1') `
-    -ExpectedVersion '3.2.1.0' -ExpectedDisplayVersion 'v3.2.1'
+    -ExpectedVersion '3.2.2.0' -ExpectedDisplayVersion 'v3.2.2'
 & (Join-Path $PSScriptRoot 'logic-glossary-hot-reload.ps1')
 & (Join-Path $PSScriptRoot 'logic-regression-v2.2.2-updater.ps1')
 & (Join-Path $PSScriptRoot 'logic-application-updater.ps1')
@@ -72,4 +72,4 @@ if (-not (Test-Path -LiteralPath $hotkeyUi) -or (Get-Item -LiteralPath $hotkeyUi
 }
 & (Join-Path $PSScriptRoot 'tray-recovery-integration.ps1')
 
-Write-Output 'v3.2.1 全量回归通过：旧逻辑/旧五图、公开实机图、持续模式、视频词库、设置/NPC、资源、A/B、界面、手柄、托盘与单实例'
+Write-Output 'v3.2.2 全量回归通过：旧逻辑/旧五图、公开实机图、持续模式、视频词库、设置/NPC、资源、A/B、界面、手柄、托盘与单实例'

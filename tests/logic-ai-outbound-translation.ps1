@@ -19,7 +19,8 @@ $englishBody = [string]$buildOnline.Invoke($null, [object[]]@($settings,
 $spanishBody = [string]$buildOnline.Invoke($null, [object[]]@($settings,
     '有人做废弃吗', '拉美西班牙语', "废弃都市组队任务 => KPQ (full: Kerning Party Quest)`n"))
 foreach ($required in @('KPQ 3/4','members','国际服正式名称','Kerning Party Quest',
-    'MapleStory Classic / Global','匹配优先级固定为','禁止按字面创造')) {
+    'MapleStory Classic / Global','匹配优先级固定为','禁止按字面创造',
+    '普通日常聊天','禁止强行套用游戏黑话')) {
     if (-not $englishBody.Contains($required)) { throw "中译英提示词缺少：$required" }
 }
 if (-not $englishBody.Contains('收/求购用') -or -not $englishBody.Contains('禁止擅自添加PQ') -or
@@ -96,7 +97,8 @@ $intentCases = @(
     @{ Source='收人'; Expected='General' },
     @{ Source='有队收牧师吗'; Expected='General' },
     @{ Source='牧师有队收人吗'; Expected='General' },
-    @{ Source='我想用猫头鹰找一面干净枫叶盾'; Expected='General' }
+    @{ Source='我想用猫头鹰找一面干净枫叶盾'; Expected='General' },
+    @{ Source='我去吃午饭'; Expected='General' }
 )
 foreach ($case in $intentCases) {
     $intent = $analyzeIntent.Invoke($null, @($case.Source))

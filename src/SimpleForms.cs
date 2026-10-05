@@ -627,7 +627,7 @@ namespace MapleOverlay
             overlay = owner;
             AutoScaleDimensions = new SizeF(96.0f, 96.0f);
             AutoScaleMode = AutoScaleMode.Dpi;
-            Text = "枫语幕 v3.2.1";
+            Text = "枫语幕 v3.2.2";
             StartPosition = FormStartPosition.CenterScreen;
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
@@ -644,7 +644,7 @@ namespace MapleOverlay
                 BackColor = Color.FromArgb(31, 41, 55), Padding = new Padding(22, 16, 22, 10)
             };
             Label title = new Label {
-                Text = "枫语幕 v3.2.1", ForeColor = Color.White, AutoSize = true,
+                Text = "枫语幕 v3.2.2", ForeColor = Color.White, AutoSize = true,
                 Font = new Font("Microsoft YaHei UI", 20.0f, FontStyle.Bold), Location = new Point(20, 12)
             };
             header.Controls.Add(title);

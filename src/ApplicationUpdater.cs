@@ -391,7 +391,7 @@ namespace MapleOverlay
         {
             WebClient client = new UpdateWebClient();
             client.Encoding = Encoding.UTF8;
-            client.Headers[HttpRequestHeader.UserAgent] = "FengYuMu/3.2.1";
+            client.Headers[HttpRequestHeader.UserAgent] = "FengYuMu/3.2.2";
             client.Headers[HttpRequestHeader.Accept] = "application/vnd.github+json, text/plain, */*";
             client.Proxy = proxy;
             return client;
@@ -477,7 +477,7 @@ namespace MapleOverlay
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(LatestReleasePage);
                     request.Method = "HEAD";
                     request.AllowAutoRedirect = false;
-                    request.UserAgent = "FengYuMu/3.2.1";
+                    request.UserAgent = "FengYuMu/3.2.2";
                     request.Proxy = route.Proxy;
                     request.Timeout = 12000;
                     request.ReadWriteTimeout = 12000;

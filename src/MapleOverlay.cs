@@ -23,8 +23,8 @@ using Windows.Storage.Streams;
 
 [assembly: AssemblyTitle("枫语幕")]
 [assembly: AssemblyProduct("枫语幕")]
-[assembly: AssemblyVersion("3.2.1.0")]
-[assembly: AssemblyFileVersion("3.2.1.0")]
+[assembly: AssemblyVersion("3.2.2.0")]
+[assembly: AssemblyFileVersion("3.2.2.0")]
 
 namespace MapleOverlay
 {
@@ -1579,7 +1579,8 @@ namespace MapleOverlay
         private static string PolishChinese(string value)
         {
             if (String.IsNullOrEmpty(value)) return value;
-            string text = value.Replace("Meso", "金币").Replace("meso", "金币")
+            string text = value.Replace("<br>", Environment.NewLine)
+                .Replace("Meso", "金币").Replace("meso", "金币")
                 .Replace("DEX", "敏捷").Replace("STR", "力量")
                 .Replace("INT", "智力").Replace("LUK", "运气")
                 .Replace("8x伤害", "8倍伤害");
@@ -3097,7 +3098,7 @@ namespace MapleOverlay
         private void BuildTray()
         {
             tray.Icon = Program.AppIcon;
-            tray.Text = "枫语幕 v3.2.1";
+            tray.Text = "枫语幕 v3.2.2";
             tray.Visible = true;
             ContextMenuStrip menu = new ContextMenuStrip();
             ToolStripMenuItem main = new ToolStripMenuItem("打开主界面");
@@ -3145,7 +3146,7 @@ namespace MapleOverlay
             {
                 tray.Visible = false;
                 tray.Icon = Program.AppIcon;
-                tray.Text = "枫语幕 v3.2.1（内存待机）";
+                tray.Text = "枫语幕 v3.2.2（内存待机）";
                 tray.Visible = true;
             }
             catch (ObjectDisposedException) { return; }
@@ -3293,7 +3294,7 @@ namespace MapleOverlay
             ShowCurrentTranslations();
             if (continuousTranslationEnabled)
                 continuousTranslationSuppressedUntilUtc = DateTime.UtcNow.AddSeconds(3);
-            tray.Text = "枫语幕 v3.2.1（低配置优化）";
+            tray.Text = "枫语幕 v3.2.2（低配置优化）";
         }
 
         private Task ShowTranslationAsync()
@@ -3797,7 +3798,7 @@ namespace MapleOverlay
                 visibleTranslation = true;
                 ShowCurrentTranslations();
                 stopwatch.Stop();
-                tray.Text = "枫语幕 v3.2.1（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
+                tray.Text = "枫语幕 v3.2.2（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
                 if (Program.Benchmark)
                     WriteBenchmarkResult(stopwatch, captureDuration, probePassDuration,
                         mainPassDuration, hoverPassDuration, panelPassDuration,
@@ -6625,9 +6626,11 @@ namespace MapleOverlay
                     Bounds = new RectangleF(x0 - 3, y0 - 2, Math.Max(28, x1 - x0 + 6), Math.Max(18, y1 - y0 + 4)),
                     Text = match.Entry.Chinese,
                     // Semantic categories do not determine geometry. If the game rendered the
-                    // source on one OCR line, keep the replacement on one line as well; wrapping
-                    // is reserved for source text that was already split across multiple lines.
-                    Wrap = lines.Count > 1
+                    // source on one OCR line, keep the replacement on one line as well unless
+                    // the dictionary explicitly supplies a second line (for example a quiz-answer
+                    // hint). Explicit line breaks must receive multi-line layout and height.
+                    Wrap = lines.Count > 1 || match.Entry.Chinese.IndexOf('\n') >= 0 ||
+                        match.Entry.Chinese.IndexOf('\r') >= 0
                 });
             }
         }

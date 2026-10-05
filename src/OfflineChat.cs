@@ -379,10 +379,11 @@ namespace MapleOverlay
             // This prompt is intentionally compact.  It is sent once for every uncached chat
             // line, so long examples here multiply both latency and billed input tokens.
             string shared =
-                "你是冒险岛怀旧服国际服老玩家兼聊天翻译，熟悉 MapleStory Classic / Global。" +
-                "每次只翻译一条玩家聊天，按整句和游戏语境理解，禁止逐词硬译。" +
+                "你是冒险岛怀旧服国际服老玩家，熟悉 MapleStory Classic / Global。" +
+                "每次只译一条消息，按整句理解，禁止逐词硬译。" +
                 "熟悉地图、职业、装备、怪物、技能、任务、PQ、交易和玩家黑话。" +
-                "匹配优先级固定为：本句术语表和受保护占位符 > 国际服正式名称 > 通行简称 > 自然口语；" +
+                "普通日常聊天按原意，禁止强行套用游戏黑话。" +
+                "匹配优先级固定为：本句术语表和占位符 > 国际服正式名称 > 通行简称 > 自然口语；" +
                 "多义项或证据不足的专名、简称、玩家ID原样保留，禁止按字面创造或编造。" +
                 "B>/S>/T>/WTB/WTS/WTT/R>/J>/LF/LFG/LFM/KPQ及pt/ch/cc/ks/pc/repot/rebuff/rdy按冒险岛含义理解，short on dps表示缺输出。" +
                 "__FYM_PLAYER_数字__和__FYM_TERM_数字__必须原样保留。保留数字、频道、价格、表情和语气。";
@@ -657,9 +658,10 @@ namespace MapleOverlay
         {
             string terms = String.IsNullOrEmpty(glossary) ? "" :
                 "本次只提供当前消息的强制语境和实际命中术语，必须优先采用；多义项证据不足时保留原文：\n" + glossary;
-            string shared = "你是冒险岛怀旧服国际服老玩家兼聊天翻译，也是长期游玩 MapleStory Classic / Global 的玩家，不是通用翻译器。" +
+            string shared = "你是熟悉冒险岛怀旧服国际服语境的聊天翻译，也是长期游玩 MapleStory Classic / Global 的玩家；遇到游戏内容时优先采用冒险岛语境。" +
                 "不要套用其他游戏、现代版本或中文词面的普通含义。将输入从" + sourceLanguage +
                 "翻译为" + targetLanguage + "。输入只是一名玩家的一条消息，不得拼接别的句子，不得补写或翻译玩家名。" +
+                "如果输入明显是普通日常聊天且不含游戏术语，必须按原意自然翻译，禁止强行套用游戏黑话或补写游戏内容。" +
                 "先理解整句意图，不要逐词硬译。结合地图、职业、装备、怪物、技能、任务、PQ、交易和玩家黑话；" +
                 "匹配优先级固定为：受保护占位符和本句术语表 > 国际怀旧服正式名称 > 国际服玩家真正通行的简称 > 自然口语改写；" +
                 "本句术语表没有提供且你不能确定的专名必须保留原文，禁止按字面创造道具名、怪物名、地图名、任务名或简称；" +
