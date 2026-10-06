@@ -1,0 +1,29 @@
+name: macOS arm64 build
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "macos/**"
+      - "枫语幕词库.tsv"
+      - ".github/workflows/macos-build.yml"
+
+jobs:
+  build:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test core and build arm64 app
+        run: zsh macos/scripts/build-release.sh
+      - name: Verify product
+        run: |
+          codesign --verify --deep --strict --verbose=2 macos/.build/product/枫语幕.app
+          plutil -lint macos/.build/product/枫语幕.app/Contents/Info.plist
+          test "$(file macos/.build/product/枫语幕.app/Contents/MacOS/FengYuMuMac | grep -c arm64)" -eq 1
+          test -s macos/.build/product/枫语幕.app/Contents/Resources/枫语幕词库.tsv
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FengYuMu-macOS26-arm64
+          path: |
+            macos/枫语幕_*_macOS26_arm64.dmg
+            macos/枫语幕_*_macOS26_arm64.dmg.sha256

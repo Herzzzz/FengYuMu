@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>zh_CN</string>
+    <key>CFBundleDisplayName</key>
+    <string>枫语幕</string>
+    <key>CFBundleExecutable</key>
+    <string>FengYuMuMac</string>
+    <key>CFBundleIdentifier</key>
+    <string>cn.fengyumu.macos</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>枫语幕</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>3.2.2</string>
+    <key>CFBundleVersion</key>
+    <string>32201</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>26.0</string>
+    <key>LSApplicationCategoryType</key>
+    <string>public.app-category.utilities</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>NSScreenCaptureUsageDescription</key>
+    <string>枫语幕需要截取当前冒险岛窗口，使用系统文字识别并在原位置显示中文翻译。</string>
+    <key>NSHumanReadableCopyright</key>
+    <string>玩家制作的免费非商业翻译辅助工具</string>
+</dict>
+</plist>
