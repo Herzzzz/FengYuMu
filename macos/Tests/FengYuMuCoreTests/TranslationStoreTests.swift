@@ -25,8 +25,8 @@ final class TranslationStoreTests: XCTestCase {
     func testAmbiguousPlainNamesAreNotPaintedWithoutDisambiguation() throws {
         let file = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try [
-            "Blue Bandana\t蓝色头巾\t怀旧服-装备#1",
-            "Blue Bandana\t蓝色发带\t怀旧服-装备#2"
+            "Blue Bandana\t蓝色头巾\t怀旧服-装备#1\t0123456789ABCDEF",
+            "Blue Bandana\t蓝色发带\t怀旧服-装备#2\tFEDCBA9876543210"
         ].joined(separator: "\n").write(to: file, atomically: true, encoding: .utf8)
         defer { try? FileManager.default.removeItem(at: file) }
         let store = TranslationStore()

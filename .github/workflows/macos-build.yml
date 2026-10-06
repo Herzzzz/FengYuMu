@@ -21,9 +21,21 @@ jobs:
           plutil -lint macos/.build/product/枫语幕.app/Contents/Info.plist
           test "$(file macos/.build/product/枫语幕.app/Contents/MacOS/FengYuMuMac | grep -c arm64)" -eq 1
           test -s macos/.build/product/枫语幕.app/Contents/Resources/枫语幕词库.tsv
+      - name: Launch app smoke test
+        run: |
+          open macos/.build/product/枫语幕.app
+          for attempt in {1..20}; do
+            pgrep -x FengYuMuMac >/dev/null && break
+            sleep 0.5
+          done
+          pgrep -x FengYuMuMac >/dev/null
+          sleep 2
+          screencapture -x macos/.build/macos-ui-smoke.png || true
+          killall FengYuMuMac
       - uses: actions/upload-artifact@v4
         with:
           name: FengYuMu-macOS26-arm64
           path: |
             macos/枫语幕_*_macOS26_arm64.dmg
             macos/枫语幕_*_macOS26_arm64.dmg.sha256
+            macos/.build/macos-ui-smoke.png

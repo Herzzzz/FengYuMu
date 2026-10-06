@@ -38,7 +38,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let controller = NSHostingController(rootView: AIWindowView(app: state, model: viewModel))
         aiWindow = NSPanel(contentViewController: controller)
         aiWindow.title = "枫语幕 AI 翻译"
-        aiWindow.styleMask = [.titled, .closable, .resizable, .nonactivatingPanel]
+        // It stays out of the way while passive, but becomes a normal key window after the
+        // player clicks the Chinese input field so macOS input methods work correctly.
+        aiWindow.styleMask = [.titled, .closable, .resizable, .utilityWindow]
         aiWindow.level = .floating
         aiWindow.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         aiWindow.isReleasedWhenClosed = false

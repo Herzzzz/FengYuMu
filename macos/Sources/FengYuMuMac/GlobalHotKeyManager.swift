@@ -47,7 +47,7 @@ final class GlobalHotKeyManager {
     @discardableResult
     func register(id: UInt32, keyCode: UInt32, modifiers: UInt32 = 0,
                   handler: @escaping Handler) -> Bool {
-        var identifier = EventHotKeyID(signature: signature, id: id)
+        let identifier = EventHotKeyID(signature: signature, id: id)
         var ref: EventHotKeyRef?
         let status = RegisterEventHotKey(keyCode, modifiers, identifier,
                                          GetApplicationEventTarget(), 0, &ref)

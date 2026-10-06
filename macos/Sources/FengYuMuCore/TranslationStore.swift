@@ -97,8 +97,10 @@ public final class TranslationStore: @unchecked Sendable {
                 english: english, chinese: chinese, category: category,
                 normalized: normalized, source: source, region: region
             )
-            let scope = temporary.taskID ?? (temporary.isLongText ? category : "general")
-            guard seen.insert("\(normalized)\t\(scope)\t\(chinese)").inserted else { continue }
+            let hasIcon = UInt64(source, radix: 16) != nil
+            let scope = temporary.taskID ??
+                ((hasIcon || temporary.isLongText) && !category.isEmpty ? category : "general")
+            guard seen.insert("\(normalized)\t\(scope)").inserted else { continue }
             parsed.append(temporary)
         }
 
