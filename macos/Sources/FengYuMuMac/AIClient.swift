@@ -2,9 +2,9 @@ import Foundation
 import Security
 
 struct AISettings: Equatable {
-    var provider = "豆包 2.0 Lite（推荐）"
+    var provider = "豆包 2.1 Lite（推荐）"
     var endpoint = "https://ark.cn-beijing.volces.com/api/v3/responses"
-    var model = "doubao-seed-2-0-lite-260215"
+    var model = "doubao-seed-2-1-lite-260915"
     var apiKey = ""
 
     var isReady: Bool {
@@ -12,7 +12,8 @@ struct AISettings: Equatable {
     }
 
     static let presets: [(name: String, endpoint: String, model: String)] = [
-        ("豆包 2.0 Lite（推荐）", "https://ark.cn-beijing.volces.com/api/v3/responses", "doubao-seed-2-0-lite-260215"),
+        ("豆包 2.1 Lite（推荐）", "https://ark.cn-beijing.volces.com/api/v3/responses", "doubao-seed-2-1-lite-260915"),
+        ("豆包 2.0 Lite（兼容旧配置）", "https://ark.cn-beijing.volces.com/api/v3/responses", "doubao-seed-2-0-lite-260215"),
         ("DeepSeek V4 Flash（快速）", "https://api.deepseek.com/v1/chat/completions", "deepseek-v4-flash"),
         ("智谱 GLM-4-Flash（备用）", "https://open.bigmodel.cn/api/paas/v4/chat/completions", "glm-4-flash-250414"),
         ("自定义兼容接口", "https://", "")
