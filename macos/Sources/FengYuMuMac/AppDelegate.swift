@@ -3,7 +3,7 @@ import Carbon
 import SwiftUI
 
 @MainActor
-final class AppDelegate: NSObject, NSApplicationDelegate {
+final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private let state = AppState()
     private var mainWindow: NSWindow!
     private var aiWindow: NSPanel!
@@ -42,8 +42,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // player clicks the Chinese input field so macOS input methods work correctly.
         aiWindow.styleMask = [.titled, .closable, .resizable, .utilityWindow]
         aiWindow.level = .floating
-        aiWindow.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+        aiWindow.isFloatingPanel = true
+        aiWindow.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .ignoresCycle]
+        aiWindow.hidesOnDeactivate = false
         aiWindow.isReleasedWhenClosed = false
+        aiWindow.delegate = self
         aiWindow.setContentSize(NSSize(width: 580, height: 430))
     }
 
@@ -54,7 +57,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let menu = NSMenu()
         menu.addItem(withTitle: "打开枫语幕", action: #selector(openMain), keyEquivalent: "")
         menu.addItem(withTitle: "识别/隐藏当前画面（F8）", action: #selector(toggleOverlay), keyEquivalent: "")
+        menu.addItem(withTitle: "重新寻找游戏窗口（F9）", action: #selector(realignGameWindow), keyEquivalent: "")
         menu.addItem(withTitle: "AI 实时聊天翻译（F10）", action: #selector(openAI), keyEquivalent: "")
+        menu.addItem(withTitle: "停止 AI 实时聊天", action: #selector(stopAI), keyEquivalent: "")
         menu.addItem(.separator())
         menu.addItem(withTitle: "退出", action: #selector(quit), keyEquivalent: "q")
         menu.items.forEach { $0.target = self }
@@ -82,8 +87,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         aiWindow.orderFrontRegardless()
     }
 
+    func windowWillClose(_ notification: Notification) {
+        guard let window = notification.object as? NSWindow, window === aiWindow else { return }
+        state.setChatMonitoring(false)
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        state.shutdown()
+    }
+
     @objc private func openMain() { showMainWindow() }
     @objc private func openAI() { showAIWindow() }
+    @objc private func stopAI() { state.setChatMonitoring(false) }
+    @objc private func realignGameWindow() { state.realignGameWindow() }
     @objc private func toggleOverlay() { state.toggleTranslation() }
     @objc private func quit() { NSApp.terminate(nil) }
 }

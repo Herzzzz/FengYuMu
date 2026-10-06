@@ -8,17 +8,32 @@ on:
       - "枫语幕词库.tsv"
       - ".github/workflows/macos-build.yml"
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: macos-26
     steps:
       - uses: actions/checkout@v4
+      - name: Verify installer and privacy invariants
+        run: |
+          zsh -n macos/首次安装.command macos/scripts/build-release.sh
+          ! grep -Eq 'com\.apple\.quarantine|codesign[[:space:]].*--sign|codesign[[:space:]].*--force' macos/首次安装.command
+          ! grep -Fq '/bin/rm -rf -- "${TARGET_APP}"' macos/首次安装.command
+          ! grep -Fq 'open "${TARGET_APP}"' macos/首次安装.command
+          grep -Fq 'gameWindows.filter' macos/Sources/FengYuMuMac/ScreenCaptureService.swift
+          grep -Fq 'application.bundleIdentifier' macos/Sources/FengYuMuMac/ScreenCaptureService.swift
+          grep -Fq 'hidesOnDeactivate = false' macos/Sources/FengYuMuMac/AppDelegate.swift
+          grep -Fq 'state.setChatMonitoring(false)' macos/Sources/FengYuMuMac/AppDelegate.swift
       - name: Test core and build arm64 app
         run: zsh macos/scripts/build-release.sh
       - name: Verify product
         run: |
           codesign --verify --deep --strict --verbose=2 macos/.build/product/枫语幕.app
           plutil -lint macos/.build/product/枫语幕.app/Contents/Info.plist
+          test "$(plutil -extract CFBundleVersion raw macos/.build/product/枫语幕.app/Contents/Info.plist)" = "32202"
+          test "$(plutil -extract LSMinimumSystemVersion raw macos/.build/product/枫语幕.app/Contents/Info.plist)" = "26.6.2"
           test "$(file macos/.build/product/枫语幕.app/Contents/MacOS/FengYuMuMac | grep -c arm64)" -eq 1
           test -s macos/.build/product/枫语幕.app/Contents/Resources/枫语幕词库.tsv
       - name: Launch app smoke test

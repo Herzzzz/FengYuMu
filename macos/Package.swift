@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "FengYuMuMac",
-    platforms: [.macOS("26.6")],
+    platforms: [.macOS("26.6.2")],
     products: [
         .library(name: "FengYuMuCore", targets: ["FengYuMuCore"]),
         .executable(name: "FengYuMuMac", targets: ["FengYuMuMac"])

@@ -10,15 +10,17 @@ struct CapturedGameWindow {
     let applicationName: String
 }
 
-enum CaptureError: LocalizedError {
+enum CaptureError: LocalizedError, Equatable {
     case permissionDenied
     case noWindow
+    case windowChanged
     case captureFailed
 
     var errorDescription: String? {
         switch self {
         case .permissionDenied: return "请先允许枫语幕使用“屏幕与系统音频录制”权限"
         case .noWindow: return "没有找到可识别的游戏窗口；请先打开并点击游戏"
+        case .windowChanged: return "游戏窗口已关闭或更换；请按 F9，点击游戏后再按 F8"
         case .captureFailed: return "游戏窗口截图失败，请重新点击游戏后再试"
         }
     }
@@ -26,6 +28,7 @@ enum CaptureError: LocalizedError {
 
 final class ScreenCaptureService {
     private var lastWindowID: CGWindowID?
+    private var lastProcessID: pid_t?
     private let ownPID = ProcessInfo.processInfo.processIdentifier
 
     var hasPermission: Bool { CGPreflightScreenCaptureAccess() }
@@ -38,11 +41,11 @@ final class ScreenCaptureService {
     func captureGameWindow() async throws -> CapturedGameWindow {
         guard hasPermission else { throw CaptureError.permissionDenied }
         let content = try await SCShareableContent.excludingDesktopWindows(true, onScreenWindowsOnly: true)
-        guard let window = selectWindow(from: content.windows) else { throw CaptureError.noWindow }
+        let window = try selectWindow(from: content.windows)
 
         let filter = SCContentFilter(desktopIndependentWindow: window)
         let configuration = SCStreamConfiguration()
-        let scale = backingScale(for: window.frame)
+        let scale = max(CGFloat(filter.pointPixelScale), 1)
         configuration.width = max(1, Int(window.frame.width * scale))
         configuration.height = max(1, Int(window.frame.height * scale))
         configuration.showsCursor = false
@@ -55,6 +58,7 @@ final class ScreenCaptureService {
             configuration: configuration
         )
         lastWindowID = window.windowID
+        lastProcessID = window.owningApplication?.processID
         return CapturedGameWindow(
             image: image,
             frame: window.frame,
@@ -63,35 +67,43 @@ final class ScreenCaptureService {
         )
     }
 
-    func resetWindowChoice() { lastWindowID = nil }
+    func resetWindowChoice() {
+        lastWindowID = nil
+        lastProcessID = nil
+    }
 
-    private func selectWindow(from windows: [SCWindow]) -> SCWindow? {
+    private func selectWindow(from windows: [SCWindow]) throws -> SCWindow {
         let usable = windows.filter {
             $0.isOnScreen && $0.frame.width >= 640 && $0.frame.height >= 480 &&
             $0.owningApplication?.processID != ownPID
         }
-        let frontPID = NSWorkspace.shared.frontmostApplication?.processIdentifier
-        if let front = usable.filter({ $0.owningApplication?.processID == frontPID })
-            .max(by: { area($0.frame) < area($1.frame) }) {
-            return front
+        let gameWords = [
+            "maplestory", "maple story", "maplestory worlds", "冒险岛",
+            "artale", "classic world", "mapleland", "maplelegends", "mapleroyals"
+        ]
+        let gameWindows = usable.filter { window in
+            guard let application = window.owningApplication else { return false }
+            let identity = (application.applicationName + " " + application.bundleIdentifier).lowercased()
+            return gameWords.contains(where: identity.contains)
         }
-        if let remembered = lastWindowID,
-           let window = usable.first(where: { $0.windowID == remembered }) {
+        if let remembered = lastWindowID, let rememberedPID = lastProcessID,
+           let window = gameWindows.first(where: {
+               $0.windowID == remembered && $0.owningApplication?.processID == rememberedPID
+           }) {
             return window
         }
-        let gameWords = ["maplestory", "maple story", "冒险岛", "artale", "classic world"]
-        if let game = usable.filter({ window in
-            let name = ((window.owningApplication?.applicationName ?? "") + " " + (window.title ?? "")).lowercased()
-            return gameWords.contains(where: name.contains)
-        }).max(by: { area($0.frame) < area($1.frame) }) {
+        if lastWindowID != nil || lastProcessID != nil {
+            throw CaptureError.windowChanged
+        }
+        let frontPID = NSWorkspace.shared.frontmostApplication?.processIdentifier
+        if let game = gameWindows.filter({ $0.owningApplication?.processID == frontPID })
+            .max(by: { area($0.frame) < area($1.frame) }) {
             return game
         }
-        return nil
-    }
-
-    private func backingScale(for frame: CGRect) -> CGFloat {
-        let cocoaFrame = Self.cocoaFrame(fromScreenCaptureFrame: frame)
-        return NSScreen.screens.first(where: { $0.frame.intersects(cocoaFrame) })?.backingScaleFactor ?? 2
+        if let game = gameWindows.max(by: { area($0.frame) < area($1.frame) }) {
+            return game
+        }
+        throw CaptureError.noWindow
     }
 
     private func area(_ rect: CGRect) -> CGFloat { rect.width * rect.height }

@@ -4,7 +4,7 @@ import FengYuMuCore
 
 @MainActor
 final class AppState: ObservableObject {
-    static let version = "3.2.2-mac.1"
+    static let version = "3.2.2-mac.2"
 
     @Published var status = "正在载入词库…"
     @Published var dictionaryCount = 0
@@ -44,6 +44,10 @@ final class AppState: ObservableObject {
                 if let count = self?.chatTranslations.count, count > 100 {
                     self?.chatTranslations.removeFirst(count - 80)
                 }
+            },
+            onFatalError: { [weak self] error in
+                self?.aiMonitorRunning = false
+                self?.status = error.localizedDescription
             }
         )
     }
@@ -85,6 +89,12 @@ final class AppState: ObservableObject {
                 overlay.show(lines: lines, store: store, mode: rangeMode, over: shot)
                 status = "已显示 \(hitCount) 处翻译 · \(shot.applicationName)"
             }
+        } catch let error as CaptureError {
+            overlay.hide()
+            if error == .windowChanged, continuousTranslation {
+                continuousTranslation = false
+            }
+            status = error.localizedDescription
         } catch {
             overlay.hide()
             status = error.localizedDescription
@@ -131,6 +141,14 @@ final class AppState: ObservableObject {
             aiMonitorRunning = false
             status = "AI 实时聊天翻译已停止"
         }
+    }
+
+    func shutdown() {
+        continuousTask?.cancel()
+        continuousTask = nil
+        chatMonitor.stop()
+        aiMonitorRunning = false
+        overlay.hide()
     }
 
     private func updateContinuousLoop() {

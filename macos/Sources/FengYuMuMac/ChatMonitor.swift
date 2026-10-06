@@ -16,6 +16,7 @@ final class ChatMonitor {
     private let client: AIClient
     private let settings: () -> AISettings
     private let onTranslation: (ChatTranslation) -> Void
+    private let onFatalError: (CaptureError) -> Void
     private var loop: Task<Void, Never>?
     private var seen: [String] = []
 
@@ -23,13 +24,15 @@ final class ChatMonitor {
 
     init(capture: ScreenCaptureService, ocr: OCRService, store: TranslationStore,
          client: AIClient, settings: @escaping () -> AISettings,
-         onTranslation: @escaping (ChatTranslation) -> Void) {
+         onTranslation: @escaping (ChatTranslation) -> Void,
+         onFatalError: @escaping (CaptureError) -> Void) {
         self.capture = capture
         self.ocr = ocr
         self.store = store
         self.client = client
         self.settings = settings
         self.onTranslation = onTranslation
+        self.onFatalError = onFatalError
     }
 
     func start() {
@@ -66,8 +69,17 @@ final class ChatMonitor {
                 )
                 onTranslation(ChatTranslation(source: source, translation: translated))
             }
+        } catch let error as CaptureError {
+            switch error {
+            case .permissionDenied, .windowChanged:
+                stop()
+                onFatalError(error)
+            case .noWindow, .captureFailed:
+                // The player may still be switching back to the game; retry without changing target.
+                break
+            }
         } catch {
-            // The next scan retries. Repeated permission/configuration errors are surfaced by the UI.
+            // Temporary OCR or network errors retry on the next scan.
         }
     }
 

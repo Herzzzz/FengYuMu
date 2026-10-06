@@ -10,7 +10,7 @@ APP_DIR="${PRODUCT_DIR}/枫语幕.app"
 CONTENTS_DIR="${APP_DIR}/Contents"
 MACOS_DIR="${CONTENTS_DIR}/MacOS"
 RESOURCES_DIR="${CONTENTS_DIR}/Resources"
-VERSION="3.2.2-mac.1"
+VERSION="3.2.2-mac.2"
 
 if [[ "$(uname -s)" != "Darwin" ]]; then
   print -u2 "只能在 Mac 上构建枫语幕 macOS 版。"
@@ -22,10 +22,10 @@ if [[ "$(uname -m)" != "arm64" ]]; then
 fi
 
 MAJOR_VERSION="$(sw_vers -productVersion | cut -d. -f1)"
-MINIMUM_VERSION="26.6"
+MINIMUM_VERSION="26.6.2"
 CURRENT_VERSION="$(sw_vers -productVersion)"
 if [[ "$(printf '%s\n%s\n' "${MINIMUM_VERSION}" "${CURRENT_VERSION}" | sort -V | head -n1)" != "${MINIMUM_VERSION}" ]]; then
-  print -u2 "需要 macOS 26.6 或以上版本。"
+  print -u2 "需要 macOS 26.6.2 或以上版本。"
   exit 1
 fi
 command -v swift >/dev/null || { print -u2 "找不到 Xcode/Swift，请先安装 Xcode 26。"; exit 1; }
