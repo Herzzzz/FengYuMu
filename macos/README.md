@@ -5,7 +5,7 @@
 ## 支持范围
 
 - Apple 芯片（arm64），当前验收基准为 MacBook Air M4。
-- macOS 26.0 或以上；不支持 Intel Mac 和旧 macOS。
+- macOS 26.6.2 或以上；不支持 Intel Mac 和旧 macOS。
 - Xcode 26 / Swift 5.9 语言模式或以上。
 
 ## 已实现链路
@@ -26,7 +26,7 @@ cd macos
 zsh scripts/build-release.sh
 ```
 
-脚本会先运行核心测试，再以 arm64 Release 模式构建、组装 `.app`、验证代码签名并生成 DMG 和 SHA-256。没有 `DEVELOPER_ID_APPLICATION` 时生成本机临时签名内测包；设置该变量时使用 Developer ID 正式签名。
+脚本会先运行核心测试和真实冒险岛截图的 Vision OCR 自测，再以 arm64 Release 模式构建、组装 `.app`、验证代码签名并生成 DMG 和 SHA-256。没有 `DEVELOPER_ID_APPLICATION` 时生成本机临时签名内测包；设置该变量时使用 Developer ID 正式签名。
 
 ## 发布前必须完成的实机验收
 

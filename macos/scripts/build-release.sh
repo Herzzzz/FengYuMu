@@ -22,8 +22,10 @@ if [[ "$(uname -m)" != "arm64" ]]; then
 fi
 
 MAJOR_VERSION="$(sw_vers -productVersion | cut -d. -f1)"
-if (( MAJOR_VERSION < 26 )); then
-  print -u2 "需要 macOS 26.0 或以上版本。"
+MINIMUM_VERSION="26.6"
+CURRENT_VERSION="$(sw_vers -productVersion)"
+if [[ "$(printf '%s\n%s\n' "${MINIMUM_VERSION}" "${CURRENT_VERSION}" | sort -V | head -n1)" != "${MINIMUM_VERSION}" ]]; then
+  print -u2 "需要 macOS 26.6 或以上版本。"
   exit 1
 fi
 command -v swift >/dev/null || { print -u2 "找不到 Xcode/Swift，请先安装 Xcode 26。"; exit 1; }
@@ -31,6 +33,9 @@ command -v swift >/dev/null || { print -u2 "找不到 Xcode/Swift，请先安装
 cd "${MAC_DIR}"
 swift test
 swift build -c release --arch arm64
+
+"${BUILD_DIR}/arm64-apple-macosx/release/FengYuMuMac" --fixture-self-test \
+  "${REPO_DIR}/枫语幕词库.tsv" "${REPO_DIR}/tests/fixtures/public-v3/quest-dr-kim.png"
 
 rm -rf "${PRODUCT_DIR}"
 mkdir -p "${MACOS_DIR}" "${RESOURCES_DIR}"

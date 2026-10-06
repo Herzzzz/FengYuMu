@@ -14,7 +14,11 @@ if [[ ! -d "${SOURCE_APP}" ]]; then
 fi
 
 mkdir -p "${TARGET_ROOT}"
-rm -rf "${TARGET_APP}"
+if [[ "${TARGET_APP}" != "${HOME}/Applications/枫语幕.app" ]]; then
+  osascript -e 'display alert "安装位置校验失败" message "为保护文件，安装已经停止。" as critical'
+  exit 1
+fi
+/bin/rm -rf -- "${TARGET_APP}"
 ditto "${SOURCE_APP}" "${TARGET_APP}"
 xattr -dr com.apple.quarantine "${TARGET_APP}" 2>/dev/null || true
 codesign --force --deep --sign - "${TARGET_APP}"

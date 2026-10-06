@@ -21,7 +21,7 @@
     <key>CFBundleVersion</key>
     <string>32201</string>
     <key>LSMinimumSystemVersion</key>
-    <string>26.0</string>
+    <string>26.6</string>
     <key>LSApplicationCategoryType</key>
     <string>public.app-category.utilities</string>
     <key>NSHighResolutionCapable</key>
