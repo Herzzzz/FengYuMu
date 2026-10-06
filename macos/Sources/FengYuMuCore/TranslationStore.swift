@@ -98,7 +98,7 @@ public final class TranslationStore: @unchecked Sendable {
                 normalized: normalized, source: source, region: region
             )
             let scope = temporary.taskID ?? (temporary.isLongText ? category : "general")
-            guard seen.insert("\(normalized)\t\(scope)").inserted else { continue }
+            guard seen.insert("\(normalized)\t\(scope)\t\(chinese)").inserted else { continue }
             parsed.append(temporary)
         }
 
@@ -188,7 +188,8 @@ public final class TranslationStore: @unchecked Sendable {
 
     public static func normalize(_ value: String) -> String {
         let corrected: [String: String] = [
-            "ouest": "quest", "ojest": "quest", "lerve": "leave", "pethils": "details",
+            "ouest": "quest", "ojest": "quest", "jest": "quest", "uest": "quest",
+            "lerve": "leave", "pethils": "details",
             "reo": "req", "aeq": "req", "attacx": "attack", "torget": "forget",
             "tun": "fun", "wont": "won't", "cant": "can't", "dont": "don't",
             "ive": "i've", "thankyou": "thank you"
@@ -211,8 +212,6 @@ public final class TranslationStore: @unchecked Sendable {
             if !clean.isEmpty { tokens.append(corrected[clean] ?? clean) }
         }
         return tokens.joined(separator: " ")
-            .replacingOccurrences(of: "jest helper", with: "quest helper")
-            .replacingOccurrences(of: "uest helper", with: "quest helper")
     }
 
     private static func polishChinese(_ value: String) -> String {
