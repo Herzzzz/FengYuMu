@@ -57,17 +57,11 @@ struct AIWindowView: View {
                                 .foregroundStyle(.secondary).padding(.top, 18)
                         }
                         ForEach(app.chatTranslations) { item in
-                            VStack(alignment: .leading, spacing: 3) {
-                                Text(item.source).font(.caption).foregroundStyle(.secondary)
-                                Text(item.translation).font(.body.weight(.medium))
-                            }
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(8).background(Color.white.opacity(0.06)).clipShape(RoundedRectangle(cornerRadius: 5))
-                            .id(item.id)
+                            ChatTranslationRow(item: item)
                         }
                     }.padding(12)
                 }
-                .onChange(of: app.chatTranslations.count) { _ in
+                .onChange(of: app.chatTranslations.count) {
                     if let id = app.chatTranslations.last?.id { withAnimation { proxy.scrollTo(id, anchor: .bottom) } }
                 }
             }
@@ -92,5 +86,24 @@ struct AIWindowView: View {
         .frame(minWidth: 500, minHeight: 360)
         .background(Color(red: 0.08, green: 0.11, blue: 0.14).opacity(0.96))
         .preferredColorScheme(.dark)
+    }
+}
+
+private struct ChatTranslationRow: View {
+    let item: ChatTranslation
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 3) {
+            Text(item.source)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Text(item.translation)
+                .font(.body.weight(.medium))
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(8)
+        .background(Color.white.opacity(0.06))
+        .clipShape(RoundedRectangle(cornerRadius: 5))
+        .id(item.id)
     }
 }

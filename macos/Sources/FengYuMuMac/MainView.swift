@@ -91,7 +91,7 @@ private struct AISettingsView: View {
             Picker("服务商", selection: $draft.provider) {
                 ForEach(AISettings.presets, id: \.name) { preset in Text(preset.name).tag(preset.name) }
             }
-            .onChange(of: draft.provider) { selected in
+            .onChange(of: draft.provider) { _, selected in
                 if let preset = AISettings.presets.first(where: { $0.name == selected }) {
                     draft.endpoint = preset.endpoint; draft.model = preset.model
                 }

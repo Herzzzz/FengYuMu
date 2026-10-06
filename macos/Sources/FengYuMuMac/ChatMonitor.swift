@@ -1,5 +1,6 @@
 import CoreGraphics
 import FengYuMuCore
+import Foundation
 
 struct ChatTranslation: Identifiable, Equatable {
     let id = UUID()
