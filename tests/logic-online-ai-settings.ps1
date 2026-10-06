@@ -12,9 +12,9 @@ $provider = [string]$settingsType.GetField('Provider', $all).GetValue($settings)
 $endpoint = [string]$settingsType.GetField('Endpoint', $all).GetValue($settings)
 $model = [string]$settingsType.GetField('Model', $all).GetValue($settings)
 $ready = [bool]$settingsType.GetProperty('IsReady', $all).GetValue($settings, $null)
-if ($provider -ne '豆包 2.0 Lite（推荐）' -or
+if ($provider -ne '豆包 2.1 Lite（推荐）' -or
     $endpoint -ne 'https://ark.cn-beijing.volces.com/api/v3/responses' -or
-    $model -ne 'doubao-seed-2-0-lite-260215' -or $ready) {
+    $model -ne 'doubao-seed-2-1-lite-260915' -or $ready) {
     throw '联网AI默认服务、接口、模型或未填Key状态不正确'
 }
 $settingsType.GetField('ApiKey', $all).SetValue($settings, 'test-key')
@@ -24,18 +24,25 @@ if (-not [bool]$settingsType.GetProperty('IsReady', $all).GetValue($settings, $n
 
 $presets = @($presetType.GetField('All', $all).GetValue($null))
 $presetNames = @($presets | ForEach-Object { [string]$_.GetType().GetField('Name', $all).GetValue($_) })
-foreach ($required in @('豆包 2.0 Lite（推荐）','DeepSeek V4 Flash（快速）','智谱 GLM-4-Flash（免费备用）','自定义兼容接口')) {
+foreach ($required in @('豆包 2.1 Lite（推荐）','豆包 2.0 Lite（兼容旧配置）','DeepSeek V4 Flash（快速）','智谱 GLM-4-Flash（免费备用）','自定义兼容接口')) {
     if ($presetNames -notcontains $required) { throw "联网AI服务缺少：$required" }
+}
+$doubao21 = $presets | Where-Object { [string]$_.GetType().GetField('Name', $all).GetValue($_) -eq '豆包 2.1 Lite（推荐）' } | Select-Object -First 1
+$doubao21Endpoint = [string]$doubao21.GetType().GetField('Endpoint', $all).GetValue($doubao21)
+$doubao21Model = [string]$doubao21.GetType().GetField('Model', $all).GetValue($doubao21)
+if ($doubao21Endpoint -ne 'https://ark.cn-beijing.volces.com/api/v3/responses' -or
+    $doubao21Model -ne 'doubao-seed-2-1-lite-260915') {
+    throw '选择豆包 2.1 Lite 后没有自动填入正确接口地址和模型名称'
 }
 
 $build = $clientType.GetMethod('BuildRequestBody', $all)
 $describeHttp = $clientType.GetMethod('DescribeHttpFailure', $all)
-$badKey = [string]$describeHttp.Invoke($null, [object[]]@(401, '', '豆包 2.0 Lite（推荐）'))
+$badKey = [string]$describeHttp.Invoke($null, [object[]]@(401, '', '豆包 2.1 Lite（推荐）'))
 $noModel = [string]$describeHttp.Invoke($null, [object[]]@(403,
-    '{"error":{"code":"PermissionDenied"}}', '豆包 2.0 Lite（推荐）'))
+    '{"error":{"code":"PermissionDenied"}}', '豆包 2.1 Lite（推荐）'))
 $notOpen = [string]$describeHttp.Invoke($null, [object[]]@(404,
-    '{"error":{"code":"ModelNotOpen"}}', '豆包 2.0 Lite（推荐）'))
-$noQuota = [string]$describeHttp.Invoke($null, [object[]]@(429, '', '豆包 2.0 Lite（推荐）'))
+    '{"error":{"code":"ModelNotOpen"}}', '豆包 2.1 Lite（推荐）'))
+$noQuota = [string]$describeHttp.Invoke($null, [object[]]@(429, '', '豆包 2.1 Lite（推荐）'))
 if (-not $badKey.Contains('不要填 Access Key 或 Secret Key') -or
     -not $noModel.Contains('模型未开通') -or
     -not $noModel.Contains('PermissionDenied') -or

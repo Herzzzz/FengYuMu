@@ -27,6 +27,9 @@ final class AISettingsStore {
     func load() -> AISettings {
         var value = AISettings()
         value.provider = defaults.string(forKey: "AIProvider") ?? value.provider
+        if value.provider == "豆包 2.0 Lite（推荐）" {
+            value.provider = "豆包 2.0 Lite（兼容旧配置）"
+        }
         value.endpoint = defaults.string(forKey: "AIEndpoint") ?? value.endpoint
         value.model = defaults.string(forKey: "AIModel") ?? value.model
         value.apiKey = keychain.read(account: "online-ai-key") ?? ""

@@ -97,9 +97,9 @@ namespace MapleOverlay
 
     internal sealed class OnlineAiSettings
     {
-        public const string DefaultProvider = "豆包 2.0 Lite（推荐）";
+        public const string DefaultProvider = "豆包 2.1 Lite（推荐）";
         public const string DefaultEndpoint = "https://ark.cn-beijing.volces.com/api/v3/responses";
-        public const string DefaultModel = "doubao-seed-2-0-lite-260215";
+        public const string DefaultModel = "doubao-seed-2-1-lite-260915";
         public string Provider = DefaultProvider;
         public string Endpoint = DefaultEndpoint;
         public string Model = DefaultModel;
@@ -123,6 +123,8 @@ namespace MapleOverlay
                 value.Model = Convert.ToString(key.GetValue("Model", DefaultModel));
                 object storedProvider = key.GetValue("Provider", null);
                 value.Provider = Convert.ToString(storedProvider);
+                if (String.Equals(value.Provider, "豆包 2.0 Lite（推荐）", StringComparison.Ordinal))
+                    value.Provider = "豆包 2.0 Lite（兼容旧配置）";
                 if (value.Provider.Length == 0)
                 {
                     bool legacyCustom = !String.Equals(value.Endpoint, DefaultEndpoint,
@@ -183,6 +185,13 @@ namespace MapleOverlay
                 Model = OnlineAiSettings.DefaultModel,
                 ApplyUrl = "https://console.volcengine.com/ark",
                 PlainHint = "国内连接通常快，短句效果和费用比较均衡；需要火山方舟账号并开通模型。"
+            },
+            new OnlineAiPreset {
+                Name = "豆包 2.0 Lite（兼容旧配置）",
+                Endpoint = OnlineAiSettings.DefaultEndpoint,
+                Model = "doubao-seed-2-0-lite-260215",
+                ApplyUrl = "https://console.volcengine.com/ark",
+                PlainHint = "供已经开通豆包 2.0 Lite 的用户继续使用；新用户优先选择豆包 2.1 Lite。"
             },
             new OnlineAiPreset {
                 Name = "DeepSeek V4 Flash（快速）",
@@ -312,7 +321,7 @@ namespace MapleOverlay
             string suffix = ExtractSafeErrorCode(responseText);
             if (lower.Contains("modelnotopen") || lower.Contains("model_not_open") ||
                 lower.Contains("model not open"))
-                return "API Key 已通过验证，但账号还没开通所选模型。点上面的“打开申请页面”→“开通管理”→选择并开通豆包 Seed 2.0 Lite，等一两分钟再测试。" + suffix;
+                return "API Key 已通过验证，但账号还没开通所选模型。点上面的“打开申请页面”→“开通管理”→选择并开通当前填写的豆包模型，等一两分钟再测试。" + suffix;
             if (statusCode == 401)
                 return "API Key 不对或复制不完整。请在" + service +
                     "的“API Key 管理”重新创建；不要填 Access Key 或 Secret Key。" + suffix;
