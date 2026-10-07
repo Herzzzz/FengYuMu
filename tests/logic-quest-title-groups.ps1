@@ -99,9 +99,9 @@ foreach ($spec in $groupTitles) {
 
 $tasks = @(
     @{ Id = '80026'; English = 'Welcome to the Free Market!'; Chinese = '欢迎来到自由市场！'; Description = "Lewis in the Free Market Entrance is looking for an adventurer to help him. It seems the Free Market can be accessed through Henesys or Perion. Lewis in the Free Market Entrance asked me to deliver a letter to Chief Stan in Henesys to help revitalize the Free Market. I delivered Lewis's letter to Chief Stan in Henesys." },
-    @{ Id = '80027'; English = "Chief Stan's Reply"; Chinese = '长老斯坦的回信'; Description = "Chief Stan in Henesys seems to want to send a reply to Lewis in the Free Market Entrance. Chief Stan in Henesys asked me to deliver a reply to Lewis in the Free Market Entrance. I delivered Chief Stan's letter to Lewis in the Free Market Entrance." },
+    @{ Id = '80027'; English = "Chief Stan's Reply"; Chinese = '长老斯坦的回复'; Description = "Chief Stan in Henesys seems to want to send a reply to Lewis in the Free Market Entrance. Chief Stan in Henesys asked me to deliver a reply to Lewis in the Free Market Entrance. I delivered Chief Stan's letter to Lewis in the Free Market Entrance." },
     @{ Id = '80028'; English = 'Asking Perion for Help'; Chinese = '向勇士部落求助'; Description = "Lewis in the Free Market Entrance seems to have another favor. This time, Lewis in the Free Market Entrance asked me to deliver a letter to Dances with Balrog in Perion. I delivered Lewis's letter to Dances with Balrog in Perion." },
-    @{ Id = '80029'; English = "Dances with Balrog's Reply"; Chinese = '武术教练的回信'; Description = "Dances with Balrog in Perion seems to want to send a reply to Lewis in the Free Market Entrance. Dances with Balrog in Perion asked me to deliver a reply to Lewis in the Free Market Entrance. I delivered Dances with Balrog's letter to Lewis in the Free Market Entrance." }
+    @{ Id = '80029'; English = "Dances with Balrog's Reply"; Chinese = '武术教练的回复'; Description = "Dances with Balrog in Perion seems to want to send a reply to Lewis in the Free Market Entrance. Dances with Balrog in Perion asked me to deliver a reply to Lewis in the Free Market Entrance. I delivered Dances with Balrog's letter to Lewis in the Free Market Entrance." }
 )
 
 foreach ($spec in $tasks) {

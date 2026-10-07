@@ -100,7 +100,7 @@ foreach ($anchor in @('quest', 'available', 'in progress', 'completed')) {
 }
 
 # The Quest window itself must still be translated.
-foreach ($expected in @('任务', '可接取', '进行中', '已完成', '向废弃都市捐赠')) {
+foreach ($expected in @('任务', '可接取', '进行中', '已完成', '捐助废弃都市')) {
     if ($labels -notcontains $expected) {
         throw "任务窗口自身译文缺失：$expected（实际：$($labels -join ', ')）"
     }

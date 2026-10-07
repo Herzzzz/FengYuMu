@@ -10,7 +10,7 @@ APP_DIR="${PRODUCT_DIR}/枫语幕.app"
 CONTENTS_DIR="${APP_DIR}/Contents"
 MACOS_DIR="${CONTENTS_DIR}/MacOS"
 RESOURCES_DIR="${CONTENTS_DIR}/Resources"
-VERSION="3.2.2-mac.2"
+VERSION="3.2.3-mac.1"
 
 if [[ "$(uname -s)" != "Darwin" ]]; then
   print -u2 "只能在 Mac 上构建枫语幕 macOS 版。"

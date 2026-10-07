@@ -33,7 +33,7 @@ $taskChinese = @($taskMatches | ForEach-Object {
     $entry = $_.GetType().GetField('Entry').GetValue($_)
     $entry.GetType().GetField('Chinese').GetValue($entry)
 })
-if (-not ($taskChinese -contains '比格斯的物品收集')) {
+if (-not ($taskChinese -contains '比格斯的收集品')) {
     throw '多任务列表中的非当前任务标题被上下文吞掉'
 }
 

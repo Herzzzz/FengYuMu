@@ -44,8 +44,8 @@ $taskChinese = @($taskMatches | ForEach-Object {
     $entry = $_.GetType().GetField('Entry').GetValue($_)
     $entry.GetType().GetField('Chinese').GetValue($entry)
 })
-if (-not ($taskChinese -contains '萨姆的建议')) {
-    throw "任务名没有按资料库译为萨姆的建议：$($taskChinese -join ' | ')"
+if (-not ($taskChinese -contains '叁的建议')) {
+    throw "任务名没有按资料库译为叁的建议：$($taskChinese -join ' | ')"
 }
 
 $source = Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -Encoding UTF8

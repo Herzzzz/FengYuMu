@@ -1,6 +1,6 @@
 # 枫语幕 macOS 原生版
 
-这是 Windows v3.2.2 的原生 macOS 移植工程。它复用仓库根目录的完整 TSV 词库，使用 ScreenCaptureKit 截取游戏窗口、Vision 做英文 OCR、独立透明 `NSPanel` 覆盖中文，不读取或修改游戏进程。
+这是 Windows v3.2.3 的原生 macOS 移植工程。它复用仓库根目录的完整 TSV 词库，使用 ScreenCaptureKit 截取游戏窗口、Vision 做英文 OCR、独立透明 `NSPanel` 覆盖中文，不读取或修改游戏进程。
 
 ## 支持范围
 

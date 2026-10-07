@@ -1,4 +1,4 @@
-﻿# 枫语幕词库 2.1 - 冒险岛国际怀旧服专用（常规＋完整任务文本＋当前技能逐级效果＋装备/物品详情）
+# 枫语幕词库 2.1 - 冒险岛国际怀旧服专用（常规＋完整任务文本＋当前技能逐级效果＋装备/物品详情）
 # 补全版本：2.1.0（界面分区＋悬停详情整块翻译＋分类分页；聊天短语优先、AI负责语境润色）
 # 更新日期：2026-08-17
 # 主数据：https://mxdgcw.dvg.cn/（当前GCW资料ID与中英文名）
@@ -45,7 +45,7 @@ Accept	接受	怀旧服-界面
 Decline	拒绝	怀旧服-界面
 Next	下一步	怀旧服-界面
 Back	返回	怀旧服-界面
-Exit	退出	怀旧服-界面
+Exit	出口	怀旧服-界面
 Options	选项	怀旧服-界面
 World Map	世界地图	怀旧服-界面
 Mini Map	小地图	怀旧服-界面
@@ -163,34 +163,34 @@ Steal	偷窃术	怀旧服-技能#4201002	9a8eb7b3b39382f8
 Savage Blow	六连斩	怀旧服-技能#4201003	ca55b72c25333bac
 Borrowing Sera's Mirror	借来莎丽的镜子	怀旧服-任务#1000		冒险岛 · 彩虹岛
 Bringing a Mirror to Heena	给希娜弄来镜子	怀旧服-任务#1001		冒险岛 · 彩虹岛
-Roger's Apple	罗杰和苹果	怀旧服-任务#1002		冒险岛 · 彩虹岛
+Roger's Apple	罗杰的苹果	怀旧服-任务#1002		冒险岛 · 彩虹岛
 What Sen wants to eat	珊想吃的是什么？	怀旧服-任务#1003		冒险岛 · 彩虹岛
 Returning to Nina	回到妮娜的住所	怀旧服-任务#1004		冒险岛 · 彩虹岛
 Todd's How-to-Hunt	透德的打猎方法	怀旧服-任务#1005		冒险岛 · 彩虹岛
-Sam's Suggestion	萨姆的建议	怀旧服-任务#1006		冒险岛 · 彩虹岛
-Letter for Lucas	给卢卡斯的信	怀旧服-任务#1007		冒险岛 · 彩虹岛
+Sam's Suggestion	叁的建议	怀旧服-任务#1006		冒险岛 · 彩虹岛
+Letter for Lucas	传递信件	怀旧服-任务#1007		冒险岛 · 彩虹岛
 Lucas' Reply	长老的回信	怀旧服-任务#1008		冒险岛 · 彩虹岛
 Mai's Training	麦加的锻炼	怀旧服-任务#1009		冒险岛 · 彩虹岛
 Mai's Final Training	麦加的最后锻炼	怀旧服-任务#1010		冒险岛 · 彩虹岛
-Biggs's Collection of Items	比格斯的物品收集	怀旧服-任务#1011		冒险岛 · 彩虹岛
+Biggs's Collection of Items	比格斯的收集品	怀旧服-任务#1011		冒险岛 · 彩虹岛
 Pio's Collecting Recycled Goods	皮奥的垃圾回收	怀旧服-任务#1012		冒险岛 · 彩虹岛
-Rain's Maple Quiz 1	瑞恩的冒险岛问答1	怀旧服-任务#1013		冒险岛 · 彩虹岛
-Rain's Maple Quiz 2	瑞恩的冒险岛问答2	怀旧服-任务#1014		冒险岛 · 彩虹岛
-Rain's Maple Quiz 3	瑞恩的冒险岛问答3	怀旧服-任务#1015		冒险岛 · 彩虹岛
-Rain's Maple Quiz 4	瑞恩的冒险岛问答4	怀旧服-任务#1016		冒险岛 · 彩虹岛
-Rain's Maple Quiz 5	瑞恩的冒险岛问答5	怀旧服-任务#1017		冒险岛 · 彩虹岛
-Rain's Maple Quiz 6	瑞恩的冒险岛问答6	怀旧服-任务#1018		冒险岛 · 彩虹岛
-Rain's Maple Quiz 7	瑞恩的冒险岛问答7	怀旧服-任务#1019		冒险岛 · 彩虹岛
-Olaf's First Training	奥拉夫的训练	怀旧服-任务#10000		维多利亚岛
+Rain's Maple Quiz 1	瑞恩的枫叶问答1	怀旧服-任务#1013		冒险岛 · 彩虹岛
+Rain's Maple Quiz 2	瑞恩的枫叶问答2	怀旧服-任务#1014		冒险岛 · 彩虹岛
+Rain's Maple Quiz 3	瑞恩的枫叶问答3	怀旧服-任务#1015		冒险岛 · 彩虹岛
+Rain's Maple Quiz 4	瑞恩的枫叶问答4	怀旧服-任务#1016		冒险岛 · 彩虹岛
+Rain's Maple Quiz 5	瑞恩的枫叶问答5	怀旧服-任务#1017		冒险岛 · 彩虹岛
+Rain's Maple Quiz 6	瑞恩的枫叶问答6	怀旧服-任务#1018		冒险岛 · 彩虹岛
+Rain's Maple Quiz 7	瑞恩的枫叶问答7	怀旧服-任务#1019		冒险岛 · 彩虹岛
+Olaf's First Training	坤的训练	怀旧服-任务#10000		维多利亚岛
 Phil’s Call	菲尔的召唤	怀旧服-任务#10001		维多利亚岛
-Jane and the Mushroom	珍和蘑菇	怀旧服-任务#10002		维多利亚岛
+Jane and the Mushroom	简和蘑菇	怀旧服-任务#10002		维多利亚岛
 Jane's First Challenge	简的第一次挑战	怀旧服-任务#10003		维多利亚岛
 Jane's Second Challenge	简的第二次挑战	怀旧服-任务#10004		维多利亚岛
 Jane's Final Challenge	简的最后挑战	怀旧服-任务#10005		维多利亚岛
 [Deep Forest of Patience] John's Pink Flower Basket	【忍耐之林】约翰的粉色花篮	怀旧服-任务#10006		维多利亚岛
 [Deep Forest of Patience] John's Present	【忍耐之林】约翰的礼物	怀旧服-任务#10007		维多利亚岛
 [Deep Forest of Patience] John's Last Present	【忍耐之林】约翰最后的礼物	怀旧服-任务#10008		维多利亚岛
-Olaf's Second Training	奥拉夫的第二次训练	怀旧服-任务#10009		维多利亚岛
+Olaf's Second Training	坤的第二次训练	怀旧服-任务#10009		维多利亚岛
 Teo's Weird Hobby	特奥奇怪的爱好	怀旧服-任务#10010		维多利亚岛
 Teo's Even Weirder Hobby	特奥更奇怪的爱好	怀旧服-任务#10011		维多利亚岛
 Mrs. Ming Ming's First Worry	明明女士的第一个担心	怀旧服-任务#10100		射手村
@@ -199,19 +199,19 @@ Estelle's Request	胡小姐的拜托	怀旧服-任务#10102		射手村
 Estelle's Special Sauce	胡小姐的特制酱油	怀旧服-任务#10103		射手村
 Pia and the Blue Mushroom	皮亚和蓝蘑菇	怀旧服-任务#10104		射手村
 Camila's Gem	卡米拉的玻璃珠	怀旧服-任务#10105		射手村
-Maya of Henesys	射手村的玛雅	怀旧服-任务#10106		射手村
-Finding Sophia	找素菲亚	怀旧服-任务#10107		射手村
-Making a Sparkling Rock	闪耀石头的材料	怀旧服-任务#10108		射手村
+Maya of Henesys	射手村的玛亚	怀旧服-任务#10106		射手村
+Finding Sophia	找索非亚	怀旧服-任务#10107		射手村
+Making a Sparkling Rock	闪耀的石头的材料	怀旧服-任务#10108		射手村
 Arcon's Blood?	变异蘑菇的血1	怀旧服-任务#10109		射手村
 Getting Arcon's Blood	变异蘑菇的血2	怀旧服-任务#10110		射手村
 Making Sparkling Rock	制作闪耀的石头	怀旧服-任务#10111		射手村
 Delivering the Weird Medicine	送奇怪的药	怀旧服-任务#10112		射手村
 Luke the Security Guy	迷宫入口的守卫兵，鲁克	怀旧服-任务#10113		射手村
-Luke the Security Guy's Wish to Travel	警卫卢克想去旅行	怀旧服-任务#10114		射手村
-Maya's First Collection	玛雅的第一次收集	怀旧服-任务#10115		射手村
-Maya's Second Collection	玛雅的第二次收集	怀旧服-任务#10116		射手村
-Maya's Third Collection	玛雅的第三次收集	怀旧服-任务#10117		射手村
-Maya's Last Collection	玛雅最后的收集	怀旧服-任务#10118		射手村
+Luke the Security Guy's Wish to Travel	警卫鲁克想去旅行	怀旧服-任务#10114		射手村
+Maya's First Collection	玛亚的第一次收集	怀旧服-任务#10115		射手村
+Maya's Second Collection	玛亚的第二次收集	怀旧服-任务#10116		射手村
+Maya's Third Collection	玛亚的第三次收集	怀旧服-任务#10117		射手村
+Maya's Last Collection	玛亚最后的收集	怀旧服-任务#10118		射手村
 Pia's Present For a Friend	为朋友的礼物	怀旧服-任务#10119		射手村
 Looking for the Red Cape	找回红色披风	怀旧服-任务#10120		射手村
 What Pia has Borrowed	皮亚借的物品	怀旧服-任务#10121		射手村
@@ -235,10 +235,10 @@ How to Enjoy Mushrooms Even More	蘑菇更美味的吃法	怀旧服-任务#10212
 Alex's Request	阿勒斯的拜托	怀旧服-任务#10300		废弃都市
 Talking to Stan	说服长老斯坦	怀旧服-任务#10301		废弃都市
 Mother's Gold Watch	母亲的金表	怀旧服-任务#10302		废弃都市
-Don Hwang's Request	防具店老板的拜托	怀旧服-任务#10303		废弃都市
+Don Hwang's Request	玛帕的拜托	怀旧服-任务#10303		废弃都市
 Shumi's Request	休咪的拜托	怀旧服-任务#10304		废弃都市
 Andre's Request	安德里亚的拜托	怀旧服-任务#10305		废弃都市
-Dr. Faymus's Request	药店老板的拜托	怀旧服-任务#10306		废弃都市
+Dr. Faymus's Request	铭仁的拜托	怀旧服-任务#10306		废弃都市
 Chris's Request	克利思	怀旧服-任务#10307		废弃都市
 Cutthroat Manny's Request	曼斯塔的拜托	怀旧服-任务#10308		废弃都市
 Stranger's Request	陌生女人的拜托	怀旧服-任务#10309		废弃都市
@@ -256,9 +256,9 @@ The Ingredients for the Flying Pill	飞天药水的材料	怀旧服-任务#10320
 Delivering the Flying Pill	传达飞天药水	怀旧服-任务#10321		废弃都市
 Fixing Blackbull's House	酋长的家修理	怀旧服-任务#10400		勇士部落
 Building a New House For Blackbull	酋长盖房子	怀旧服-任务#10401		勇士部落
-Old Gladius	旧军刀	怀旧服-任务#10402		勇士部落
-Reawakening the Gladius	军刀的重新觉醒	怀旧服-任务#10403		勇士部落
-Hero's Gladius	英雄的战剑	怀旧服-任务#10404		勇士部落
+Old Gladius	旧战剑	怀旧服-任务#10402		勇士部落
+Reawakening the Gladius	战剑的重新觉醒	怀旧服-任务#10403		勇士部落
+Hero's Gladius	英雄战剑	怀旧服-任务#10404		勇士部落
 Searching for Fossils	要找化石。。。	怀旧服-任务#10405		勇士部落
 Delivering a Box of Fossils	运送一箱化石	怀旧服-任务#10406		勇士部落
 Research on Plant Fossils	植物化石研究	怀旧服-任务#10407		勇士部落
@@ -268,15 +268,15 @@ Progress on Fossil Research	化石研究成果	怀旧服-任务#10410		勇士部
 The Stump Horror Story	木妖好可怕	怀旧服-任务#10411		勇士部落
 Taking Out the Alligators 1	消灭鳄鱼1	怀旧服-任务#10412		勇士部落
 Taking Out the Alligators 2	消灭鳄鱼2	怀旧服-任务#10413		勇士部落
-A Clue to the Secret Book	秘密之书	怀旧服-任务#10500		林中之城
+A Clue to the Secret Book	神秘书的线索	怀旧服-任务#10500		林中之城
 Hungry Ronnie	肚子饿得洛尼	怀旧服-任务#10501		林中之城
-Still Hungry Ronnie	还是很饿的罗尼	怀旧服-任务#10502		林中之城
+Still Hungry Ronnie	还是很饿的洛尼	怀旧服-任务#10502		林中之城
 Secret to Unagi Special	特制烤鳗鱼的秘密	怀旧服-任务#10503		林中之城
 Rina’s Unagi Special	丽娜的鳗鱼特餐	怀旧服-任务#10504		林中之城
-Thirsty Ronnie	口渴的罗尼	怀旧服-任务#10505		林中之城
+Thirsty Ronnie	口渴的洛尼	怀旧服-任务#10505		林中之城
 Cold Milk	牛奶	怀旧服-任务#10506		林中之城
-Satisfied Ronnie	心满意足的罗尼	怀旧服-任务#10507		林中之城
-Returned Secret Book	秘密之书回收	怀旧服-任务#10508		林中之城
+Satisfied Ronnie	心满意足的洛尼	怀旧服-任务#10507		林中之城
+Returned Secret Book	神秘书回收	怀旧服-任务#10508		林中之城
 [Forest of Patience] Sabitrama and the Diet Medicine	【忍耐之林】萨比特拉玛和减肥药	怀旧服-任务#10509		林中之城
 [Forest of Patience] Sabitrama's Anti-Aging Medicine	【忍耐之林】萨比特拉玛的不老药	怀旧服-任务#10510		林中之城
 Zelya's Map	泽莉娅的地图	怀旧服-任务#10600		遗忘山谷
@@ -297,30 +297,30 @@ The Bowman's Next Journey	弓箭手的下一段旅程	怀旧服-任务#20200		�
 The Thief's Next Journey	飞侠的下一段旅程	怀旧服-任务#20300		飞侠转职
 Mar the Fairy and the Water of Life	妖精“玛尔”和生命之水	怀旧服-任务#80000		魔法密林
 Make a Match Cards Set	制作记忆卡套组	怀旧服-任务#80001		射手村
-Make a Slime & Mushroom Omok Set	制作绿水灵与蘑菇五子棋套组	怀旧服-任务#80002		射手村
-Make a Slime & Pig Omok Set	制作绿水灵与猪五子棋套组	怀旧服-任务#80003		射手村
-Make a Slime & Octopus Omok Set	制作绿水灵与章鱼五子棋套组	怀旧服-任务#80004		射手村
-Make a Pig & Mushroom Omok Set	制作猪与蘑菇五子棋套组	怀旧服-任务#80005		射手村
-Make a Octopus & Mushroom Omok Set	制作章鱼与蘑菇五子棋套组	怀旧服-任务#80006		射手村
-Make a Pig & Octopus Omok Set	制作猪与章鱼五子棋套组	怀旧服-任务#80007		射手村
+Make a Slime & Mushroom Omok Set	制作绿水灵/蘑菇五子棋	怀旧服-任务#80002		射手村
+Make a Slime & Pig Omok Set	制作绿水灵/猪猪五子棋	怀旧服-任务#80003		射手村
+Make a Slime & Octopus Omok Set	制作绿水灵/三眼章鱼五子棋	怀旧服-任务#80004		射手村
+Make a Pig & Mushroom Omok Set	制作猪猪/蘑菇五子棋	怀旧服-任务#80005		射手村
+Make a Octopus & Mushroom Omok Set	制作三眼章鱼/蘑菇五子棋	怀旧服-任务#80006		射手村
+Make a Pig & Octopus Omok Set	制作猪猪/三眼章鱼五子棋	怀旧服-任务#80007		射手村
 Silas Irons in Need of an Apprentice	西拉斯·艾恩斯需要学徒	怀旧服-任务#80008		锻造任务
 A Blacksmith in My Own Right!	我也是独当一面的铁匠了！	怀旧服-任务#80009		锻造任务
 Silas Irons in Need of Help	西拉斯·艾恩斯需要帮助	怀旧服-任务#80010		锻造任务
-Mr. Thunder in Need of an Apprentice	雷先生需要学徒	怀旧服-任务#80011		锻造任务
+Mr. Thunder in Need of an Apprentice	辛德需要学徒	怀旧服-任务#80011		锻造任务
 A Weaponcrafter in My Own Right!	我也是独当一面的武器匠了！	怀旧服-任务#80012		锻造任务
-Mr. Thunder in Need of Help	雷先生需要帮助	怀旧服-任务#80013		锻造任务
-Francois in Need of an Apprentice	弗朗索瓦需要学徒	怀旧服-任务#80014		锻造任务
+Mr. Thunder in Need of Help	辛德需要帮助	怀旧服-任务#80013		锻造任务
+Francois in Need of an Apprentice	易德需要学徒	怀旧服-任务#80014		锻造任务
 A Tailor in My Own Right!	我也是独当一面的裁缝了！	怀旧服-任务#80015		锻造任务
-Francois in Need of Help	弗朗索瓦需要帮助	怀旧服-任务#80016		锻造任务
-Vicious in Need of an Apprentice	维西需要学徒	怀旧服-任务#80017		锻造任务
+Francois in Need of Help	易德需要帮助	怀旧服-任务#80016		锻造任务
+Vicious in Need of an Apprentice	比休斯需要学徒	怀旧服-任务#80017		锻造任务
 A Carpenter in My Own Right!	我也是独当一面的木匠了！	怀旧服-任务#80018		锻造任务
-Vicious in Need of Help	维西需要帮助	怀旧服-任务#80019		锻造任务
-JM From tha Streetz Looking for a Partner	街头的JM正在寻找伙伴	怀旧服-任务#80020		锻造任务
+Vicious in Need of Help	比休斯需要帮助	怀旧服-任务#80019		锻造任务
+JM From tha Streetz Looking for a Partner	后街吉姆正在寻找伙伴	怀旧服-任务#80020		锻造任务
 A Leatherworker in My Own Right!	我也是独当一面的皮革工匠了！	怀旧服-任务#80021		锻造任务
-JM From tha Streetz in Need of Help	街头的JM需要帮助	怀旧服-任务#80022		锻造任务
-Chrishrama in Need of an Apprentice	克里斯拉玛需要学徒	怀旧服-任务#80023		锻造任务
-An Arcforger in My Own Right!	我也是独当一面的秘法锻造师了！	怀旧服-任务#80024		锻造任务
-Chrishrama in Need of Help	克里斯拉玛需要帮助	怀旧服-任务#80025		锻造任务
+JM From tha Streetz in Need of Help	后街吉姆需要帮助	怀旧服-任务#80022		锻造任务
+Chrishrama in Need of an Apprentice	克利斯拉玛需要学徒	怀旧服-任务#80023		锻造任务
+An Arcforger in My Own Right!	我也是独当一面的炼金术士了！	怀旧服-任务#80024		锻造任务
+Chrishrama in Need of Help	克利斯拉玛需要帮助	怀旧服-任务#80025		锻造任务
 [Event] A Strange and Familiar Wood	【活动】陌生又熟悉的树林	怀旧服-任务#500000		活动
 [Event] Beyond the Unknown	【活动】未知的彼端	怀旧服-任务#500001		活动
 [Event] The One Who Sealed the Darkness	【活动】封印黑暗之人	怀旧服-任务#500002		活动
@@ -328,8 +328,8 @@ Chrishrama in Need of Help	克里斯拉玛需要帮助	怀旧服-任务#80025		�
 [Event] Gift for the New Journey	【活动】新旅程的礼物	怀旧服-任务#500006		活动
 Mushroom Town - West Entrance	蘑菇镇 - 西入口	怀旧服-地图#1
 Maple Road	冒险岛之路	怀旧服-地区#1
-Mushroom Town	蘑菇镇	怀旧服-地图#10
-Mushroom Town Townstreet	蘑菇镇街道	怀旧服-地图#21
+Mushroom Town	小蘑菇	怀旧服-地图#10
+Mushroom Town Townstreet	蘑菇村村民家	怀旧服-地图#21
 East Entrance to Mushroom Town	蘑菇镇东入口	怀旧服-地图#30
 Snail Hunting Ground I	蜗牛狩猎场 I	怀旧服-地图#40
 Snail Hunting Ground II	蜗牛狩猎场 II	怀旧服-地图#41
@@ -341,21 +341,21 @@ The Field West of Amherst	彩虹村西边草原	怀旧服-地图#1000
 Rainbow Street	彩虹街	怀旧服-地区#1000
 In a Small Forest	小森林	怀旧服-地图#1001
 Dangerous Forest	危险森林	怀旧服-地图#1002
-Mushroom Garden	蘑菇花园	怀旧服-地图#1003
+Mushroom Garden	蘑菇山	怀旧服-地图#1003
 Snail Garden	蜗牛花园	怀旧服-地图#1004
 Hunting Ground Middle of the Forest I	森林中央狩猎场 I	怀旧服-地图#1005
 Hunting Ground Middle of the Forest II	森林中央狩猎场 II	怀旧服-地图#1006
 Amherst	彩虹村	怀旧服-地图#1010
 Amherst Weapon Store	彩虹村武器店	怀旧服-地图#1011
-Amherst Townstreet	彩虹村街道	怀旧服-地图#1012
-Amherst Department Store	彩虹村百货商店	怀旧服-地图#1013
+Amherst Townstreet	彩虹村村民家	怀旧服-地图#1012
+Amherst Department Store	彩虹村杂货店	怀旧服-地图#1013
 Snail Field of Flowers	蜗牛花田	怀旧服-地图#1014
 The Field East of Amherst	彩虹村东边草原	怀旧服-地图#1020
 Tomato Field	番茄田	怀旧服-地图#1021
 Lith Harbor	明珠港	怀旧服-地图#10000000
 Victoria Road	维多利亚路	怀旧服-地区#10000000
-Lith Harbor Armor Shop	明珠港防具店	怀旧服-地图#10000001
-Lith Harbor Department Store	明珠港百货商店	怀旧服-地图#10000002
+Lith Harbor Armor Shop	明珠港防御武器店	怀旧服-地图#10000001
+Lith Harbor Department Store	明珠港杂货店	怀旧服-地图#10000002
 Lith Harbor Weapon Shop	明珠港武器店	怀旧服-地图#10000003
 Right Around Lith Harbor	明珠港周边	怀旧服-地图#10000010
 Thicket Around the Beach I	海滩边的灌木丛 I	怀旧服-地图#10000011
@@ -377,15 +377,15 @@ Henesys Hunting Ground II	射手村狩猎场 II	怀旧服-地图#10001011
 Henesys Hunting Ground III	射手村狩猎场 III	怀旧服-地图#10001012
 A Hill West of Henesys	射手村西边小山	怀旧服-地图#10001020
 Forest West of Henesys	射手村西边森林	怀旧服-地图#10001030
-Henesys Market	射手村市场	怀旧服-地图#10001040
+Henesys Market	射手村集市	怀旧服-地图#10001040
 Henesys Weapon Store	射手村武器店	怀旧服-地图#10001041
-Henesys Department Store	射手村百货商店	怀旧服-地图#10001042
-Henesys Plastic Surgery	射手村整形院	怀旧服-地图#10001043
+Henesys Department Store	射手村杂货店	怀旧服-地图#10001042
+Henesys Plastic Surgery	射手村整容院	怀旧服-地图#10001043
 Henesys Hair Salon	射手村美发店	怀旧服-地图#10001044
 Henesys Skin-Care	射手村护肤中心	怀旧服-地图#10001045
 Henesys Park	射手村公园	怀旧服-地图#10001050
 Bowman Instructional School	弓箭手培训中心	怀旧服-地图#10001051
-Pet-Walking Road	宠物散步路	怀旧服-地图#10001052
+Pet-Walking Road	宠物公园	怀旧服-地图#10001052
 The Hill East of Henesys	射手村东边小山	怀旧服-地图#10001060
 The Rain-Forest East of Henesys	射手村东边雨林	怀旧服-地图#10001070
 The Forest East of Henesys	射手村东边森林	怀旧服-地图#10001080
@@ -440,12 +440,12 @@ Tree Dungeon, Forest Up North VII	树洞迷宫：北部森林 VII	怀旧服-地�
 Tree Dungeon, Forest Up North VIII	树洞迷宫：北部森林 VIII	怀旧服-地图#10002082
 Tree Dungeon, Forest Up North IX	树洞迷宫：北部森林 IX	怀旧服-地图#10002083
 Kerning City	废弃都市	怀旧服-地图#10003000
-Kerning City Self-Defence Item Store	废弃都市防身用品店	怀旧服-地图#10003001
+Kerning City Self-Defence Item Store	废都武器店	怀旧服-地图#10003001
 Kerning City Pharmacy	废弃都市药店	怀旧服-地图#10003002
 Thieves' Hideout	盗贼藏身处	怀旧服-地图#10003003
 Niora Hospital	尼奥拉医院	怀旧服-地图#10003004
-Kerning City Hair Salon	废弃都市美发店	怀旧服-地图#10003005
-Kerning City Repair Shop	废弃都市修理店	怀旧服-地图#10003006
+Kerning City Hair Salon	废都美发店	怀旧服-地图#10003005
+Kerning City Repair Shop	废都修理店	怀旧服-地图#10003006
 Kerning City Construction Site	废弃都市施工现场	怀旧服-地图#10003010
 Caution Falling Down	小心坠落	怀旧服-地图#10003011
 L Forest I	L森林 I	怀旧服-地图#10003020
@@ -488,7 +488,7 @@ B3 <Area 3>	B3 <区域 3>	怀旧服-地图#10003108
 B3 <Subway Depot>	B3 <地铁车库>	怀旧服-地图#10003109
 Perion	勇士部落	怀旧服-地图#10004000
 Perion Weapon Store	勇士部落武器店	怀旧服-地图#10004001
-Perion Department Store	勇士部落百货商店	怀旧服-地图#10004002
+Perion Department Store	勇士部落杂货店	怀旧服-地图#10004002
 Warriors' Sanctuary	战士圣殿	怀旧服-地图#10004003
 West Street Corner of Perion	勇士部落西边街角	怀旧服-地图#10004010
 West Rocky Mountain I	西部岩山 I	怀旧服-地图#10004020
@@ -571,7 +571,7 @@ Sanctuary Entrance II	圣域入口 II	怀旧服-地图#10005102
 Sanctuary Entrance III	圣域入口 III	怀旧服-地图#10005103
 Sanctuary Entrance IV	圣域入口 IV	怀旧服-地图#10005104
 The Cursed Sanctuary	被诅咒的圣域	怀旧服-地图#10005105
-Forgotten Hollow	遗忘山谷	怀旧服-地图#10006000
+Forgotten Hollow	遗忘空洞	怀旧服-地图#10006000
 Shallow Passage	浅层通道	怀旧服-地区#10006000
 Cave Fairy Sanctuary	洞穴精灵圣域	怀旧服-地图#10006001
 Cave Fairy Department Store	洞穴精灵百货商店	怀旧服-地图#10006002
@@ -624,7 +624,7 @@ Free Market<9>	自由市场<9>	怀旧服-地图#80002009
 Free Market<10>	自由市场<10>	怀旧服-地图#80002010
 Free Market<11>	自由市场<11>	怀旧服-地图#80002011
 Truth Booth	真相小屋	怀旧服-地图#89000000
-Maple Hill	冒险岛山丘	怀旧服-地图#90000000
+Maple Hill	彩虹岛山丘	怀旧服-地图#90000000
 White Map	白色地图	怀旧服-地图#90000001
 Black Map	黑色地图	怀旧服-地图#90000002
 MapleStory Physical Fitness Test <Waiting Room>	冒险岛体能测试 <等候室>	怀旧服-地图#90040000
@@ -639,7 +639,7 @@ MapleStory Physical Fitness Challenge <Easy Level 3>	冒险岛体能挑战 <简�
 Leaving the Event	离开活动	怀旧服-地图#90050000
 Receiving the Reward For the Event	领取活动奖励	怀旧服-地图#90050001
 Test	测试	怀旧服-地图#900000000
-Tutorial Jr. Sentinel	教程小石球	怀旧服-怪物#1	71697172b2ce9ac6
+Tutorial Jr. Sentinel	特殊小石球	怀旧服-怪物#1	71697172b2ce9ac6
 Snail	蜗牛	怀旧服-怪物#2	f1f9fdd4d6b6e6ca
 Blue Snail	蓝蜗牛	怀旧服-怪物#3	fcf8d86cace66672
 Shroom	蘑菇仔	怀旧服-怪物#4	f4f4e0e0eae47931
@@ -663,10 +663,10 @@ Zombie Mushroom	僵尸蘑菇	怀旧服-怪物#21	7cfcece4719bf870
 Wild Boar	野猪	怀旧服-怪物#22	cddcd0ec60783012
 Evil Eye	火独眼兽	怀旧服-怪物#23	ec7878784c58d899
 Iron Hog	铁甲猪	怀旧服-怪物#24	d5e4b49cda607c98
-Fairy 1	妖精	怀旧服-怪物#25	24a2d099a2cac9c9
-Fairy 2	妖精	怀旧服-怪物#26	24a2d099a2cac9c9
-Fairy 3	妖精	怀旧服-怪物#27	24a2d099a2cac9c9
-Fairy 4	妖精	怀旧服-怪物#28	24a2d099a2cac9c9
+Fairy 1	蝴蝶精	怀旧服-怪物#25	24a2d099a2cac9c9
+Fairy 2	蝴蝶精	怀旧服-怪物#26	24a2d099a2cac9c9
+Fairy 3	蝴蝶精	怀旧服-怪物#27	24a2d099a2cac9c9
+Fairy 4	蝴蝶精	怀旧服-怪物#28	24a2d099a2cac9c9
 Ligator	鳄鱼	怀旧服-怪物#29	d8dad3c8c8785859
 Fire Boar	火野猪	怀旧服-怪物#30	dc746d6864f0b066
 Curse Eye	风独眼兽	怀旧服-怪物#31	6c6c72784c5cd899
@@ -679,7 +679,7 @@ Cold Eye	冰独眼兽	怀旧服-怪物#37	ecf8f2f24c58d899
 Zombie Lupin	僵尸猴	怀旧服-怪物#38	b0d8c86ab2b8f8e4
 Copper Drake	土龙	怀旧服-怪物#40	c9e2e1da6d66e669
 Tortie	乌龟	怀旧服-怪物#41	6cacbdd87e646c0e
-Wraith	幽灵	怀旧服-怪物#43	e4c47234e6d270b8
+Wraith	大幽灵	怀旧服-怪物#43	e4c47234e6d270b8
 Clang	青螃蟹	怀旧服-怪物#44	6af074f8d496549a
 Drake	青龙	怀旧服-怪物#45	c9e2e1da6d66e669
 Croco	黑鳄鱼	怀旧服-怪物#46	f8dad3c8d8785859
@@ -695,7 +695,7 @@ Raffle	莱芙	怀旧服-怪物#55	ccd4f0a6ce8eccf0
 Golden Stirge	黄金蝙蝠	怀旧服-怪物#56	a7b074e8e9cc9434
 Aqumander	水螈	怀旧服-怪物#57	5270cec5c4969265
 Echopus	回音章鱼	怀旧服-怪物#58	6ba7f4b0b2e87132
-Rafflesia	大王花	怀旧服-怪物#59	2c9ce4e5e2e0e4ed
+Rafflesia	大花草	怀旧服-怪物#59	2c9ce4e5e2e0e4ed
 Duskmander	暮色螈	怀旧服-怪物#60	5270c6c5c4949a65
 Myewood	木喵	怀旧服-怪物#61	a6b29898fabefcf9
 Rotten Mushroom	腐烂蘑菇	怀旧服-怪物#62	7cf8f4e4b9cafe78
@@ -708,7 +708,7 @@ Mushmom	蘑菇王	怀旧服-怪物#700000	70ecf8dcf1f8e871
 Jr. Balrog	小蝙蝠魔	怀旧服-怪物#700001	6968c6f078c8c4d4
 Zombie Mushmom	僵尸蘑菇王	怀旧服-怪物#700002	f0f2b8a878f4f879
 Rotten Mushmom	腐烂蘑菇王	怀旧服-怪物#700003	fcf8f4f4c9e0f678
-Mano	蜗牛王	怀旧服-怪物#700004	fcfcfcfedaca6ab5
+Mano	红蜗牛王	怀旧服-怪物#700004	fcfcfcfedaca6ab5
 King Slime	巨大绿水灵	怀旧服-怪物#800003	b261656560b0191a
 TestMob	测试怪物	怀旧服-怪物#9990000	52b978f4f4797979
 Heena	希娜	怀旧服-NPC#1	b0b97170b6ecfc78
@@ -716,18 +716,18 @@ Sera	莎丽	怀旧服-NPC#2	f0f8ccc4f2e6d0f1
 Roger	罗杰	怀旧服-NPC#3	b120e9f9f8f8d878
 Nina	妮娜	怀旧服-NPC#4	54b0f2737071ab8e
 Sen	珊	怀旧服-NPC#5	6969f8b49ad2f839
-Peter	彼得	怀旧服-NPC#6	b260c9f9f0f8daf0
-Todd	托德	怀旧服-NPC#7	b260c9f9f0f8daf0
+Peter	彼特	怀旧服-NPC#6	b260c9f9f0f8daf0
+Todd	透德	怀旧服-NPC#7	b260c9f9f0f8daf0
 Robin	罗宾	怀旧服-NPC#8	b260c9f9f0f8daf0
-Sam	山姆	怀旧服-NPC#9	b260c9f9f0f8daf0
+Sam	萨姆	怀旧服-NPC#9	b260c9f9f0f8daf0
 Maria	玛丽亚	怀旧服-NPC#10	f0f8ccc4f2e6d0f1
 Mai	麦加	怀旧服-NPC#11	abb172b86872b193
 Biggs	比格斯	怀旧服-NPC#12	69e1d1f0f8f2f4f0
 Yoona	尤娜	怀旧服-NPC#13	54b0f2737071ab8e
 Bari	白瑞德	怀旧服-NPC#14	68e9c9d8fc6c7c78
-Shanks	巴希里	怀旧服-NPC#15	fcdc79b8b490b332
+Shanks	桑克斯	怀旧服-NPC#15	fcdc79b8b490b332
 Pan	潘	怀旧服-NPC#16	6168f4bcfcc2d0ec
-Lucas	卢卡斯	怀旧服-NPC#17	d1f9acbce8f8e478
+Lucas	路卡斯	怀旧服-NPC#17	d1f9acbce8f8e478
 Pio	皮奥	怀旧服-NPC#18	b4fc64b67a6c3cb0
 Rain	瑞恩	怀旧服-NPC#19	b0b97170b6ecfc78
 Sid	赛德	怀旧服-NPC#20	d29289bcf26d6a6c
@@ -763,7 +763,7 @@ Ms. Tan	沃美妮	怀旧服-NPC#217	78b9d98ae2c2e431
 Pia	皮亚	怀旧服-NPC#218	a8d878e8e8fad8d9
 Cloy	科洛伊	怀旧服-NPC#219	c3c2c6f371c8e871
 Mr. Lee	李先生	怀旧服-NPC#220	7c3cfa6ae9ecfc78
-Athena Pierce	雅典娜·皮尔丝	怀旧服-NPC#221	68f4d470e0e4e179
+Athena Pierce	赫丽娜	怀旧服-NPC#221	68f4d470e0e4e179
 Trainer Bartos	巴特斯	怀旧服-NPC#222	36dede34686cb470
 Trainer Frod	巴罗德	怀旧服-NPC#223	92d4d0f2f1d1d8e1
 Anne	桉	怀旧服-NPC#224	e0e3d8d8fefefcf0
@@ -772,7 +772,7 @@ Luke	鲁克	怀旧服-NPC#226	e9e8f1e8eaffbe9c
 Bowman Job Instructor	弓箭手转职教官	怀旧服-NPC#227	7458f0f8c8f0eccd
 Casey	凯茜	怀旧服-NPC#228	d6acb6d3f2d1e9f9
 Estelle	胡小姐	怀旧服-NPC#300	e0e3d8d8fefefcf0
-Regular Cab	普通计程车	怀旧服-NPC#301	94b16bae9899d262
+Regular Cab	普通出租车	怀旧服-NPC#301	94b16bae9899d262
 Francois	易德	怀旧服-NPC#303	bcb9f979e8b97272
 Arwen the Fairy	妖精 艾温	怀旧服-NPC#304	d1e171f1b8bcda60
 Rowen the Fairy	妖精 罗雯	怀旧服-NPC#305	19f8d8586c6c6cb4
@@ -783,7 +783,7 @@ Wing the Fairy	妖精维英	怀旧服-NPC#309	5291d9f8e8fefc78
 Flora the Fairy	妖精 佛罗拉	怀旧服-NPC#310	68f098d8787c3db0
 Serabi the Fairy	妖精 舍拉比	怀旧服-NPC#311	6871dab87c7cbc69
 Len the Fairy	妖精 莲	怀旧服-NPC#312	6878d998dc9df871
-Grendel the Really Old	老头子格伦戴尔	怀旧服-NPC#313	72f0f1f07024b0b2
+Grendel the Really Old	汉斯	怀旧服-NPC#313	72f0f1f07024b0b2
 Louis	路易斯	怀旧服-NPC#314	b260c9f9f0f8daf0
 a pile of flowers	花簇	怀旧服-NPC#315	e662ceb6b3ea7999
 a pile of herbs	草药丛	怀旧服-NPC#316	632966ecd676b252
@@ -801,7 +801,7 @@ Icarus	伊卡路斯	怀旧服-NPC#407	727bcce6e6e4e478
 Cutthroat Manny	曼斯塔	怀旧服-NPC#408	69319298f162fcf8
 Don Hwang	玛帕	怀旧服-NPC#409	ec94b470cce06170
 Dr. Faymus	铭仁	怀旧服-NPC#410	8690a0ecc4e2d2d8
-Dark Lord	黑暗之神	怀旧服-NPC#411	60e0e0d81acce830
+Dark Lord	达克鲁	怀旧服-NPC#411	60e0e0d81acce830
 Jane Doe	不认识的女人	怀旧服-NPC#412	7cd8d8cc968ed873
 Don Giovanni	钱老板	怀旧服-NPC#413	d9d89ce0ea66f6e8
 Andre	安德里亚	怀旧服-NPC#414	32b1a9b2f2a6dcf8
@@ -817,10 +817,10 @@ Silas Irons	西拉斯·艾恩斯	怀旧服-NPC#504	e4925ae4d8687039
 Mr. Wang	王先生	怀旧服-NPC#505	7c3cfa7ae9ecf878
 Ayan	伊安	怀旧服-NPC#506	727270f0d2f0d8c1
 River	利伯	怀旧服-NPC#507	69f9f0e4f4daf4f4
-Harry	哈里	怀旧服-NPC#508	68f972d4f4daf8f0
-Arturo	阿图罗	怀旧服-NPC#509	2c9cc8e2e2d9fefc
+Harry	哈利	怀旧服-NPC#508	68f972d4f4daf8f0
+Arturo	格里高利	怀旧服-NPC#509	2c9cc8e2e2d9fefc
 Sophia	索非亚	怀旧服-NPC#510	f9f1f1f2f8f0f4d8
-Dances with Balrog	与巴洛古共舞	怀旧服-NPC#511	d492988cc4ccfc39
+Dances with Balrog	武术教练	怀旧服-NPC#511	d492988cc4ccfc39
 Winston	芳博士	怀旧服-NPC#512	c6d1e1f0f0f4bcf1
 Mike	麦克	怀旧服-NPC#513	e9e8f1e8eaffbe9c
 Warrior Job Instructor	战士转职教官	怀旧服-NPC#514	d8ca93bba848cad0
@@ -838,12 +838,12 @@ a pile of pink flowers	粉红色花簇	怀旧服-NPC#611	72b4d8d0dad8d949
 a pile of blue flowers	蓝花簇	怀旧服-NPC#612	72b4d8d0dad8d949
 a pile of white flowers	白花簇	怀旧服-NPC#613	72b4d8d0ded9d949
 24 Hr Mobile Store	24小时 排档	怀旧服-NPC#614	dcd5aa8dd3d268a1
-Door of Dimension	次元之门	怀旧服-NPC#615	d8c7b09889f9bc46
+Door of Dimension	异界之门	怀旧服-NPC#615	d8c7b09889f9bc46
 Luma	露玛	怀旧服-NPC#700	f86dc4987c686a2c
-Zelya	泽莉亚	怀旧服-NPC#701	d8c46578ecf8d0e5
+Zelya	泽莉娅	怀旧服-NPC#701	d8c46578ecf8d0e5
 Myen	米恩	怀旧服-NPC#702	d8c98cb8fcfcf618
-Myra	迈拉	怀旧服-NPC#703	b4b29898b2fee4e9
-Nyroth	尼罗斯	怀旧服-NPC#707	c6ccb8b1e8f86a66
+Myra	米拉	怀旧服-NPC#703	b4b29898b2fee4e9
+Nyroth	尼洛斯	怀旧服-NPC#707	c6ccb8b1e8f86a66
 Valen	拜伦	怀旧服-NPC#800	397170f0c9daf474
 Pison	派申	怀旧服-NPC#801	e3c2ced3f8e89c7c
 Riel	丽尔	怀旧服-NPC#802	7978f9bbb8fc7c38
@@ -853,12 +853,12 @@ Lakelis	拉克里斯	怀旧服-NPC#800000	d87168f87870f873
 Cloto	克鲁特	怀旧服-NPC#800001	31d09098b8d0d970
 Fredrick	弗兰德里	怀旧服-NPC#800008	dae6e6e6f070dcc0
 Scrooge	斯克鲁 吉	怀旧服-NPC#800009	fb9bcfcbcaceceda
-Maple Administrator	冒险岛运营员	怀旧服-NPC#900000	c97979b09cd2c3f8
+Maple Administrator	枫叶运营员	怀旧服-NPC#900000	c97979b09cd2c3f8
 MapleCon TV	冒险岛展会TV	怀旧服-NPC#900009	d69687179696cccc
-Paul	珀尔	怀旧服-NPC#900010	6a6a7270e8a8e470
-Vikoon	贝昆	怀旧服-NPC#900011	b5ec64c45af0f539
-Pietro	比特罗	怀旧服-NPC#900012	a4b174e4ac6c7850
-Pietra	比特拉	怀旧服-NPC#900013	b4b174e4ac6c7870
+Paul	保罗	怀旧服-NPC#900010	6a6a7270e8a8e470
+Vikoon	维坤	怀旧服-NPC#900011	b5ec64c45af0f539
+Pietro	彼得罗	怀旧服-NPC#900012	a4b174e4ac6c7850
+Pietra	彼得拉	怀旧服-NPC#900013	b4b174e4ac6c7870
 Chun Ji	千吉	怀旧服-NPC#900014	1880e4a4c4a2a2e4
 Mr. Pickall	权达开	怀旧服-NPC#900015	baf8daf3e1c1f162
 Light Skin	奶油皮肤	怀旧服-道具#12000	78f48a8af2a2c4f0
@@ -2940,14 +2940,14 @@ Shield Accuracy Scroll: Lesser	盾牌命中率卷轴：初级	怀旧服-道具#2
 Shield Accuracy Scroll: Intermediate	盾牌命中率卷轴：中级	怀旧服-道具#2040905	0f6ef0e9d96cf9e1
 Shield Accuracy Scroll: Greater	盾牌命中率卷轴：高级	怀旧服-道具#2040906	077ef8e9c96cf9e1
 Shield Accuracy Scroll: Chaos	盾牌命中率卷轴：混沌	怀旧服-道具#2040907	076ef0e9d96cf9e1
-Cape Weapon Def. Scroll: Lesser	披风物理防御力卷轴：初级	怀旧服-道具#2041000	0f7ef0e9d96cf9e1
-Cape Weapon Def. Scroll: Intermediate	披风物理防御力卷轴：中级	怀旧服-道具#2041001	0f6ef0e9d96cf9e1
-Cape Weapon Def. Scroll: Greater	披风物理防御力卷轴：高级	怀旧服-道具#2041002	077ef8e9c96cf9e1
-Cape Weapon Def. Scroll: Chaos	披风物理防御力卷轴：混沌	怀旧服-道具#2041003	076ef0e9d96cf9e1
-Cape Magic Def. Scroll: Lesser	披风魔法防御力卷轴：初级	怀旧服-道具#2041004	0f7ef0e9d96cf9e1
-Cape Magic Def. Scroll: Intermediate	披风魔法防御力卷轴：中级	怀旧服-道具#2041005	0f6ef0e9d96cf9e1
-Cape Magic Def. Scroll: Greater	披风魔法防御力卷轴：高级	怀旧服-道具#2041006	077ef8e9c96cf9e1
-Cape Magic Def. Scroll: Chaos	披风魔法防御力卷轴：混沌	怀旧服-道具#2041007	076ef0e9d96cf9e1
+Cape Weapon Def. Scroll: Lesser	披风物理防御卷轴：初级	怀旧服-道具#2041000	0f7ef0e9d96cf9e1
+Cape Weapon Def. Scroll: Intermediate	披风物理防御卷轴：中级	怀旧服-道具#2041001	0f6ef0e9d96cf9e1
+Cape Weapon Def. Scroll: Greater	披风物理防御卷轴：高级	怀旧服-道具#2041002	077ef8e9c96cf9e1
+Cape Weapon Def. Scroll: Chaos	披风物理防御卷轴：混沌	怀旧服-道具#2041003	076ef0e9d96cf9e1
+Cape Magic Def. Scroll: Lesser	披风魔法防御卷轴：初级	怀旧服-道具#2041004	0f7ef0e9d96cf9e1
+Cape Magic Def. Scroll: Intermediate	披风魔法防御卷轴：中级	怀旧服-道具#2041005	0f6ef0e9d96cf9e1
+Cape Magic Def. Scroll: Greater	披风魔法防御卷轴：高级	怀旧服-道具#2041006	077ef8e9c96cf9e1
+Cape Magic Def. Scroll: Chaos	披风魔法防御卷轴：混沌	怀旧服-道具#2041007	076ef0e9d96cf9e1
 Cape STR Scroll: Lesser	披风力量卷轴：初级	怀旧服-道具#2041008	0f7ef0e9d96cf9e1
 Cape STR Scroll: Intermediate	披风力量卷轴：中级	怀旧服-道具#2041009	0f6ef0e9d96cf9e1
 Cape STR Scroll: Greater	披风力量卷轴：高级	怀旧服-道具#2041010	077ef8e9c96cf9e1
@@ -2980,10 +2980,10 @@ One-Handed Blunt Weapon Attack Scroll: Lesser	单手钝器攻击力卷轴：初�
 One-Handed Blunt Weapon Attack Scroll: Intermediate	单手钝器攻击力卷轴：中级	怀旧服-道具#2043201	0f6ef0e9d96cf9e1
 One-Handed Blunt Weapon Attack Scroll: Greater	单手钝器攻击力卷轴：高级	怀旧服-道具#2043202	077ef8e9c96cf9e1
 One-Handed Blunt Weapon Attack Scroll: Chaos	单手钝器攻击力卷轴：混沌	怀旧服-道具#2043203	076ef0e9d96cf9e1
-Dagger Attack Scroll: Lesser	短剑攻击力卷轴：初级	怀旧服-道具#2043300	0f7ef0e9d96cf9e1
-Dagger Attack Scroll: Intermediate	短剑攻击力卷轴：中级	怀旧服-道具#2043301	0f6ef0e9d96cf9e1
-Dagger Attack Scroll: Greater	短剑攻击力卷轴：高级	怀旧服-道具#2043302	077ef8e9c96cf9e1
-Dagger Attack Scroll: Chaos	短剑攻击力卷轴：混沌	怀旧服-道具#2043303	076ef0e9d96cf9e1
+Dagger Attack Scroll: Lesser	短剑武器攻击卷轴：初级	怀旧服-道具#2043300	0f7ef0e9d96cf9e1
+Dagger Attack Scroll: Intermediate	短剑武器攻击卷轴：中级	怀旧服-道具#2043301	0f6ef0e9d96cf9e1
+Dagger Attack Scroll: Greater	短剑武器攻击卷轴：高级	怀旧服-道具#2043302	077ef8e9c96cf9e1
+Dagger Attack Scroll: Chaos	短剑武器攻击卷轴：混沌	怀旧服-道具#2043303	076ef0e9d96cf9e1
 Wand Magic Attack Scroll: Lesser	短杖魔法攻击力卷轴：初级	怀旧服-道具#2043700	0f7ef0e9d96cf9e1
 Wand Magic Attack Scroll: Intermediate	短杖魔法攻击力卷轴：中级	怀旧服-道具#2043701	0f6ef0e9d96cf9e1
 Wand Magic Attack Scroll: Greater	短杖魔法攻击力卷轴：高级	怀旧服-道具#2043702	077ef8e9c96cf9e1
@@ -3012,18 +3012,18 @@ Polearm Attack Scroll: Lesser	矛攻击力卷轴：初级	怀旧服-道具#20444
 Polearm Attack Scroll: Intermediate	矛攻击力卷轴：中级	怀旧服-道具#2044401	0f6ef0e9d96cf9e1
 Polearm Attack Scroll: Greater	矛攻击力卷轴：高级	怀旧服-道具#2044402	077ef8e9c96cf9e1
 Polearm Attack Scroll: Chaos	矛攻击力卷轴：混沌	怀旧服-道具#2044403	076ef0e9d96cf9e1
-Bow Attack Scroll: Lesser	弓攻击力卷轴：初级	怀旧服-道具#2044500	0f7ef0e9d96cf9e1
-Bow Attack Scroll: Intermediate	弓攻击力卷轴：中级	怀旧服-道具#2044501	0f6ef0e9d96cf9e1
-Bow Attack Scroll: Greater	弓攻击力卷轴：高级	怀旧服-道具#2044502	077ef8e9c96cf9e1
-Bow Attack Scroll: Chaos	弓攻击力卷轴：混沌	怀旧服-道具#2044503	076ef0e9d96cf9e1
-Crossbow Attack Scroll: Lesser	弩攻击力卷轴：初级	怀旧服-道具#2044600	0f7ef0e9d96cf9e1
-Crossbow Attack Scroll: Intermediate	弩攻击力卷轴：中级	怀旧服-道具#2044601	0f6ef0e9d96cf9e1
-Crossbow Attack Scroll: Greater	弩攻击力卷轴：高级	怀旧服-道具#2044602	077ef8e9c96cf9e1
-Crossbow Attack Scroll: Chaos	弩攻击力卷轴：混沌	怀旧服-道具#2044603	076ef0e9d96cf9e1
-Claw Attack Scroll: Lesser	拳套攻击力卷轴：初级	怀旧服-道具#2044700	0f7ef0e9d96cf9e1
-Claw Attack Scroll: Intermediate	拳套攻击力卷轴：中级	怀旧服-道具#2044701	0f6ef0e9d96cf9e1
-Claw Attack Scroll: Greater	拳套攻击力卷轴：高级	怀旧服-道具#2044702	077ef8e9c96cf9e1
-Claw Attack Scroll: Chaos	拳套攻击力卷轴：混沌	怀旧服-道具#2044703	076ef0e9d96cf9e1
+Bow Attack Scroll: Lesser	弓武器攻击卷轴：初级	怀旧服-道具#2044500	0f7ef0e9d96cf9e1
+Bow Attack Scroll: Intermediate	弓武器攻击卷轴：中级	怀旧服-道具#2044501	0f6ef0e9d96cf9e1
+Bow Attack Scroll: Greater	弓武器攻击卷轴：高级	怀旧服-道具#2044502	077ef8e9c96cf9e1
+Bow Attack Scroll: Chaos	弓武器攻击卷轴：混沌	怀旧服-道具#2044503	076ef0e9d96cf9e1
+Crossbow Attack Scroll: Lesser	弩武器攻击卷轴：初级	怀旧服-道具#2044600	0f7ef0e9d96cf9e1
+Crossbow Attack Scroll: Intermediate	弩武器攻击卷轴：中级	怀旧服-道具#2044601	0f6ef0e9d96cf9e1
+Crossbow Attack Scroll: Greater	弩武器攻击卷轴：高级	怀旧服-道具#2044602	077ef8e9c96cf9e1
+Crossbow Attack Scroll: Chaos	弩武器攻击卷轴：混沌	怀旧服-道具#2044603	076ef0e9d96cf9e1
+Claw Attack Scroll: Lesser	拳套武器攻击卷轴：初级	怀旧服-道具#2044700	0f7ef0e9d96cf9e1
+Claw Attack Scroll: Intermediate	拳套武器攻击卷轴：中级	怀旧服-道具#2044701	0f6ef0e9d96cf9e1
+Claw Attack Scroll: Greater	拳套武器攻击卷轴：高级	怀旧服-道具#2044702	077ef8e9c96cf9e1
+Claw Attack Scroll: Chaos	拳套武器攻击卷轴：混沌	怀旧服-道具#2044703	076ef0e9d96cf9e1
 Pet Equip. Speed Scroll: Lesser	宠物装备移动速度卷轴：初级	怀旧服-道具#2048000	0f7ef0e9d96cf9e1
 Pet Equip. Speed Scroll: Intermediate	宠物装备移动速度卷轴：中级	怀旧服-道具#2048001	0f6ef0e9d96cf9e1
 Pet Equip. Speed Scroll: Greater	宠物装备移动速度卷轴：高级	怀旧服-道具#2048002	077ef8e9c96cf9e1
@@ -3059,7 +3059,7 @@ The Songs of Solomon	兵法书(孙子)	怀旧服-道具#2375000	274ada7cd8c3e4c8
 Companion’s Magic Box	伙伴的魔法箱	怀旧服-道具#2430000	868a33aaaa338ed4
 Natalie's Fashion Box(M)	娜塔莉的时装箱（男）	怀旧服-道具#2430001	60e4adacadeaccd8
 Natalie's Fashion Box(F)	娜塔莉的时装箱（女）	怀旧服-道具#2430002	60e4adacadeaccd8
-Gift for the New Journey	新旅程礼物	怀旧服-道具#2430003	3379dcdcd4e4e86d
+Gift for the New Journey	新旅程的礼物 [Event]	怀旧服-道具#2430003	3379dcdcd4e4e86d
 Leaf Points (1000) Exchange Coupon	枫叶点数1000兑换券	怀旧服-道具#2430004	86fabe9caeaebc31
 2x EXP Coupon (30 min)	2倍经验券（30分钟）	怀旧服-道具#2450000	b633f0e1e05c1ae2
 3x EXP Coupon (15 min)	3倍经验券（15分钟）	怀旧服-道具#2450001	b633f16171541be2
@@ -6955,8 +6955,8 @@ MP Eater	魔力吸收	怀旧服-技能#2300000	ae633614464b2ba6
 Teleport	瞬间移动	怀旧服-技能#2301000	ae969a9a8c8c8e82
 Power Knockback	强弓	怀旧服-技能#3201002	e0ee86a6998e8ecc
 Haste	轻功	怀旧服-技能#4201001	868f9f2666a68eae
-Mushroom Town	蘑菇镇	怀旧服-地图#20
-Mushroom Garden	蘑菇花园	怀旧服-地图#10001021
+Mushroom Town	小蘑菇	怀旧服-地图#20
+Mushroom Garden	蘑菇山	怀旧服-地图#10001021
 VIP Cab	高级出租车	怀旧服-NPC#104	96b63b36acade064
 Regular Cab	普通出租车	怀旧服-NPC#200	94b16bae9899d262
 Sam	萨姆	怀旧服-NPC#211	c9f2c1ccecc8fc78
@@ -6984,17 +6984,17 @@ Weaponcrafting Station	武器制作台	怀旧服-NPC#800011	46daeada5a69fe16
 Sewing Machine	缝纫机	怀旧服-NPC#800012	c2cab6b6b4cdc964
 Woodworking Station	木工台	怀旧服-NPC#800013	ecdbd2766a606524
 Leatherworking Station	皮革制作台	怀旧服-NPC#800014	f0e2646efcc84936
-Arcane Station	秘法制作台	怀旧服-NPC#800015	24b4bcf4f1b9f1e2
-Maple Administrator	冒险岛运营员	怀旧服-NPC#800016	c97979b09cd2c3f8
-Maple Administrator	冒险岛运营员	怀旧服-NPC#900001	c97979b09cd2c3f8
+Arcane Station	炼金台	怀旧服-NPC#800015	24b4bcf4f1b9f1e2
+Maple Administrator	枫叶运营员	怀旧服-NPC#800016	c97979b09cd2c3f8
+Maple Administrator	枫叶运营员	怀旧服-NPC#900001	c97979b09cd2c3f8
 VIP Cab	高级出租车	怀旧服-NPC#900002	96b63b36acade064
-Maya	玛雅	怀旧服-NPC#900003	e8f8f0ccd8daeee8
+Maya	玛亚	怀旧服-NPC#900003	e8f8f0ccd8daeee8
 Sabitrama	萨比特拉玛	怀旧服-NPC#900004	c6ca786c6838bc5c
-Grendel the Really Old	大魔法师汉斯	怀旧服-NPC#900005	72f0f1f07024b0b2
+Grendel the Really Old	汉斯	怀旧服-NPC#900005	72f0f1f07024b0b2
 Arwen the Fairy	妖精艾温	怀旧服-NPC#900006	d1e171f1b8bcda60
-Natalie	娜塔莉	怀旧服-NPC#900007	f8e161f1b09becf8
-Lakelis	拉克莉丝	怀旧服-NPC#900008	d87168f87870f873
-Maple Administrator	冒险岛运营员	怀旧服-NPC#9010000	c97979b09cd2c3f8
+Natalie	娜塔丽	怀旧服-NPC#900007	f8e161f1b09becf8
+Lakelis	拉克里斯	怀旧服-NPC#900008	d87168f87870f873
+Maple Administrator	枫叶运营员	怀旧服-NPC#9010000	c97979b09cd2c3f8
 CHARACTER STAT	角色属性	怀旧服-界面
 CHARACTER STATS	角色属性	怀旧服-界面
 NAME	名称	怀旧服-界面
@@ -8288,7 +8288,7 @@ Hi there! This cab is for VIP customers only. Instead of just taking you to diff
 The regular fee applies for all non-beginners. The Ant Tunnel is located deep inside in the center of Victoria Island, where 24-hour danger awaits. Would you like to go there for 10,000 mesos?	非新手玩家需支付正常车费。蚂蚁洞位于维多利亚岛中心深处，那里随时都有危险。要花10,000金币前往吗？	怀旧服-界面长句	实测NPC出租车对白
 Please bring this letter to Lucas	请把这封信交给卢卡斯	怀旧服-界面长句	实测任务面板
 Talk to NPC Maria	与NPC玛利亚交谈	怀旧服-界面长句	实测任务面板
-Letter for Lucas	给卢卡斯的信	怀旧服-界面长句	实测任务面板
+Letter for Lucas	传递信件	怀旧服-界面长句	实测任务面板
 Maria needs someone to help her	玛利亚需要有人帮助她……	怀旧服-界面长句	实测任务面板
 You must be	你一定是……	怀旧服-界面长句	实测逐字显示对白
 You can craft them near the Weaponcrafting Station in Kerning City and Perion	你可以在废都和勇士部落附近的武器制作台进行制作。	怀旧服-界面长句	实测制作面板
@@ -12655,7 +12655,7 @@ Teo's Collection	特奥的收藏	怀旧服-任务#10010	视频 00s 实机标题�
 Teo in Lith Harbor told me his hobby is collecting weird things. He asked me to hunt Slimes near the town and bring back 1 Slime Bubble. He warned me that it might be hard to find, though!	明珠港的特奥告诉我，他的爱好是收集奇怪的东西。他让我去镇子附近狩猎绿水灵，带回 1 个绿水灵泡泡。他提醒我这东西可能很难找到！	怀旧服-任务说明#10010	视频 00s 实机原句	明珠港
 [Event] Growing Leaf	【活动】成长中的枫叶	怀旧服-任务#500009	视频 03s 与任务资料页核对	射手村
 The Maple Administrator in Henesys is handing out Pale Maple Leaf for a special event! Nurture yours and see what it becomes...	射手村的冒险岛管理员正在为一项特别活动发放淡色枫叶！好好培育你的枫叶，看看它会变成什么……	怀旧服-任务说明#500009	视频 03s 实机原句	射手村
-First Greeting with Anne, the Town Resident	初次问候镇民安妮	怀旧服-任务#506013	视频 04s 与任务资料页核对	射手村
+First Greeting with Anne, the Town Resident	与村民桉的初次见面	怀旧服-任务#506013	视频 04s 与任务资料页核对	射手村
 It looks like Arthur, the town clerk, is looking for someone to help with their work. Let's go check out Community Board in front of Henesys Town Hall.	看来镇务员亚瑟正在找人帮忙。去射手村市政厅前的社区公告板看看吧。	怀旧服-任务说明#506013	视频 04s 实机原句	射手村
 The master blacksmith of Perion, Silas Irons, seems to be looking for someone worthy of becoming his apprentice.	勇士部落的铁匠大师西拉斯·艾恩斯似乎在寻找有资格成为他学徒的人。	怀旧服-任务说明#80008	视频 07s 实机原句	勇士部落
 It seems Vicious, the carpenter of Henesys, is looking for someone worthy of becoming his apprentice.	射手村的木匠维西似乎在寻找有资格成为他学徒的人。	怀旧服-任务说明#80017	视频 09s 实机原句	射手村
@@ -12663,7 +12663,7 @@ JM From tha Streetz Looking for a Partner!	街头的 JM 正在寻找伙伴！	�
 The leatherworking master JM From tha Streetz of Kerning City seems to be looking for someone who could become his business partner.	废弃都市的皮革工艺大师街头的 JM 似乎在寻找能成为他生意伙伴的人。	怀旧服-任务说明#80020	视频 13s 实机原句	废弃都市
 The Arcforging master, Chrishrama of Sleepywood, seems to be searching for someone who could become his apprentice.	林中之城的秘法锻造大师克里斯拉玛似乎在寻找能成为他学徒的人。	怀旧服-任务说明#80023	视频 15s 实机原句	林中之城
 Shadow of the World Tree	世界树的阴影	怀旧服-任务#10607	视频 19s 实机任务链标题	魔法密林
-The Roots of Regret	遗憾的根源	怀旧服-任务#10607	视频 19s 与任务资料页核对	魔法密林
+The Roots of Regret	悔恨之根	怀旧服-任务#10607	视频 19s 与任务资料页核对	魔法密林
 Let's go see Grendel the Really Old in Ellinia. He seems deeply troubled by something...	去魔法密林见见汉斯吧。他似乎正被某件事深深困扰……	怀旧服-任务说明#10607	视频 19s 实机原句	魔法密林
 Arwen the Fairy from Ellinia has lost something...	魔法密林的妖精艾温好像丢了什么东西……	怀旧服-任务说明#10200	视频 23s 实机原句	魔法密林
 Whenever I walk past Wing the Fairy in Ellinia, he seems to be asking for help. I wonder why...	每次经过魔法密林的妖精维英身边时，他似乎都在求助。不知道为什么……	怀旧服-任务说明#10210	视频 30s 实机原句	魔法密林
@@ -12678,13 +12678,13 @@ Athena Pierce in Henesys welcomed me warmly, and I gained a new job, obtaining e
 Grendel the Really Old in Ellinia welcomed me warmly, and I gained a new job, obtaining even greater power!	魔法密林的汉斯热情地欢迎了我，我成功完成转职，获得了更强的力量！	怀旧服-任务说明#20103	视频 51s 完成态原句	魔法密林
 Dark Lord in Kerning City welcomed me warmly, and I gained a new job, obtaining even greater power!	废弃都市的达克鲁热情地欢迎了我，我成功完成转职，获得了更强的力量！	怀旧服-任务说明#20303	视频 52s 完成态原句	废弃都市
 Dances with Balrog in Perion welcomed me warmly, and I gained a new job, obtaining even greater power!	勇士部落的武术教练热情地欢迎了我，我成功完成转职，获得了更强的力量！	怀旧服-任务说明#20003	视频 54s 完成态原句	勇士部落
-To Henesys, the Prairie Town	前往草原之城射手村	怀旧服-任务#506000	视频 56s 与任务资料页核对	射手村
+To Henesys, the Prairie Town	前往草原城镇射手村	怀旧服-任务#506000	视频 56s 与任务资料页核对	射手村
 Arthur, the Town Clerk I met at Henesys Town Hall, suggested I become a resident of Henesys. Once I've made up my mind, I should speak with Arthur for more details.	我在射手村市政厅见到的镇务员亚瑟建议我成为射手村居民。决定以后，我应该再和亚瑟谈谈，了解更多详情。	怀旧服-任务说明#506000	视频 56s 完成态原句	射手村
-To the Gray City, Kerning City	前往灰色之城废弃都市	怀旧服-任务#506100	视频 60s 与任务资料页核对	射手村 · 废弃都市
+To the Gray City, Kerning City	前往灰色城市——废弃都市	怀旧服-任务#506100	视频 60s 与任务资料页核对	射手村 · 废弃都市
 City Clerk Roxy, whom I met in Kerning City, suggested that I become a resident of Kerning City. Which city suits me better, Henesys or Kerning City? Once I make up my mind, I should speak with the City Clerk of that city for more details.	我在废弃都市见到的城市职员洛克希建议我成为废弃都市居民。射手村和废弃都市，哪座城市更适合我呢？决定以后，我应该和那座城市的职员谈谈，了解更多详情。	怀旧服-任务说明#506100	视频 60s 完成态原句	射手村 · 废弃都市
-First Greeting with Pia, the Town Resident	初次问候镇民皮亚	怀旧服-任务#506011	视频 68s 与任务资料页核对	射手村
+First Greeting with Pia, the Town Resident	与村民皮亚的初次见面	怀旧服-任务#506011	视频 68s 与任务资料页核对	射手村
 I greeted Pia, a resident of Henesys. I have a feeling we're going to get along great!	我向射手村居民皮亚问了好。我感觉我们一定会相处得很愉快！	怀旧服-任务说明#506011	视频 68s 完成态原句	射手村
-Donating to Henesys	向射手村捐赠	怀旧服-任务#视频5420-75s	视频未显示具体捐赠物，不猜资料 ID	射手村
+Donating to Henesys	向射手村捐款	怀旧服-任务#视频5420-75s	视频未显示具体捐赠物，不猜资料 ID	射手村
 I gathered the items requested by Arthur, the town clerk, and brought them to him. I'm glad I could contribute to the development of our town.	我收集齐镇务员亚瑟需要的物品并交给了他。能为城镇的发展出一份力，我很高兴。	怀旧服-任务说明#视频5420-75s	视频 75s 公共完成态原句	射手村
 Wooden Tops	木制陀螺	怀旧服-聊天术语	用户实机图20260909
 S> Wooden Tops offer	出售木制陀螺，请报价	怀旧服-聊天短语	用户实机图20260909
@@ -12728,7 +12728,7 @@ Kerning	废弃都市	怀旧服-聊天缩写	Kerning City
 Orbis	天空之城	怀旧服-地图	国际服正式名；Classic World资料库与用户实机核对
 Ludi	玩具城	怀旧服-聊天缩写	Ludibrium
 Ludibrium	玩具城	怀旧服-地图	国际服正式名；Classic World资料库核对
-El Nath	冰封雪域	怀旧服-地图	国际服正式名；Classic World资料库核对
+El Nath	冰峰雪域	怀旧服-地图	国际服正式名；Classic World资料库核对
 HHG	射手村狩猎场	怀旧服-聊天缩写	Henesys Hunting Ground
 HHG1	射手村狩猎场 I	怀旧服-聊天缩写	Henesys Hunting Ground I
 WG	工地手套	怀旧服-聊天缩写	Work Gloves
@@ -12798,9 +12798,9 @@ Maple World's Unique Fun: Match Cards	冒险岛世界的独特乐趣：记忆卡
 Maple World's Unique Fun: Omok	冒险岛世界的独特乐趣：五子棋	怀旧服-任务组	MapleStory Quest Classic World chain heading (https://maplestory.quest/quests/80006); display-only group title, no taskId; no official Chinese title, conservative translation
 Winston's Fossil Dig-up	芳博士的化石挖掘	怀旧服-任务组	MapleStory Quest Classic World chain heading (https://maplestory.quest/quests/10405); display-only group title, no taskId; Winston is already 芳博士 in this dictionary; chain title has no official Chinese title
 Welcome to the Free Market!	欢迎来到自由市场！	怀旧服-任务#80026	MapleStory Quest current quest page (https://maplestory.quest/quests/80026); no official Chinese title, conservative translation	自由市场入口
-Chief Stan's Reply	长老斯坦的回信	怀旧服-任务#80027	MapleStory Quest current quest page (https://maplestory.quest/quests/80027); no official Chinese title, conservative translation	射手村
+Chief Stan's Reply	长老斯坦的回复	怀旧服-任务#80027	MapleStory Quest current quest page (https://maplestory.quest/quests/80027); no official Chinese title, conservative translation	射手村
 Asking Perion for Help	向勇士部落求助	怀旧服-任务#80028	MapleStory Quest current quest page (https://maplestory.quest/quests/80028); no official Chinese title, conservative translation	自由市场入口
-Dances with Balrog's Reply	武术教练的回信	怀旧服-任务#80029	MapleStory Quest current quest page (https://maplestory.quest/quests/80029); no official Chinese title, conservative translation	自由市场入口
+Dances with Balrog's Reply	武术教练的回复	怀旧服-任务#80029	MapleStory Quest current quest page (https://maplestory.quest/quests/80029); no official Chinese title, conservative translation	自由市场入口
 Lewis in the Free Market Entrance is looking for an adventurer to help him. It seems the Free Market can be accessed through Henesys or Perion. Lewis in the Free Market Entrance asked me to deliver a letter to Chief Stan in Henesys to help revitalize the Free Market. I delivered Lewis's letter to Chief Stan in Henesys.	自由市场入口的刘易斯正在寻找冒险家帮忙。自由市场似乎可以从射手村或勇士部落进入。自由市场入口的刘易斯请我把信交给射手村的长老斯坦，以帮助振兴自由市场。我已将刘易斯的信交给射手村的长老斯坦。	怀旧服-任务说明#80026	MapleStory Quest current story text (https://maplestory.quest/quests/80026); no official Chinese text, conservative translation
 Chief Stan in Henesys seems to want to send a reply to Lewis in the Free Market Entrance. Chief Stan in Henesys asked me to deliver a reply to Lewis in the Free Market Entrance. I delivered Chief Stan's letter to Lewis in the Free Market Entrance.	射手村的长老斯坦似乎想给自由市场入口的刘易斯回信。长老斯坦请我把回信交给自由市场入口的刘易斯。我已将斯坦长老的信交给自由市场入口的刘易斯。	怀旧服-任务说明#80027	MapleStory Quest current story text (https://maplestory.quest/quests/80027); no official Chinese text, conservative translation
 Lewis in the Free Market Entrance seems to have another favor. This time, Lewis in the Free Market Entrance asked me to deliver a letter to Dances with Balrog in Perion. I delivered Lewis's letter to Dances with Balrog in Perion.	自由市场入口的刘易斯似乎还有一个请求。这一次，刘易斯请我把信交给勇士部落的武术教练。我已将刘易斯的信交给勇士部落的武术教练。	怀旧服-任务说明#80028	MapleStory Quest current story text (https://maplestory.quest/quests/80028); no official Chinese text, conservative translation
@@ -12901,97 +12901,495 @@ wb	欢迎回来。	怀旧服-聊天缩写	Welcome back；用户提供的枫之�
 ikr	我知道吧。	怀旧服-聊天缩写	I know, right；用户提供的枫之谷聊天用语表
 XD	笑到眯眼。	怀旧服-聊天缩写	Laughing emoticon；用户提供的枫之谷聊天用语表
 RIP	安息吧。	怀旧服-聊天缩写	Rest in peace；用户提供的枫之谷聊天用语表
-First Greeting with Rina, the Town Resident	初次问候镇民丽娜	怀旧服-任务#506001	NiaMeowDB 公民系统实装资料	射手村
-Asking After Rina, the Town Resident	探望镇民丽娜	怀旧服-任务#506002	NiaMeowDB 公民系统实装资料	射手村
-First Greeting with Mrs. Ming Ming, the Town Resident	初次问候镇民明明女士	怀旧服-任务#506003	NiaMeowDB 公民系统实装资料	射手村
-Asking After Mrs. Ming Ming, the Town Resident.	探望镇民明明女士	怀旧服-任务#506004	NiaMeowDB 公民系统实装资料	射手村
-First Greeting with Camila, the Town Resident	初次问候镇民卡米拉	怀旧服-任务#506005	NiaMeowDB 公民系统实装资料	射手村
-Asking After Camila, the Town Resident	探望镇民卡米拉	怀旧服-任务#506006	NiaMeowDB 公民系统实装资料	射手村
-First Greeting with Bruce, the Town Resident	初次问候镇民布鲁斯	怀旧服-任务#506007	NiaMeowDB 公民系统实装资料	射手村
-Asking After Bruce, the Town Resident	探望镇民布鲁斯	怀旧服-任务#506008	NiaMeowDB 公民系统实装资料	射手村
-First Greeting with Maya, the Town Resident	初次问候镇民玛亚	怀旧服-任务#506009	NiaMeowDB 公民系统实装资料	射手村
-Asking After Maya, the Town Resident	探望镇民玛亚	怀旧服-任务#506010	NiaMeowDB 公民系统实装资料	射手村
-Asking After Pia, the Town Resident	探望镇民皮亚	怀旧服-任务#506012	NiaMeowDB 公民系统实装资料	射手村
-Asking After Anne, the Town Resident	探望镇民桉	怀旧服-任务#506014	NiaMeowDB 公民系统实装资料	射手村
-First Greeting with Chief Stan	初次问候长老斯坦	怀旧服-任务#506015	NiaMeowDB 公民系统实装资料	射手村
-Asking After Chief Stan	探望长老斯坦	怀旧服-任务#506016	NiaMeowDB 公民系统实装资料	射手村
-First Greeting with Athena Pierce	初次问候雅典娜·皮尔丝	怀旧服-任务#506017	NiaMeowDB 公民系统实装资料	射手村
-Asking After Athena Pierce	探望雅典娜·皮尔丝	怀旧服-任务#506018	NiaMeowDB 公民系统实装资料	射手村
-Donating to Henesys	向射手村捐赠	怀旧服-任务#506019	NiaMeowDB 公民系统实装资料	射手村
-Donating to Henesys	向射手村捐赠	怀旧服-任务#506020	NiaMeowDB 公民系统实装资料	射手村
-Donating to Henesys	向射手村捐赠	怀旧服-任务#506021	NiaMeowDB 公民系统实装资料	射手村
-Donating to Henesys	向射手村捐赠	怀旧服-任务#506022	NiaMeowDB 公民系统实装资料	射手村
-Donating to Henesys	向射手村捐赠	怀旧服-任务#506023	NiaMeowDB 公民系统实装资料	射手村
-Donating to Henesys	向射手村捐赠	怀旧服-任务#506024	NiaMeowDB 公民系统实装资料	射手村
-Donating to Henesys	向射手村捐赠	怀旧服-任务#506025	NiaMeowDB 公民系统实装资料	射手村
-Donating to Henesys	向射手村捐赠	怀旧服-任务#506026	NiaMeowDB 公民系统实装资料	射手村
-Donating to Henesys	向射手村捐赠	怀旧服-任务#506027	NiaMeowDB 公民系统实装资料	射手村
-Donating to Henesys	向射手村捐赠	怀旧服-任务#506028	NiaMeowDB 公民系统实装资料	射手村
-Donating to Henesys	向射手村捐赠	怀旧服-任务#506029	NiaMeowDB 公民系统实装资料	射手村
-Donating to Henesys	向射手村捐赠	怀旧服-任务#506030	NiaMeowDB 公民系统实装资料	射手村
-Donating to Henesys	向射手村捐赠	怀旧服-任务#506031	NiaMeowDB 公民系统实装资料	射手村
-Donating to Henesys	向射手村捐赠	怀旧服-任务#506032	NiaMeowDB 公民系统实装资料	射手村
-Donating to Henesys	向射手村捐赠	怀旧服-任务#506033	NiaMeowDB 公民系统实装资料	射手村
-Donating to Henesys	向射手村捐赠	怀旧服-任务#506034	NiaMeowDB 公民系统实装资料	射手村
-Donating to Henesys	向射手村捐赠	怀旧服-任务#506035	NiaMeowDB 公民系统实装资料	射手村
-Bruce's Dilemma	布鲁斯的烦恼	怀旧服-任务#506036	NiaMeowDB 公民系统实装资料	射手村
+First Greeting with Rina, the Town Resident	与村民丽娜的初次见面	怀旧服-任务#506001	NiaMeowDB 公民系统实装资料	射手村
+Asking After Rina, the Town Resident	问候村民丽娜	怀旧服-任务#506002	NiaMeowDB 公民系统实装资料	射手村
+First Greeting with Mrs. Ming Ming, the Town Resident	与村民明明女士的初次见面	怀旧服-任务#506003	NiaMeowDB 公民系统实装资料	射手村
+Asking After Mrs. Ming Ming, the Town Resident.	问候村民明明女士	怀旧服-任务#506004	NiaMeowDB 公民系统实装资料	射手村
+First Greeting with Camila, the Town Resident	与村民卡米拉的初次见面	怀旧服-任务#506005	NiaMeowDB 公民系统实装资料	射手村
+Asking After Camila, the Town Resident	问候村民卡米拉	怀旧服-任务#506006	NiaMeowDB 公民系统实装资料	射手村
+First Greeting with Bruce, the Town Resident	与村民布鲁斯的初次见面	怀旧服-任务#506007	NiaMeowDB 公民系统实装资料	射手村
+Asking After Bruce, the Town Resident	问候村民布鲁斯	怀旧服-任务#506008	NiaMeowDB 公民系统实装资料	射手村
+First Greeting with Maya, the Town Resident	与村民玛亚的初次见面	怀旧服-任务#506009	NiaMeowDB 公民系统实装资料	射手村
+Asking After Maya, the Town Resident	问候村民玛亚	怀旧服-任务#506010	NiaMeowDB 公民系统实装资料	射手村
+Asking After Pia, the Town Resident	问候村民皮亚	怀旧服-任务#506012	NiaMeowDB 公民系统实装资料	射手村
+Asking After Anne, the Town Resident	问候村民桉	怀旧服-任务#506014	NiaMeowDB 公民系统实装资料	射手村
+First Greeting with Chief Stan	与长老斯坦的初次见面	怀旧服-任务#506015	NiaMeowDB 公民系统实装资料	射手村
+Asking After Chief Stan	问候长老斯坦	怀旧服-任务#506016	NiaMeowDB 公民系统实装资料	射手村
+First Greeting with Athena Pierce	与赫丽娜的初次见面	怀旧服-任务#506017	NiaMeowDB 公民系统实装资料	射手村
+Asking After Athena Pierce	问候赫丽娜	怀旧服-任务#506018	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐款	怀旧服-任务#506019	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐款	怀旧服-任务#506020	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐款	怀旧服-任务#506021	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐款	怀旧服-任务#506022	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐款	怀旧服-任务#506023	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐款	怀旧服-任务#506024	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐款	怀旧服-任务#506025	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐款	怀旧服-任务#506026	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐款	怀旧服-任务#506027	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐款	怀旧服-任务#506028	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐款	怀旧服-任务#506029	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐款	怀旧服-任务#506030	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐款	怀旧服-任务#506031	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐款	怀旧服-任务#506032	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐款	怀旧服-任务#506033	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐款	怀旧服-任务#506034	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐款	怀旧服-任务#506035	NiaMeowDB 公民系统实装资料	射手村
+Bruce's Dilemma	布鲁斯的困境	怀旧服-任务#506036	NiaMeowDB 公民系统实装资料	射手村
 Mrs. Ming Ming's Advice	明明女士的建议	怀旧服-任务#506037	NiaMeowDB 公民系统实装资料	射手村
 Bruce's Cooking Ingredients	布鲁斯的烹饪材料	怀旧服-任务#506038	NiaMeowDB 公民系统实装资料	射手村
 A Father's Love for His Daughter	父亲对女儿的爱	怀旧服-任务#506039	NiaMeowDB 公民系统实装资料	射手村
-The Best Dad	最棒的爸爸	怀旧服-任务#506040	NiaMeowDB 公民系统实装资料	射手村
+The Best Dad	最好的爸爸	怀旧服-任务#506040	NiaMeowDB 公民系统实装资料	射手村
 Mrs. Ming Ming's Concern	明明女士的担忧	怀旧服-任务#506041	NiaMeowDB 公民系统实装资料	射手村
 Chief Stan's Past	长老斯坦的过去	怀旧服-任务#506042	NiaMeowDB 公民系统实装资料	射手村
 Chief Stan's Hammer	长老斯坦的锤子	怀旧服-任务#506043	NiaMeowDB 公民系统实装资料	射手村
 Memories of Youth	青春的回忆	怀旧服-任务#506044	NiaMeowDB 公民系统实装资料	射手村
 Regained Vitality	重获活力	怀旧服-任务#506045	NiaMeowDB 公民系统实装资料	射手村
-First Greeting with Alex, the Town Resident	初次问候镇民阿勒斯	怀旧服-任务#506101	NiaMeowDB 公民系统实装资料	废弃都市
-Asking After Alex, the Town Resident	探望镇民阿勒斯	怀旧服-任务#506102	NiaMeowDB 公民系统实装资料	废弃都市
-First Greeting with Shumi, the Town Resident	初次问候镇民休咪	怀旧服-任务#506103	NiaMeowDB 公民系统实装资料	废弃都市
-Asking After Shumi, the Town Resident	探望镇民休咪	怀旧服-任务#506104	NiaMeowDB 公民系统实装资料	废弃都市
-First Greeting with Nella, the Town Resident	初次问候镇民内拉	怀旧服-任务#506105	NiaMeowDB 公民系统实装资料	废弃都市
-Asking After Nella, the Town Resident	探望镇民内拉	怀旧服-任务#506106	NiaMeowDB 公民系统实装资料	废弃都市
-First Greeting with Icarus, the Town Resident	初次问候镇民伊卡路斯	怀旧服-任务#506107	NiaMeowDB 公民系统实装资料	废弃都市
-Asking After Icarus, the Town Resident	探望镇民伊卡路斯	怀旧服-任务#506108	NiaMeowDB 公民系统实装资料	废弃都市
-First Greeting with Jane Doe, the Town Resident	初次问候镇民不认识的女人	怀旧服-任务#506109	NiaMeowDB 公民系统实装资料	废弃都市
-Asking After Jane Doe, the Town Resident	探望镇民不认识的女人	怀旧服-任务#506110	NiaMeowDB 公民系统实装资料	废弃都市
-First Greeting with Jake, the Town Resident	初次问候镇民冬青	怀旧服-任务#506111	NiaMeowDB 公民系统实装资料	废弃都市
-Asking After Jake, the Town Resident	探望镇民冬青	怀旧服-任务#506112	NiaMeowDB 公民系统实装资料	废弃都市
-First Greeting with Mr. Pickall, the Town Resident	初次问候镇民权达开	怀旧服-任务#506113	NiaMeowDB 公民系统实装资料	废弃都市
-Asking After Mr. Pickall, the Town Resident	探望镇民权达开	怀旧服-任务#506114	NiaMeowDB 公民系统实装资料	废弃都市
-First Greeting with Chun Ji	初次问候千吉	怀旧服-任务#506115	NiaMeowDB 公民系统实装资料	废弃都市
-Asking After Chun Ji	探望千吉	怀旧服-任务#506116	NiaMeowDB 公民系统实装资料	废弃都市
-First Greeting with Dark Lord	初次问候黑暗之神	怀旧服-任务#506117	NiaMeowDB 公民系统实装资料	废弃都市
-Asking After Dark Lord	探望黑暗之神	怀旧服-任务#506118	NiaMeowDB 公民系统实装资料	废弃都市
-Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506119	NiaMeowDB 公民系统实装资料	废弃都市
-Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506120	NiaMeowDB 公民系统实装资料	废弃都市
-Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506121	NiaMeowDB 公民系统实装资料	废弃都市
-Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506122	NiaMeowDB 公民系统实装资料	废弃都市
-Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506123	NiaMeowDB 公民系统实装资料	废弃都市
-Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506124	NiaMeowDB 公民系统实装资料	废弃都市
-Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506125	NiaMeowDB 公民系统实装资料	废弃都市
-Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506126	NiaMeowDB 公民系统实装资料	废弃都市
-Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506127	NiaMeowDB 公民系统实装资料	废弃都市
-Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506128	NiaMeowDB 公民系统实装资料	废弃都市
-Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506129	NiaMeowDB 公民系统实装资料	废弃都市
-Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506130	NiaMeowDB 公民系统实装资料	废弃都市
-Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506131	NiaMeowDB 公民系统实装资料	废弃都市
-Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506132	NiaMeowDB 公民系统实装资料	废弃都市
-Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506133	NiaMeowDB 公民系统实装资料	废弃都市
-Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506134	NiaMeowDB 公民系统实装资料	废弃都市
-Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506135	NiaMeowDB 公民系统实装资料	废弃都市
-Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506136	NiaMeowDB 公民系统实装资料	废弃都市
-Stirge Phobia	蝙蝠怪恐惧症	怀旧服-任务#506137	NiaMeowDB 公民系统实装资料	废弃都市
+First Greeting with Alex, the Town Resident	与镇民阿勒斯的初次问候	怀旧服-任务#506101	NiaMeowDB 公民系统实装资料	废弃都市
+Asking After Alex, the Town Resident	问候镇民阿勒斯	怀旧服-任务#506102	NiaMeowDB 公民系统实装资料	废弃都市
+First Greeting with Shumi, the Town Resident	与镇民休咪的初次问候	怀旧服-任务#506103	NiaMeowDB 公民系统实装资料	废弃都市
+Asking After Shumi, the Town Resident	问候镇民休咪	怀旧服-任务#506104	NiaMeowDB 公民系统实装资料	废弃都市
+First Greeting with Nella, the Town Resident	与镇民内拉的初次问候	怀旧服-任务#506105	NiaMeowDB 公民系统实装资料	废弃都市
+Asking After Nella, the Town Resident	问候镇民内拉	怀旧服-任务#506106	NiaMeowDB 公民系统实装资料	废弃都市
+First Greeting with Icarus, the Town Resident	与镇民伊卡路斯的初次问候	怀旧服-任务#506107	NiaMeowDB 公民系统实装资料	废弃都市
+Asking After Icarus, the Town Resident	打听居民伊卡路斯	怀旧服-任务#506108	NiaMeowDB 公民系统实装资料	废弃都市
+First Greeting with Jane Doe, the Town Resident	与镇民「不认识的女人」的初次问候	怀旧服-任务#506109	NiaMeowDB 公民系统实装资料	废弃都市
+Asking After Jane Doe, the Town Resident	问候镇民「不认识的女人」	怀旧服-任务#506110	NiaMeowDB 公民系统实装资料	废弃都市
+First Greeting with Jake, the Town Resident	与镇民冬青的初次问候	怀旧服-任务#506111	NiaMeowDB 公民系统实装资料	废弃都市
+Asking After Jake, the Town Resident	问候镇民冬青	怀旧服-任务#506112	NiaMeowDB 公民系统实装资料	废弃都市
+First Greeting with Mr. Pickall, the Town Resident	与镇民权达开的初次问候	怀旧服-任务#506113	NiaMeowDB 公民系统实装资料	废弃都市
+Asking After Mr. Pickall, the Town Resident	打听居民权达开	怀旧服-任务#506114	NiaMeowDB 公民系统实装资料	废弃都市
+First Greeting with Chun Ji	与千吉的初次见面	怀旧服-任务#506115	NiaMeowDB 公民系统实装资料	废弃都市
+Asking After Chun Ji	问候千吉	怀旧服-任务#506116	NiaMeowDB 公民系统实装资料	废弃都市
+First Greeting with Dark Lord	与达克鲁的初次问候	怀旧服-任务#506117	NiaMeowDB 公民系统实装资料	废弃都市
+Asking After Dark Lord	问候达克鲁	怀旧服-任务#506118	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	捐助废弃都市	怀旧服-任务#506119	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	捐助废弃都市	怀旧服-任务#506120	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	捐助废弃都市	怀旧服-任务#506121	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	捐助废弃都市	怀旧服-任务#506122	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	捐助废弃都市	怀旧服-任务#506123	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	捐助废弃都市	怀旧服-任务#506124	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	捐助废弃都市	怀旧服-任务#506125	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	捐助废弃都市	怀旧服-任务#506126	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	捐助废弃都市	怀旧服-任务#506127	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	捐助废弃都市	怀旧服-任务#506128	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	捐助废弃都市	怀旧服-任务#506129	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	捐助废弃都市	怀旧服-任务#506130	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	捐助废弃都市	怀旧服-任务#506131	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	捐助废弃都市	怀旧服-任务#506132	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	捐助废弃都市	怀旧服-任务#506133	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	捐助废弃都市	怀旧服-任务#506134	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	捐助废弃都市	怀旧服-任务#506135	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	捐助废弃都市	怀旧服-任务#506136	NiaMeowDB 公民系统实装资料	废弃都市
+Stirge Phobia	蝙蝠恐惧症	怀旧服-任务#506137	NiaMeowDB 公民系统实装资料	废弃都市
 Making the Medicine	制作药物	怀旧服-任务#506138	NiaMeowDB 公民系统实装资料	废弃都市
-The Final Ingredient for the Cure	治疗药的最后材料	怀旧服-任务#506139	NiaMeowDB 公民系统实装资料	废弃都市
+The Final Ingredient for the Cure	治疗的最后材料	怀旧服-任务#506139	NiaMeowDB 公民系统实装资料	废弃都市
 Grandfather's Vitamin Gummy	爷爷的维生素软糖	怀旧服-任务#506140	NiaMeowDB 公民系统实装资料	废弃都市
-It's All in the Mind	一切都在于心态	怀旧服-任务#506141	NiaMeowDB 公民系统实装资料	废弃都市
+It's All in the Mind	一切都是心理作用	怀旧服-任务#506141	NiaMeowDB 公民系统实装资料	废弃都市
 Worn Bandages	破旧的绷带	怀旧服-任务#506147	NiaMeowDB 公民系统实装资料	废弃都市
-A Torn Letter	一封破损的信	怀旧服-任务#506148	NiaMeowDB 公民系统实装资料	废弃都市
-Once a Renowned Doctor	曾经声名远扬的医生	怀旧服-任务#506149	NiaMeowDB 公民系统实装资料	废弃都市
+A Torn Letter	撕破的信	怀旧服-任务#506148	NiaMeowDB 公民系统实装资料	废弃都市
+Once a Renowned Doctor	曾经的名医	怀旧服-任务#506149	NiaMeowDB 公民系统实装资料	废弃都市
 The Price of Information	情报的代价	怀旧服-任务#506150	NiaMeowDB 公民系统实装资料	废弃都市
-A Truth Finally Known	终于得知的真相	怀旧服-任务#506151	NiaMeowDB 公民系统实装资料	废弃都市
+A Truth Finally Known	终于知晓的真相	怀旧服-任务#506151	NiaMeowDB 公民系统实装资料	废弃都市
 Level 12+	等级 12+	怀旧服-任务目标	公民系统任务面板实测门槛提示（QQ20261007-144653 / QQ20261007-173014）；display-only，不分配任务ID
 Only characters at Level 12 or higher can complete this quest.	只有 12 级或以上的角色才能完成此任务。	怀旧服-任务目标	截图 QQ20261007-144653 与 QQ20261007-173014 实测门槛句
 It seems Henesys offers various services for adventurers. I should drop by Henesys if I'm ever in the area.	看来射手村为冒险者们提供了各种服务。如果我有机会到那一带，应该去射手村看看。	怀旧服-任务目标	截图 QQ20261007-144653 右侧任务正文；射手村公民任务
 Roxy, the City Clerk, requested a donation of 30 Bubbling's Huge Bubbles for Kerning City.	城市职员洛克希请求为废弃都市捐赠 30 个蓝水灵大水珠。	怀旧服-任务目标	截图 QQ20261007-173014 右侧任务正文；沿用库内 City Clerk Roxy=城市职员洛克希、Kerning City=废弃都市
 Victoria Island	维多利亚岛	怀旧服-任务组	任务列表组标题；沿用库内既有译法（任务说明#1010/#1013/#1019 均作“维多利亚岛”）
+Adobis	阿杜比斯	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Agatha	桑艺	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Aileen	艾琳	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Alcaster	阿尔卡斯特	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Ali	阿里	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Amon	阿们	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Arec	艾瑞克	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Arthur	亚瑟	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Aura	奥拉	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Barun	巴兰	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Ben	本	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Bianca	比安卡	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Cave Fairy's Storage	洞穴妖精的仓库	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Cherry	检票员	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Community Board	社区公告板	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Corporal Easy	伊吉上等兵	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Corporal Wilson	瑞撒上等兵	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Corrupted Bluebell	腐化的蓝铃	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Daniel the Scholar	学者丹尼尔	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Doorbell	门铃	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Edel the Fairy	妖精易多	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+El Nath Magic Spot	冰峰雪域魔法石	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Elma the Housekeeper	保姆珥玛	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Erin	阿霖	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Flint	弗林特	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Franz the Owner	弗兰克	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Glibber	格里巴	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Gordon	高登	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Hana	哈娜	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Heracle	哈拉克	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Holy Stone	神圣的石头	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Huckle	哈克尔	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Inky	因基	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Jack	捷克	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Jade	杰德	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Jaime the Wandering Explorer	流浪探险家杰米	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Jeff	杰夫	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Joel	售票员	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Jon the Justicar	审判官乔恩	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Kriel the Fairy	妖精珂丽尔	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Lewis	刘易斯	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Lira	利拉	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Lisa	莉萨	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Lyn	琳	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Lyn the Librarian	图书管理员琳	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Mailbox	信箱	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Mariel	玛丽尔	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Master Sergeant Fox	珀斯上尉	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Max	马克斯	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Mino the Owner	米努	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Mr. Thalj	塔尔杰先生	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Neri the Fairy	妖精娜丽	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Neve	奈巴	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+NPC	图鉴 — 经典世界怀旧服中文资料库	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Nuri the Fairy	妖精诺丽	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Nyra	奈拉	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Oak	奥克	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Orbis Magic Spot	天空之城魔法石	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Piece of Statue	石像的碎片	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Platform Usher	月台引导员	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Purin	船员普林	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Raymond	雷蒙德	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Reinforced Safe	加固的保险箱	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Reinforced Wooden Chest	加固的木箱	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Rene	蕾妮	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Rini	田菲	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Rinz the Assistant	利纳斯	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Riza the Assistant	利嘉	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Robeira	鲁碧	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Rock Covered in Snow	雪岩	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Romi	罗米	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Roxy	罗克西	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Rumi	卢米	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Rusty Safe	生锈的保险箱	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Sabrina the Scribe	抄写员塞布丽娜	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Scadur	斯卡德	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Scarlett	斯嘉丽	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Scott	斯考特	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Sergeant Bravo	巴伯下士	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Shuri	贵英	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Slade	斯莱德	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Small Tomb	小墓地	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Spiruna	斯皮罗纳	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Staff Sergeant Charlie	查里中士	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Statue	雕像	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Sunny	斯娜	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Tommy	达尔米	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Torin	托林	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Trina	小刘	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Tylus	泰勒斯	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Vogen	伯坚	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Weston	韦斯顿	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Whitney	惠特妮	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Woodcrafting Station	木工台	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Worn Wooden Chest	破旧的木箱	怀旧服-NPC	mscw-guidebook 社区译名核对补录
+Adamantium Arrows for Bows	亚德曼合金弓矢	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Adventurer's Journal	冒险家日志	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Adventurer's Journal - Page 2	冒险家日志 - 第2页	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Adventurer's Journal - Page 3	冒险家日志 - 第3页	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Adventurer's Journal - Page 4	冒险家日志 - 第4页	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Adventurer's Journal - Page 5	冒险家日志 - 第5页	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Adventurer's Journal - Page 6	冒险家日志 - 第6页	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Andre's Seafood Soup	安德烈的海鲜汤	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Arcforging Kit	炼金工具包	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Armor Crafting Catalyst Etc	防具催化剂	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Arrows for Bows	弓矢	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Arrows for Crossbows	弩矢	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Atmospheric Effect Box	氛围效果箱	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Aura Face Coupon	阿乌拉脸型券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Aura Outfit Set	阿乌拉时装套装	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Aurora Stamp	极光印章	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Blue Malady's Candy	蓝色玛拉迪糖果	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Bronze Arrows for Bows	青铜弓矢	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Bronze Arrows for Crossbows	青铜弩矢	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Companion's Magic Box	伙伴的魔法箱	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Compensation Box	补偿箱	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Destructive Potion	毁灭药水	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Earring Evasion Scroll: Chaos	耳环回避率卷轴：混沌	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Earring Evasion Scroll: Greater	耳环回避率卷轴：高级	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Earring Evasion Scroll: Intermediate	耳环回避率卷轴：中级	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Earring Evasion Scroll: Lesser	耳环回避率卷轴：初级	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Fern Face Coupon Consume	菲伦脸型券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Fern Hair Coupon Consume	菲伦发型券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Fern Outfit Set Consume	菲伦时装套装	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Fern's Clothes Selector Coupon Consume	菲伦服装选择券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Founder's Chat Ring Exchange Coupon Consume	创始者聊天戒指交换券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Founder's Label Ring Exchange Coupon Consume	创始者名牌戒指交换券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Founder's Thief Avatar Set Consume	创始者盗贼时装套装	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Frieren Clothes Selector Coupon Consume	芙莉莲服装选择券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Frieren Face Coupon Consume	芙莉莲脸型券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Frieren Hair (Ringlets) Coupon Consume	芙莉莲发型(卷发)券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Frieren Hair (Sleep) Coupon Consume	芙莉莲发型(睡眠)券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Frieren Hair Coupon Consume	芙莉莲发型券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Frieren Outfit Set (Ringlets) Consume	芙莉莲时装套装（卷发）	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Frieren Outfit Set (Sleep) Consume	芙莉莲时装套装（睡衣）	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Frieren Outfit Set Consume	芙莉莲时装套装	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Gift Box Consume	礼物盒	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Gift for the New Journey Consume	新旅程的礼物	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Himmel Face Coupon Consume	辛美尔脸型券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Himmel Hair Coupon Consume	辛美尔发型券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Himmel Outfit Set Consume	辛美尔时装套装	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Jr. Balrog Invasion Consume	蝙蝠怪入侵	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Leaf Points (1,000) Exchange Coupon Consume	叶子积分（1000）兑换券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Leaf Points (10,000) Exchange Coupon Consume	枫叶点数(10,000)兑换券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Leaf Points (100,000) Exchange Coupon Consume	枫叶点数(100,000)兑换券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Leaf Points (5,000) Exchange Coupon Consume	枫叶点数(5,000)兑换券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Leaf Points (50,000) Exchange Coupon Consume	枫叶点数(50,000)兑换券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Lie Detector Test Consume	测谎仪	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Linie Face Coupon Consume	莉妮耶脸型券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Linie Outfit Set Consume	莉妮耶时装套装	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Manji Avatar Set Consume	曼吉时装套装	怀旧服-道具	mscw-guidebook 社区译名核对补录
+MapleStory Fest 2026 Chat Ring Exchange Coupon Consume	经典世界庆典2026聊天戒指交换券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+MapleStory Fest 2026 Gift Box (Bronze) Consume	经典世界庆典2026礼盒（青铜）	怀旧服-道具	mscw-guidebook 社区译名核对补录
+MapleStory Fest 2026 Gift Box (Gold) Consume	经典世界庆典2026礼盒（黄金）	怀旧服-道具	mscw-guidebook 社区译名核对补录
+MapleStory Fest 2026 Gift Box (Silver) Consume	经典世界庆典2026礼盒（白银）	怀旧服-道具	mscw-guidebook 社区译名核对补录
+MapleStory Fest 2026 Label Ring Exchange Coupon Consume	经典世界庆典2026名牌戒指交换券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+MapleStory Fest 2026 Special Hat Exchange Box (Bronze) Consume	经典世界庆典2026特别帽子交换箱（青铜）	怀旧服-道具	mscw-guidebook 社区译名核对补录
+MapleStory Fest 2026 Special Hat Exchange Box (Gold) Consume	经典世界庆典2026特别帽子交换箱（黄金）	怀旧服-道具	mscw-guidebook 社区译名核对补录
+MapleStory Fest 2026 Special Hat Exchange Box (Silver) Consume	经典世界庆典2026特别帽子交换箱（白银）	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Mystery Palette Exchange Coupon Consume	神秘调色板交换券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Natalie's Fashion Box (F) Consume	娜塔莉的时装箱（女）	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Natalie's Fashion Box (M) Consume	娜塔莉的时装箱（男）	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Octopus & Mushroom Omok Set Etc	三眼章鱼/蘑菇五子棋	怀旧服-道具	mscw-guidebook 社区译名核对补录
+One-Handed Weapon Crafting Catalyst Etc	单手武器制作催化剂	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Orange Mushroom Daydream Consume	橙蘑菇白日梦	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Orange Mushroom Invasion Consume	橙蘑菇入侵	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Orange Mushroom Package Consume	花蘑菇礼包	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Orange Mushroom to Zakum Upgrade Package Consume	花蘑菇至扎昆升级礼包	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Palette Cleanser Exchange Coupon Consume	调色板清洁剂交换券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Pet Ability Transfer Scroll Etc	宠物能力转移卷轴	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Pet Food Consume	宠物食品	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Pig & Mushroom Omok Set Etc	猪猪/蘑菇五子棋	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Pig & Octopus Omok Set Etc	猪猪/三眼章鱼五子棋	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Rainbow-colored Snail Shell Consume	彩虹色蜗牛壳儿	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Red Snail Daydream Consume	红蜗牛白日梦	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Red Snail Invasion Consume	红蜗牛入侵	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Ribbon Pig Daydream Consume	缎带猪白日梦	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Ribbon Pig Invasion Consume	缎带猪入侵	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Scroll Crafting Catalyst Etc	卷轴制作催化剂	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Set of Match Cards Etc	记忆卡套组	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Slime & Mushroom Omok Set Etc	绿水灵/蘑菇五子棋	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Slime & Octopus Omok Set Etc	绿水灵/三眼章鱼五子棋	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Slime & Pig Omok Set Etc	绿水灵/猪猪五子棋	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Snail Package Consume	蜗牛礼包	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Snail to Orange Mushroom Upgrade Package Consume	蜗牛至花蘑菇升级礼包	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Snail to Zakum Upgrade Package Consume	蜗牛至扎昆升级礼包	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Stark Face Coupon Consume	休塔尔克脸型券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Stark Hair Coupon Consume	休塔尔克发型券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Stark Outfit Set Consume	休塔尔克时装套装	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Stark's Clothes Selector Coupon Consume	休塔尔克服装选择券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Stark's Gloves Selector Coupon Consume	休塔尔克手套选择券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Stark's Shoes Selector Coupon Consume	休塔尔克鞋子选择券	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Summoning New-Type Balrog Consume	蝙蝠怪召唤包	怀旧服-道具	mscw-guidebook 社区译名核对补录
+The Songs of Solomon Consume	兵法书(孙子)	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Two-Handed Weapon Crafting Catalyst Etc	双手武器制作催化剂	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Well-Loved Avatar Set Consume	人气时装套装	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Zakum Package Consume	扎昆礼包	怀旧服-道具	mscw-guidebook 社区译名核对补录
+Backalley Semi-Basement	后巷半地下室	怀旧服-地图	mscw-guidebook 社区译名核对补录
+Chief's Residence	酋长的住所	怀旧服-地图	mscw-guidebook 社区译名核对补录
+El Nath Department Store	雪域杂货店	怀旧服-地图	mscw-guidebook 社区译名核对补录
+El Nath Market	雪域集市	怀旧服-地图	mscw-guidebook 社区译名核对补录
+El Nath Weapon Store	雪域武器店	怀旧服-地图	mscw-guidebook 社区译名核对补录
+Ellinia Station	魔法密林码头	怀旧服-地图	mscw-guidebook 社区译名核对补录
+Henesys Town Hall	射手村市政厅	怀旧服-地图	mscw-guidebook 社区译名核对补录
+Kerning City Civic Center	废弃都市市政中心	怀旧服-地图	mscw-guidebook 社区译名核对补录
+Old Man's House	老人的家	怀旧服-地图	mscw-guidebook 社区译名核对补录
+Orbis Department Store	天空之城杂货店	怀旧服-地图	mscw-guidebook 社区译名核对补录
+Orbis Hair Salon	天空之城美发店	怀旧服-地图	mscw-guidebook 社区译名核对补录
+Orbis Skin-Care	天空之城护肤中心	怀旧服-地图	mscw-guidebook 社区译名核对补录
+Orbis Ticketing Booth	天空之城售票处	怀旧服-地图	mscw-guidebook 社区译名核对补录
+Orbis Weapon Store	天空之城武器店	怀旧服-地图	mscw-guidebook 社区译名核对补录
+The Circulation Desk	借阅台	怀旧服-地图	mscw-guidebook 社区译名核对补录
+To Ellinia	前往魔法密林	怀旧服-地图	mscw-guidebook 社区译名核对补录
+To Orbis	开往天空之城	怀旧服-地图	mscw-guidebook 社区译名核对补录
+Top of the Hill	遗忘的山丘	怀旧服-地图	mscw-guidebook 社区译名核对补录
+Barnard Gray	白外星人卫兵	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Black Ratz	玩具黑鼠	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Block Golem	黄积木怪	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Bloctopus	吹泡泡双鱼	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Brown Teddy	玩具棕熊	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Cellion	红独角狮	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Chirppy	飞行雀	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Chronos	小恶魔	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Dark Leatty	小黑雪鬼	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Dark Nependeath	黑暗的食人花	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Drumming Bunny	打鼓兔子	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Fire Sentinel	火石球	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Firebomb	火精灵	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Flyeye	独眼蝙蝠	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Green Trixter	红蜘蛛	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Helly	直升机	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Ice Sentinel	冰石球	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Jr. Cellion	幼红独角狮	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Jr. Cerebes	小猎犬	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Jr. Grupin	幼蓝独角狮	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Jr. Lioner	幼黄独角狮	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Jr. Pepe	小企鹅王	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Jr. Sentinel	小石球	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Jr. Yeti	小白雪人	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+King Block Golem	青积木怪	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+King Bloctopus	吹泡泡鱼皇	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Leatty	小白雪鬼	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Lunar Pixie	月光精灵	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Luster Pixie	日光精灵	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Master Chronos	恶魔之母	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Master Robo	男机器人	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Mateon	外星章鱼枪	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Mecateon	外星章鱼激光棒	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Nependeath	食人花	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Orange Slime	橙水灵	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Panda Teddy	玩具熊猫	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Pink Teddy	玩具粉熊	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Planey	运输机	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Plateon	外星章鱼坦克	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Platoon Chronos	恶魔之父	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Propelly	玩具战机	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Ratz	玩具白鼠	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Robo	女机器人	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Roloduck	玩具鸭	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Sentinel	石球	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Shade	谢尔德	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Star Pixie	星光精灵	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Tick	计时啾啾	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Tick-Tock	闹钟啾啾	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Toy Trojan	木马骑兵	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Transforming Jr. Yeti	变形小白雪人	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Trixter	绿蜘蛛	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Tweeter	空军雀	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Ultra Gray	白外星人长官	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+Zeta Gray	白外星人队长	怀旧服-怪物	mscw-guidebook 社区译名核对补录
+A Box Hidden Long Ago	很久以前藏起的箱子	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Craftsman's Touch	工匠的手艺	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Fairy's Insight	妖精的洞察	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Gift for Pia	给皮娅的礼物	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Heart of Stillness and Wood	寂静与木之心	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Lost Thank-You	遗失的感谢	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Man Atoning	赎罪之人	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Marble Made With Care	用心制作的弹珠	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Memory of Iron	钢铁的记忆	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Memory Restored	恢复的记忆	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Missing Comrade	失踪的同伴	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Name Never Given	从未说出口的名字	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Name on a Note	纸条上的名字	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Name She Couldn't Say	她说不出口的名字	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A New Adventure Awaits	新的冒险在等待 [Event]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Price to Pay	必须付出的代价	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Promise Between Three Friends	三个朋友之间的约定	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Quiet Line of Work	低调的行当	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Report from Corporal Easy	伊吉上等兵的报告	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Report from Sergeant Bravo	巴伯下士的报告	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Report from Staff Sergeant Charlie	查里中士的报告	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Request from Corporal Easy	伊吉上等兵的请求	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Request from Sergeant Bravo	巴伯下士的请求	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Request from Staff Sergeant Charlie	查里中士的请求	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Strange and Familiar Wood	陌生又熟悉的树林 [Event]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Word from the Assistant	助手的一句话	怀旧服-任务	mscw-guidebook 社区译名核对补录
+A Worn-Out Bow	破旧的弓	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Acquiring the Fairy Dust	获取妖精之粉	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Acquiring the Memory Powder	获取记忆之粉	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Alcaster and the Dark Crystal	阿尔卡斯特和黑暗水晶	怀旧服-任务	mscw-guidebook 社区译名核对补录
+All the Map Pieces in One Place	所有地图碎片集中在一处	怀旧服-任务	mscw-guidebook 社区译名核对补录
+An Old Grudge	旧日恩怨	怀旧服-任务	mscw-guidebook 社区译名核对补录
+An Old Ring	一枚老戒指	怀旧服-任务	mscw-guidebook 社区译名核对补录
+An Unbreakable Code	无法破解的密码	怀旧服-任务	mscw-guidebook 社区译名核对补录
+An Unknown Savior	未知的救命恩人	怀旧服-任务	mscw-guidebook 社区译名核对补录
+An Unresolved Question	未解之谜	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Another Lead	另一条线索	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Athena Pierce and Her Recovery	赫丽娜的恢复	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Becoming a Citizen of Honor	成为荣誉市民（射手村）	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Beyond the Unknown	未知的彼端 [Event]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Chief Stan's Signature	长老斯坦的签名	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Collecting Huckle's Magic Ingredients	收集哈克尔的魔法材料	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Collecting Wolf Skin	收集狼皮	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Dances with Balrog and His Recovery	武术教练的恢复	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Dark Lord and His Recovery	达克鲁的恢复	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Delivering the Flying Medicine	传达飞翔秘药	怀旧服-任务	mscw-guidebook 社区译名核对补录
+First Material Delivery for Building a New House	为盖房子需要的材料1	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Founder's First Step	创始人的第一步 [Event]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Gathering Leaves	收集枫叶 [Event]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Grendel the Really Old and His Recovery	汉斯的恢复	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Growing Leaf	成长之叶 [Event]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Halloween Candies	万圣节糖果 [Event]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Hella is Found!	海拉找到了!	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Hella's Missing	海拉失踪了	怀旧服-任务	mscw-guidebook 社区译名核对补录
+How to Restore the Cracked Black Crystal	如何修复黑水晶碎片	怀旧服-任务	mscw-guidebook 社区译名核对补录
+I Special Taste of Florina Beach I	黄金海滩的特别味道	怀旧服-任务	mscw-guidebook 社区译名核对补录
+IV Special Taste of Florina Beach IV	黄金海滩的特别味道	怀旧服-任务	mscw-guidebook 社区译名核对补录
+John's Last Present	【沉睡森林】约翰最后的礼物 [Deep Forest of Patience]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+John's Pink Flower Basket	【沉睡森林】约翰的粉色花篮 [Deep Forest of Patience]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+John's Present	【沉睡森林】约翰的礼物 [Deep Forest of Patience]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Last Material Delivery for Building a New House	为盖房子需要的最后材料	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Looking For the Old Lady	寻找老妇人	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Looking for the Sage in Ellinia	在魔法密林寻找贤者	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Looking for the Sage in Henesys	在射手村寻找贤者	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Looking for the Sage in Kerning City	在废弃都市寻找贤者	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Looking for the Sage in Perion	在勇士部落寻找贤者	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Materials for a Special Marble	特殊弹珠的材料	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Matters of the Heart	心之事项	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Missing Corporal Easy	失踪的伊吉上等兵	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Missing Sergeant Bravo	失踪的巴伯下士	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Missing Staff Sergeant Charlie	失踪的查里中士	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Myra's Old Friend	米拉的老朋友	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Nella's Old Memory	内拉的旧日记忆	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Nick's Ring	尼克的戒指	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Not Ready to Go Home Yet	还不想回家	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Nyroth's Fragile Hope	尼洛斯脆弱的希望	怀旧服-任务	mscw-guidebook 社区译名核对补录
+One Clue	一条线索	怀旧服-任务	mscw-guidebook 社区译名核对补录
+One More Debt to Repay	还有一笔债要还	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Phil's Call	比尔的召唤	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Pia's Gift	皮亚的礼物	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Pia's Mischievous Wish	皮娅的恶作剧愿望	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Repairing the Book	修复书籍	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Restoring the Map	修复地图	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Sabitrama and the Diet Medicine	【忍苦树林】萨比特拉玛和减肥药 [Forest of Patience]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Sabitrama's Anti-Aging Medicine	【忍苦树林】萨比特拉玛的不老药 [Forest of Patience]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Second Material Delivery for Building a New House	为盖房子需要的材料2	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Shumi's Lost Coin	【工地B1】休咪丢失的硬币 [Construction Site B1]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Shumi's Lost Roll of Cash	【工地B2】休咪丢失的一卷现金 [Construction Site B2]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Shumi's Lost Sack of Cash	【工地B3】休咪丢失的钱袋 [Construction Site B3]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Spiruna's Black Crystal	斯皮罗纳的黑水晶	怀旧服-任务	mscw-guidebook 社区译名核对补录
+The Book of Ancient is Back!	上古魔书回来了！	怀旧服-任务	mscw-guidebook 社区译名核对补录
+The Cracked Black Crystal	黑水晶碎片	怀旧服-任务	mscw-guidebook 社区译名核对补录
+The Dark Lord's Signature	达克鲁的签名	怀旧服-任务	mscw-guidebook 社区译名核对补录
+The Descendent of the Author of the Book of Ancient	古代之书作者的后裔	怀旧服-任务	mscw-guidebook 社区译名核对补录
+The Faded Ink	褪色的墨水	怀旧服-任务	mscw-guidebook 社区译名核对补录
+The Fifth Mark	第五个印记 [Event]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+The Filing Error	归档错误	怀旧服-任务	mscw-guidebook 社区译名核对补录
+The Final Mark	最后的印记 [Event]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+The First Mark	第一个印记 [Event]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+The Fourth Mark	第四个印记 [Event]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+The Ingredients for the Flying Medicine	飞翔秘药的材料	怀旧服-任务	mscw-guidebook 社区译名核对补录
+The Journey Begins	旅程开始 [Event]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+The Map is in One Piece	地图完整了	怀旧服-任务	mscw-guidebook 社区译名核对补录
+The Marks We Leave Behind	我们留下的印记 [Event]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+The One Who Sealed the Darkness	封印黑暗之人 [Event]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+The Sage's Burden	贤者的负担	怀旧服-任务	mscw-guidebook 社区译名核对补录
+The Second Mark	第二个印记 [Event]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+The Secrets Behind the Statue	雕像背后的秘密	怀旧服-任务	mscw-guidebook 社区译名核对补录
+The Small Grave That's Hidden	隐藏的小坟墓	怀旧服-任务	mscw-guidebook 社区译名核对补录
+The Third Mark	第三个印记 [Event]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+The Truth Revealed	真相大白	怀旧服-任务	mscw-guidebook 社区译名核对补录
+The Weight of Truth	真相的重量	怀旧服-任务	mscw-guidebook 社区译名核对补录
+The Yawning Abyss	裂开的深渊	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Third Material Delivery for Building a New House	为盖房子需要的材料3	怀旧服-任务	mscw-guidebook 社区译名核对补录
+To Acquire the Fairy Dust	为了获得妖精之粉	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Too Shy to Say It Himself	害羞得说不出口	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Traces of Nick	尼克的踪迹	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Tracing the Resonance	追踪共鸣	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Trick or Treat!	不给糖就捣蛋！ [Event]	怀旧服-任务	mscw-guidebook 社区译名核对补录
+We Hold Your Place	我们为你留位	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Welcome to the Hollow	欢迎来到空洞	怀旧服-任务	mscw-guidebook 社区译名核对补录
+What It Takes	所需之物	怀旧服-任务	mscw-guidebook 社区译名核对补录
+What Pia Borrowed	皮亚借的物品	怀旧服-任务	mscw-guidebook 社区译名核对补录
+Bennis Chain Pants	打猎裤	怀旧服-装备	mscw-guidebook 社区译名核对补录
+Black Pao Bottoms	黑唐衫裤	怀旧服-装备	mscw-guidebook 社区译名核对补录
+Blue Pao Bottoms	蓝唐衫裤	怀旧服-装备	mscw-guidebook 社区译名核对补录
+Brown Training Pants	褐修炼裤	怀旧服-装备	mscw-guidebook 社区译名核对补录
+Red Pao Bottoms	红唐衫裤	怀旧服-装备	mscw-guidebook 社区译名核对补录
