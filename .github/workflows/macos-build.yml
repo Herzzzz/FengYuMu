@@ -55,11 +55,23 @@ jobs:
         run: |
           TAG="${GITHUB_REF_NAME}"
           echo "目标 tag: $TAG"
+          # 构建脚本产出的文件名带中文前缀，Release 资产里会被吃掉，统一改为英文名，
+          # 与 v3.2.2-mac.* 的历史资产保持一致。
+          for f in macos/枫语幕_*_macOS26_arm64.dmg; do
+            [ -e "$f" ] || continue
+            base=$(basename "$f"); cp "$f" "macos/FengYuMu_${base#枫语幕_}"
+          done
+          for f in macos/枫语幕_*.dmg.sha256; do
+            [ -e "$f" ] || continue
+            base=$(basename "$f")
+            sed 's/枫语幕_/FengYuMu_/' "$f" > "macos/FengYuMu_${base#枫语幕_}"
+          done
+          ls -la macos/FengYuMu_*.dmg*
           gh release view "$TAG" --repo "${{ github.repository }}" >/dev/null 2>&1 \
             || gh release create "$TAG" --repo "${{ github.repository }}" \
                  --title "枫语幕 $TAG" --notes "macOS Apple 芯片版"
           gh release upload "$TAG" --repo "${{ github.repository }}" --clobber \
-            macos/枫语幕_*_macOS26_arm64.dmg macos/枫语幕_*_macOS26_arm64.dmg.sha256
+            macos/FengYuMu_*.dmg macos/FengYuMu_*.dmg.sha256
 
       - uses: actions/upload-artifact@v4
         with:
