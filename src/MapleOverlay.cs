@@ -4963,7 +4963,8 @@ namespace MapleOverlay
                 AddQuestWholeResultFallback(output, taskContextLines, taskContextText.ToString(),
                     scopedTaskId, ocrScale, false);
             }
-            else if (mainQuestShell || FindQuestShellAnchor(allLines) != null)
+            else if (mainQuestShell || FindQuestShellAnchor(allLines) != null ||
+                HasQuestSummaryMarker(allLines))
             {
                 // A citizenship chain such as "Donating to Kerning City" repeats one body
                 // across 18 identically named quests, so no single id can be resolved and
@@ -5357,12 +5358,15 @@ namespace MapleOverlay
             // the screen while still tolerating one missed header or tab in small classic UI.
             bool questShellPresent = HasQuestWindowShell(lines);
             // HasQuestWindowShell is deliberately strict because it also gates template
-            // drawing. The citizenship anchor needs the looser signal instead: Classic UI
-            // renders the tabs in low contrast, so OCR frequently returns the "QUEST"
-            // caption while missing every tab, which still proves the quest window is the
-            // surface being read.
+            // drawing. The citizenship anchor and the shared quest body need the looser
+            // signal instead: Classic UI renders the tabs in low contrast, so OCR
+            // frequently returns the "QUEST" caption while missing every tab, and an
+            // overlay drawn on a previous pass can hide the caption entirely. The
+            // "Quest Summary" heading belongs to the quest pane only, so it is a safe
+            // extra proof that the quest window is the surface being read.
             OcrLine anyShellAnchor = FindQuestShellAnchor(lines);
-            bool questSurfacePresent = questShellPresent || anyShellAnchor != null;
+            bool questSurfacePresent = questShellPresent || anyShellAnchor != null ||
+                HasQuestSummaryMarker(lines);
             bool allowQuestLayout = captureBounds == gameBounds && questShellPresent;
             OcrLine questShellAnchor = allowQuestLayout ? anyShellAnchor : null;
             if (questShellAnchor != null)
@@ -5440,6 +5444,20 @@ namespace MapleOverlay
                     if (match) return line;
                 }
             return null;
+        }
+
+        // "Quest Summary" is the selected-task pane heading and only ever appears inside the
+        // quest window. It therefore proves the quest window is on screen even when an overlay
+        // painted on an earlier pass has hidden the QUEST caption and every tab - the case that
+        // otherwise switches the whole quest pipeline (list, detail and body text) off.
+        private static bool HasQuestSummaryMarker(List<OcrLine> lines)
+        {
+            if (lines == null) return false;
+            foreach (OcrLine line in lines)
+            {
+                if (TranslationStore.Normalize(line.Text).Contains("quest summary")) return true;
+            }
+            return false;
         }
 
         private List<OcrLine> SelectQuestDetailLines(List<OcrLine> lines, float ocrScale)

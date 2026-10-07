@@ -122,7 +122,8 @@ if ($labels -contains '等级') {
 # window whose tabs OCR failed is still recognised.
 $source = Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -Encoding UTF8
 foreach ($required in @(
-    'bool questSurfacePresent = questShellPresent || anyShellAnchor != null;',
+    'bool questSurfacePresent = questShellPresent || anyShellAnchor != null ||',
+    'HasQuestSummaryMarker(lines);',
     'else if (!characterInfo && !questSurfacePresent &&',
     'normalized.Contains("citizenship"))')) {
     if (-not $source.Contains($required)) {
