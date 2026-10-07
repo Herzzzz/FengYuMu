@@ -83,7 +83,12 @@ function Publish-File([string]$path, [string]$message) {
     if ($existing.Length -gt 0) { $body['sha'] = $existing }
     $method = if ($existing.Length -gt 0) { 'Put' } else { 'Post' }
     $uri = "$apiRoot/$([Uri]::EscapeDataString($path))"
-    Invoke-RestMethod -Uri $uri -Method $method -Body $body -TimeoutSec 180 | Out-Null
+    # Windows PowerShell 5.1 sends no Content-Type for PUT, and Gitee rejects an empty
+    # one outright ("The requested content-type '' is not supported"). POST happens to
+    # default to a form content type, which is why only the update path failed.
+    $json = $body | ConvertTo-Json -Compress
+    Invoke-RestMethod -Uri $uri -Method $method -Body $json `
+        -ContentType 'application/json; charset=utf-8' -TimeoutSec 180 | Out-Null
     $verb = if ($existing.Length -gt 0) { '已更新' } else { '已新建' }
     Write-Host "  $verb $path  ($($bytes.Length) 字节)"
 }
@@ -104,8 +109,12 @@ foreach ($path in @($zipName, $shaName, 'latest.json')) {
     Write-Host "  [OK] $path  HTTP $($head.StatusCode)"
 }
 
-$remoteManifest = (Invoke-WebRequest -Uri "https://gitee.com/$Owner/$Repo/raw/$Branch/latest.json" `
-    -TimeoutSec 30 -UseBasicParsing).Content | ConvertFrom-Json
+$remoteText = (Invoke-WebRequest -Uri "https://gitee.com/$Owner/$Repo/raw/$Branch/latest.json" `
+    -TimeoutSec 30 -UseBasicParsing).Content
+# Gitee serves the raw file with a UTF-8 BOM, which Windows PowerShell 5.1's
+# ConvertFrom-Json rejects outright ("Invalid JSON primitive").
+$remoteText = $remoteText.TrimStart([char]0xFEFF).Trim()
+$remoteManifest = $remoteText | ConvertFrom-Json
 $remoteShaProperty = $remoteManifest.PSObject.Properties['sha256']
 $remoteSha = if ($null -eq $remoteShaProperty) { '' } else { [string]$remoteShaProperty.Value }
 if ($remoteSha -ne $zipHash) {
