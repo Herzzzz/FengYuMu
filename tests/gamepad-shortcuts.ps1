@@ -33,6 +33,17 @@ foreach ($needle in @('手柄快捷键（独立于键盘）', '支持单键或�
     if (-not $forms.Contains($needle)) { throw "缺少手柄设置界面或冲突保护：$needle" }
 }
 
+foreach ($needle in @(
+    'if (processing || manualTranslationPending || IsChatTranslationBusy()) return;',
+    'RunManualTranslationFromInputAsync(true);',
+    'private async void RunManualTranslationFromInputAsync(bool suppressAlerts)',
+    'if (!suppressSystemAlerts && !IsChatTranslationBusy())')) {
+    if (-not $source.Contains($needle)) { throw "手柄输入未隔离实时OCR/系统提示音：$needle" }
+}
+if ($source.Contains('Task ignored = ShowTranslationFromHotkeyAsync();')) {
+    throw '手柄或快捷键仍以未观察的后台任务启动OCR，可能把异常升级为系统警报声'
+}
+
 foreach ($forbidden in @('ReadProcessMemory', 'WriteProcessMemory', 'OpenProcess(', 'SendInput(', 'keybd_event(', 'mouse_event(')) {
     if ($source.Contains($forbidden) -or $forms.Contains($forbidden)) {
         throw "发现不允许的游戏进程或输入操作：$forbidden"

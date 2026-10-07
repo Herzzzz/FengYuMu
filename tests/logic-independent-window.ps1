@@ -73,7 +73,8 @@ $forms = Get-Content (Join-Path $repoRoot 'src\SimpleForms.cs') -Raw -Encoding U
 foreach ($required in @(
     'internal async Task<ChatCaptureFrame> CaptureChatAsync',
     'SampleChatVisualStyle(bitmap, line, scale)',
-    'if (shuttingDown || !visibleTranslation) return;')) {
+    'if (shuttingDown || !visibleTranslation) return;',
+    'return chatTranslator.RestoreFloatingWindowFromTray();')) {
     if (-not $overlaySource.Contains($required)) { throw "AI聊天样式采样接入缺少：$required" }
 }
 foreach ($required in @(
@@ -81,6 +82,7 @@ foreach ($required in @(
     'Style = capture.FindStyle(line)',
     'floatingWindow.AppendTranslation(translation, visualStyle)',
     'internal void ApplyFloatingWindow(bool enabled)',
+    'HasPendingTranslationWork',
     'internal async Task<bool> PrepareForScreenshotCaptureAsync()',
     'internal void RestoreAfterScreenshotCapture()',
     'while (captureBusy && !IsDisposed) await Task.Delay(15)',
@@ -89,7 +91,6 @@ foreach ($required in @(
     'overlay.ApplyAiChatFloatingWindow(true)',
     'ShowFloatingWindowPassive()',
     'floatingWindow.ShowPassiveIfAllowed()',
-    'floatingWindow.HideForStop()',
     'CreateFloatingWindow()',
     'TranslateFloatingOutboundAsync',
     'internal bool RestoreFloatingWindowFromTray()',
@@ -157,6 +158,12 @@ foreach ($required in @(
 if ($overlaySource.Contains('!visibleTranslation || aiChatFloatingWindowEnabled')) {
     throw 'AI浮窗仍在抑制F8原位覆盖'
 }
+if ($chatSource.Contains('if (!live) return false;')) {
+    throw '中译英悬浮窗恢复仍被实时翻译开关硬门控'
+}
+if ($chatSource.Contains('floatingWindow.HideForStop();')) {
+    throw '停止实时翻译仍会隐藏中译英悬浮窗'
+}
 
 Add-Type -AssemblyName System.Windows.Forms
 $offlineType = $assembly.GetType('MapleOverlay.OfflineChatForm', $true)
@@ -214,10 +221,16 @@ try {
     [void]$appendTranslation.Invoke($floatingWindow, @('Arthur：主窗口关闭后仍继续显示。'))
     $offlineType.GetField('floatingWindow', $constructorFlags).SetValue($chatWindow, $floatingWindow)
     $offlineType.GetField('floatingWindowEnabled', $constructorFlags).SetValue($chatWindow, $true)
-    $offlineType.GetField('live', $constructorFlags).SetValue($chatWindow, $true)
     $liveTimer = $offlineType.GetField('timer', $constructorFlags).GetValue($chatWindow)
-    $liveTimer.Start()
     $restoreFloating = $offlineType.GetMethod('RestoreFloatingWindowFromTray', $constructorFlags)
+    $floatingWindow.Hide()
+    if (-not [bool]$restoreFloating.Invoke($chatWindow, @())) {
+        throw '未开始实时翻译时，中译英悬浮窗恢复入口错误地依赖 live 状态'
+    }
+    [System.Windows.Forms.Application]::DoEvents()
+    if (-not $floatingWindow.Visible) { throw '未开始实时翻译时，中译英悬浮窗没有显示' }
+    $offlineType.GetField('live', $constructorFlags).SetValue($chatWindow, $true)
+    $liveTimer.Start()
     $floatingWindow.Hide()
     if (-not [bool]$restoreFloating.Invoke($chatWindow, @())) {
         throw '实时翻译运行时，独立恢复入口没有接受呼出请求'
@@ -230,9 +243,9 @@ try {
     [System.Windows.Forms.Application]::DoEvents()
     $liveButton = $offlineType.GetField('liveButton', $constructorFlags).GetValue($chatWindow)
     if ([bool]$offlineType.GetField('live', $constructorFlags).GetValue($chatWindow) -or
-        $liveTimer.Enabled -or $floatingWindow.Visible -or
+        $liveTimer.Enabled -or -not $floatingWindow.Visible -or
         $liveButton.Text -ne '开始实时翻译') {
-        throw '停止实时翻译没有保持幂等，或按钮/计时器/悬浮窗状态仍错位'
+        throw '停止实时翻译没有保持幂等，或按钮/计时器状态仍错位；悬浮窗应继续可用于中译英'
     }
     $offlineType.GetField('live', $constructorFlags).SetValue($chatWindow, $true)
     $liveTimer.Start()

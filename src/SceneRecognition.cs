@@ -426,10 +426,31 @@ namespace MapleOverlay
             if (mainQuestShell)
             {
                 // A quest journal contains many titles in its left list. Only the selected
-                // concrete sub-task title in the right detail pane may choose the active task.
-                // Long prose must never infer it, and a truncated chain title is not unique.
-                return String.IsNullOrWhiteSpace(focusedDetailText)
+                // detail pane may choose the active task. Prefer its exact title. When the
+                // game truncates that title, a sufficiently long right-pane description can
+                // still identify one task, but conflicting evidence must fail closed.
+                string titleId = String.IsNullOrWhiteSpace(focusedDetailText)
                     ? "" : translations.ResolveUniqueTaskTitleId(focusedDetailText);
+                if (titleId.Length > 0) return titleId;
+
+                HashSet<string> detailIds = new HashSet<string>(StringComparer.Ordinal);
+                StringBuilder detailText = new StringBuilder();
+                if (localLines != null)
+                {
+                    foreach (string line in localLines)
+                    {
+                        if (String.IsNullOrWhiteSpace(line) || line.Contains("...") ||
+                            line.Contains("…") || TranslationStore.Normalize(line).Length < 24) continue;
+                        if (detailText.Length > 0) detailText.AppendLine();
+                        detailText.Append(line);
+                        string lineId = translations.DetectTaskId(line);
+                        if (lineId.Length > 0) detailIds.Add(lineId);
+                    }
+                }
+                if (detailIds.Count > 1) return "";
+                if (detailIds.Count == 1)
+                    foreach (string id in detailIds) return id;
+                return detailText.Length == 0 ? "" : translations.DetectTaskId(detailText.ToString());
             }
 
             HashSet<string> lineIds = new HashSet<string>(StringComparer.Ordinal);

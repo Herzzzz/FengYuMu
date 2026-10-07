@@ -43,6 +43,17 @@ namespace MapleOverlay
         public Dictionary<string, string> Hashes { get; set; }
     }
 
+    // The mirror publishes this small manifest next to the ZIP and its SHA-256 file.
+    // Keep the properties simple so the updater can validate the document before it
+    // ever follows an asset URL.
+    internal sealed class MirrorReleaseManifest
+    {
+        public string Tag { get; set; }
+        public string ZipUrl { get; set; }
+        public string Sha256Url { get; set; }
+        public string Sha256 { get; set; }
+    }
+
     internal static class ApplicationUpdater
     {
         private sealed class UpdateWebClient : WebClient
@@ -73,6 +84,10 @@ namespace MapleOverlay
             "https://api.github.com/repos/Herzzzz/FengYuMu/releases/latest";
         private const string LatestReleasePage =
             "https://github.com/Herzzzz/FengYuMu/releases/latest";
+        // A bad, stale, or unavailable mirror never blocks the GitHub fallback.
+        private const string DomesticMirrorManifestUrl =
+            "https://gitee.com/Herzzzz/maple-whisper-veil/raw/main/latest.json";
+        private static readonly bool DomesticMirrorEnabled = false;
         private static readonly string[] PackageFiles = new string[] {
             "枫语幕.exe", "枫语幕词库.tsv", "使用说明.txt"
         };
@@ -90,41 +105,54 @@ namespace MapleOverlay
             string updateRoot = Path.Combine(install, "更新临时");
             Directory.CreateDirectory(updateRoot);
             string tag = "", zipUrl = "", shaUrl = "", releaseDigest = "";
-            try
+            string fixedSha256 = "";
+            MirrorReleaseManifest mirror = TryLoadDomesticMirrorManifest();
+            if (mirror != null)
             {
-                string json = DownloadText(LatestReleaseUrl);
-                Dictionary<string, object> release =
-                    new JavaScriptSerializer().Deserialize<Dictionary<string, object>>(json);
-                tag = ReadString(release, "tag_name");
-                object assetsValue;
-                if (tag.Length == 0 || !release.TryGetValue("assets", out assetsValue))
-                    throw new InvalidDataException("发布页没有完整版本信息");
-                string apiVersion = tag.StartsWith("v", StringComparison.OrdinalIgnoreCase)
-                    ? tag.Substring(1) : tag;
-                string apiZipName = "FengYuMu_v" + apiVersion + ".zip";
-                foreach (object assetValue in ToArray(assetsValue))
+                tag = mirror.Tag;
+                zipUrl = mirror.ZipUrl;
+                shaUrl = mirror.Sha256Url;
+                fixedSha256 = mirror.Sha256;
+            }
+            else
+            {
+                try
                 {
-                    Dictionary<string, object> asset = assetValue as Dictionary<string, object>;
-                    if (asset == null) continue;
-                    string name = ReadString(asset, "name");
-                    if (String.Equals(name, apiZipName, StringComparison.OrdinalIgnoreCase))
+                    string json = DownloadText(LatestReleaseUrl);
+                    Dictionary<string, object> release =
+                        new JavaScriptSerializer().Deserialize<Dictionary<string, object>>(json);
+                    tag = ReadString(release, "tag_name");
+                    object assetsValue;
+                    if (tag.Length == 0 || !release.TryGetValue("assets", out assetsValue))
+                        throw new InvalidDataException("发布页没有完整版本信息");
+                    string apiVersion = tag.StartsWith("v", StringComparison.OrdinalIgnoreCase)
+                        ? tag.Substring(1) : tag;
+                    string apiZipName = "FengYuMu_v" + apiVersion + ".zip";
+                    foreach (object assetValue in ToArray(assetsValue))
                     {
-                        zipUrl = ReadString(asset, "browser_download_url");
-                        releaseDigest = ReadString(asset, "digest");
+                        Dictionary<string, object> asset = assetValue as Dictionary<string, object>;
+                        if (asset == null) continue;
+                        string name = ReadString(asset, "name");
+                        if (String.Equals(name, apiZipName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            zipUrl = ReadString(asset, "browser_download_url");
+                            releaseDigest = ReadString(asset, "digest");
+                        }
+                        else if (String.Equals(name, apiZipName + ".sha256",
+                            StringComparison.OrdinalIgnoreCase))
+                            shaUrl = ReadString(asset, "browser_download_url");
                     }
-                    else if (String.Equals(name, apiZipName + ".sha256",
-                        StringComparison.OrdinalIgnoreCase))
-                        shaUrl = ReadString(asset, "browser_download_url");
+                }
+                catch (Exception)
+                {
+                    // Unauthenticated GitHub API access is rate limited per public IP.
+                    // The ordinary latest-release redirect is not, so players still have a
+                    // no-account recovery path instead of being stranded by an API 403.
+                    tag = ""; zipUrl = ""; shaUrl = ""; releaseDigest = "";
                 }
             }
-            catch (Exception)
-            {
-                // Unauthenticated GitHub API access is rate limited per public IP.
-                // The ordinary latest-release redirect is not, so players still have a
-                // no-account recovery path instead of being stranded by an API 403.
-                tag = ""; zipUrl = ""; shaUrl = ""; releaseDigest = "";
-            }
-            if (tag.Length == 0 || zipUrl.Length == 0 || shaUrl.Length == 0)
+            if (tag.Length == 0 || zipUrl.Length == 0 ||
+                (shaUrl.Length == 0 && fixedSha256.Length == 0))
             {
                 tag = ResolveLatestTag();
                 string redirectedVersion = tag.StartsWith("v", StringComparison.OrdinalIgnoreCase)
@@ -134,6 +162,7 @@ namespace MapleOverlay
                 zipUrl = baseUrl + redirectedZip;
                 shaUrl = zipUrl + ".sha256";
                 releaseDigest = "";
+                fixedSha256 = "";
             }
             if (!Regex.IsMatch(tag, @"(?i)^v?\d+(?:\.\d+){1,3}(?:-[a-z0-9.-]+)?$"))
                 throw new InvalidDataException("发布页版本号格式无效");
@@ -147,13 +176,13 @@ namespace MapleOverlay
             Directory.CreateDirectory(stage);
             string zipPath = Path.Combine(stage, expectedZipName);
             DownloadFile(zipUrl, zipPath);
-            string expectedHash = Regex.Match(DownloadText(shaUrl),
-                @"(?i)\b[0-9a-f]{64}\b").Value.ToUpperInvariant();
-            if (expectedHash.Length != 64)
+            string expectedHash = fixedSha256.Length > 0
+                ? fixedSha256
+                : ParseSha256Text(DownloadText(shaUrl), expectedZipName);
+            if (!Regex.IsMatch(expectedHash ?? "", @"(?i)^[0-9a-f]{64}$"))
                 throw new InvalidDataException("SHA-256 校验文件内容无效");
             string actualHash = ComputeSha256(zipPath);
-            if (!String.Equals(expectedHash, actualHash, StringComparison.OrdinalIgnoreCase))
-                throw new InvalidDataException("安装包 SHA-256 校验失败，已停止更新");
+            EnsureSha256Matches(expectedHash, actualHash);
             if (releaseDigest.StartsWith("sha256:", StringComparison.OrdinalIgnoreCase) &&
                 !String.Equals(releaseDigest.Substring(7), actualHash,
                     StringComparison.OrdinalIgnoreCase))
@@ -351,6 +380,119 @@ namespace MapleOverlay
             }
         }
 
+        internal static MirrorReleaseManifest ParseMirrorManifest(string json,
+            string manifestUrl)
+        {
+            Uri manifestUri = RequireHttpsUri(manifestUrl, "国内镜像清单地址");
+            Dictionary<string, object> value;
+            try
+            {
+                value = new JavaScriptSerializer().Deserialize<Dictionary<string, object>>(json);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidDataException("国内镜像清单不是有效 JSON", ex);
+            }
+            if (value == null) throw new InvalidDataException("国内镜像清单为空");
+
+            string tag = ReadFirstString(value, "tag", "tag_name");
+            if (!Regex.IsMatch(tag, @"(?i)^v?\d+(?:\.\d+){1,3}(?:-[a-z0-9.-]+)?$"))
+                throw new InvalidDataException("国内镜像版本号格式无效");
+            string versionPart = tag.StartsWith("v", StringComparison.OrdinalIgnoreCase)
+                ? tag.Substring(1) : tag;
+            string expectedZipName = "FengYuMu_v" + versionPart + ".zip";
+
+            string zipUrl = ReadFirstString(value, "zipUrl", "zip_url");
+            ValidateMirrorAssetUrl(zipUrl, manifestUri, expectedZipName, "ZIP 地址");
+            string shaUrl = ReadFirstString(value, "sha256Url", "sha256_url");
+            if (shaUrl.Length > 0)
+                ValidateMirrorAssetUrl(shaUrl, manifestUri, expectedZipName + ".sha256",
+                    "SHA-256 地址");
+            string sha256 = ReadFirstString(value, "sha256", "sha256Hash");
+            if (sha256.Length > 0 &&
+                !Regex.IsMatch(sha256, @"(?i)^[0-9a-f]{64}$"))
+                throw new InvalidDataException("国内镜像 SHA-256 格式无效");
+            if (shaUrl.Length == 0 && sha256.Length == 0)
+                throw new InvalidDataException("国内镜像缺少 SHA-256 地址或固定校验值");
+
+            return new MirrorReleaseManifest {
+                Tag = tag,
+                ZipUrl = zipUrl,
+                Sha256Url = shaUrl,
+                Sha256 = sha256.ToUpperInvariant()
+            };
+        }
+
+        internal static string ParseSha256Text(string text, string expectedFileName)
+        {
+            string normalized = (text ?? "").Trim();
+            Match match = Regex.Match(normalized,
+                @"(?is)^(?<hash>[0-9a-f]{64})(?:\s+(?<file>\*?[^\r\n]+))?$");
+            if (!match.Success)
+                throw new InvalidDataException("SHA-256 校验文件内容无效");
+            string file = match.Groups["file"].Value.Trim().TrimStart('*').Trim();
+            if (file.Length > 0 && !String.Equals(
+                Path.GetFileName(file.Replace('/', '\\')), expectedFileName,
+                StringComparison.OrdinalIgnoreCase))
+                throw new InvalidDataException("SHA-256 校验文件名与安装包不一致");
+            return match.Groups["hash"].Value.ToUpperInvariant();
+        }
+
+        internal static void EnsureSha256Matches(string expectedHash, string actualHash)
+        {
+            if (!Regex.IsMatch(expectedHash ?? "", @"(?i)^[0-9a-f]{64}$") ||
+                !Regex.IsMatch(actualHash ?? "", @"(?i)^[0-9a-f]{64}$") ||
+                !String.Equals(expectedHash, actualHash, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidDataException("安装包 SHA-256 校验失败，已停止更新");
+        }
+
+        private static MirrorReleaseManifest TryLoadDomesticMirrorManifest()
+        {
+            if (!DomesticMirrorEnabled) return null;
+            try
+            {
+                return ParseMirrorManifest(DownloadText(DomesticMirrorManifestUrl),
+                    DomesticMirrorManifestUrl);
+            }
+            catch (Exception)
+            {
+                // A stale, malformed, rate-limited, or unreachable domestic mirror is
+                // non-fatal. The caller immediately continues with the GitHub source.
+                return null;
+            }
+        }
+
+        private static Uri RequireHttpsUri(string raw, string fieldName)
+        {
+            Uri uri;
+            if (!Uri.TryCreate(raw ?? "", UriKind.Absolute, out uri) ||
+                !String.Equals(uri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase) ||
+                !String.IsNullOrEmpty(uri.UserInfo) || !String.IsNullOrEmpty(uri.Fragment) ||
+                !String.IsNullOrEmpty(uri.Query) || (!uri.IsDefaultPort && uri.Port != 443))
+                throw new InvalidDataException(fieldName + "必须使用无跳转 HTTPS 地址");
+            return uri;
+        }
+
+        private static void ValidateMirrorAssetUrl(string raw, Uri manifestUri,
+            string expectedFileName, string fieldName)
+        {
+            Uri uri = RequireHttpsUri(raw, fieldName);
+            if (!String.Equals(uri.Host, manifestUri.Host, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidDataException(fieldName + "必须来自清单所在镜像域名");
+            string path = uri.AbsolutePath.TrimEnd('/');
+            int slash = path.LastIndexOf('/');
+            string actualFileName = slash >= 0 ? path.Substring(slash + 1) : path;
+            if (!String.Equals(actualFileName, expectedFileName, StringComparison.Ordinal))
+                throw new InvalidDataException(fieldName + "文件名与版本号不一致");
+        }
+
+        private static string ReadFirstString(Dictionary<string, object> value,
+            string firstKey, string secondKey)
+        {
+            string result = ReadString(value, firstKey);
+            return result.Length > 0 ? result : ReadString(value, secondKey);
+        }
+
         private static void ExtractRequiredFiles(string zipPath, string destination)
         {
             HashSet<string> remaining = new HashSet<string>(PackageFiles,
@@ -391,7 +533,7 @@ namespace MapleOverlay
         {
             WebClient client = new UpdateWebClient();
             client.Encoding = Encoding.UTF8;
-            client.Headers[HttpRequestHeader.UserAgent] = "FengYuMu/3.2.2";
+            client.Headers[HttpRequestHeader.UserAgent] = "FengYuMu/3.2.3";
             client.Headers[HttpRequestHeader.Accept] = "application/vnd.github+json, text/plain, */*";
             client.Proxy = proxy;
             return client;
@@ -477,7 +619,7 @@ namespace MapleOverlay
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(LatestReleasePage);
                     request.Method = "HEAD";
                     request.AllowAutoRedirect = false;
-                    request.UserAgent = "FengYuMu/3.2.2";
+                    request.UserAgent = "FengYuMu/3.2.3";
                     request.Proxy = route.Proxy;
                     request.Timeout = 12000;
                     request.ReadWriteTimeout = 12000;

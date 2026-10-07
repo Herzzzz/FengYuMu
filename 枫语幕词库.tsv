@@ -2777,6 +2777,7 @@ Magic Potion	魔力神水	怀旧服-道具#2002001	b78ba4c261984c26
 Sniper Potion	命中神水	怀旧服-道具#2002002	978ba4c261984c26
 Dexterity Potion	敏捷药水	怀旧服-道具#2002003	b78b84c271984c26
 Speed Potion	速度药水	怀旧服-道具#2002004	978ba4c265984c26
+Supreme Dexterity Potion	超级敏捷药水	怀旧服-道具#2002012	NiaMeowDB 公民任务#506150 实装资料
 Weaponcrafting Kit	武器制作工具包	怀旧服-道具#2002005	46dc56e2844d9c9b
 Woodcrafting Kit	木工制作工具包	怀旧服-道具#2002006	78f8f3f1b0ccc636
 Smithing Kit	锻造工具包	怀旧服-道具#2002007	1bddec71da9cfcf0
@@ -3092,7 +3093,7 @@ Slime Bubble	绿水灵珠	怀旧服-道具#4000007	338bcccc946ad809
 Pig's Head	猪头	怀旧服-道具#4000008	4bf4c6db96c4acb6
 Orange Mushroom Cap	花蘑菇盖	怀旧服-道具#4000009	1c7cfadad4ecfc78
 Pig's Ribbon	蝴蝶结	怀旧服-道具#4000010	67e4c6c6c4582c2c
-Leaf	树叶	怀旧服-道具#4000011	071b7878c4cce0a6
+Leaf	松叶	怀旧服-道具#4000011	NiaMeowDB 道具#4000011；黑木妖掉落物，限定道具语境
 Octopus Leg	三眼章鱼脚	怀旧服-道具#4000012	0d2ccacee2f3e2c0
 Green Mushroom Cap	绿蘑菇盖	怀旧服-道具#4000013	0378ea9cbc9cecf9
 Bubbling's Huge Bubble	蓝水灵大水珠	怀旧服-道具#4000014	cb8464e4c61ec805
@@ -3265,6 +3266,12 @@ Alligator Skin Pouch	鳄鱼皮革袋	怀旧服-道具#4031078	23fafaf2e46d6566
 Flying Medicine	飞翔秘药	怀旧服-道具#4031079	f8f4f4b0b0707271
 Strange Mushroom Spore	奇怪的蘑菇孢子	怀旧服-道具#4031080	60e0f0f0f0f0e0e1
 Glowing Mushroom	发光蘑菇	怀旧服-道具#4031081	1339b126a4b6e879
+Mrs. Ming Ming's Cooking Recipe	明明女士的烹饪配方	怀旧服-道具#4031111	NiaMeowDB 公民任务#506037 实装资料
+Bruce's Special Cake	布鲁斯特制蛋糕	怀旧服-道具#4031112	NiaMeowDB 公民任务#506039 实装资料
+Vitamin Gummy	维生素软糖	怀旧服-道具#4031113	NiaMeowDB 公民任务#506140 实装资料
+Special Stirge Phobia Cure	特制蝙蝠怪恐惧症药	怀旧服-道具#4031114	NiaMeowDB 公民任务#506141 实装资料
+Old Chief Stan's Hammer	长老斯坦的旧锤子	怀旧服-道具#4031116	NiaMeowDB 公民任务#506043 实装资料
+Chief Stan's Hammer	长老斯坦的锤子	怀旧服-道具#4031117	NiaMeowDB 公民任务#506044 实装资料
 Slime & Mushroom Omok Set	绿水灵/蘑菇五目石	怀旧服-道具#4080000	84f4caceccf9b38c
 Slime & Pig Omok Set	绿水灵/猪猪五子棋	怀旧服-道具#4080001	a4dcba2eccf9b38c
 Slime & Octopus Omok Set	绿水灵/三眼章五子棋	怀旧服-道具#4080002	94ecaedeccf9b38c
@@ -12894,3 +12901,96 @@ wb	欢迎回来。	怀旧服-聊天缩写	Welcome back；用户提供的枫之�
 ikr	我知道吧。	怀旧服-聊天缩写	I know, right；用户提供的枫之谷聊天用语表
 XD	笑到眯眼。	怀旧服-聊天缩写	Laughing emoticon；用户提供的枫之谷聊天用语表
 RIP	安息吧。	怀旧服-聊天缩写	Rest in peace；用户提供的枫之谷聊天用语表
+First Greeting with Rina, the Town Resident	初次问候镇民丽娜	怀旧服-任务#506001	NiaMeowDB 公民系统实装资料	射手村
+Asking After Rina, the Town Resident	探望镇民丽娜	怀旧服-任务#506002	NiaMeowDB 公民系统实装资料	射手村
+First Greeting with Mrs. Ming Ming, the Town Resident	初次问候镇民明明女士	怀旧服-任务#506003	NiaMeowDB 公民系统实装资料	射手村
+Asking After Mrs. Ming Ming, the Town Resident.	探望镇民明明女士	怀旧服-任务#506004	NiaMeowDB 公民系统实装资料	射手村
+First Greeting with Camila, the Town Resident	初次问候镇民卡米拉	怀旧服-任务#506005	NiaMeowDB 公民系统实装资料	射手村
+Asking After Camila, the Town Resident	探望镇民卡米拉	怀旧服-任务#506006	NiaMeowDB 公民系统实装资料	射手村
+First Greeting with Bruce, the Town Resident	初次问候镇民布鲁斯	怀旧服-任务#506007	NiaMeowDB 公民系统实装资料	射手村
+Asking After Bruce, the Town Resident	探望镇民布鲁斯	怀旧服-任务#506008	NiaMeowDB 公民系统实装资料	射手村
+First Greeting with Maya, the Town Resident	初次问候镇民玛亚	怀旧服-任务#506009	NiaMeowDB 公民系统实装资料	射手村
+Asking After Maya, the Town Resident	探望镇民玛亚	怀旧服-任务#506010	NiaMeowDB 公民系统实装资料	射手村
+Asking After Pia, the Town Resident	探望镇民皮亚	怀旧服-任务#506012	NiaMeowDB 公民系统实装资料	射手村
+Asking After Anne, the Town Resident	探望镇民桉	怀旧服-任务#506014	NiaMeowDB 公民系统实装资料	射手村
+First Greeting with Chief Stan	初次问候长老斯坦	怀旧服-任务#506015	NiaMeowDB 公民系统实装资料	射手村
+Asking After Chief Stan	探望长老斯坦	怀旧服-任务#506016	NiaMeowDB 公民系统实装资料	射手村
+First Greeting with Athena Pierce	初次问候雅典娜·皮尔丝	怀旧服-任务#506017	NiaMeowDB 公民系统实装资料	射手村
+Asking After Athena Pierce	探望雅典娜·皮尔丝	怀旧服-任务#506018	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐赠	怀旧服-任务#506019	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐赠	怀旧服-任务#506020	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐赠	怀旧服-任务#506021	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐赠	怀旧服-任务#506022	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐赠	怀旧服-任务#506023	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐赠	怀旧服-任务#506024	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐赠	怀旧服-任务#506025	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐赠	怀旧服-任务#506026	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐赠	怀旧服-任务#506027	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐赠	怀旧服-任务#506028	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐赠	怀旧服-任务#506029	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐赠	怀旧服-任务#506030	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐赠	怀旧服-任务#506031	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐赠	怀旧服-任务#506032	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐赠	怀旧服-任务#506033	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐赠	怀旧服-任务#506034	NiaMeowDB 公民系统实装资料	射手村
+Donating to Henesys	向射手村捐赠	怀旧服-任务#506035	NiaMeowDB 公民系统实装资料	射手村
+Bruce's Dilemma	布鲁斯的烦恼	怀旧服-任务#506036	NiaMeowDB 公民系统实装资料	射手村
+Mrs. Ming Ming's Advice	明明女士的建议	怀旧服-任务#506037	NiaMeowDB 公民系统实装资料	射手村
+Bruce's Cooking Ingredients	布鲁斯的烹饪材料	怀旧服-任务#506038	NiaMeowDB 公民系统实装资料	射手村
+A Father's Love for His Daughter	父亲对女儿的爱	怀旧服-任务#506039	NiaMeowDB 公民系统实装资料	射手村
+The Best Dad	最棒的爸爸	怀旧服-任务#506040	NiaMeowDB 公民系统实装资料	射手村
+Mrs. Ming Ming's Concern	明明女士的担忧	怀旧服-任务#506041	NiaMeowDB 公民系统实装资料	射手村
+Chief Stan's Past	长老斯坦的过去	怀旧服-任务#506042	NiaMeowDB 公民系统实装资料	射手村
+Chief Stan's Hammer	长老斯坦的锤子	怀旧服-任务#506043	NiaMeowDB 公民系统实装资料	射手村
+Memories of Youth	青春的回忆	怀旧服-任务#506044	NiaMeowDB 公民系统实装资料	射手村
+Regained Vitality	重获活力	怀旧服-任务#506045	NiaMeowDB 公民系统实装资料	射手村
+First Greeting with Alex, the Town Resident	初次问候镇民阿勒斯	怀旧服-任务#506101	NiaMeowDB 公民系统实装资料	废弃都市
+Asking After Alex, the Town Resident	探望镇民阿勒斯	怀旧服-任务#506102	NiaMeowDB 公民系统实装资料	废弃都市
+First Greeting with Shumi, the Town Resident	初次问候镇民休咪	怀旧服-任务#506103	NiaMeowDB 公民系统实装资料	废弃都市
+Asking After Shumi, the Town Resident	探望镇民休咪	怀旧服-任务#506104	NiaMeowDB 公民系统实装资料	废弃都市
+First Greeting with Nella, the Town Resident	初次问候镇民内拉	怀旧服-任务#506105	NiaMeowDB 公民系统实装资料	废弃都市
+Asking After Nella, the Town Resident	探望镇民内拉	怀旧服-任务#506106	NiaMeowDB 公民系统实装资料	废弃都市
+First Greeting with Icarus, the Town Resident	初次问候镇民伊卡路斯	怀旧服-任务#506107	NiaMeowDB 公民系统实装资料	废弃都市
+Asking After Icarus, the Town Resident	探望镇民伊卡路斯	怀旧服-任务#506108	NiaMeowDB 公民系统实装资料	废弃都市
+First Greeting with Jane Doe, the Town Resident	初次问候镇民不认识的女人	怀旧服-任务#506109	NiaMeowDB 公民系统实装资料	废弃都市
+Asking After Jane Doe, the Town Resident	探望镇民不认识的女人	怀旧服-任务#506110	NiaMeowDB 公民系统实装资料	废弃都市
+First Greeting with Jake, the Town Resident	初次问候镇民冬青	怀旧服-任务#506111	NiaMeowDB 公民系统实装资料	废弃都市
+Asking After Jake, the Town Resident	探望镇民冬青	怀旧服-任务#506112	NiaMeowDB 公民系统实装资料	废弃都市
+First Greeting with Mr. Pickall, the Town Resident	初次问候镇民权达开	怀旧服-任务#506113	NiaMeowDB 公民系统实装资料	废弃都市
+Asking After Mr. Pickall, the Town Resident	探望镇民权达开	怀旧服-任务#506114	NiaMeowDB 公民系统实装资料	废弃都市
+First Greeting with Chun Ji	初次问候千吉	怀旧服-任务#506115	NiaMeowDB 公民系统实装资料	废弃都市
+Asking After Chun Ji	探望千吉	怀旧服-任务#506116	NiaMeowDB 公民系统实装资料	废弃都市
+First Greeting with Dark Lord	初次问候黑暗之神	怀旧服-任务#506117	NiaMeowDB 公民系统实装资料	废弃都市
+Asking After Dark Lord	探望黑暗之神	怀旧服-任务#506118	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506119	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506120	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506121	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506122	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506123	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506124	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506125	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506126	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506127	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506128	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506129	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506130	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506131	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506132	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506133	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506134	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506135	NiaMeowDB 公民系统实装资料	废弃都市
+Donating to Kerning City	向废弃都市捐赠	怀旧服-任务#506136	NiaMeowDB 公民系统实装资料	废弃都市
+Stirge Phobia	蝙蝠怪恐惧症	怀旧服-任务#506137	NiaMeowDB 公民系统实装资料	废弃都市
+Making the Medicine	制作药物	怀旧服-任务#506138	NiaMeowDB 公民系统实装资料	废弃都市
+The Final Ingredient for the Cure	治疗药的最后材料	怀旧服-任务#506139	NiaMeowDB 公民系统实装资料	废弃都市
+Grandfather's Vitamin Gummy	爷爷的维生素软糖	怀旧服-任务#506140	NiaMeowDB 公民系统实装资料	废弃都市
+It's All in the Mind	一切都在于心态	怀旧服-任务#506141	NiaMeowDB 公民系统实装资料	废弃都市
+Worn Bandages	破旧的绷带	怀旧服-任务#506147	NiaMeowDB 公民系统实装资料	废弃都市
+A Torn Letter	一封破损的信	怀旧服-任务#506148	NiaMeowDB 公民系统实装资料	废弃都市
+Once a Renowned Doctor	曾经声名远扬的医生	怀旧服-任务#506149	NiaMeowDB 公民系统实装资料	废弃都市
+The Price of Information	情报的代价	怀旧服-任务#506150	NiaMeowDB 公民系统实装资料	废弃都市
+A Truth Finally Known	终于得知的真相	怀旧服-任务#506151	NiaMeowDB 公民系统实装资料	废弃都市
+Level 12+	等级 12+	怀旧服-任务目标	公民系统任务面板实测门槛提示（QQ20261007-144653 / QQ20261007-173014）；display-only，不分配任务ID
+Only characters at Level 12 or higher can complete this quest.	只有 12 级或以上的角色才能完成此任务。	怀旧服-任务目标	截图 QQ20261007-144653 与 QQ20261007-173014 实测门槛句
+It seems Henesys offers various services for adventurers. I should drop by Henesys if I'm ever in the area.	看来射手村为冒险者们提供了各种服务。如果我有机会到那一带，应该去射手村看看。	怀旧服-任务目标	截图 QQ20261007-144653 右侧任务正文；射手村公民任务
+Roxy, the City Clerk, requested a donation of 30 Bubbling's Huge Bubbles for Kerning City.	城市职员洛克希请求为废弃都市捐赠 30 个蓝水灵大水珠。	怀旧服-任务目标	截图 QQ20261007-173014 右侧任务正文；沿用库内 City Clerk Roxy=城市职员洛克希、Kerning City=废弃都市

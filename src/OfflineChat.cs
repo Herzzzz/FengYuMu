@@ -1369,9 +1369,15 @@ namespace MapleOverlay
 
         internal bool IsLiveTranslationRunning { get { return live; } }
 
+        // Live capture and the outbound input box are independent. Keep this
+        // state visible so another capture is not started while chat work remains.
+        internal bool HasPendingTranslationWork
+        {
+            get { return captureBusy || translateBusy || pendingChatLines.Count > 0; }
+        }
+
         internal bool RestoreFloatingWindowFromTray()
         {
-            if (!live) return false;
             floatingWindowEnabled = true;
             if (floatingWindow == null || floatingWindow.IsDisposed)
                 floatingWindow = CreateFloatingWindow();
@@ -1470,8 +1476,6 @@ namespace MapleOverlay
             pendingChatLines.Clear();
             liveButton.Text = "开始实时翻译";
             status.Text = "实时翻译已停止";
-            if (floatingWindow != null && !floatingWindow.IsDisposed)
-                floatingWindow.HideForStop();
         }
 
         private async Task PollChatAsync(bool forceOnce = false)

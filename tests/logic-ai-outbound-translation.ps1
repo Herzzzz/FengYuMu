@@ -263,7 +263,7 @@ try {
     if ($taskRecruitCount -lt 180) {
         throw "任务招募全库验证数量异常：$taskRecruitCount"
     }
-    if ($uniqueTaskIds.Count -ne 187) {
+    if ($uniqueTaskIds.Count -ne 276) {
         throw "当前任务ID审计数量异常：$($uniqueTaskIds.Count)"
     }
     $taskGlossary = [string]$buildGlossary.Invoke($form,

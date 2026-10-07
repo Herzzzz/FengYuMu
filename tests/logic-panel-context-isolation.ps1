@@ -65,6 +65,18 @@ if ((Resolve-PanelContext "Mai's Training" @("Mai's Training") $false $true) -ne
 if ((Resolve-PanelContext "Mai's Training" @('Proof of Qualification') $true $true) -ne '1009') {
     throw 'focused 主任务窗未锁定右侧唯一具体任务标题'
 }
+if ((Resolve-PanelContext 'To Henesys, the Prairie...' @(
+    'To Henesys, the Prairie...',
+    "Arthur, the Town Clerk I met at Henesys Town Hall, suggested I become a resident of Henesys. Once I've made up my mind, I should speak with Arthur for more details."
+) $true $true) -ne '506000') {
+    throw 'focused 主任务窗未用右侧唯一详情消歧被截断的公民任务标题'
+}
+if ((Resolve-PanelContext 'Donating to Kerning City' @(
+    'Only characters at Level 12 or higher can complete this quest.',
+    'Only characters at Level 12 or higher can complete this quest.'
+) $true $true) -ne '') {
+    throw '重名公民任务仅有通用正文时不应猜测任务 ID'
+}
 if ((Resolve-PanelContext '' @("Mai's Training", 'Letter for Lucas') $true $false) -ne '') {
     throw '多个任务上下文不应借用单一任务 ID'
 }
@@ -72,10 +84,18 @@ if ((Resolve-PanelContext '' @("Mai's Training", 'Letter for Lucas') $true $fals
 $mapleSource = Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -Encoding UTF8
 $sceneSource = Get-Content (Join-Path $repoRoot 'src\SceneRecognition.cs') -Raw -Encoding UTF8
 foreach ($required in @('LabelBuildScope', 'FindQuestConcreteTaskTitle', 'FindTaskNameMatches',
-    'normalized.Contains("quest summary")', 'TryAddQuestObjectiveNameLabel')) {
+    'normalized.Contains("quest summary")', 'TryAddQuestObjectiveNameLabel',
+    'if (normalized == "quest") header = true;',
+    'if (tabRight > panelLeft) detailBoundary = tabRight + 12.0f;')) {
     if (-not ($mapleSource.Contains($required) -or $sceneSource.Contains($required))) {
         throw "源码缺少任务上下文隔离标记：$required"
     }
+}
+if ($mapleSource.Contains('normalized.StartsWith("quest ", StringComparison.Ordinal)')) {
+    throw 'Quest Summary 等右侧内容仍可能被误当作 QUEST 窗口标题'
+}
+if (-not $mapleSource.Contains('if (!overlapping && !adjacentRows) continue;')) {
+    throw '相同译文仍可能跨越远距离面板合并成巨型覆盖框'
 }
 if ($mapleSource.Contains('globalTaskId') -or $sceneSource.Contains('globalTaskId')) {
     throw '源码仍存在 globalTaskId 全局任务上下文'

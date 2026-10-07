@@ -50,7 +50,7 @@ function Assert-Equal([string]$actual, [string]$expected, [string]$label) {
 $rowsByEnglish = @{}
 foreach ($line in [IO.File]::ReadLines($dictionaryPath, [Text.Encoding]::UTF8)) {
     if ([String]::IsNullOrWhiteSpace($line) -or $line.TrimStart().StartsWith('#')) { continue }
-    $parts = $line -split "`t", -1
+    $parts = $line -split "`t"
     if ($parts.Count -lt 3) { continue }
     $english = $parts[0].Trim()
     if (-not $rowsByEnglish.ContainsKey($english)) { $rowsByEnglish[$english] = @() }

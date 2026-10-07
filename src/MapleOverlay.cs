@@ -23,8 +23,8 @@ using Windows.Storage.Streams;
 
 [assembly: AssemblyTitle("枫语幕")]
 [assembly: AssemblyProduct("枫语幕")]
-[assembly: AssemblyVersion("3.2.2.0")]
-[assembly: AssemblyFileVersion("3.2.2.0")]
+[assembly: AssemblyVersion("3.2.3.0")]
+[assembly: AssemblyFileVersion("3.2.3.0")]
 
 namespace MapleOverlay
 {
@@ -447,6 +447,10 @@ namespace MapleOverlay
         public bool IsInterfaceText;
         public bool IsSettingsText;
         public bool IsNpcDialogue;
+        // Quest Summary body prose / level gates. Kept separate from IsTaskText because
+        // these entries are indexed twice (generic bucket + task bucket) and carry no
+        // task id when one wording is shared by a whole chain.
+        public bool IsQuestTarget;
         public HashSet<string> DetailWords;
     }
 
@@ -546,6 +550,17 @@ namespace MapleOverlay
             foreach (TranslationEntry entry in entries)
             {
                 if (entry.Normalized.Length == 0) continue;
+                // Quest Summary body prose and level gates are indexed twice on purpose.
+                // taskBuckets lets the wrapped body text match the selected task, while the
+                // generic bucket below keeps short gates such as "Level 12+" paintable in
+                // and around the quest window. Moving them into taskBuckets alone would
+                // silently disable the generic path.
+                if (entry.Category.StartsWith("怀旧服-任务目标", StringComparison.Ordinal))
+                {
+                    AddToBucket(taskBuckets, entry);
+                    taskEntries.Add(entry);
+                    TaskTextCount++;
+                }
                 if (entry.Category.StartsWith("怀旧服-界面", StringComparison.Ordinal))
                     uiEntries.Add(entry);
                 if (entry.IsTaskName || entry.IsTaskText)
@@ -699,6 +714,29 @@ namespace MapleOverlay
             List<MatchResult> exact = FindInBuckets(text, taskNameBuckets, null);
             if (exact.Count > 0) return exact;
             return FindApproximateTaskNameMatch(text);
+        }
+
+        // Shared chain bodies carry no id, so FindTaskMatches would fall back to the
+        // task-NAME matcher and never reach the body prose. This entry exposes the body
+        // matcher for that case and returns id-less entries only, so a body belonging to
+        // one specific quest can never be borrowed by a differently selected task.
+        public List<MatchResult> FindSharedTaskBodyMatches(string text)
+        {
+            List<MatchResult> results = FindInBuckets(text, taskBuckets, "");
+            foreach (MatchResult approximate in FindApproximateTaskMatch(text, ""))
+            {
+                bool duplicate = false;
+                foreach (MatchResult existing in results)
+                {
+                    if (!String.Equals(existing.Entry.English, approximate.Entry.English,
+                        StringComparison.Ordinal)) continue;
+                    duplicate = true;
+                    break;
+                }
+                if (!duplicate) results.Add(approximate);
+            }
+            results.RemoveAll(delegate(MatchResult match) { return match.Entry.TaskId.Length > 0; });
+            return results;
         }
 
         public string ResolveUniqueTaskTitleId(string text)
@@ -994,7 +1032,11 @@ namespace MapleOverlay
             float bestScore = 0, secondScore = 0;
             foreach (TranslationEntry entry in taskEntries)
             {
-                if (!entry.IsTaskText || entry.TaskId != taskId || entry.DetailWords == null) continue;
+                // Keep the same scoping rule as FindInBuckets: id-less entries are shared
+                // chain text and stay eligible for the selected task.
+                if ((!entry.IsTaskText && !entry.IsQuestTarget) || entry.DetailWords == null) continue;
+                if (!String.IsNullOrEmpty(taskId) && entry.TaskId.Length > 0 &&
+                    entry.TaskId != taskId) continue;
                 HashSet<string> candidateWords = SignificantWords(entry.Normalized);
                 int common = 0;
                 foreach (string word in inputWords) if (candidateWords.Contains(word)) common++;
@@ -1325,7 +1367,12 @@ namespace MapleOverlay
                 {
                     foreach (TranslationEntry candidate in candidates)
                     {
-                        if (!String.IsNullOrEmpty(taskId) && candidate.TaskId != taskId) continue;
+                        // Entries without an id are shared chain text and stay eligible for
+                        // whichever task is selected. Entries that do carry an id remain
+                        // strictly scoped to it. A null/empty taskId keeps the original
+                        // "match anything" behaviour that FindTaskNameMatches relies on.
+                        if (!String.IsNullOrEmpty(taskId) && candidate.TaskId.Length > 0 &&
+                            candidate.TaskId != taskId) continue;
                         if (position + candidate.Normalized.Length > normalized.Length) continue;
                         if (string.CompareOrdinal(normalized, position, candidate.Normalized, 0,
                             candidate.Normalized.Length) != 0) continue;
@@ -1473,6 +1520,12 @@ namespace MapleOverlay
                 else if (words[i] == "pethils") words[i] = "details";
                 else if (words[i] == "reo" || words[i] == "aeq") words[i] = "req";
                 else if (words[i] == "attacx") words[i] = "attack";
+                // The Quest Summary item icon renders a leading "B" as a lowercase "a"
+                // ("Bubbling's Huge Bubble" -> "aubbling's Huge Bubble", see the citizenship
+                // donation screenshot). This token only ever occurs as that item name, so the
+                // repair cannot rewrite player names or free-form chat.
+                else if (words[i] == "aubbling's") words[i] = "bubbling's";
+                else if (words[i] == "aubbling") words[i] = "bubbling";
                 else if (words[i] == "ot") words[i] = "of";
                 else if (words[i] == "tor") words[i] = "for";
                 else if (words[i] == "torget") words[i] = "forget";
@@ -1540,6 +1593,10 @@ namespace MapleOverlay
                 bool isTaskName = category.StartsWith("怀旧服-任务#", StringComparison.Ordinal);
                 bool isTaskText = category.StartsWith("怀旧服-任务说明#", StringComparison.Ordinal) ||
                     category.StartsWith("怀旧服-任务对白#", StringComparison.Ordinal);
+                // Quest Summary body prose and level gates. These are indexed twice (see the
+                // bucket pass below) and need DetailWords so the approximate matcher can still
+                // recognise a body whose OCR dropped or garbled a few words mid-sentence.
+                bool isQuestTarget = category.StartsWith("怀旧服-任务目标", StringComparison.Ordinal);
                 bool isSkillText = category.StartsWith("怀旧服-技能说明#", StringComparison.Ordinal);
                 bool isItemText = category.StartsWith("怀旧服-装备说明#", StringComparison.Ordinal) ||
                     category.StartsWith("怀旧服-物品说明#", StringComparison.Ordinal);
@@ -1567,8 +1624,9 @@ namespace MapleOverlay
                     IsSkillText = isSkillText, IsItemText = isItemText,
                     IsInterfaceText = isInterfaceText, IsSettingsText = isSettingsText,
                     IsNpcDialogue = isNpcDialogue,
-                    DetailWords = (isTaskText || isSkillText || isItemText || isInterfaceText ||
-                        isSettingsText || isNpcDialogue)
+                    IsQuestTarget = isQuestTarget,
+                    DetailWords = (isTaskText || isQuestTarget || isSkillText || isItemText ||
+                        isInterfaceText || isSettingsText || isNpcDialogue)
                         ? new HashSet<string>(normalized.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries), StringComparer.Ordinal)
                         : null
                 });
@@ -2415,6 +2473,7 @@ namespace MapleOverlay
         private TranslationRangeMode translationRangeMode = TranslationRangeMode.Balanced;
         private bool continuousTranslationEnabled;
         private bool aiChatFloatingWindowEnabled;
+        private bool suppressSystemAlerts;
         private int continuousTranslationMisses;
         private int continuousTranslationFailures;
         private DateTime continuousTranslationSuppressedUntilUtc = DateTime.MinValue;
@@ -2893,12 +2952,31 @@ namespace MapleOverlay
                 showGamepadShortcut, hideGamepadShortcut);
             if (action == GamepadShortcutAction.Show)
             {
-                Task ignored = ShowTranslationFromHotkeyAsync();
+                if (processing || manualTranslationPending || IsChatTranslationBusy()) return;
+                RunManualTranslationFromInputAsync(true);
             }
             else if (action == GamepadShortcutAction.Hide)
             {
                 HideTranslation();
             }
+        }
+
+        private bool IsChatTranslationBusy()
+        {
+            return chatTranslator != null && !chatTranslator.IsDisposed &&
+                chatTranslator.HasPendingTranslationWork;
+        }
+
+        private async void RunManualTranslationFromInputAsync(bool suppressAlerts)
+        {
+            bool previous = suppressSystemAlerts;
+            suppressSystemAlerts = suppressSystemAlerts || suppressAlerts;
+            try { await ShowTranslationFromHotkeyAsync(); }
+            catch
+            {
+                // Input-originated OCR is best-effort. Avoid a WinForms alert beep.
+            }
+            finally { suppressSystemAlerts = previous; }
         }
 
         internal void ReloadDictionary()
@@ -3083,22 +3161,18 @@ namespace MapleOverlay
 
         private bool RestoreAiChatFloatingWindow()
         {
-            if (chatTranslator == null || chatTranslator.IsDisposed ||
-                !chatTranslator.IsLiveTranslationRunning)
+            if (chatTranslator == null || chatTranslator.IsDisposed)
             {
-                tray.ShowBalloonTip(1800, "AI翻译悬浮窗",
-                    "实时翻译还没开始。先打开“AI实时聊天翻译”，再点“开始实时翻译”。",
-                    ToolTipIcon.Info);
-                return false;
+                ShowChatTranslator();
+                if (chatTranslator == null || chatTranslator.IsDisposed) return false;
             }
-            chatTranslator.RestoreFloatingWindowFromTray();
-            return true;
+            return chatTranslator.RestoreFloatingWindowFromTray();
         }
 
         private void BuildTray()
         {
             tray.Icon = Program.AppIcon;
-            tray.Text = "枫语幕 v3.2.2";
+            tray.Text = "枫语幕 v3.2.3";
             tray.Visible = true;
             ContextMenuStrip menu = new ContextMenuStrip();
             ToolStripMenuItem main = new ToolStripMenuItem("打开主界面");
@@ -3146,7 +3220,7 @@ namespace MapleOverlay
             {
                 tray.Visible = false;
                 tray.Icon = Program.AppIcon;
-                tray.Text = "枫语幕 v3.2.2（内存待机）";
+                tray.Text = "枫语幕 v3.2.3（内存待机）";
                 tray.Visible = true;
             }
             catch (ObjectDisposedException) { return; }
@@ -3169,6 +3243,7 @@ namespace MapleOverlay
 
         private async Task ShowTranslationFromHotkeyAsync()
         {
+            if (IsChatTranslationBusy()) return;
             // F8 is a true toggle. A second press also cancels an OCR pass that has not yet
             // published results, so a late completion cannot make the overlay reappear.
             if (manualTranslationPending || visibleTranslation)
@@ -3267,7 +3342,7 @@ namespace MapleOverlay
             if (m.Msg == WM_HOTKEY)
             {
                 int id = m.WParam.ToInt32();
-                if (id == HOTKEY_SHOW) { Task ignored = ShowTranslationFromHotkeyAsync(); }
+                if (id == HOTKEY_SHOW) { RunManualTranslationFromInputAsync(false); }
                 else if (id == HOTKEY_HIDE) { Task ignored = AutoAlignChatRegionFromHotkeyAsync(); }
                 else if (id == HOTKEY_FLOATING_WINDOW) { RestoreAiChatFloatingWindowFromHotkey(); }
             }
@@ -3294,7 +3369,7 @@ namespace MapleOverlay
             ShowCurrentTranslations();
             if (continuousTranslationEnabled)
                 continuousTranslationSuppressedUntilUtc = DateTime.UtcNow.AddSeconds(3);
-            tray.Text = "枫语幕 v3.2.2（低配置优化）";
+            tray.Text = "枫语幕 v3.2.3（低配置优化）";
         }
 
         private Task ShowTranslationAsync()
@@ -3798,7 +3873,7 @@ namespace MapleOverlay
                 visibleTranslation = true;
                 ShowCurrentTranslations();
                 stopwatch.Stop();
-                tray.Text = "枫语幕 v3.2.2（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
+                tray.Text = "枫语幕 v3.2.3（已显示，" + stopwatch.ElapsedMilliseconds + "ms）";
                 if (Program.Benchmark)
                     WriteBenchmarkResult(stopwatch, captureDuration, probePassDuration,
                         mainPassDuration, hoverPassDuration, panelPassDuration,
@@ -3823,7 +3898,8 @@ namespace MapleOverlay
                     continuousTranslationTimer.Interval = ContinuousTranslationPolicy.NextInterval(
                         restoreExistingOverlay, continuousTranslationMisses, continuousTranslationFailures);
                 }
-                else tray.ShowBalloonTip(3000, "识别失败", ex.Message, ToolTipIcon.Error);
+                else if (!suppressSystemAlerts && !IsChatTranslationBusy())
+                    tray.ShowBalloonTip(3000, "识别失败", ex.Message, ToolTipIcon.Error);
             }
             finally { processing = false; }
         }
@@ -4883,9 +4959,20 @@ namespace MapleOverlay
                 mainQuestShell);
             if (scopedTaskId.Length > 0)
             {
-                AddQuestPanelTextLabels(output, taskContextLines, scopedTaskId, ocrScale);
+                AddQuestPanelTextLabels(output, taskContextLines, scopedTaskId, ocrScale, false);
                 AddQuestWholeResultFallback(output, taskContextLines, taskContextText.ToString(),
-                    scopedTaskId, ocrScale);
+                    scopedTaskId, ocrScale, false);
+            }
+            else if (mainQuestShell || FindQuestShellAnchor(allLines) != null)
+            {
+                // A citizenship chain such as "Donating to Kerning City" repeats one body
+                // across 18 identically named quests, so no single id can be resolved and
+                // guessing one is forbidden. The shared wording is still safe to paint:
+                // sharedOnly keeps entries that carry no id, so a body belonging to one
+                // specific quest can never be borrowed by a differently selected task.
+                AddQuestPanelTextLabels(output, taskContextLines, "", ocrScale, true);
+                AddQuestWholeResultFallback(output, taskContextLines, taskContextText.ToString(),
+                    "", ocrScale, true);
             }
             HashSet<OcrPanelInfo> handledSkillPanels = new HashSet<OcrPanelInfo>();
             HashSet<OcrPanelInfo> handledEquipmentPanels = new HashSet<OcrPanelInfo>();
@@ -5127,7 +5214,8 @@ namespace MapleOverlay
                 }
                 else matches = translations.FindMatches(line.Text);
                 if (!taskTextContext && !taskSceneAnchor && !equipmentStatLine && matches.Count > 0)
-                    KeepHighCoverageMatches(matches, normalizedCurrentLine.Length);
+                    KeepHighCoverageMatches(matches, normalizedCurrentLine.Length,
+                        visibleScene.IsStrong(SceneKind.Quest));
                 if (!questInterface && normalizedCurrentLine.Length > 28 && !equipmentStatLine)
                     matches.RemoveAll(delegate(MatchResult match) {
                         int lineLength = normalizedCurrentLine.Length;
@@ -5143,10 +5231,20 @@ namespace MapleOverlay
                     StringBuilder combinedText = new StringBuilder();
                     List<MatchResult> bestTaskMatches = null;
                     string bestTaskText = ""; int bestTaskSpan = 0; int bestTaskCoverage = 0;
+                    int bestTaskLineCount = 0;
+                    int skippedTaskNoise = 0;
                     for (int span = 0; span < 7 && lineIndex + span < allLines.Count; span++)
                     {
                         OcrLine candidateLine = allLines[lineIndex + span];
-                        if (span > 0 && !CanJoinOcrLines(allLines[lineIndex + span - 1], candidateLine)) break;
+                        if (span > 0 && !CanJoinOcrLines(allLines[lineIndex + span - 1], candidateLine))
+                        {
+                            // A wrapped quest body can be split by the quest window's own
+                            // scrollbar or label strip ("...a donation of 30" + "Citizen's R.."
+                            // + "ge Bubbles for Kerning City."). Skip at most two such lines and
+                            // resume only when the next line still continues the same block.
+                            if (skippedTaskNoise < 2) { skippedTaskNoise++; continue; }
+                            break;
+                        }
                         combinedLines.Add(candidateLine);
                         if (combinedText.Length > 0) combinedText.Append(' ');
                         combinedText.Append(candidateLine.Text);
@@ -5162,11 +5260,14 @@ namespace MapleOverlay
                         {
                             bestTaskMatches = combinedMatches; bestTaskText = combinedText.ToString();
                             bestTaskSpan = span + 1; bestTaskCoverage = coverage;
+                            // Skipped noise lines are not in combinedLines, so the winning
+                            // fragment must be sliced by how many lines were actually added.
+                            bestTaskLineCount = combinedLines.Count;
                         }
                     }
                     if (bestTaskMatches != null && bestTaskMatches.Count > 0)
                     {
-                        AddExactLabels(output, combinedLines.GetRange(0, bestTaskSpan), bestTaskText, bestTaskMatches, ocrScale);
+                        AddExactLabels(output, combinedLines.GetRange(0, bestTaskLineCount), bestTaskText, bestTaskMatches, ocrScale);
                         lineIndex += bestTaskSpan - 1;
                         continue;
                     }
@@ -5220,7 +5321,8 @@ namespace MapleOverlay
             return output;
         }
 
-        private static void KeepHighCoverageMatches(List<MatchResult> matches, int lineLength)
+        private static void KeepHighCoverageMatches(List<MatchResult> matches, int lineLength,
+            bool questSurface)
         {
             if (matches == null || matches.Count == 0 || lineLength <= 0) return;
             int covered = 0;
@@ -5230,8 +5332,16 @@ namespace MapleOverlay
                 // The generic dictionary must not paint small static UI vocabulary across
                 // unrelated screens. Dedicated panel layouts and long-interface matching
                 // remain responsible for those labels.
-                bool shortInterface = match.Entry.Category.StartsWith("怀旧服-界面",
-                    StringComparison.Ordinal) && match.Entry.Normalized.Length < 18;
+                //
+                // "Quest Summary" is the one short label that stays: it is the selected-task
+                // pane heading, and the surrounding Quest panel already scopes it. It is
+                // released only while a Quest scene is on screen, so ALL/LEVEL/MESOS and any
+                // stray "quest summary" text elsewhere stay suppressed exactly as before.
+                bool questPaneHeading = questSurface &&
+                    String.Equals(match.Entry.Normalized, "quest summary", StringComparison.Ordinal);
+                bool shortInterface = !questPaneHeading &&
+                    match.Entry.Category.StartsWith("怀旧服-界面", StringComparison.Ordinal) &&
+                    match.Entry.Normalized.Length < 18;
                 if (shortInterface) return true;
                 return !collectivelyMeaningful && match.Length * 10 < lineLength * 7;
             });
@@ -5245,8 +5355,16 @@ namespace MapleOverlay
             // Template labels are safe only when the surrounding Quest shell is also visible.
             // This prevents one dialogue line from projecting non-existent tabs/buttons across
             // the screen while still tolerating one missed header or tab in small classic UI.
-            bool allowQuestLayout = captureBounds == gameBounds && HasQuestWindowShell(lines);
-            OcrLine questShellAnchor = allowQuestLayout ? FindQuestShellAnchor(lines) : null;
+            bool questShellPresent = HasQuestWindowShell(lines);
+            // HasQuestWindowShell is deliberately strict because it also gates template
+            // drawing. The citizenship anchor needs the looser signal instead: Classic UI
+            // renders the tabs in low contrast, so OCR frequently returns the "QUEST"
+            // caption while missing every tab, which still proves the quest window is the
+            // surface being read.
+            OcrLine anyShellAnchor = FindQuestShellAnchor(lines);
+            bool questSurfacePresent = questShellPresent || anyShellAnchor != null;
+            bool allowQuestLayout = captureBounds == gameBounds && questShellPresent;
+            OcrLine questShellAnchor = allowQuestLayout ? anyShellAnchor : null;
             if (questShellAnchor != null)
             {
                 AddQuestWindowLayoutLabels(output, questShellAnchor, ocrScale);
@@ -5270,7 +5388,14 @@ namespace MapleOverlay
                 {
                     AddCharacterInfoLayoutLabels(output, line, ocrScale); characterInfo = true;
                 }
-                else if (!characterInfo && normalized.Contains("citizenship"))
+                // CITIZENSHIP is both the Character Info tab and a quest title in the
+                // citizenship chain. Use it as the Character Info anchor only when no Quest
+                // shell is on screen. Otherwise the entire Character Info layout (role,
+                // level, popularity, guild, party, trade and pet rows) is projected onto the
+                // quest list at unrelated offsets, painting labels whose source text does not
+                // exist anywhere in the captured frame.
+                else if (!characterInfo && !questSurfacePresent &&
+                    normalized.Contains("citizenship"))
                 {
                     AddCharacterInfoLayoutFromCitizenship(output, line, ocrScale); characterInfo = true;
                 }
@@ -5290,10 +5415,10 @@ namespace MapleOverlay
             foreach (OcrLine line in lines)
             {
                 string normalized = TranslationStore.Normalize(line.Text);
-                if (normalized == "quest" ||
-                    (normalized.StartsWith("quest ", StringComparison.Ordinal) &&
-                     !normalized.StartsWith("quest helper", StringComparison.Ordinal)))
-                    header = true;
+                // Only the literal window caption is a shell header. "Quest Summary"
+                // belongs to the selected task pane; treating it as the window origin
+                // projects the left-side tabs and footer buttons across the right pane.
+                if (normalized == "quest") header = true;
                 if (normalized == "available" || normalized.StartsWith("available ", StringComparison.Ordinal)) tabs++;
                 if (normalized == "in progress" || normalized.StartsWith("in progress ", StringComparison.Ordinal)) tabs++;
                 if (normalized == "completed" || normalized.StartsWith("completed ", StringComparison.Ordinal)) tabs++;
@@ -5310,8 +5435,7 @@ namespace MapleOverlay
                 {
                     string normalized = TranslationStore.Normalize(line.Text);
                     bool match = wanted == "quest"
-                        ? (normalized == "quest" || (normalized.StartsWith("quest ", StringComparison.Ordinal) &&
-                           !normalized.StartsWith("quest helper", StringComparison.Ordinal)))
+                        ? normalized == "quest"
                         : (normalized == wanted || normalized.StartsWith(wanted + " ", StringComparison.Ordinal));
                     if (match) return line;
                 }
@@ -5347,7 +5471,10 @@ namespace MapleOverlay
                 if (normalized.StartsWith("quest helper", StringComparison.Ordinal))
                     helperLeft = Math.Min(helperLeft, left);
             }
-            if (tabRight > panelLeft) detailBoundary = Math.Max(detailBoundary, tabRight + 12.0f);
+            // The right edge of the three tabs is a measured split between the list and
+            // selected-task panes. Prefer it over a fixed 40% estimate, which cuts too far
+            // into the detail pane on narrow or DPI-scaled quest windows.
+            if (tabRight > panelLeft) detailBoundary = tabRight + 12.0f;
 
             foreach (OcrLine line in lines)
             {
@@ -5428,7 +5555,7 @@ namespace MapleOverlay
         }
 
         private void AddQuestPanelTextLabels(List<OverlayLabel> output,
-            List<OcrLine> lines, string taskId, float ocrScale)
+            List<OcrLine> lines, string taskId, float ocrScale, bool sharedOnly)
         {
             Dictionary<string, SkillPanelCandidate> candidates =
                 new Dictionary<string, SkillPanelCandidate>(StringComparer.Ordinal);
@@ -5453,9 +5580,14 @@ namespace MapleOverlay
                     combined.Append(current.Text);
                     string text = combined.ToString();
                     if (TranslationStore.Normalize(text).Length < 24) continue;
-                    foreach (MatchResult match in translations.FindTaskMatches(text, taskId))
+                    List<MatchResult> windowMatches = sharedOnly
+                        ? translations.FindSharedTaskBodyMatches(text)
+                        : translations.FindTaskMatches(text, taskId);
+                    foreach (MatchResult match in windowMatches)
                     {
-                        if (!match.Entry.IsTaskText || match.Entry.Normalized.Length < 24) continue;
+                        if (sharedOnly && match.Entry.TaskId.Length > 0) continue;
+                        if ((!match.Entry.IsTaskText && !match.Entry.IsQuestTarget) ||
+                            match.Entry.Normalized.Length < 24) continue;
                         int score = match.Entry.Normalized.Length * 1000 -
                             Math.Abs(TranslationStore.Normalize(text).Length - match.Entry.Normalized.Length);
                         string key = match.Entry.Category + "\t" + match.Entry.English;
@@ -5495,11 +5627,15 @@ namespace MapleOverlay
         }
 
         private void AddQuestWholeResultFallback(List<OverlayLabel> output,
-            List<OcrLine> lines, string text, string taskId, float ocrScale)
+            List<OcrLine> lines, string text, string taskId, float ocrScale, bool sharedOnly)
         {
-            foreach (MatchResult match in translations.FindTaskMatches(text, taskId))
+            foreach (MatchResult match in sharedOnly
+                ? translations.FindSharedTaskBodyMatches(text)
+                : translations.FindTaskMatches(text, taskId))
             {
-                if (!match.Entry.IsTaskText || match.Entry.Normalized.Length < 24) continue;
+                if (sharedOnly && match.Entry.TaskId.Length > 0) continue;
+                if ((!match.Entry.IsTaskText && !match.Entry.IsQuestTarget) ||
+                    match.Entry.Normalized.Length < 24) continue;
                 bool alreadyAdded = false;
                 foreach (OverlayLabel label in output)
                     if (SameOverlayText(label.Text, match.Entry.Chinese))
@@ -5656,9 +5792,7 @@ namespace MapleOverlay
             if (raw.IsEmpty) return;
             float height = Math.Max(15.0f, raw.Height / ocrScale);
             string normalized = TranslationStore.Normalize(shellLine.Text);
-            bool header = normalized == "quest" ||
-                (normalized.StartsWith("quest ", StringComparison.Ordinal) &&
-                 !normalized.StartsWith("quest helper", StringComparison.Ordinal));
+            bool header = normalized == "quest";
             float scale = Math.Max(0.82f, Math.Min(1.45f, height / (header ? 15.0f : 20.0f)));
             float anchorLeft = raw.Left / ocrScale + captureBounds.Left - Bounds.Left;
             float anchorTop = raw.Top / ocrScale + captureBounds.Top - Bounds.Top;
@@ -6047,7 +6181,11 @@ namespace MapleOverlay
             OcrLine line, float ocrScale)
         {
             if (line == null || String.IsNullOrWhiteSpace(line.Text)) return false;
-            const string counter = @"[\dlIoO]+\s*/\s*[\dlIoO]+";
+            // Windows OCR routinely drops the slash in a Quest Summary counter and leaves
+            // "33 30" behind (citizenship donation screenshot). Accept a whitespace split as
+            // well: the name/counter boundary stays unambiguous because this method only
+            // paints when the remaining text resolves to a dictionary item or monster.
+            const string counter = @"[\dlIoO]+(?:\s*/\s*|\s+)[\dlIoO]+";
             bool counterFirst = Regex.IsMatch(line.Text,
                 @"^\s*[•·*\-]?\s*" + counter + @"\s+.{2,80}?\s*$",
                 RegexOptions.IgnoreCase);
@@ -6434,7 +6572,15 @@ namespace MapleOverlay
                 for (int j = labels.Count - 1; j > i; j--)
                 {
                     if (!SameOverlayText(labels[j].Text, labels[i].Text)) continue;
-                    labels[i].Bounds = RectangleF.Union(labels[i].Bounds, labels[j].Bounds);
+                    RectangleF a = labels[i].Bounds, b = labels[j].Bounds;
+                    RectangleF overlap = RectangleF.Intersect(a, b);
+                    float horizontalOverlap = Math.Min(a.Right, b.Right) - Math.Max(a.Left, b.Left);
+                    float verticalGap = Math.Max(0, Math.Max(a.Top, b.Top) - Math.Min(a.Bottom, b.Bottom));
+                    bool overlapping = overlap.Width > 0 && overlap.Height > 0;
+                    bool adjacentRows = horizontalOverlap >= Math.Min(a.Width, b.Width) * 0.35f &&
+                        verticalGap <= 12.0f;
+                    if (!overlapping && !adjacentRows) continue;
+                    labels[i].Bounds = RectangleF.Union(a, b);
                     labels[i].Wrap = true;
                     labels.RemoveAt(j);
                 }
