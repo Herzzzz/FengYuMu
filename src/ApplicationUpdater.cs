@@ -87,7 +87,9 @@ namespace MapleOverlay
         // A bad, stale, or unavailable mirror never blocks the GitHub fallback.
         private const string DomesticMirrorManifestUrl =
             "https://gitee.com/Herzzzz/maple-whisper-veil/raw/main/latest.json";
-        private static readonly bool DomesticMirrorEnabled = false;
+        // v3.2.3 的 ZIP、SHA-256 与清单已上传 Gitee 并逐字节校验通过，国内走镜像更快。
+        // 清单里带固定 SHA-256，镜像异常时 UpdateWebClient 仍会回退 GitHub。
+        private static readonly bool DomesticMirrorEnabled = true;
         private static readonly string[] PackageFiles = new string[] {
             "枫语幕.exe", "枫语幕词库.tsv", "使用说明.txt"
         };

@@ -51,9 +51,20 @@ function Get-RemoteSha([string]$path) {
         $uri = "$apiRoot/$([Uri]::EscapeDataString($path))?ref=$Branch"
         $response = Invoke-RestMethod -Uri $uri -Headers @{ Authorization = "token $Token" } `
             -TimeoutSec 30 -ErrorAction Stop
-        return [string]$response.sha
+        # Gitee answers a missing path with an empty array rather than a 404, and strict
+        # mode turns a missing property into a terminating error. Only an object that
+        # actually carries sha describes a file we can update in place.
+        $shaProperty = $response.PSObject.Properties['sha']
+        if ($null -eq $shaProperty) { return '' }
+        return [string]$shaProperty.Value
     } catch {
-        if ($_.Exception.Response.StatusCode.value__ -eq 404) { return '' }
+        # 404 means the file does not exist yet, which is the normal case on a first
+        # upload. Strict mode is on and a connection-level failure has no Response
+        # property at all, so the status has to be read defensively.
+        $status = 0
+        try { $status = [int]$_.Exception.Response.StatusCode } catch { $status = 0 }
+        if ($status -eq 404) { return '' }
+        if ("$($_.Exception.Message)" -match '\b404\b') { return '' }
         throw
     }
 }
@@ -93,9 +104,12 @@ foreach ($path in @($zipName, $shaName, 'latest.json')) {
     Write-Host "  [OK] $path  HTTP $($head.StatusCode)"
 }
 
-$remoteManifest = Invoke-RestMethod -Uri "https://gitee.com/$Owner/$Repo/raw/$Branch/latest.json" -TimeoutSec 30
-if ([string]$remoteManifest.sha256 -ne $zipHash) {
-    throw "远端清单 SHA-256 与本地不一致：$($remoteManifest.sha256)"
+$remoteManifest = (Invoke-WebRequest -Uri "https://gitee.com/$Owner/$Repo/raw/$Branch/latest.json" `
+    -TimeoutSec 30 -UseBasicParsing).Content | ConvertFrom-Json
+$remoteShaProperty = $remoteManifest.PSObject.Properties['sha256']
+$remoteSha = if ($null -eq $remoteShaProperty) { '' } else { [string]$remoteShaProperty.Value }
+if ($remoteSha -ne $zipHash) {
+    throw "远端清单 SHA-256 与本地不一致：$remoteSha"
 }
 Write-Host "  远端清单 SHA-256 与本地一致：$zipHash"
 Write-Output "国内镜像已发布：$tag（$zipName）"
