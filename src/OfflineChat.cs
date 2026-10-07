@@ -2895,8 +2895,15 @@ namespace MapleOverlay
             if (visualStyle == null) visualStyle = ChatVisualStyle.Default;
             if (output.TextLength > 24000)
             {
+                // Same trap as the floating window: this box is ReadOnly as well, and a
+                // read-only RichTextBox answers an edit message with the Windows default
+                // beep. "SelectedText = \"\"" is an edit, so the beep only started once
+                // the log grew past this cap. Lift read-only for the trim only.
+                bool wasReadOnly = output.ReadOnly;
+                output.ReadOnly = false;
                 output.Select(0, Math.Min(8000, output.TextLength));
                 output.SelectedText = "";
+                output.ReadOnly = wasReadOnly;
             }
             output.SelectionStart = output.TextLength;
             output.SelectionColor = Color.FromArgb(132, 142, 154);

@@ -393,8 +393,17 @@ namespace MapleOverlay
             if (content.TextLength > 12000)
             {
                 int cut = content.Text.IndexOf('\n', Math.Max(0, content.TextLength - 8000));
-                content.Select(0, cut >= 0 ? cut + 1 : Math.Max(0, content.TextLength - 8000));
+                int removeLength = cut >= 0 ? cut + 1 : Math.Max(0, content.TextLength - 8000);
+                // This box is ReadOnly, and a read-only RichTextBox answers an edit message
+                // with the Windows default beep. "SelectedText = \"\"" IS such an edit, so
+                // trimming only starts beeping once the log grows past 12000 characters -
+                // which is exactly the "fine for a while, then it starts" symptom.
+                // Lift read-only for the trim itself and put it straight back.
+                bool wasReadOnly = content.ReadOnly;
+                content.ReadOnly = false;
+                content.Select(0, removeLength);
                 content.SelectedText = "";
+                content.ReadOnly = wasReadOnly;
             }
             content.SelectionStart = content.TextLength;
             content.SelectionLength = 0;

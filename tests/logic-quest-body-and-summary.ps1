@@ -99,8 +99,8 @@ $source = Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -Encoding
 foreach ($required in @(
     'public List<MatchResult> FindSharedTaskBodyMatches(string text)',
     'results.RemoveAll(delegate(MatchResult match) { return match.Entry.TaskId.Length > 0; });',
-    'bool questPaneHeading = questSurface &&',
-    'String.Equals(match.Entry.Normalized, "quest summary", StringComparison.Ordinal);',
+    'bool questPaneHeading = questSurface && IsQuestPanelChrome(match.Entry.Normalized);',
+    'private static bool IsQuestPanelChrome(string normalized)',
     'if (sharedOnly && match.Entry.TaskId.Length > 0) continue;',
     'public bool IsQuestTarget;')) {
     if (-not $source.Contains($required)) {

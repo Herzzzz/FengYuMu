@@ -194,6 +194,19 @@ namespace MapleOverlay
                 }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            // The "Windows Default Beep" is what WinForms plays from its default
+            // ThreadExceptionDialog. Every timer tick and button handler here is an
+            // async delegate, i.e. an async void, so any exception that escapes one of
+            // them would surface as that beep in the middle of a game. Route UI-thread
+            // failures to a log file instead: the player never hears them, and the
+            // trace is still available for diagnosis.
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+            Application.ThreadException += delegate(object sender, ThreadExceptionEventArgs e) {
+                LogSilentFailure(e.Exception);
+            };
+            AppDomain.CurrentDomain.UnhandledException += delegate(object sender, UnhandledExceptionEventArgs e) {
+                LogSilentFailure(e.ExceptionObject as Exception);
+            };
             if (args != null && Array.IndexOf(args, "--main-ui-test") >= 0)
             {
                 string uiErrorPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
@@ -417,6 +430,45 @@ namespace MapleOverlay
                 Environment.ExitCode = GamepadShortcutLatch.RunSelfTest() ? 0 : 2;
                 return;
             }
+            if (args != null && Array.IndexOf(args, "--gamepad-probe") >= 0)
+            {
+                // Reads HID reports directly, so controller back buttons can be identified
+                // even though XInput has no bit for them. The report file is written first so
+                // a crash or an exception still leaves a readable trace behind.
+                string probePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "gamepad_probe.txt");
+                try
+                {
+                    int probeSeconds = 20;
+                    foreach (string arg in args)
+                    {
+                        if (!arg.StartsWith("--gamepad-probe-seconds=", StringComparison.OrdinalIgnoreCase)) continue;
+                        Int32.TryParse(arg.Substring("--gamepad-probe-seconds=".Length), out probeSeconds);
+                    }
+                    if (probeSeconds < 3) probeSeconds = 3;
+                    if (probeSeconds > 120) probeSeconds = 120;
+                    File.WriteAllText(probePath, "探测已启动，正在采集…", Encoding.UTF8);
+                    string probeReport = GamepadProbe.Run(probeSeconds);
+                    File.WriteAllText(probePath, probeReport, Encoding.UTF8);
+                    // The launcher script prints the report itself and would be blocked by a
+                    // modal dialog, so the popup is opt-out.
+                    if (Array.IndexOf(args, "--gamepad-probe-quiet") < 0)
+                    {
+                        MessageBox.Show("手柄探测完成，结果已保存到：\n\n" + probePath +
+                            "\n\n把这个文件发给开发者即可判断背键能否直接绑定。",
+                            "枫语幕手柄探测");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    try { File.WriteAllText(probePath, "手柄探测失败：\r\n" + ex, Encoding.UTF8); }
+                    catch { }
+                    if (Array.IndexOf(args, "--gamepad-probe-quiet") < 0)
+                    {
+                        MessageBox.Show("手柄探测失败：\n\n" + ex.Message, "枫语幕手柄探测");
+                    }
+                }
+                return;
+            }
             if (!Benchmark && !BenchmarkUi && !AcquirePrimaryInstance()) return;
             try { Application.Run(new OverlayForm()); }
             catch (Exception ex)
@@ -428,6 +480,22 @@ namespace MapleOverlay
             {
                 if (!Benchmark && !BenchmarkUi) ReleasePrimaryInstance();
             }
+        }
+
+        // UI-thread failures are written to a log instead of being shown. The default
+        // WinForms exception dialog plays the "Windows Default Beep", which must never
+        // happen while the player is in a game.
+        private static void LogSilentFailure(Exception ex)
+        {
+            if (ex == null) return;
+            try
+            {
+                File.AppendAllText(
+                    Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "运行诊断.log"),
+                    DateTime.Now.ToString("s") + "  " + ex + Environment.NewLine,
+                    Encoding.UTF8);
+            }
+            catch { }
         }
     }
 
@@ -713,7 +781,19 @@ namespace MapleOverlay
         {
             List<MatchResult> exact = FindInBuckets(text, taskNameBuckets, null);
             if (exact.Count > 0) return exact;
-            return FindApproximateTaskNameMatch(text);
+            List<MatchResult> approximate = FindApproximateTaskNameMatch(text);
+            if (approximate.Count > 0) return approximate;
+            // Quest chain titles carry a sequence number in the dictionary but not always on
+            // screen ("I Need to Find My Daughter 1" vs the quest list's "I Need to Find My
+            // Daughter"). Retry without a trailing number so both shapes meet. Duplicate
+            // numbering is still handled inside the approximate matcher, which compares the
+            // sequence suffix, so " 2" can never cross-match a " 1" row.
+            string normalized = Normalize(text);
+            Match tail = Regex.Match(normalized, @"^(?<name>.+?)\s+\d{1,3}$");
+            if (!tail.Success || tail.Groups["name"].Value.Length < 5) return new List<MatchResult>();
+            exact = FindInBuckets(tail.Groups["name"].Value, taskNameBuckets, null);
+            if (exact.Count > 0) return exact;
+            return FindApproximateTaskNameMatch(tail.Groups["name"].Value);
         }
 
         // Shared chain bodies carry no id, so FindTaskMatches would fall back to the
@@ -5338,14 +5418,35 @@ namespace MapleOverlay
                 // pane heading, and the surrounding Quest panel already scopes it. It is
                 // released only while a Quest scene is on screen, so ALL/LEVEL/MESOS and any
                 // stray "quest summary" text elsewhere stay suppressed exactly as before.
-                bool questPaneHeading = questSurface &&
-                    String.Equals(match.Entry.Normalized, "quest summary", StringComparison.Ordinal);
+                bool questPaneHeading = questSurface && IsQuestPanelChrome(match.Entry.Normalized);
                 bool shortInterface = !questPaneHeading &&
                     match.Entry.Category.StartsWith("怀旧服-界面", StringComparison.Ordinal) &&
                     match.Entry.Normalized.Length < 18;
                 if (shortInterface) return true;
                 return !collectivelyMeaningful && match.Length * 10 < lineLength * 7;
             });
+        }
+
+        // Captions, tabs and buttons that belong to the quest window itself. They are short
+        // generic UI words, so the generic coverage filter suppresses them - but on a quest
+        // panel they are exactly what the player needs, and translating each one at its real
+        // OCR position keeps the label glued to its own button instead of a guessed offset.
+        private static bool IsQuestPanelChrome(string normalized)
+        {
+            switch (normalized)
+            {
+                case "quest":
+                case "quest summary":
+                case "details":
+                case "forfeit":
+                case "quest helper":
+                case "available":
+                case "in progress":
+                case "completed":
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         private void AddStablePanelLayouts(List<OverlayLabel> output, List<OcrLine> lines,
@@ -5371,7 +5472,11 @@ namespace MapleOverlay
             OcrLine questShellAnchor = allowQuestLayout ? anyShellAnchor : null;
             if (questShellAnchor != null)
             {
-                AddQuestWindowLayoutLabels(output, questShellAnchor, ocrScale);
+                // The window's own caption, tabs and buttons are translated from their real
+                // OCR positions (see IsQuestPanelChrome), so the fixed-offset template is no
+                // longer drawn. Its footer offset was a hard-coded 620px, which landed
+                // wherever the real buttons were not whenever the window had another size -
+                // that is the "labels do not sit on the source text" complaint.
                 quest = true;
             }
             foreach (OcrLine line in lines)
@@ -5953,6 +6058,125 @@ namespace MapleOverlay
                 .Replace('S', '5').Replace('s', '5').Replace('B', '8').Replace('b', '8');
         }
 
+        // Windows OCR does not return clean text for these rows. Measured on a real quest
+        // window it produced:
+        //     "Level 11+"              -> "Level I I +"      (digits became letters, with a
+        //                                                     space inserted between them)
+        //     "Ayan's Toy Sword 1 / 1" -> "1 f 1"            (the slash became an f)
+        //     "Henesys (1)"            -> "Henesys (l )"     (the 1 became a lowercase L)
+        // A pattern that assumes clean digits therefore matches some rows and misses others
+        // for no visible reason. Every structured pattern below is written to survive this.
+        private const string OcrDigitRun = @"[0-9lIoOgqSsB]";
+        private const string OcrDigitRunWithGaps = @"[0-9lIoOgqSsB\s]";
+        // "/" is routinely read as f, t, r or a backslash.
+        private const string OcrCounterSeparator = @"\s*[/fFtTrR\\|]\s*";
+
+        // Collapse the gaps Windows OCR inserts inside a number ("I I" -> "11") and repair
+        // the letter/digit confusion, so the value can be compared and displayed.
+        private static string CompactOcrNumber(string value)
+        {
+            if (String.IsNullOrEmpty(value)) return "";
+            string compact = Regex.Replace(value,
+                @"(?<=[0-9lIoOgqSsB])\s+(?=[0-9lIoOgqSsB])", "");
+            return RepairOcrNumber(compact.Trim());
+        }
+
+        // Categories whose entries may legitimately be glued to a run-time number on a
+        // quest panel heading or objective row. Player names and chat text never resolve
+        // here, so a live counter can not make ordinary text look translatable.
+        private static bool IsStructuredNameCategory(string category)
+        {
+            if (String.IsNullOrEmpty(category)) return false;
+            return category.StartsWith("怀旧服-地图", StringComparison.Ordinal) ||
+                category.StartsWith("怀旧服-任务组", StringComparison.Ordinal) ||
+                category.StartsWith("怀旧服-任务#", StringComparison.Ordinal) ||
+                category.StartsWith("怀旧服-怪物#", StringComparison.Ordinal) ||
+                category.StartsWith("怀旧服-道具#", StringComparison.Ordinal) ||
+                category.StartsWith("怀旧服-装备#", StringComparison.Ordinal) ||
+                category.StartsWith("怀旧服-NPC#", StringComparison.Ordinal);
+        }
+
+        private bool TryResolveStructuredName(string name, out string chinese)
+        {
+            chinese = "";
+            if (String.IsNullOrWhiteSpace(name)) return false;
+            string trimmed = name.Trim(' ', '.', ':', '-', '*', '•', '·');
+            if (trimmed.Length < 2) return false;
+            TranslationEntry best = null;
+            foreach (MatchResult match in translations.FindMatches(trimmed))
+            {
+                if (!IsStructuredNameCategory(match.Entry.Category)) continue;
+                if (best == null || match.Entry.Normalized.Length > best.Normalized.Length)
+                    best = match.Entry;
+            }
+            if (best == null) return false;
+            chinese = best.Chinese;
+            return true;
+        }
+
+        // The level gate, quest group headings and quest objectives all share one shape: a
+        // dictionary-backed name glued to a number the game produces at run time
+        // ("Level 13+", "Henesys (1)", "Ayan's Toy Sword 1 / 1", "Stump 30 / 30"). A
+        // dictionary entry can pin only one fixed number, so listing them one by one can
+        // never keep up with the game. Recognise the shape and translate only the name,
+        // leaving the live number exactly as the game drew it.
+        private bool TryTranslateNameWithLiveNumber(string text, out string translated)
+        {
+            translated = "";
+            string source = (text ?? "").Trim();
+            if (source.Length < 2 || source.Length > 120) return false;
+
+            // "Level 11+" - OCR returns "Level I I +" for this row, so the digits must be
+            // allowed to arrive as letter look-alikes with gaps inserted between them.
+            Match levelOnly = Regex.Match(source,
+                @"^level\s+(" + OcrDigitRunWithGaps + @"{1,6}?)\s*(\+?)$",
+                RegexOptions.IgnoreCase);
+            if (levelOnly.Success)
+            {
+                string level = CompactOcrNumber(levelOnly.Groups[1].Value);
+                if (level.Length > 0)
+                {
+                    translated = "等级 " + level + levelOnly.Groups[2].Value;
+                    return true;
+                }
+            }
+
+            // "Henesys (1)" - a quest group heading. OCR returns "Henesys (l )".
+            Match grouped = Regex.Match(source,
+                @"^[•·*\-]?\s*(.{2,60}?)\s*\(\s*(" + OcrDigitRunWithGaps + @"{1,6}?)\s*\)$");
+            string groupedName;
+            if (grouped.Success &&
+                TryResolveStructuredName(grouped.Groups[1].Value, out groupedName))
+            {
+                string count = CompactOcrNumber(grouped.Groups[2].Value);
+                if (count.Length > 0)
+                {
+                    translated = groupedName + " (" + count + ")";
+                    return true;
+                }
+            }
+
+            // "Ayan's Toy Sword 1 / 1" - a quest objective with a live counter. OCR returns
+            // "Ayan's Toy Sword 1 f 1" because it reads the slash as an f.
+            Match nameFirst = Regex.Match(source,
+                @"^[•·*\-]?\s*(.{2,60}?)\s+(" + OcrDigitRunWithGaps + @"{1,6}?)" +
+                OcrCounterSeparator + @"(" + OcrDigitRunWithGaps + @"{1,6})$");
+            string objectiveName;
+            if (nameFirst.Success &&
+                TryResolveStructuredName(nameFirst.Groups[1].Value, out objectiveName))
+            {
+                string current = CompactOcrNumber(nameFirst.Groups[2].Value);
+                string target = CompactOcrNumber(nameFirst.Groups[3].Value);
+                if (current.Length > 0 && target.Length > 0)
+                {
+                    translated = objectiveName + " " + current + " / " + target;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private static string TranslateEquipmentType(string normalized)
         {
             string[,] values = new string[,] {
@@ -6028,6 +6252,15 @@ namespace MapleOverlay
             if (normalized.Length == 0) return false;
             List<string> fields = new List<string>();
             string value;
+
+            // The level gate, the quest group headings and the quest objectives all share
+            // one shape: a dictionary-backed name glued to a number the game generates at
+            // run time ("Level 13+", "Henesys (1)", "Ayan's Toy Sword 1 / 1", "Stump 30 / 30").
+            // A dictionary entry can pin only one fixed number, so enumerating them can never
+            // keep up. Recognise the shape instead: translate the name, keep the live number.
+            string structuredName;
+            if (TryTranslateNameWithLiveNumber(text, out structuredName))
+                fields.Add(structuredName);
 
             // Quest Helper objectives use a compact "3/10 Snail" form. It is
             // structurally distinct from chat/player names, so translate only the
