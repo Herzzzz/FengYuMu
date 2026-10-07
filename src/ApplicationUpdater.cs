@@ -87,7 +87,7 @@ namespace MapleOverlay
         // A bad, stale, or unavailable mirror never blocks the GitHub fallback.
         private const string DomesticMirrorManifestUrl =
             "https://gitee.com/Herzzzz/maple-whisper-veil/raw/main/latest.json";
-        // v3.2.3 的 ZIP、SHA-256 与清单已上传 Gitee 并逐字节校验通过，国内走镜像更快。
+        // v3.2.4 的 ZIP、SHA-256 与清单已上传 Gitee 并逐字节校验通过，国内走镜像更快。
         // 清单里带固定 SHA-256，镜像异常时 UpdateWebClient 仍会回退 GitHub。
         private static readonly bool DomesticMirrorEnabled = true;
         private static readonly string[] PackageFiles = new string[] {
@@ -535,7 +535,7 @@ namespace MapleOverlay
         {
             WebClient client = new UpdateWebClient();
             client.Encoding = Encoding.UTF8;
-            client.Headers[HttpRequestHeader.UserAgent] = "FengYuMu/3.2.3";
+            client.Headers[HttpRequestHeader.UserAgent] = "FengYuMu/3.2.4";
             client.Headers[HttpRequestHeader.Accept] = "application/vnd.github+json, text/plain, */*";
             client.Proxy = proxy;
             return client;
@@ -621,7 +621,7 @@ namespace MapleOverlay
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(LatestReleasePage);
                     request.Method = "HEAD";
                     request.AllowAutoRedirect = false;
-                    request.UserAgent = "FengYuMu/3.2.3";
+                    request.UserAgent = "FengYuMu/3.2.4";
                     request.Proxy = route.Proxy;
                     request.Timeout = 12000;
                     request.ReadWriteTimeout = 12000;

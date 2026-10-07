@@ -33,7 +33,7 @@ jobs:
         run: |
           codesign --verify --deep --strict --verbose=2 macos/.build/product/枫语幕.app
           plutil -lint macos/.build/product/枫语幕.app/Contents/Info.plist
-          test "$(plutil -extract CFBundleVersion raw macos/.build/product/枫语幕.app/Contents/Info.plist)" = "32301"
+          test "$(plutil -extract CFBundleVersion raw macos/.build/product/枫语幕.app/Contents/Info.plist)" = "32401"
           test "$(plutil -extract LSMinimumSystemVersion raw macos/.build/product/枫语幕.app/Contents/Info.plist)" = "26.6.2"
           test "$(file macos/.build/product/枫语幕.app/Contents/MacOS/FengYuMuMac | grep -c arm64)" -eq 1
           test -s macos/.build/product/枫语幕.app/Contents/Resources/枫语幕词库.tsv

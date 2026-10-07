@@ -53,7 +53,7 @@ $sharedBody = 'Roxy, the City Clerk, requested a donation of 30 ge Bubbles for K
 $sharedHits = @($shared.Invoke($store, @([string]$sharedBody)))
 if ($sharedHits.Count -eq 0) { throw "共享任务正文未命中：$sharedBody" }
 $sharedTexts = Get-MatchTexts $sharedHits
-$expectedShared = '城市职员洛克希请求为废弃都市捐赠 30 个蓝水灵大水珠。'
+$expectedShared = '城市职员洛克希请求为废弃都市捐助 30 个蓝水灵大水珠。'
 if ($sharedTexts -notcontains $expectedShared) {
     throw "共享任务正文译文错误：$($sharedTexts -join ' | ')"
 }

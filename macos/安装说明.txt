@@ -1,4 +1,4 @@
-枫语幕 macOS 版 3.2.3-mac.1
+枫语幕 macOS 版 3.2.4-mac.1
 
 适用设备
 Apple 芯片 Mac（目标基准为 MacBook Air M4），macOS 26.6.2 或以上。
