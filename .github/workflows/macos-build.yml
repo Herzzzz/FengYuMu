@@ -69,8 +69,8 @@ jobs:
           ls -la macos/FengYuMu_*.dmg*
           gh release view "$TAG" --repo "${{ github.repository }}" >/dev/null 2>&1 \
             || gh release create "$TAG" --repo "${{ github.repository }}" \
-                 --title "枫语幕 $TAG（macOS Apple 芯片版）" \
-                 --notes "macOS Apple 芯片（arm64）版，需 macOS 26.6.2 或以上。" \
+                 --title "枫语幕 ${TAG}（macOS Apple 芯片版）" \
+                 --notes "macOS Apple 芯片 arm64 版，需 macOS 26.6.2 或以上。" \
                  --prerelease --draft=false
           gh release upload "$TAG" --repo "${{ github.repository }}" --clobber \
             macos/FengYuMu_*.dmg macos/FengYuMu_*.dmg.sha256
