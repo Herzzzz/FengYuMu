@@ -9,7 +9,8 @@ on:
       - ".github/workflows/macos-build.yml"
 
 permissions:
-  contents: read
+  # 需要写权限才能把 DMG 挂到 Release 上
+  contents: write
 
 jobs:
   build:
@@ -32,7 +33,7 @@ jobs:
         run: |
           codesign --verify --deep --strict --verbose=2 macos/.build/product/枫语幕.app
           plutil -lint macos/.build/product/枫语幕.app/Contents/Info.plist
-          test "$(plutil -extract CFBundleVersion raw macos/.build/product/枫语幕.app/Contents/Info.plist)" = "32202"
+          test "$(plutil -extract CFBundleVersion raw macos/.build/product/枫语幕.app/Contents/Info.plist)" = "32301"
           test "$(plutil -extract LSMinimumSystemVersion raw macos/.build/product/枫语幕.app/Contents/Info.plist)" = "26.6.2"
           test "$(file macos/.build/product/枫语幕.app/Contents/MacOS/FengYuMuMac | grep -c arm64)" -eq 1
           test -s macos/.build/product/枫语幕.app/Contents/Resources/枫语幕词库.tsv
@@ -47,6 +48,19 @@ jobs:
           sleep 2
           screencapture -x macos/.build/macos-ui-smoke.png || true
           killall FengYuMuMac
+      - name: 挂到 Release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          echo "目标 tag: $TAG"
+          gh release view "$TAG" --repo "${{ github.repository }}" >/dev/null 2>&1 \
+            || gh release create "$TAG" --repo "${{ github.repository }}" \
+                 --title "枫语幕 $TAG" --notes "macOS Apple 芯片版"
+          gh release upload "$TAG" --repo "${{ github.repository }}" --clobber \
+            macos/枫语幕_*_macOS26_arm64.dmg macos/枫语幕_*_macOS26_arm64.dmg.sha256
+
       - uses: actions/upload-artifact@v4
         with:
           name: FengYuMu-macOS26-arm64
