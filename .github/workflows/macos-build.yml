@@ -166,15 +166,37 @@ jobs:
           gh release upload "$TAG" --repo "${{ github.repository }}" --clobber \
             macos/FengYuMu_*.dmg macos/FengYuMu_*.dmg.sha256
 
+      - name: Collect CI evidence
+        if: always()
+        run: |
+          set -uo pipefail
+          EVID="macos/ci-evidence"
+          mkdir -p "$EVID"
+          # 证据原本放在 macos/.build（隐藏目录）。upload-artifact 默认不收隐藏文件
+          # （include-hidden-files: false），结果 Artifact 里只剩 DMG 与 SHA，四份证据
+          # 全部丢失。这里统一复制到非隐藏目录，并在缺失时留下明确的 MISSING 标记，
+          # 而不是让文件静默消失。
+          for f in lifecycle-summary.txt launch-report.txt codesign-report.txt macos-ui-smoke.png; do
+            if [ -f "macos/.build/$f" ]; then
+              cp "macos/.build/$f" "$EVID/$f"
+              echo "已收集证据: $f"
+            else
+              echo "证据缺失: $f（截图不可用时 macos-ui-smoke.png 属预期缺失）"
+              printf 'missing: %s\n' "$f" > "$EVID/MISSING-$f.txt"
+            fi
+          done
+          echo "--- ci-evidence 目录 ---"
+          ls -la "$EVID"
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: FengYuMu-macOS26-arm64
+          # 双保险：ci-evidence 已是非隐藏目录，这里再显式允许隐藏文件，
+          # 避免将来又把证据放回 .build 时再次静默丢件。
+          include-hidden-files: true
           path: |
             macos/枫语幕_*_macOS26_arm64.dmg
             macos/枫语幕_*_macOS26_arm64.dmg.sha256
-            macos/.build/lifecycle-summary.txt
-            macos/.build/launch-report.txt
-            macos/.build/codesign-report.txt
-            macos/.build/macos-ui-smoke.png
+            macos/ci-evidence/*
           if-no-files-found: warn
