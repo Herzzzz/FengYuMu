@@ -4,7 +4,7 @@ import FengYuMuCore
 
 @MainActor
 final class AppState: ObservableObject {
-    static let version = "3.2.4-mac.1"
+    static let version = "3.2.4-mac.2"
 
     @Published var status = "正在载入词库…"
     @Published var dictionaryCount = 0

@@ -10,7 +10,7 @@ APP_DIR="${PRODUCT_DIR}/枫语幕.app"
 CONTENTS_DIR="${APP_DIR}/Contents"
 MACOS_DIR="${CONTENTS_DIR}/MacOS"
 RESOURCES_DIR="${CONTENTS_DIR}/Resources"
-VERSION="3.2.4-mac.1"
+VERSION="3.2.4-mac.2"
 
 if [[ "$(uname -s)" != "Darwin" ]]; then
   print -u2 "只能在 Mac 上构建枫语幕 macOS 版。"
@@ -60,5 +60,10 @@ DMG_PATH="${MAC_DIR}/枫语幕_${VERSION}_macOS26_arm64.dmg"
 rm -f "${DMG_PATH}"
 hdiutil create -volname "枫语幕 ${VERSION}" -srcfolder "${PRODUCT_DIR}" \
   -ov -format UDZO "${DMG_PATH}"
-shasum -a 256 "${DMG_PATH}" > "${DMG_PATH}.sha256"
+# 校验文件里只能出现文件名。若写成绝对路径，用户把两个文件下载到同一目录后
+# 执行 shasum -a 256 -c 会在 /Users/runner/... 下找文件而必然失败。
+cd "${MAC_DIR}"
+DMG_NAME="$(basename "${DMG_PATH}")"
+shasum -a 256 "${DMG_NAME}" > "${DMG_NAME}.sha256"
+print "校验文件内容：$(cat "${DMG_NAME}.sha256")"
 print "完成：${DMG_PATH}"

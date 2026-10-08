@@ -17,6 +17,7 @@ jobs:
     runs-on: macos-26
     steps:
       - uses: actions/checkout@v4
+
       - name: Verify installer and privacy invariants
         run: |
           zsh -n macos/首次安装.command macos/scripts/build-release.sh
@@ -27,32 +28,118 @@ jobs:
           grep -Fq 'application.bundleIdentifier' macos/Sources/FengYuMuMac/ScreenCaptureService.swift
           grep -Fq 'hidesOnDeactivate = false' macos/Sources/FengYuMuMac/AppDelegate.swift
           grep -Fq 'state.setChatMonitoring(false)' macos/Sources/FengYuMuMac/AppDelegate.swift
+
       - name: Test core and build arm64 app
         run: zsh macos/scripts/build-release.sh
-      - name: Verify product
+
+      - name: Verify the SHA-256 file is portable
         run: |
-          codesign --verify --deep --strict --verbose=2 macos/.build/product/枫语幕.app
-          plutil -lint macos/.build/product/枫语幕.app/Contents/Info.plist
-          test "$(plutil -extract CFBundleVersion raw macos/.build/product/枫语幕.app/Contents/Info.plist)" = "32401"
-          test "$(plutil -extract LSMinimumSystemVersion raw macos/.build/product/枫语幕.app/Contents/Info.plist)" = "26.6.2"
-          test "$(file macos/.build/product/枫语幕.app/Contents/MacOS/FengYuMuMac | grep -c arm64)" -eq 1
-          test -s macos/.build/product/枫语幕.app/Contents/Resources/枫语幕词库.tsv
-      - name: Launch app smoke test
+          set -euo pipefail
+          cd macos
+          sha_file=$(ls 枫语幕_*.dmg.sha256)
+          echo "校验文件: $sha_file"
+          echo "内容: $(cat "$sha_file")"
+          # 只允许出现文件名：含绝对路径的话，用户把两个文件放到同一目录后
+          # shasum -a 256 -c 会在 /Users/runner/... 下找而必然失败。
+          if grep -q '/Users/' "$sha_file"; then
+            echo "::error::$sha_file 含绝对路径，用户在下载目录无法校验"
+            exit 1
+          fi
+          if ! shasum -a 256 -c "$sha_file"; then
+            echo "::error::$sha_file 校验失败"
+            exit 1
+          fi
+          echo "校验通过：文件只含文件名且哈希匹配"
+
+      - name: Verify the DMG contents
         run: |
-          open macos/.build/product/枫语幕.app
-          for attempt in {1..20}; do
-            pgrep -x FengYuMuMac >/dev/null && break
+          set -euo pipefail
+          cd macos
+          dmg=$(ls 枫语幕_*.dmg)
+          echo "DMG: $dmg  ($(stat -f%z "$dmg") 字节)"
+          mount_point=$(mktemp -d)
+          hdiutil attach "$dmg" -nobrowse -readonly -mountpoint "$mount_point"
+          trap 'hdiutil detach "$mount_point" >/dev/null 2>&1 || true' EXIT
+          echo "--- 挂载内容 ---"
+          ls -la "$mount_point"
+
+          app="$mount_point/枫语幕.app"
+          test -d "$app" || { echo "::error::DMG 内缺少 枫语幕.app"; exit 1; }
+          test -f "$mount_point/首次安装.command" || { echo "::error::DMG 内缺少 首次安装.command"; exit 1; }
+          test -f "$mount_point/安装说明.txt" || { echo "::error::DMG 内缺少 安装说明.txt"; exit 1; }
+
+          plutil -lint "$app/Contents/Info.plist"
+          test "$(plutil -extract CFBundleVersion raw "$app/Contents/Info.plist")" = "32402"
+          test "$(plutil -extract CFBundleShortVersionString raw "$app/Contents/Info.plist")" = "3.2.4"
+          test "$(plutil -extract LSMinimumSystemVersion raw "$app/Contents/Info.plist")" = "26.6.2"
+          test "$(file "$app/Contents/MacOS/FengYuMuMac" | grep -c arm64)" -eq 1
+          test -s "$app/Contents/Resources/枫语幕词库.tsv"
+
+          # 签名结构：临时签名也要通过严格校验，并留下详情备查
+          codesign --verify --deep --strict --verbose=2 "$app"
+          codesign -dv --verbose=4 "$app" 2>&1 | tee "$GITHUB_WORKSPACE/macos/.build/codesign-report.txt"
+
+          # DMG 内词库必须与仓库根目录一致，避免打包时漏更新
+          if ! cmp -s "$app/Contents/Resources/枫语幕词库.tsv" "$GITHUB_WORKSPACE/枫语幕词库.tsv"; then
+            echo "::error::DMG 内词库与仓库根目录不一致"
+            exit 1
+          fi
+          echo "DMG 结构、Info.plist、arm64、词库与签名结构全部通过"
+
+      - name: Launch lifecycle check
+        run: |
+          set -uo pipefail
+          APP="macos/.build/product/枫语幕.app"
+          BIN="$APP/Contents/MacOS/FengYuMuMac"
+          LOG="$GITHUB_WORKSPACE/macos/.build/launch-report.txt"
+          mkdir -p "$(dirname "$LOG")"
+
+          # 直接运行二进制并记录 stdout/stderr，作为可重复的启动证据。
+          "$BIN" > "$LOG" 2>&1 &
+          pid=$!
+          alive=no
+          for _ in $(seq 1 24); do
+            if kill -0 "$pid" 2>/dev/null; then alive=yes; break; fi
             sleep 0.5
           done
-          pgrep -x FengYuMuMac >/dev/null
-          sleep 2
-          screencapture -x macos/.build/macos-ui-smoke.png || true
-          killall FengYuMuMac
+          sleep 3
+
+          windows="unknown"
+          if kill -0 "$pid" 2>/dev/null; then
+            windows=$(osascript -e "tell application \"System Events\" to count windows of (first process whose unix id is $pid)" 2>/dev/null || echo "unknown")
+          fi
+
+          {
+            echo "进程存活: $alive"
+            echo "窗口数量: $windows"
+            echo "--- 应用输出 ---"
+            cat "$LOG"
+          } | tee "$GITHUB_WORKSPACE/macos/.build/lifecycle-summary.txt"
+
+          kill "$pid" 2>/dev/null || true
+          wait "$pid" 2>/dev/null || true
+
+          if [ "$alive" != "yes" ]; then
+            echo "::error::应用启动后未能保持运行，启动日志见上"
+            exit 1
+          fi
+
+          # 截图在无图形会话的 runner 上会失败，这属于环境限制而非应用缺陷，
+          # 因此只记录明确状态，绝不静默吞掉。
+          if screencapture -x "$GITHUB_WORKSPACE/macos/.build/macos-ui-smoke.png" 2>/dev/null; then
+            echo "SCREENSHOT_STATUS=ok" >> "$GITHUB_ENV"
+            echo "截图: 成功"
+          else
+            echo "SCREENSHOT_STATUS=unavailable" >> "$GITHUB_ENV"
+            echo "截图: 不可用（runner 无图形会话，属预期环境限制；窗口与存活检查已单独覆盖）"
+          fi
+
       - name: 挂到 Release
         if: startsWith(github.ref, 'refs/tags/')
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set -euo pipefail
           TAG="${GITHUB_REF_NAME}"
           echo "目标 tag: $TAG"
           # 构建脚本产出的文件名带中文前缀，Release 资产里会被吃掉，统一改为英文名，
@@ -67,18 +154,29 @@ jobs:
             sed 's/枫语幕_/FengYuMu_/' "$f" > "macos/FengYuMu_${base#枫语幕_}"
           done
           ls -la macos/FengYuMu_*.dmg*
+          # 上传前再确认一次改名后的校验文件仍只含文件名
+          for f in macos/FengYuMu_*.dmg.sha256; do
+            if grep -q '/Users/' "$f"; then echo "::error::$f 含绝对路径"; exit 1; fi
+          done
           gh release view "$TAG" --repo "${{ github.repository }}" >/dev/null 2>&1 \
             || gh release create "$TAG" --repo "${{ github.repository }}" \
                  --title "枫语幕 ${TAG}（macOS Apple 芯片版）" \
-                 --notes "macOS Apple 芯片 arm64 版，需 macOS 26.6.2 或以上。" \
+                 --notes "macOS Apple 芯片 arm64 内测版，需 macOS 26.6.2 或以上。
+
+**内测，尚待真机游戏验收。** CI 只覆盖编译、DMG 结构、Info.plist、arm64 架构、词库一致性、签名结构与启动存活；尚未在 Mac 真机进入游戏验证覆盖层位置、OCR 识别效果与聊天翻译。" \
                  --prerelease --draft=false
           gh release upload "$TAG" --repo "${{ github.repository }}" --clobber \
             macos/FengYuMu_*.dmg macos/FengYuMu_*.dmg.sha256
 
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: FengYuMu-macOS26-arm64
           path: |
             macos/枫语幕_*_macOS26_arm64.dmg
             macos/枫语幕_*_macOS26_arm64.dmg.sha256
+            macos/.build/lifecycle-summary.txt
+            macos/.build/launch-report.txt
+            macos/.build/codesign-report.txt
             macos/.build/macos-ui-smoke.png
+          if-no-files-found: warn
