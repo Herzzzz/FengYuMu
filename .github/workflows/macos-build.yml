@@ -161,9 +161,7 @@ jobs:
           gh release view "$TAG" --repo "${{ github.repository }}" >/dev/null 2>&1 \
             || gh release create "$TAG" --repo "${{ github.repository }}" \
                  --title "枫语幕 ${TAG}（macOS Apple 芯片版）" \
-                 --notes "macOS Apple 芯片 arm64 内测版，需 macOS 26.6.2 或以上。
-
-**内测，尚待真机游戏验收。** CI 只覆盖编译、DMG 结构、Info.plist、arm64 架构、词库一致性、签名结构与启动存活；尚未在 Mac 真机进入游戏验证覆盖层位置、OCR 识别效果与聊天翻译。" \
+                 --notes "macOS Apple 芯片 arm64 内测版，需 macOS 26.6.2 或以上。内测，尚待真机游戏验收：CI 只覆盖编译、DMG 结构、Info.plist、arm64 架构、词库一致性、签名结构与启动存活；尚未在 Mac 真机进入游戏验证覆盖层位置、OCR 识别效果与聊天翻译。" \
                  --prerelease --draft=false
           gh release upload "$TAG" --repo "${{ github.repository }}" --clobber \
             macos/FengYuMu_*.dmg macos/FengYuMu_*.dmg.sha256
