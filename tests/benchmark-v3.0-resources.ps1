@@ -1,4 +1,4 @@
-param(
+﻿param(
     [int]$IdleCycles = 6,
     [int]$PanelCycles = 3,
     [string]$OutputPath = ''
@@ -19,7 +19,8 @@ function Read-Metric([string]$text, [string]$name) {
 }
 
 function Invoke-ResourceRun([string]$name, [string[]]$arguments) {
-    $process = Start-Process -FilePath $exe -ArgumentList $arguments `
+if (-not (Get-Command Start-ProductExe -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Start-ProductExe.ps1') }
+    $process = Start-ProductExe -FilePath $exe -ArgumentList $arguments `
         -WorkingDirectory $repoRoot -PassThru
     $peakWorking = 0L
     $peakPrivate = 0L

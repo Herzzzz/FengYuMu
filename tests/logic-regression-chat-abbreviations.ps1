@@ -1,13 +1,16 @@
 param(
-    [string]$ExpectedVersion = '2.2.2.0',
-    [string]$ExpectedDisplayVersion = 'v2.2.2'
+    # Explicit current expectation. It is passed straight to logic-regression-v2.2.ps1 and is never
+    # read back from the assembly under test, so the check cannot validate its own answer.
+    [string]$ExpectedVersion = '4.0.0.0',
+    [string]$ExpectedDisplayVersion = 'v4.0 测试版'
 )
 
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 & (Join-Path $PSScriptRoot 'logic-regression-v2.2.ps1') `
     -ExpectedVersion $ExpectedVersion -ExpectedDisplayVersion $ExpectedDisplayVersion
-$a = [Reflection.Assembly]::LoadFile((Join-Path $root '枫语幕.exe'))
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$a = Load-TestAssembly (Join-Path $root '枫语幕.exe')
 $st = $a.GetType('MapleOverlay.TranslationStore', $true)
 $sc = $st.GetConstructor([Reflection.BindingFlags]'Instance,NonPublic,Public', $null, [Type[]]@([string]), $null)
 $s = $sc.Invoke([object[]]@([string](Join-Path $root '枫语幕词库.tsv')))

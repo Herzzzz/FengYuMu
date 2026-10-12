@@ -20,6 +20,8 @@ $winmd = 'C:\Windows\System32\WinMetadata'
   /reference:"$winmd\Windows.Media.winmd" `
   /reference:"$winmd\Windows.Storage.winmd" `
   "$scriptDir\MapleOverlay.cs" "$scriptDir\SceneRecognition.cs" `
+  "$scriptDir\MapleWindowTracker.cs" "$scriptDir\TranslationTerminology.cs" `
+  "$scriptDir\StrongOcrClient.cs" `
   "$scriptDir\SimpleForms.cs" "$scriptDir\OutboundChatIntent.cs" "$scriptDir\OfflineChat.cs" `
   "$scriptDir\ApplicationUpdater.cs" "$scriptDir\GamepadProbe.cs"
 

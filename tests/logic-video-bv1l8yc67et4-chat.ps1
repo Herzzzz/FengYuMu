@@ -1,8 +1,9 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $exe = Join-Path $repoRoot '枫语幕.exe'
 $corpusPath = Join-Path $PSScriptRoot 'video-bv1l8yc67et4-chat-corpus.tsv'
-$assembly = [Reflection.Assembly]::LoadFile($exe)
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly $exe
 $all = [Reflection.BindingFlags]'Static,Instance,NonPublic,Public'
 $chatType = $assembly.GetType('MapleOverlay.OfflineChatForm', $true)
 $overlayType = $assembly.GetType('MapleOverlay.OverlayForm', $true)

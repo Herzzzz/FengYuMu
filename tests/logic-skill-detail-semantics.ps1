@@ -1,6 +1,12 @@
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
-$assembly = [Reflection.Assembly]::LoadFile((Join-Path $repoRoot '枫语幕.exe'))
+# This repository lives under a path with non-ASCII directory names, where the CLR's
+# Assembly.LoadFile rejects the assembly as a "remote" location. The shared loader probes
+# LoadFile first and only then falls back to UnsafeLoadFrom; no assertion is relaxed.
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) {
+    . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1')
+}
+$assembly = Load-TestAssembly (Join-Path $repoRoot '枫语幕.exe')
 $flags = [Reflection.BindingFlags]'Instance,Static,NonPublic,Public'
 
 $storeType = $assembly.GetType('MapleOverlay.TranslationStore', $true)
@@ -153,7 +159,7 @@ foreach ($required in @(
     'GetOcrTextSpanBounds(row, rowText, 0, bodyStart)',
     'string text = StripSkillStructuredPrefix(combined.ToString())',
     'GetOcrTextSpanBounds(tight, tightText, bodyStart',
-    'AddDetailBlockLabelAt(output, raw',
+    'AddDetailBlockLabelAt(output, prefixRaw.IsEmpty ? row : null,',
     'overviewBody = StripSkillStructuredPrefix(overview.English)',
     'TranslationEntry fallback = overview',
     'hasStructuredPrefix',
@@ -171,15 +177,27 @@ foreach ($required in @(
     'SelectBestDetailLines(candidate.Lines, candidate.Match.Entry)',
     'List<RectangleF> used = new List<RectangleF>()',
     'RectangleF.Intersect(previous, raw)',
-    'AddDetailBlockLabelAt(output, raw, candidate.Match.Entry.Chinese, ocrScale',
+    'AddDetailBlockLabelAt(output, tight, raw, candidate.Match.Entry.Chinese, ocrScale',
     'OverlayPaintSafety.TryPrepare',
-    'graphics.MeasureString(labelText, overlayFont',
-    'graphics.DrawString(labelText, overlayFont',
+    # The Bounds initializer has to measure the vertical origin through ToOverlayY as well: a
+    # regression there silently moves every skill/quest row away from the text it replaces.
+    'ToOverlayY(raw.Top, ocrScale)',
+    # v4.0 measures and draws with the label font the renderer actually uses. Long prose may pick
+    # a smaller cached variant of that same font to fit its measured block, so the guard follows
+    # the chosen font variable instead of pinning overlayFont itself.
+    'graphics.MeasureString(labelText, paintFont',
+    'Font paintFont = overlayFont;',
+    'new Font(overlayFont.FontFamily',
+    'graphics.DrawString(labelText, paintFont',
     'StringFormat.GenericTypographic',
     'IsStructuredPanelFieldLabel(labels[i].Text)',
     'covered >= 0.80f',
-    'Bounds = new RectangleF(raw.Left / ocrScale',
-    'raw.Top / ocrScale + captureBounds.Top - Bounds.Top')) {
+    # v4.0 unifies the OCR-to-overlay conversion in ToOverlayX/ToOverlayY. The guard follows
+    # the helper so it still proves "the label box is measured from the OCR line at the
+    # overlay origin" instead of pinning the old inline arithmetic.
+    'Bounds = new RectangleF(ToOverlayX(raw.Left, ocrScale)',
+    'private float ToOverlayX(float ocrX, float ocrScale)',
+    'private float ToOverlayY(float ocrY, float ocrScale)')) {
     if (-not $source.Contains($required)) { throw "技能详情语义/布局保护缺少：$required" }
 }
 

@@ -1,8 +1,9 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $exe = Join-Path $repoRoot '枫语幕.exe'
 Add-Type -AssemblyName System.Drawing
-$assembly = [Reflection.Assembly]::LoadFile($exe)
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly $exe
 $flags = [Reflection.BindingFlags]'Static,NonPublic,Public'
 
 $contentType = $assembly.GetType('MapleOverlay.AiTranslationWindowContent', $true)
@@ -55,6 +56,7 @@ $sourceColors = @(
     @{ Name='公告'; Text='[Notice] hello'; Color=[System.Drawing.Color]::FromArgb(220,190,90) }
 )
 $renderedColors = @()
+$renderedCategories = @()
 foreach ($sample in $sourceColors) {
     $style = $fromSample.Invoke($null, @($sample.Text, $sample.Color,
         [System.Drawing.Color]::Empty, $false))
@@ -62,9 +64,19 @@ foreach ($sample in $sourceColors) {
         throw "$($sample.Name)字体颜色被错误识别成喇叭背景"
     }
     $renderedColors += ([System.Drawing.Color]$style.GetType().GetField('ForeColor', $instance).GetValue($style)).ToArgb()
+    $renderedCategories += [string]$style.GetType().GetField('Category', $instance).GetValue($style)
 }
 if (@($renderedColors | Select-Object -Unique).Count -ne $sourceColors.Count) {
     throw '普通/好友/组队/家族/联盟/悄悄话/系统/公告字体颜色被错误归并'
+}
+$expectedCategories = @('Normal','Buddy','Party','Guild','Alliance','Whisper','System','Notice')
+if ((Compare-Object $expectedCategories $renderedCategories -SyncWindow 0)) {
+    throw "聊天颜色没有稳定分类：$($renderedCategories -join '/')"
+}
+$partyMember = $fromSample.Invoke($null, @('PartyMember: hello',
+    [System.Drawing.Color]::Empty, [System.Drawing.Color]::Empty, $false))
+if ([string]$partyMember.GetType().GetField('Category', $instance).GetValue($partyMember) -ne 'Normal') {
+    throw '普通玩家名 PartyMember 被错误当成组队频道'
 }
 
 $overlaySource = Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -Encoding UTF8
@@ -80,7 +92,7 @@ foreach ($required in @(
 foreach ($required in @(
     'Queue<PendingChatLine>',
     'Style = capture.FindStyle(line)',
-    'floatingWindow.AppendTranslation(translation, visualStyle)',
+    'floatingWindow.AppendTranslation(record.Translation, visualStyle)',
     'internal void ApplyFloatingWindow(bool enabled)',
     'HasPendingTranslationWork',
     'internal async Task<bool> PrepareForScreenshotCaptureAsync()',
@@ -88,7 +100,7 @@ foreach ($required in @(
     'while (captureBusy && !IsDisposed) await Task.Delay(15)',
     'captureBusy || screenshotCaptureSuspendCount > 0',
     'floatingWindowEnabled && live && screenshotCaptureSuspendCount == 0',
-    'overlay.ApplyAiChatFloatingWindow(true)',
+    'internal void ApplyFloatingWindow(bool enabled)',
     'ShowFloatingWindowPassive()',
     'floatingWindow.ShowPassiveIfAllowed()',
     'CreateFloatingWindow()',
@@ -100,7 +112,8 @@ foreach ($required in @(
     if (-not $chatSource.Contains($required)) { throw "AI浮窗链路缺少：$required" }
 }
 foreach ($required in @(
-    'AI实时翻译会自动打开独立浮窗（跟随聊天颜色）',
+    'ConfigureCardButton(floatingCard, "悬浮窗\r\n默认关闭"',
+    'overlay.ApplyAiChatFloatingWindow(!overlay.AiChatFloatingWindowEnabled)',
     'Text = "呼出AI悬浮窗："',
     'floatingWindowKey.SelectedItem = overlay == null ? "F10"',
     'key.SetValue("FloatingWindowKey", fk.ToString())',
@@ -120,6 +133,11 @@ foreach ($required in @(
     'SelectionBackColor',
     'ChatVisualKind.Megaphone',
     'ChatVisualKind.SuperMegaphone',
+    'ChatCategoryFilterBar',
+    'ChatTranslationHistory',
+    'AddFilter("全部", null)',
+    'AddFilter("组队", ChatSourceCategory.Party)',
+    'AddFilter("喇叭", ChatSourceCategory.Megaphone)',
     'internal bool HiddenByUser',
     'internal void ShowPassiveIfAllowed()',
     'internal void HideForStop()')) {
@@ -154,6 +172,29 @@ foreach ($required in @(
     'UnregisterHotKey(Handle, HOTKEY_FLOATING_WINDOW)',
     'tray.DoubleClick += delegate { ShowMainPanel(); }')) {
     if (-not $overlaySource.Contains($required)) { throw "托盘恢复链路缺少：$required" }
+}
+foreach ($required in @(
+    'mainPanel.ShowAiPage();',
+    'mainPanel.ShowStartPage();',
+    'mainPanel.Show();')) {
+    if (-not $overlaySource.Contains($required)) { throw "F10与主界面分页隔离缺少：$required" }
+}
+$restoreStart = $overlaySource.IndexOf('private bool RestoreAiChatFloatingWindow()')
+$restoreEnd = $overlaySource.IndexOf('private void BuildTray()', $restoreStart)
+if ($restoreStart -lt 0 -or $restoreEnd -le $restoreStart) {
+    throw '无法定位F10悬浮窗恢复方法'
+}
+$restoreBody = $overlaySource.Substring($restoreStart, $restoreEnd - $restoreStart)
+if ($restoreBody.Contains('mainPanel.Show()') -or $restoreBody.Contains('mainPanel.Activate()')) {
+    throw 'F10恢复悬浮窗仍会弹出或激活主界面'
+}
+$flatStart = $forms.IndexOf('internal sealed class FlatPillButton')
+$flatEnd = $forms.IndexOf('internal sealed class AiTranslationWindowForm', $flatStart)
+if ($flatStart -lt 0 -or $flatEnd -le $flatStart) { throw '无法定位扁平分类按钮实现' }
+$flatBody = $forms.Substring($flatStart, $flatEnd - $flatStart)
+if ($flatBody.Contains('LinearGradientBrush') -or $flatBody.Contains('PathGradientBrush') -or
+    $flatBody.Contains('shadow')) {
+    throw '聊天分类按钮仍带渐变、高光或阴影'
 }
 if ($overlaySource.Contains('!visibleTranslation || aiChatFloatingWindowEnabled')) {
     throw 'AI浮窗仍在抑制F8原位覆盖'
@@ -219,6 +260,27 @@ try {
     $appendTranslation = $floatingType.GetMethod('AppendTranslation', $constructorFlags,
         $null, [Type[]]@([string]), $null)
     [void]$appendTranslation.Invoke($floatingWindow, @('Arthur：主窗口关闭后仍继续显示。'))
+    $styledAppend = $floatingType.GetMethod('AppendTranslation', $constructorFlags,
+        $null, [Type[]]@([string], $normal.GetType()), $null)
+    $buddyStyle = $fromSample.Invoke($null, @('Buddy: hello',
+        [System.Drawing.Color]::FromArgb(235,151,62), [System.Drawing.Color]::Empty, $false))
+    $partyStyle = $fromSample.Invoke($null, @('Party: hello',
+        [System.Drawing.Color]::FromArgb(194,143,235), [System.Drawing.Color]::Empty, $false))
+    [void]$styledAppend.Invoke($floatingWindow, @('好友译文', $buddyStyle))
+    [void]$styledAppend.Invoke($floatingWindow, @('组队译文', $partyStyle))
+    $categoryType = $assembly.GetType('MapleOverlay.ChatSourceCategory', $true)
+    $buddyCategory = [Enum]::Parse($categoryType, 'Buddy')
+    $selectCategory = $floatingType.GetMethod('SelectCategory', $constructorFlags)
+    [void]$selectCategory.Invoke($floatingWindow, [object[]]@($buddyCategory))
+    $displayed = [string]$floatingType.GetProperty('DisplayedText', $constructorFlags).GetValue($floatingWindow, $null)
+    if (-not $displayed.Contains('好友译文') -or $displayed.Contains('组队译文')) {
+        throw "AI浮窗好友筛选没有隔离组队消息：$displayed"
+    }
+    [void]$selectCategory.Invoke($floatingWindow, [object[]]@($null))
+    $displayed = [string]$floatingType.GetProperty('DisplayedText', $constructorFlags).GetValue($floatingWindow, $null)
+    if (-not $displayed.Contains('好友译文') -or -not $displayed.Contains('组队译文')) {
+        throw "AI浮窗切回全部后没有恢复到达顺序：$displayed"
+    }
     $offlineType.GetField('floatingWindow', $constructorFlags).SetValue($chatWindow, $floatingWindow)
     $offlineType.GetField('floatingWindowEnabled', $constructorFlags).SetValue($chatWindow, $true)
     $liveTimer = $offlineType.GetField('timer', $constructorFlags).GetValue($chatWindow)
@@ -269,7 +331,8 @@ finally {
 $errorPath = Join-Path $repoRoot 'translation_window_ui_test_error.txt'
 $imagePath = Join-Path $repoRoot 'translation_window_ui_test.png'
 Remove-Item -LiteralPath $errorPath -Force -ErrorAction SilentlyContinue
-Start-Process -FilePath $exe -ArgumentList '--translation-window-ui-test' `
+if (-not (Get-Command Start-ProductExe -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Start-ProductExe.ps1') }
+Start-ProductExe -FilePath $exe -ArgumentList '--translation-window-ui-test' `
     -WorkingDirectory $repoRoot -Wait
 if (Test-Path -LiteralPath $errorPath) {
     throw "AI浮窗界面自检失败：$(Get-Content $errorPath -Raw -Encoding UTF8)"

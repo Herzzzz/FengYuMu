@@ -1,6 +1,7 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
-$assembly = [Reflection.Assembly]::LoadFile((Join-Path $repoRoot '枫语幕.exe'))
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly (Join-Path $repoRoot '枫语幕.exe')
 
 $snapshotType = $assembly.GetType('MapleOverlay.SceneSnapshot', $true)
 $sceneKindType = $assembly.GetType('MapleOverlay.SceneKind', $true)
@@ -55,7 +56,7 @@ foreach ($required in @(
     'continuousTranslationSuppressedUntilUtc',
     'manualTranslationPending',
     'while (processing && requestId == manualTranslationRequestId && !shuttingDown)',
-    'RecognitionWasCancelled(automatic, requestId)',
+    'RecognitionWasCancelled(automatic, requestId, generation)',
     'internal bool ApplyHotkeys',
     'await Task.Delay(120)',
     '已恢复原来的可用设置',
@@ -67,8 +68,7 @@ foreach ($required in @(
     if (-not $source.Contains($required)) { throw "持续翻译安全路径缺少：$required" }
 }
 foreach ($required in @(
-    '持续自动翻译（检测到游戏面板即显示）',
-    '默认关闭；开启后智能降频',
+    'ConfigureCardButton(continuousCard, "持续翻译\r\n按变化自动识别"',
     'overlay.ApplyContinuousTranslation')) {
     if (-not $forms.Contains($required)) { throw "持续翻译主界面缺少：$required" }
 }

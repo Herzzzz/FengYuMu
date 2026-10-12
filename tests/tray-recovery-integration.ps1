@@ -1,4 +1,4 @@
-param([string]$ExePath = '')
+﻿param([string]$ExePath = '')
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
@@ -60,7 +60,8 @@ function Wait-ForMainWindow([int]$ProcessId, [bool]$Visible, [int]$TimeoutMs = 5
     return $false
 }
 
-$first = Start-Process -FilePath $ExePath -PassThru
+if (-not (Get-Command Start-ProductExe -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Start-ProductExe.ps1') }
+$first = Start-ProductExe -FilePath $ExePath -PassThru
 try {
     if (-not (Wait-ForMainWindow $first.Id $true 8000)) { throw '主界面启动后未出现' }
 
@@ -69,7 +70,7 @@ try {
     Start-Sleep -Milliseconds 350
     if ($first.HasExited) { throw '关闭主界面不应退出后台进程' }
 
-    $second = Start-Process -FilePath $ExePath -PassThru
+    $second = Start-ProductExe -FilePath $ExePath -PassThru
     if (-not $second.WaitForExit(4000)) { throw '第二次启动产生了重复驻留进程' }
     if (-not (Wait-ForMainWindow $first.Id $true 5000)) { throw '第二次启动未唤回已有主界面' }
 

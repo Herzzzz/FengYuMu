@@ -1,9 +1,10 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $assemblyPath = Join-Path $repoRoot '枫语幕.exe'
 $dictionaryPath = Join-Path $repoRoot '枫语幕词库.tsv'
-$assembly = [Reflection.Assembly]::LoadFile($assemblyPath)
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly $assemblyPath
 $instanceFlags = [Reflection.BindingFlags]'Instance,NonPublic,Public'
 $staticFlags = [Reflection.BindingFlags]'Static,NonPublic,Public'
 
@@ -142,6 +143,16 @@ if ($jane -notmatch '道符' -or $jane -match '魅力') {
 $taskId = [string]$detectTask.Invoke($store, @([string]$janeOcr))
 if ($taskId -ne '10310') { throw "Jane Doe OCR 对话未解析到任务 10310：$taskId" }
 
+$lakelisOcr = "How about you and your party members attempt a quest together? Here you'll find obstacles and problems that must be overcome with great teamwork."
+$lakelis = Find-Chinese $findDialogue $lakelisOcr
+if ($lakelis -ne '你和队友要不要一起挑战组队任务？里面有各种必须依靠团队合作才能克服的障碍和难题。') {
+    throw "Lakelis 组队任务实机对白未命中自然译文：$lakelis"
+}
+$lakelisTaskId = [string]$detectTask.Invoke($store, @([string]$lakelisOcr))
+if ($lakelisTaskId -ne '10311') {
+    throw "Lakelis 组队任务实机对白未解析到任务 10311：$lakelisTaskId"
+}
+
 $source = Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -Encoding UTF8
 foreach ($required in @('IsSettingsText', 'IsNpcDialogue', 'FindSettingsTextMatches',
     'FindDialogueTextMatches', 'settingsPanel',
@@ -149,4 +160,4 @@ foreach ($required in @('IsSettingsText', 'IsNpcDialogue', 'FindSettingsTextMatc
     if (-not $source.Contains($required)) { throw "源码缺少场景隔离标记：$required" }
 }
 
-Write-Output "设置与 NPC 对话专项测试通过：$($settingsRows.Count) 条设置词条全部可达，五分页、复合标签、动态数值与场景隔离通过；Tommy/Jane OCR 误字可命中自然译文，Jane 任务 ID 为 10310"
+Write-Output "设置与 NPC 对话专项测试通过：$($settingsRows.Count) 条设置词条全部可达，五分页、复合标签、动态数值与场景隔离通过；Tommy/Jane/Lakelis 实机 OCR 可命中自然译文，任务 ID 为 10310/10311"

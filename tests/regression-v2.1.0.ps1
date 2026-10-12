@@ -1,4 +1,4 @@
-param(
+﻿param(
     [Parameter(Mandatory=$true)][string]$EquipmentImage,
     [Parameter(Mandatory=$true)][string]$RushImage,
     [Parameter(Mandatory=$true)][string]$QuestImage,
@@ -14,7 +14,8 @@ function Test-Screenshot([string]$name, [string]$image, [string[]]$expected,
     if (-not (Test-Path -LiteralPath $image)) { throw "缺少测试图片：$image" }
     $arguments = @('--benchmark', "--benchmark-image=$image")
     if (-not [string]::IsNullOrWhiteSpace($cursor)) { $arguments += "--benchmark-cursor=$cursor" }
-    Start-Process -FilePath $exe -ArgumentList $arguments `
+if (-not (Get-Command Start-ProductExe -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Start-ProductExe.ps1') }
+    Start-ProductExe -FilePath $exe -ArgumentList $arguments `
         -WorkingDirectory $repoRoot -Wait
     $result = Get-Content (Join-Path $repoRoot 'last_run.txt') -Raw -Encoding UTF8
     $elapsed = [int]([regex]::Match($result, '耗时毫秒=(\d+)').Groups[1].Value)

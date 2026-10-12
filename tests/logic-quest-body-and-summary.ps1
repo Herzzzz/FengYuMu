@@ -1,11 +1,12 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $exe = Join-Path $repoRoot '枫语幕.exe'
 $dict = Join-Path $repoRoot '枫语幕词库.tsv'
 if (-not (Test-Path -LiteralPath $exe)) { throw "找不到程序集：$exe" }
 if (-not (Test-Path -LiteralPath $dict)) { throw "找不到词库：$dict" }
 
-$assembly = [Reflection.Assembly]::LoadFile($exe)
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly $exe
 $all = [Reflection.BindingFlags]'Static,Instance,NonPublic,Public'
 $storeType = $assembly.GetType('MapleOverlay.TranslationStore', $true)
 $ctor = $storeType.GetConstructor($all, $null, [Type[]]@([string]), $null)
@@ -27,7 +28,9 @@ function Get-MatchTaskIds($matches) {
 $find = $storeType.GetMethod('FindMatches', $all)
 $shared = $storeType.GetMethod('FindSharedTaskBodyMatches', $all)
 $taskMatches = $storeType.GetMethod('FindTaskMatches', $all)
-if ($null -eq $find -or $null -eq $shared -or $null -eq $taskMatches) {
+$detectTaskId = $storeType.GetMethod('DetectTaskId', $all)
+if ($null -eq $find -or $null -eq $shared -or $null -eq $taskMatches -or
+    $null -eq $detectTaskId) {
     throw 'EXE 缺少 Quest Summary / 任务正文匹配 API'
 }
 
@@ -92,8 +95,61 @@ foreach ($taskId in (Get-MatchTaskIds $foreign)) {
     }
 }
 
+$viciousBody = 'After I told Vicious, the carpenter of Henesys. that I wanted to become his apprentice, he gave me a test. He said that woodcrafting requires one to have the proper strength and knowledge and asked me to defeat monsters near Henesys and collect Tree Branches.'
+$viciousTaskId = [string]$detectTaskId.Invoke($store,
+    @([string]("Vicious in Need of an Apprentice`n" + $viciousBody)))
+if ($viciousTaskId -ne '80017') {
+    throw "Vicious 任务窗口未恢复任务 ID 80017：$viciousTaskId"
+}
+$viciousChinese = Get-MatchTexts @($taskMatches.Invoke($store,
+    [object[]]@([string]$viciousBody, '80017')))
+if (-not ($viciousChinese | Where-Object { $_ -match '木匠维西' })) {
+    throw "Vicious 当前任务正文未命中：$($viciousChinese -join ' | ')"
+}
+$viciousShared = Get-MatchTexts @($shared.Invoke($store, @([string]$viciousBody)))
+if (-not ($viciousShared | Where-Object { $_ -match '木匠维西' })) {
+    throw "Vicious OCR 分段共享兜底未命中：$($viciousShared -join ' | ')"
+}
+
 # ---------------------------------------------------------------------------
-# 5. Guard the guards, so the behaviours above cannot be silently deleted.
+# 5. The current international classic client changed both the visible chain
+#    title and the 10308 body wording. The long detail text must still recover
+#    the task id and return the exact terminology-locked translation.
+# ---------------------------------------------------------------------------
+$current10308 = "I got another request from Nella. Cutthroat Manny, the owner of the weapon shop, is quite the unusual foodie--he wants to cook up a special dish of Evil Eye Tail Stew. He needs me to hunt 50 Evil Eyes and bring back 30 Evil Eye Tails. Sounds like he'll be eating well for a while! Once I've gotten everything, I should bring it all back to Nella."
+$detected10308 = [string]$detectTaskId.Invoke($store, @([string]$current10308))
+if ($detected10308 -ne '10308') {
+    throw "当前 10308 任务正文未恢复任务 ID：$detected10308"
+}
+$currentHits = @($taskMatches.Invoke($store,
+    [object[]]@([string]$current10308, [string]$detected10308)))
+$currentChinese = Get-MatchTexts $currentHits
+if ($currentChinese -notcontains '我又从内拉那里接到一个委托。武器店老板曼斯塔是个相当特别的美食家——他想做一道火独眼兽尾炖菜。他要我消灭 50 只火独眼兽，并带回 30 条火独眼兽之尾。看来他这阵子能吃得很满足！收集齐后，我应该把东西交回给内拉。') {
+    throw "当前 10308 任务正文未按实测版本翻译：$($currentChinese -join ' | ')"
+}
+
+# Evil Eye and Curse Eye are two different monsters. Keep the four canonical
+# noun rows paired so a task-body correction cannot silently swap them again.
+$dictionaryRows = @(Import-Csv -LiteralPath $dict -Delimiter "`t" `
+    -Header English,Chinese,Category,Source,Location)
+$canonicalTerms = @{
+    'Evil Eye|怀旧服-怪物#23' = '火独眼兽'
+    'Evil Eye Tail|怀旧服-道具#4000022' = '火独眼兽之尾'
+    'Curse Eye|怀旧服-怪物#31' = '风独眼兽'
+    'Curse Eye Tail|怀旧服-道具#4000027' = '风独眼兽之尾'
+}
+foreach ($key in $canonicalTerms.Keys) {
+    $parts = $key.Split('|')
+    $row = $dictionaryRows | Where-Object {
+        $_.English -eq $parts[0] -and $_.Category -eq $parts[1]
+    } | Select-Object -First 1
+    if ($null -eq $row -or $row.Chinese -ne $canonicalTerms[$key]) {
+        throw "独眼兽术语映射错误：$key -> $($row.Chinese)"
+    }
+}
+
+# ---------------------------------------------------------------------------
+# 6. Guard the guards, so the behaviours above cannot be silently deleted.
 # ---------------------------------------------------------------------------
 $source = Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -Encoding UTF8
 foreach ($required in @(

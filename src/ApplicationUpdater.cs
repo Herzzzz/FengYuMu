@@ -14,6 +14,26 @@ using System.Web.Script.Serialization;
 
 namespace MapleOverlay
 {
+    // One gate for "this process is driving the product automatically". The update flow ends
+    // by starting the freshly installed program; under automation that launch would pop the
+    // Windows "unknown publisher" prompt on the user's desktop, so it is skipped while the
+    // rest of the update (verification, backup, replacement) still runs for real.
+    internal static class AutomationPolicy
+    {
+        internal static bool SkipGuiRestart
+        {
+            get
+            {
+                try
+                {
+                    return String.Equals(Environment.GetEnvironmentVariable("FENGYUMU_AUTOMATION"),
+                        "1", StringComparison.Ordinal);
+                }
+                catch { return false; }
+            }
+        }
+    }
+
     internal sealed class PreparedApplicationUpdate
     {
         internal string Tag;
@@ -23,6 +43,8 @@ namespace MapleOverlay
 
         internal void StartInstaller()
         {
+            // See AutomationPolicy: this step must not start a GUI while driven automatically.
+            if (AutomationPolicy.SkipGuiRestart) return;
             string installer = Path.Combine(StageDirectory, "枫语幕.exe");
             Process.Start(new ProcessStartInfo {
                 FileName = installer,
@@ -335,6 +357,7 @@ namespace MapleOverlay
 
         private static void StartInstalledApplication(string installDirectory)
         {
+            if (AutomationPolicy.SkipGuiRestart) return;
             try
             {
                 Process.Start(new ProcessStartInfo {
@@ -535,7 +558,7 @@ namespace MapleOverlay
         {
             WebClient client = new UpdateWebClient();
             client.Encoding = Encoding.UTF8;
-            client.Headers[HttpRequestHeader.UserAgent] = "FengYuMu/3.2.4";
+            client.Headers[HttpRequestHeader.UserAgent] = "FengYuMu/4.0-beta";
             client.Headers[HttpRequestHeader.Accept] = "application/vnd.github+json, text/plain, */*";
             client.Proxy = proxy;
             return client;
@@ -621,7 +644,7 @@ namespace MapleOverlay
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(LatestReleasePage);
                     request.Method = "HEAD";
                     request.AllowAutoRedirect = false;
-                    request.UserAgent = "FengYuMu/3.2.4";
+                    request.UserAgent = "FengYuMu/4.0-beta";
                     request.Proxy = route.Proxy;
                     request.Timeout = 12000;
                     request.ReadWriteTimeout = 12000;

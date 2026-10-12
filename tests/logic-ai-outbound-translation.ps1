@@ -1,7 +1,8 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $exe = Join-Path $repoRoot '枫语幕.exe'
-$assembly = [Reflection.Assembly]::LoadFile($exe)
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly $exe
 $all = [Reflection.BindingFlags]'Static,Instance,NonPublic,Public'
 
 $settingsType = $assembly.GetType('MapleOverlay.OnlineAiSettings', $true)
@@ -301,7 +302,8 @@ foreach ($required in @('鸣谢与声明','@奇怪小鸭','四水年华','https:
 $uiError = Join-Path $repoRoot 'ai_chat_ui_test_error.txt'
 $uiImage = Join-Path $repoRoot 'ai_chat_ui_test.png'
 Remove-Item -LiteralPath $uiError -Force -ErrorAction SilentlyContinue
-Start-Process -FilePath $exe -ArgumentList '--ai-chat-ui-test' `
+if (-not (Get-Command Start-ProductExe -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Start-ProductExe.ps1') }
+Start-ProductExe -FilePath $exe -ArgumentList '--ai-chat-ui-test' `
     -WorkingDirectory $repoRoot -WindowStyle Hidden -Wait
 if (Test-Path -LiteralPath $uiError) {
     throw "AI翻译页面渲染失败：$(Get-Content $uiError -Raw -Encoding UTF8)"

@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $exe = Join-Path $repoRoot '枫语幕.exe'
 if (-not (Test-Path -LiteralPath $exe)) { throw "找不到程序集：$exe" }
@@ -72,7 +72,8 @@ function New-QuestScene([string]$path) {
 }
 
 function Invoke-Benchmark([string]$image) {
-    Start-Process -FilePath $exe -ArgumentList @('--benchmark',
+if (-not (Get-Command Start-ProductExe -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Start-ProductExe.ps1') }
+    Start-ProductExe -FilePath $exe -ArgumentList @('--benchmark',
         "--benchmark-image=$image", '--benchmark-range=balanced') `
         -WorkingDirectory $repoRoot -Wait
     $result = Get-Content (Join-Path $repoRoot 'last_run.txt') -Raw -Encoding UTF8

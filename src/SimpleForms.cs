@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Win32;
@@ -19,12 +20,26 @@ namespace MapleOverlay
         SuperMegaphone = 3
     }
 
+    internal enum ChatSourceCategory
+    {
+        Normal = 0,
+        Buddy = 1,
+        Party = 2,
+        Guild = 3,
+        Alliance = 4,
+        Whisper = 5,
+        System = 6,
+        Notice = 7,
+        Megaphone = 8
+    }
+
     internal sealed class ChatVisualStyle
     {
         internal ChatVisualKind Kind;
         internal Color ForeColor;
         internal Color BackColor;
         internal bool HasBackground;
+        internal ChatSourceCategory Category;
 
         internal static ChatVisualStyle Default
         {
@@ -34,7 +49,8 @@ namespace MapleOverlay
                     Kind = ChatVisualKind.Chat,
                     ForeColor = Color.FromArgb(241, 245, 249),
                     BackColor = Color.FromArgb(18, 18, 22),
-                    HasBackground = false
+                    HasBackground = false,
+                    Category = ChatSourceCategory.Normal
                 };
             }
         }
@@ -47,7 +63,7 @@ namespace MapleOverlay
         {
             bool broadcast = coloredBackground || LooksLikeBroadcast(sourceText);
             bool system = LooksLikeSystem(sourceText);
-            bool blueMegaphone = coloredBackground && IsBlueMegaphoneBackground(sampledBackground);
+            bool blueMegaphone = coloredBackground && IsCoolMegaphoneBackground(sampledBackground);
             Color background = sampledBackground.IsEmpty
                 ? Color.FromArgb(172, 46, 112) : sampledBackground;
             Color foreground = sampledForeground.IsEmpty
@@ -69,14 +85,115 @@ namespace MapleOverlay
                 Kind = kind,
                 ForeColor = foreground,
                 BackColor = background,
-                HasBackground = broadcast
+                HasBackground = broadcast,
+                Category = ClassifySource(sourceText, sampledForeground, kind)
             };
         }
 
-        private static bool IsBlueMegaphoneBackground(Color color)
+        internal static ChatSourceCategory ClassifySource(string sourceText, Color foreground,
+            ChatVisualKind visualKind)
         {
-            return !color.IsEmpty && color.R >= 105 && color.G >= 125 && color.B >= 130 &&
-                color.G >= color.R + 12 && color.B >= color.R + 20;
+            if (visualKind == ChatVisualKind.Megaphone ||
+                visualKind == ChatVisualKind.SuperMegaphone)
+                return ChatSourceCategory.Megaphone;
+
+            string text = StripTimePrefix(sourceText).TrimStart();
+            if (Regex.IsMatch(text, @"^(\[\s*notice\s*\]|notice\s*[:：]|公告\s*[:：])",
+                RegexOptions.IgnoreCase)) return ChatSourceCategory.Notice;
+            if (Regex.IsMatch(text, @"^(\[\s*system\s*\]|system\s*[:：]|系统\s*[:：])",
+                RegexOptions.IgnoreCase)) return ChatSourceCategory.System;
+            if (HasChannelPrefix(text, "buddy", "好友")) return ChatSourceCategory.Buddy;
+            if (HasChannelPrefix(text, "party", "组队")) return ChatSourceCategory.Party;
+            if (HasChannelPrefix(text, "guild", "家族")) return ChatSourceCategory.Guild;
+            if (HasChannelPrefix(text, "alliance", "联盟")) return ChatSourceCategory.Alliance;
+            if (HasChannelPrefix(text, "whisper", "悄悄话")) return ChatSourceCategory.Whisper;
+
+            // GMS chat colors stay stable while antialiasing, UI scale and capture scaling
+            // shift individual pixels. Classify by the nearest color family, not one exact RGB.
+            if (!foreground.IsEmpty)
+            {
+                Color[] anchors = {
+                    Color.FromArgb(235, 235, 235), Color.FromArgb(235, 151, 62),
+                    Color.FromArgb(194, 143, 235), Color.FromArgb(120, 70, 160),
+                    Color.FromArgb(126, 205, 126), Color.FromArgb(50, 150, 80),
+                    Color.FromArgb(225, 115, 145), Color.FromArgb(220, 190, 90)
+                };
+                ChatSourceCategory[] categories = {
+                    ChatSourceCategory.Normal, ChatSourceCategory.Buddy,
+                    ChatSourceCategory.Party, ChatSourceCategory.Guild,
+                    ChatSourceCategory.Alliance, ChatSourceCategory.Whisper,
+                    ChatSourceCategory.System, ChatSourceCategory.Notice
+                };
+                int best = Int32.MaxValue;
+                int second = Int32.MaxValue;
+                int bestIndex = 0;
+                for (int index = 0; index < anchors.Length; index++)
+                {
+                    int distance = ColorDistance(foreground, anchors[index]);
+                    if (distance < best)
+                    {
+                        second = best; best = distance; bestIndex = index;
+                    }
+                    else if (distance < second) second = distance;
+                }
+                // Conservative fallback: uncertain colors remain ordinary chat instead of
+                // disappearing under a wrong filter.
+                if (best <= 5200 && second - best >= 650) return categories[bestIndex];
+            }
+            return visualKind == ChatVisualKind.System
+                ? ChatSourceCategory.System : ChatSourceCategory.Normal;
+        }
+
+        private static bool HasChannelPrefix(string text, string english, string chinese)
+        {
+            string pattern = "^(?:\\[\\s*(?:" + Regex.Escape(english) + "|" +
+                Regex.Escape(chinese) + ")\\s*\\]|(?:" + Regex.Escape(english) + "|" +
+                Regex.Escape(chinese) + ")\\s*[:：])";
+            return Regex.IsMatch(text ?? "", pattern, RegexOptions.IgnoreCase);
+        }
+
+        private static string StripTimePrefix(string value)
+        {
+            return Regex.Replace(value ?? "", @"^\s*\[\s*\d{1,2}:\d{2}\s*\]\s*", "");
+        }
+
+        private static int ColorDistance(Color left, Color right)
+        {
+            int red = left.R - right.R;
+            int green = left.G - right.G;
+            int blue = left.B - right.B;
+            return red * red + green * green + blue * blue;
+        }
+
+        private static bool IsCoolMegaphoneBackground(Color color)
+        {
+            return !color.IsEmpty && color.G >= 125 && color.B >= 120 &&
+                Math.Max(color.G, color.B) >= color.R + 20;
+        }
+
+        internal static bool LooksLikePlayerChatLine(string value)
+        {
+            string text = StripTimePrefix(value).TrimStart();
+            // GMS character names contain no spaces. OCR may append CHxx before the colon.
+            if (Regex.IsMatch(text,
+                @"^[A-Za-z0-9_]{2,20}(?:\s+(?:(?:CH\s*)?[0-9Oo]{1,2}|[©®]))?\s*[:：•·]",
+                RegexOptions.IgnoreCase)) return true;
+            if (Regex.IsMatch(text,
+                @"^[A-Za-z][A-Za-z0-9_]{2,23}\s+(?:C(?:H|W)?[O0A]?\d{1,3}\s*[:：•·]?|C[A-Z0-9]{0,4}\s*[:：•·])",
+                RegexOptions.IgnoreCase)) return true;
+            // At low video resolution the tiny channel badge can become «HÖl 0. The angle glyph
+            // is a reliable separator after the character name, so this is still a player row.
+            return Regex.IsMatch(text,
+                @"^[A-Za-z][A-Za-z0-9_]{2,23}\s*[«»‹›]\s*[^\s:：•·]{0,8}\s+[0-9O@±]{1,4}\s*[:：•·]",
+                RegexOptions.IgnoreCase);
+        }
+
+        internal static bool IsLikelyColoredBand(Color color)
+        {
+            if (color.IsEmpty) return false;
+            int maximum = Math.Max(color.R, Math.Max(color.G, color.B));
+            int minimum = Math.Min(color.R, Math.Min(color.G, color.B));
+            return maximum >= 80 && maximum - minimum >= 28;
         }
 
         internal static bool LooksLikeBroadcast(string value)
@@ -188,6 +305,150 @@ namespace MapleOverlay
         }
     }
 
+    internal sealed class ChatTranslationRecord
+    {
+        internal string Original = "";
+        internal string Translation = "";
+        internal string OutputLabel = "中文";
+        internal ChatVisualStyle Style = ChatVisualStyle.Default;
+    }
+
+    internal sealed class ChatTranslationHistory
+    {
+        private readonly List<ChatTranslationRecord> records = new List<ChatTranslationRecord>();
+        private readonly int maximumCharacters;
+
+        internal ChatTranslationHistory(int characterLimit)
+        {
+            maximumCharacters = Math.Max(2000, characterLimit);
+        }
+
+        internal void Add(ChatTranslationRecord record)
+        {
+            if (record == null || String.IsNullOrWhiteSpace(record.Translation)) return;
+            if (record.Style == null) record.Style = ChatVisualStyle.Default;
+            records.Add(record);
+            int characters = 0;
+            for (int index = records.Count - 1; index >= 0; index--)
+            {
+                ChatTranslationRecord current = records[index];
+                characters += (current.Original ?? "").Length +
+                    (current.Translation ?? "").Length + 16;
+                if (characters <= maximumCharacters) continue;
+                records.RemoveRange(0, index + 1);
+                break;
+            }
+        }
+
+        internal List<ChatTranslationRecord> Select(ChatSourceCategory? category)
+        {
+            List<ChatTranslationRecord> result = new List<ChatTranslationRecord>();
+            foreach (ChatTranslationRecord record in records)
+                if (!category.HasValue || record.Style.Category == category.Value)
+                    result.Add(record);
+            return result;
+        }
+    }
+
+    internal sealed class ChatCategoryFilterBar : TableLayoutPanel
+    {
+        private readonly Dictionary<Button, ChatSourceCategory?> filters =
+            new Dictionary<Button, ChatSourceCategory?>();
+        private ChatSourceCategory? selectedCategory;
+
+        internal event EventHandler SelectedCategoryChanged;
+        internal ChatSourceCategory? SelectedCategory { get { return selectedCategory; } }
+
+        internal ChatCategoryFilterBar()
+        {
+            Dock = DockStyle.Fill;
+            Height = 33;
+            ColumnCount = 10;
+            RowCount = 1;
+            GrowStyle = TableLayoutPanelGrowStyle.FixedSize;
+            BackColor = Color.FromArgb(13, 34, 59);
+            Margin = Padding.Empty;
+            Padding = new Padding(0, 2, 0, 2);
+            for (int index = 0; index < ColumnCount; index++)
+                ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10.0f));
+            RowStyles.Add(new RowStyle(SizeType.Percent, 100.0f));
+            AddFilter("全部", null);
+            AddFilter("普通", ChatSourceCategory.Normal);
+            AddFilter("好友", ChatSourceCategory.Buddy);
+            AddFilter("组队", ChatSourceCategory.Party);
+            AddFilter("家族", ChatSourceCategory.Guild);
+            AddFilter("联盟", ChatSourceCategory.Alliance);
+            AddFilter("悄悄", ChatSourceCategory.Whisper);
+            AddFilter("系统", ChatSourceCategory.System);
+            AddFilter("公告", ChatSourceCategory.Notice);
+            AddFilter("喇叭", ChatSourceCategory.Megaphone);
+            RefreshSelection();
+        }
+
+        internal void SelectCategory(ChatSourceCategory? category)
+        {
+            if (selectedCategory == category) return;
+            selectedCategory = category;
+            RefreshSelection();
+            EventHandler changed = SelectedCategoryChanged;
+            if (changed != null) changed(this, EventArgs.Empty);
+        }
+
+        private void AddFilter(string text, ChatSourceCategory? category)
+        {
+            Button button = new FlatPillButton {
+                Text = text, AutoSize = false, Dock = DockStyle.Fill,
+                Margin = new Padding(1, 0, 1, 0), Padding = Padding.Empty,
+                FlatStyle = FlatStyle.Flat,
+                TabStop = false, Cursor = Cursors.Hand
+            };
+            button.FlatAppearance.BorderSize = 0;
+            filters[button] = category;
+            button.Click += delegate { SelectCategory(filters[button]); };
+            Controls.Add(button, filters.Count - 1, 0);
+        }
+
+        private void RefreshSelection()
+        {
+            foreach (KeyValuePair<Button, ChatSourceCategory?> item in filters)
+            {
+                bool active = item.Value == selectedCategory;
+                item.Key.BackColor = active ? Color.FromArgb(42, 103, 238) : BackColor;
+                item.Key.ForeColor = active ? Color.White : Color.FromArgb(181, 194, 207);
+                item.Key.Invalidate();
+            }
+        }
+    }
+
+    internal sealed class FlatPillButton : Button
+    {
+        internal FlatPillButton()
+        {
+            SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint |
+                ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
+            FlatStyle = FlatStyle.Flat;
+            FlatAppearance.BorderSize = 0;
+            UseVisualStyleBackColor = false;
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            e.Graphics.Clear(Parent == null ? BackColor : Parent.BackColor);
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            using (System.Drawing.Drawing2D.GraphicsPath path =
+                BlueGlassButton.RoundedPath(new Rectangle(0, 0, Width - 1, Height - 1), Height / 2))
+            using (SolidBrush fill = new SolidBrush(BackColor))
+            using (Pen border = new Pen(Color.FromArgb(96, 126, 164)))
+            {
+                e.Graphics.FillPath(fill, path);
+                e.Graphics.DrawPath(border, path);
+            }
+            TextRenderer.DrawText(e.Graphics, Text, Font, ClientRectangle, ForeColor,
+                TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter |
+                TextFormatFlags.SingleLine | TextFormatFlags.NoPadding);
+        }
+    }
+
     internal sealed class AiTranslationWindowForm : Form
     {
         private const int ResizeBorder = 7;
@@ -209,6 +470,8 @@ namespace MapleOverlay
         private readonly Label closeButton = new Label();
         private readonly TextBox outboundInput = new TextBox();
         private readonly Button outboundTranslate = new Button();
+        private readonly ChatCategoryFilterBar categoryFilter = new ChatCategoryFilterBar();
+        private readonly ChatTranslationHistory history = new ChatTranslationHistory(12000);
         private readonly Func<string, Task<string>> translateOutbound;
         private readonly Font contentRegularFont = new Font("Microsoft YaHei UI", 11.5f, FontStyle.Regular);
         private readonly Font contentBroadcastFont = new Font("Microsoft YaHei UI", 11.5f, FontStyle.Bold);
@@ -298,6 +561,7 @@ namespace MapleOverlay
             content.Margin = new Padding(14);
             content.WordWrap = true;
             content.TabStop = false;
+            categoryFilter.SelectedCategoryChanged += delegate { RenderHistory(); };
 
             Panel body = new Panel {
                 Dock = DockStyle.Fill,
@@ -305,13 +569,15 @@ namespace MapleOverlay
                 BackColor = Color.FromArgb(38, 46, 55)
             };
             TableLayoutPanel bodyLayout = new TableLayoutPanel {
-                Dock = DockStyle.Fill, RowCount = 2, ColumnCount = 1,
+                Dock = DockStyle.Fill, RowCount = 3, ColumnCount = 1,
                 BackColor = body.BackColor, Margin = Padding.Empty, Padding = Padding.Empty
             };
+            bodyLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 33));
             bodyLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
             bodyLayout.RowStyles.Add(new RowStyle(SizeType.Absolute,
                 translateOutbound == null ? 0 : 40));
-            bodyLayout.Controls.Add(content, 0, 0);
+            bodyLayout.Controls.Add(categoryFilter, 0, 0);
+            bodyLayout.Controls.Add(content, 0, 1);
             if (translateOutbound != null)
             {
                 TableLayoutPanel outbound = new TableLayoutPanel {
@@ -340,7 +606,7 @@ namespace MapleOverlay
                 outbound.Controls.Add(inputLabel, 0, 0);
                 outbound.Controls.Add(outboundInput, 1, 0);
                 outbound.Controls.Add(outboundTranslate, 2, 0);
-                bodyLayout.Controls.Add(outbound, 0, 1);
+                bodyLayout.Controls.Add(outbound, 0, 2);
             }
             body.Controls.Add(bodyLayout);
             Controls.Add(body); Controls.Add(header);
@@ -379,6 +645,12 @@ namespace MapleOverlay
 
         internal string DisplayedText { get { return displayedText; } }
         internal bool HiddenByUser { get { return hiddenByUser; } }
+        internal ChatSourceCategory? SelectedCategory { get { return categoryFilter.SelectedCategory; } }
+
+        internal void SelectCategory(ChatSourceCategory? category)
+        {
+            categoryFilter.SelectCategory(category);
+        }
 
         internal void AppendTranslation(string translation)
         {
@@ -390,21 +662,20 @@ namespace MapleOverlay
             string next = AiTranslationWindowContent.Append("", translation);
             if (next.Length == 0) return;
             if (style == null) style = ChatVisualStyle.Default;
-            if (content.TextLength > 12000)
+            history.Add(new ChatTranslationRecord { Translation = next, Style = style });
+            if (categoryFilter.SelectedCategory.HasValue &&
+                style.Category != categoryFilter.SelectedCategory.Value)
             {
-                int cut = content.Text.IndexOf('\n', Math.Max(0, content.TextLength - 8000));
-                int removeLength = cut >= 0 ? cut + 1 : Math.Max(0, content.TextLength - 8000);
-                // This box is ReadOnly, and a read-only RichTextBox answers an edit message
-                // with the Windows default beep. "SelectedText = \"\"" IS such an edit, so
-                // trimming only starts beeping once the log grows past 12000 characters -
-                // which is exactly the "fine for a while, then it starts" symptom.
-                // Lift read-only for the trim itself and put it straight back.
-                bool wasReadOnly = content.ReadOnly;
-                content.ReadOnly = false;
-                content.Select(0, removeLength);
-                content.SelectedText = "";
-                content.ReadOnly = wasReadOnly;
+                status.Text = "新译文已归入“" + CategoryName(style.Category) + "”";
+                return;
             }
+            if (content.TextLength > 12000) RenderHistory();
+            else AppendVisibleTranslation(next, style);
+            UpdateStatus(style);
+        }
+
+        private void AppendVisibleTranslation(string next, ChatVisualStyle style)
+        {
             content.SelectionStart = content.TextLength;
             content.SelectionLength = 0;
             if (content.TextLength > 0) content.AppendText(Environment.NewLine);
@@ -419,11 +690,45 @@ namespace MapleOverlay
             content.SelectionColor = content.ForeColor;
             displayedText = content.Text;
             content.ScrollToCaret();
+        }
+
+        private void RenderHistory()
+        {
+            bool wasReadOnly = content.ReadOnly;
+            content.ReadOnly = false;
+            content.Clear();
+            content.ReadOnly = wasReadOnly;
+            foreach (ChatTranslationRecord record in history.Select(categoryFilter.SelectedCategory))
+                AppendVisibleTranslation(record.Translation, record.Style);
+            displayedText = content.Text;
+            status.Text = categoryFilter.SelectedCategory.HasValue
+                ? "正在显示“" + CategoryName(categoryFilter.SelectedCategory.Value) + "”聊天"
+                : "正在显示全部聊天";
+        }
+
+        private void UpdateStatus(ChatVisualStyle style)
+        {
             status.Text = style.Kind == ChatVisualKind.Megaphone
                 ? "普通喇叭译文已按蓝底显示"
                 : (style.Kind == ChatVisualKind.SuperMegaphone
                     ? "超级喇叭译文已按粉底显示"
-                    : "AI新译文已按聊天来源颜色显示");
+                    : "AI新译文已归入“" + CategoryName(style.Category) + "”");
+        }
+
+        internal static string CategoryName(ChatSourceCategory category)
+        {
+            switch (category)
+            {
+                case ChatSourceCategory.Buddy: return "好友";
+                case ChatSourceCategory.Party: return "组队";
+                case ChatSourceCategory.Guild: return "家族";
+                case ChatSourceCategory.Alliance: return "联盟";
+                case ChatSourceCategory.Whisper: return "悄悄话";
+                case ChatSourceCategory.System: return "系统";
+                case ChatSourceCategory.Notice: return "公告";
+                case ChatSourceCategory.Megaphone: return "喇叭";
+                default: return "普通";
+            }
         }
 
         internal void ShowPassive()
@@ -598,8 +903,217 @@ namespace MapleOverlay
         }
     }
 
+    internal sealed class BlueGlassButton : Button
+    {
+        private bool hovered;
+        private bool pressed;
+        internal bool PrimaryCard { get; set; }
+
+        internal BlueGlassButton()
+        {
+            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint |
+                ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw |
+                ControlStyles.SupportsTransparentBackColor, true);
+            FlatStyle = FlatStyle.Flat;
+            FlatAppearance.BorderSize = 0;
+            UseVisualStyleBackColor = false;
+            BackColor = Color.FromArgb(247, 250, 255);
+            ForeColor = Color.FromArgb(30, 48, 78);
+            Cursor = Cursors.Hand;
+        }
+
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            hovered = true; Invalidate(); base.OnMouseEnter(e);
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            hovered = false; pressed = false; Invalidate(); base.OnMouseLeave(e);
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            pressed = true; Invalidate(); base.OnMouseDown(e);
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            pressed = false; Invalidate(); base.OnMouseUp(e);
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            e.Graphics.Clear(Parent == null ? Color.FromArgb(238, 245, 255) : Parent.BackColor);
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            Rectangle faceBounds = new Rectangle(1, pressed ? 2 : 1,
+                Math.Max(1, Width - 3), Math.Max(1, Height - (pressed ? 4 : 3)));
+            int radius = Math.Min(18, Math.Max(7, faceBounds.Height / 2));
+            Color top = PrimaryCard ? Color.FromArgb(96, 151, 255) :
+                (hovered ? Color.FromArgb(244, 249, 255) : Color.White);
+            Color bottom = PrimaryCard ? Color.FromArgb(42, 103, 238) :
+                (hovered ? Color.FromArgb(226, 238, 255) : BackColor);
+            using (System.Drawing.Drawing2D.GraphicsPath face = RoundedPath(faceBounds, radius))
+            using (System.Drawing.Drawing2D.LinearGradientBrush fill =
+                new System.Drawing.Drawing2D.LinearGradientBrush(faceBounds, top, bottom,
+                    System.Drawing.Drawing2D.LinearGradientMode.Vertical))
+            {
+                e.Graphics.FillPath(fill, face);
+                using (Pen border = new Pen(PrimaryCard ? Color.FromArgb(90, 144, 236) :
+                    Color.FromArgb(184, 205, 233), 1.0f))
+                    e.Graphics.DrawPath(border, face);
+            }
+            using (Pen highlight = new Pen(Color.FromArgb(120, 255, 255, 255), 1.0f))
+                e.Graphics.DrawLine(highlight, radius, faceBounds.Top + 1,
+                    Math.Max(radius, faceBounds.Right - radius), faceBounds.Top + 1);
+            Rectangle textBounds = new Rectangle(faceBounds.X + Padding.Left,
+                faceBounds.Y + Padding.Top, Math.Max(1, faceBounds.Width - Padding.Horizontal),
+                Math.Max(1, faceBounds.Height - Padding.Vertical));
+            TextFormatFlags flags = TextFormatFlags.NoPadding | TextFormatFlags.VerticalCenter;
+            if (Text.IndexOf('\n') >= 0 || Text.IndexOf('\r') >= 0)
+                flags |= TextFormatFlags.WordBreak;
+            else flags |= TextFormatFlags.SingleLine | TextFormatFlags.EndEllipsis;
+            if (TextAlign == ContentAlignment.MiddleLeft) flags |= TextFormatFlags.Left;
+            else if (TextAlign == ContentAlignment.MiddleRight) flags |= TextFormatFlags.Right;
+            else flags |= TextFormatFlags.HorizontalCenter;
+            TextRenderer.DrawText(e.Graphics, Text, Font, textBounds,
+                Enabled ? (PrimaryCard ? Color.White : ForeColor) :
+                    Color.FromArgb(140, 155, 177), flags);
+        }
+
+        internal static System.Drawing.Drawing2D.GraphicsPath RoundedPath(Rectangle bounds,
+            int radius)
+        {
+            System.Drawing.Drawing2D.GraphicsPath path =
+                new System.Drawing.Drawing2D.GraphicsPath();
+            int diameter = Math.Max(2, Math.Min(radius * 2,
+                Math.Min(bounds.Width, bounds.Height)));
+            Rectangle arc = new Rectangle(bounds.X, bounds.Y, diameter, diameter);
+            path.AddArc(arc, 180, 90);
+            arc.X = bounds.Right - diameter;
+            path.AddArc(arc, 270, 90);
+            arc.Y = bounds.Bottom - diameter;
+            path.AddArc(arc, 0, 90);
+            arc.X = bounds.X;
+            path.AddArc(arc, 90, 90);
+            path.CloseFigure();
+            return path;
+        }
+    }
+
+    internal sealed class BlueGlassPanel : Panel
+    {
+        internal BlueGlassPanel()
+        {
+            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint |
+                ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
+            BackColor = Color.FromArgb(244, 248, 255);
+        }
+
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+            e.Graphics.Clear(Parent == null ? Color.FromArgb(238, 245, 255) : Parent.BackColor);
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            Rectangle faceBounds = new Rectangle(1, 1, Math.Max(1, Width - 3),
+                Math.Max(1, Height - 3));
+            using (System.Drawing.Drawing2D.GraphicsPath face =
+                BlueGlassButton.RoundedPath(faceBounds, 18))
+            using (System.Drawing.Drawing2D.LinearGradientBrush fill =
+                new System.Drawing.Drawing2D.LinearGradientBrush(faceBounds,
+                    Color.White, BackColor,
+                    System.Drawing.Drawing2D.LinearGradientMode.Vertical))
+            {
+                e.Graphics.FillPath(fill, face);
+                using (Pen border = new Pen(Color.FromArgb(190, 210, 238)))
+                    e.Graphics.DrawPath(border, face);
+            }
+            using (Pen highlight = new Pen(Color.FromArgb(120, 255, 255, 255)))
+                e.Graphics.DrawLine(highlight, 18, 2, Math.Max(18, Width - 18), 2);
+        }
+    }
+
     internal sealed class MainPanelForm : Form
     {
+        private sealed class BlueSurfacePanel : Panel
+        {
+            internal BlueSurfacePanel()
+            {
+                SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint |
+                    ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
+            }
+
+            protected override void OnPaintBackground(PaintEventArgs e)
+            {
+                using (System.Drawing.Drawing2D.LinearGradientBrush background =
+                    new System.Drawing.Drawing2D.LinearGradientBrush(ClientRectangle,
+                        Color.FromArgb(250, 252, 255), Color.FromArgb(232, 241, 255),
+                        System.Drawing.Drawing2D.LinearGradientMode.Vertical))
+                    e.Graphics.FillRectangle(background, ClientRectangle);
+                e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                Rectangle glow = new Rectangle(-Width / 3, -Height / 4,
+                    Math.Max(1, Width * 4 / 3), Math.Max(1, Height * 3 / 4));
+                using (System.Drawing.Drawing2D.GraphicsPath path =
+                    new System.Drawing.Drawing2D.GraphicsPath())
+                {
+                    path.AddEllipse(glow);
+                    using (System.Drawing.Drawing2D.PathGradientBrush brush =
+                        new System.Drawing.Drawing2D.PathGradientBrush(path))
+                    {
+                        brush.CenterColor = Color.FromArgb(65, 118, 167, 255);
+                        brush.SurroundColors = new Color[] { Color.FromArgb(0, 232, 241, 255) };
+                        e.Graphics.FillPath(brush, path);
+                    }
+                }
+            }
+        }
+
+        private sealed class CircleActionButton : Control
+        {
+            internal CircleActionButton()
+            {
+                SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint |
+                    ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw |
+                    ControlStyles.SupportsTransparentBackColor, true);
+                BackColor = Color.Transparent;
+                Cursor = Cursors.Hand;
+                TabStop = true;
+            }
+
+            protected override void OnPaint(PaintEventArgs e)
+            {
+                base.OnPaintBackground(e);
+                e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                Rectangle circle = new Rectangle(2, 2, Math.Max(1, Width - 5),
+                    Math.Max(1, Height - 5));
+                using (System.Drawing.Drawing2D.LinearGradientBrush fill =
+                    new System.Drawing.Drawing2D.LinearGradientBrush(circle,
+                        Color.FromArgb(71, 135, 255), Color.FromArgb(29, 85, 220),
+                        System.Drawing.Drawing2D.LinearGradientMode.ForwardDiagonal))
+                    e.Graphics.FillEllipse(fill, circle);
+                using (Pen ring = new Pen(Color.FromArgb(150, 157, 195, 255), 1.25f))
+                    e.Graphics.DrawEllipse(ring, circle);
+                TextRenderer.DrawText(e.Graphics, Text, Font, circle, ForeColor,
+                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter |
+                    TextFormatFlags.NoPadding);
+            }
+
+            protected override void OnMouseEnter(EventArgs e)
+            {
+                base.OnMouseEnter(e);
+                ForeColor = Color.FromArgb(211, 216, 255);
+                Invalidate();
+            }
+
+            protected override void OnMouseLeave(EventArgs e)
+            {
+                base.OnMouseLeave(e);
+                ForeColor = Color.White;
+                Invalidate();
+            }
+        }
+
         private sealed class LogicalFont
         {
             internal readonly string Family;
@@ -615,11 +1129,13 @@ namespace MapleOverlay
         }
 
         private const int BaseDpi = 96;
-        private readonly Size logicalClientSize = new Size(560, 552);
+        private readonly Size logicalClientSize = new Size(430, 680);
         private readonly Dictionary<Control, Rectangle> logicalBounds =
             new Dictionary<Control, Rectangle>();
         private readonly Dictionary<Control, Padding> logicalPaddings =
             new Dictionary<Control, Padding>();
+        private readonly Dictionary<Control, AnchorStyles> logicalAnchors =
+            new Dictionary<Control, AnchorStyles>();
         private readonly Dictionary<Control, LogicalFont> logicalFonts =
             new Dictionary<Control, LogicalFont>();
         private readonly OverlayForm overlay;
@@ -627,124 +1143,416 @@ namespace MapleOverlay
         private readonly Label hotkeys = new Label();
         private readonly TrackBar range = new TrackBar();
         private readonly Label rangeValue = new Label();
-        private readonly CheckBox continuousTranslation = new CheckBox();
+        private readonly Panel startPage = new BlueSurfacePanel();
+        private readonly Panel dashboardPage = new BlueSurfacePanel();
+        private readonly Panel aiPage = new BlueSurfacePanel();
+        private readonly Panel aiHost = new Panel();
+        private readonly Button continuousCard = new BlueGlassButton();
+        private readonly Button floatingCard = new BlueGlassButton();
+        private readonly Button snapModeButton = new BlueGlassButton();
+        private readonly System.Windows.Forms.Timer snapTimer = new System.Windows.Forms.Timer();
+        private bool snapEnabled;
         private bool dpiLayoutReady;
         private bool applyingDpiLayout;
+        private float currentLayoutScale = 1.0f;
+        private Action arrangeDashboardCards;
+
+        // Capture-time restoration must not steal keyboard focus back from the game.
+        // Explicit entry points still call Activate() when the user asks to open the panel.
+        protected override bool ShowWithoutActivation { get { return true; } }
 
         public MainPanelForm(OverlayForm owner)
         {
             overlay = owner;
             AutoScaleDimensions = new SizeF(96.0f, 96.0f);
             AutoScaleMode = AutoScaleMode.Dpi;
-            Text = "枫语幕 v3.2.4";
+            Text = "枫语幕 v4.0 测试版";
             StartPosition = FormStartPosition.CenterScreen;
-            FormBorderStyle = FormBorderStyle.FixedSingle;
-            MaximizeBox = false;
+            FormBorderStyle = FormBorderStyle.Sizable;
+            MaximizeBox = true;
             MinimizeBox = true;
             ShowIcon = true;
             Icon = Program.AppIcon;
             ClientSize = logicalClientSize;
+            MinimumSize = new Size(446, 560);
             AutoScroll = true;
-            BackColor = Color.FromArgb(244, 247, 251);
+            BackColor = Color.FromArgb(238, 245, 255);
             Font = new Font("Microsoft YaHei UI", 9.0f);
+            snapEnabled = LoadSnapPreference();
+            BuildStartPage();
+            BuildDashboardPage();
+            BuildAiPage();
+            Controls.Add(aiPage);
+            Controls.Add(dashboardPage);
+            Controls.Add(startPage);
+            ShowPage(startPage);
+            snapTimer.Interval = 500;
+            snapTimer.Tick += delegate { ApplySnapToGameWindow(); };
+            snapTimer.Start();
+            Resize += delegate { LayoutPageSurfaces(); };
+            PerformLayout();
+            CaptureLogicalLayout(this);
+            dpiLayoutReady = true;
+            Shown += delegate {
+                ApplyDpiLayout(GetCurrentDpi(), true, false);
+                ApplySnapToGameWindow();
+            };
+            FormClosing += delegate(object sender, FormClosingEventArgs e) {
+                if (e.CloseReason == CloseReason.UserClosing)
+                {
+                    e.Cancel = true;
+                    if (overlay != null) overlay.MinimizeMainPanelToTray();
+                    else Hide();
+                }
+            };
+        }
 
-            Panel header = new Panel {
-                Location = Point.Empty, Size = new Size(560, 70),
-                BackColor = Color.FromArgb(31, 41, 55), Padding = new Padding(22, 16, 22, 10)
+        private void BuildStartPage()
+        {
+            startPage.Location = Point.Empty;
+            startPage.Size = logicalClientSize;
+            startPage.Anchor = AnchorStyles.Top | AnchorStyles.Bottom |
+                AnchorStyles.Left | AnchorStyles.Right;
+            startPage.BackColor = Color.FromArgb(238, 245, 255);
+            Button update = MakeButton("v4.0 测试版   ·   检查更新", Point.Empty,
+                new Size(250, 44), false);
+            update.Font = new Font("Microsoft YaHei UI", 9.5f, FontStyle.Bold);
+            update.Click += async delegate {
+                if (overlay != null) await overlay.InstallLatestApplicationAsync(update);
             };
-            Label title = new Label {
-                Text = "枫语幕 v3.2.4", ForeColor = Color.White, AutoSize = true,
-                Font = new Font("Microsoft YaHei UI", 20.0f, FontStyle.Bold), Location = new Point(20, 12)
+            CircleActionButton start = new CircleActionButton {
+                Text = "开始翻译", ForeColor = Color.White,
+                Font = new Font("Microsoft YaHei UI", 20.0f, FontStyle.Bold),
+                Cursor = Cursors.Hand, TabStop = false
             };
-            header.Controls.Add(title);
+            start.Click += delegate { ShowDashboardPage(); };
+            EventHandler centerStart = delegate {
+                int diameter = Math.Max(190, Math.Min(280,
+                    (int)(Math.Min(startPage.ClientSize.Width, startPage.ClientSize.Height) * 0.54f)));
+                start.Size = new Size(diameter, diameter);
+                start.Location = new Point((startPage.ClientSize.Width - diameter) / 2,
+                    (startPage.ClientSize.Height - diameter) / 2 + 28);
+                update.Location = new Point((startPage.ClientSize.Width - update.Width) / 2, 34);
+            };
+            startPage.Resize += centerStart;
+            startPage.Controls.Add(update);
+            startPage.Controls.Add(start);
+            centerStart(startPage, EventArgs.Empty);
+        }
 
-            Panel card = new Panel {
-                Location = new Point(20, 86), Size = new Size(520, 76),
-                BackColor = Color.White, BorderStyle = BorderStyle.FixedSingle
-            };
-            status.AutoSize = false; status.Location = new Point(16, 11); status.Size = new Size(486, 25);
-            status.Font = new Font("Microsoft YaHei UI", 10.0f, FontStyle.Bold);
-            status.ForeColor = Color.FromArgb(22, 101, 52);
-            hotkeys.AutoSize = false; hotkeys.Location = new Point(16, 42); hotkeys.Size = new Size(486, 22);
-            hotkeys.ForeColor = Color.FromArgb(75, 85, 99);
-            card.Controls.Add(status); card.Controls.Add(hotkeys);
+        private void BuildDashboardPage()
+        {
+            dashboardPage.Location = Point.Empty;
+            dashboardPage.Size = logicalClientSize;
+            dashboardPage.Anchor = AnchorStyles.Top | AnchorStyles.Bottom |
+                AnchorStyles.Left | AnchorStyles.Right;
+            dashboardPage.BackColor = Color.FromArgb(238, 245, 255);
 
-            GroupBox rangeCard = new GroupBox {
-                Text = "翻译范围与显示", Location = new Point(20, 172), Size = new Size(520, 224),
-                BackColor = Color.White, ForeColor = Color.FromArgb(55, 65, 81)
-            };
+            Panel header = CreateHeader("枫语幕", false);
+            Button back = MakeButton("←", new Point(14, 13), new Size(40, 38), false);
+            back.Font = new Font("Segoe UI Symbol", 13.0f, FontStyle.Regular);
+            back.Click += delegate { ShowPage(startPage); };
+            header.Controls.Add(back);
+            foreach (Control child in header.Controls)
+            {
+                Label label = child as Label;
+                if (label != null) label.Location = new Point(66, label.Top);
+            }
+            status.AutoSize = false;
+            status.Location = new Point(66, 34);
+            status.Size = new Size(260, 22);
+            status.ForeColor = Color.FromArgb(91, 111, 140);
+            status.AutoEllipsis = true;
+            snapModeButton.Text = snapEnabled ? "吸附" : "自由";
+            snapModeButton.Location = new Point(342, 16);
+            snapModeButton.Size = new Size(70, 34);
+            snapModeButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            snapModeButton.FlatStyle = FlatStyle.Flat;
+            snapModeButton.FlatAppearance.BorderColor = Color.FromArgb(190, 210, 238);
+            snapModeButton.BackColor = Color.FromArgb(244, 248, 255);
+            snapModeButton.ForeColor = Color.FromArgb(38, 71, 118);
+            snapModeButton.Cursor = Cursors.Hand;
+            snapModeButton.Click += delegate { SetSnapEnabled(!snapEnabled); };
+            header.Controls.Add(status);
+            header.Controls.Add(snapModeButton);
+
+            Panel rangeCard = CreateCardPanel(new Point(16, 80), new Size(398, 112));
+            rangeCard.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            Label rangeTitle = CreateCardTitle("翻译范围", new Point(18, 14), new Size(180, 25));
+            rangeValue.Location = new Point(278, 13);
+            rangeValue.Size = new Size(102, 25);
+            rangeValue.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            rangeValue.TextAlign = ContentAlignment.MiddleRight;
+            rangeValue.Font = new Font("Microsoft YaHei UI", 9.5f, FontStyle.Bold);
+            rangeValue.ForeColor = Color.FromArgb(42, 103, 238);
+            rangeValue.BackColor = Color.Transparent;
             range.Minimum = 1; range.Maximum = 3; range.TickStyle = TickStyle.TopLeft;
             range.TickFrequency = 1; range.SmallChange = 1; range.LargeChange = 1;
-            range.Location = new Point(15, 19); range.Size = new Size(340, 42);
+            range.Location = new Point(14, 44); range.Size = new Size(370, 38);
+            range.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             range.Value = overlay == null ? 2 : (int)overlay.TranslationRangeMode;
-            rangeValue.Location = new Point(370, 23); rangeValue.Size = new Size(130, 26);
-            rangeValue.TextAlign = ContentAlignment.MiddleCenter;
-            rangeValue.Font = new Font("Microsoft YaHei UI", 9.5f, FontStyle.Bold);
-            rangeValue.ForeColor = Color.FromArgb(37, 99, 235);
             Label rangeLabels = new Label {
-                Text = "翻译更多                    日常推荐                    只翻重点",
-                Location = new Point(19, 60), Size = new Size(332, 20),
-                ForeColor = Color.FromArgb(107, 114, 128)
+                Text = "更多                         推荐                         重点",
+                Location = new Point(19, 84), Size = new Size(360, 20),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+                ForeColor = Color.FromArgb(103, 124, 153),
+                BackColor = Color.Transparent
             };
             range.ValueChanged += delegate {
                 if (overlay != null) overlay.ApplyTranslationRangeMode((TranslationRangeMode)range.Value);
                 RefreshRangeText();
             };
-            continuousTranslation.Text = "持续自动翻译（检测到游戏面板即显示）";
-            continuousTranslation.AutoSize = false;
-            continuousTranslation.Location = new Point(18, 87);
-            continuousTranslation.Size = new Size(480, 28);
-            continuousTranslation.ForeColor = Color.FromArgb(31, 41, 55);
-            continuousTranslation.Checked = overlay != null && overlay.ContinuousTranslationEnabled;
-            continuousTranslation.CheckedChanged += delegate {
-                if (overlay != null) overlay.ApplyContinuousTranslation(continuousTranslation.Checked);
-            };
-            Label continuousHint = new Label {
-                Text = "默认关闭；开启后智能降频，F8翻译、F9对齐、F10呼出AI浮窗。",
-                Location = new Point(35, 119), Size = new Size(460, 24),
-                ForeColor = Color.FromArgb(107, 114, 128)
-            };
-            Label independentWindow = new Label {
-                Text = "AI实时翻译会自动打开独立浮窗（跟随聊天颜色）",
-                AutoSize = false, Location = new Point(18, 148), Size = new Size(480, 28),
-                ForeColor = Color.FromArgb(31, 41, 55),
-                Font = new Font("Microsoft YaHei UI", 9.0f, FontStyle.Bold)
-            };
-            Label independentHint = new Label {
-                Text = "只显示AI聊天译文；误关后按F10可重新呼出，F8仍独立截图翻译。",
-                Location = new Point(35, 180), Size = new Size(460, 24),
-                ForeColor = Color.FromArgb(107, 114, 128)
-            };
-            rangeCard.Controls.Add(independentHint); rangeCard.Controls.Add(independentWindow);
-            rangeCard.Controls.Add(continuousHint); rangeCard.Controls.Add(continuousTranslation);
-            rangeCard.Controls.Add(rangeValue); rangeCard.Controls.Add(rangeLabels); rangeCard.Controls.Add(range);
+            rangeCard.Controls.Add(rangeTitle); rangeCard.Controls.Add(rangeValue);
+            rangeCard.Controls.Add(rangeLabels); rangeCard.Controls.Add(range);
 
-            Button ready = MakeButton("缩到托盘，开始使用", new Point(20, 410), new Size(520, 42), true);
-            ready.Click += delegate { Hide(); };
-            Button dictionary = MakeButton("词库", new Point(20, 464), new Size(124, 38), false);
+            ConfigureCardButton(continuousCard, "持续翻译\r\n按变化自动识别", new Point(16, 206));
+            continuousCard.Click += delegate {
+                if (overlay != null) overlay.ApplyContinuousTranslation(!overlay.ContinuousTranslationEnabled);
+                RefreshStatus();
+            };
+            ConfigureCardButton(floatingCard, "悬浮窗\r\n默认关闭", new Point(220, 206));
+            floatingCard.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            floatingCard.Click += delegate {
+                if (overlay != null) overlay.ApplyAiChatFloatingWindow(!overlay.AiChatFloatingWindowEnabled);
+                RefreshStatus();
+            };
+            Button dictionary = CreateCardButton("打开词库\r\n补充专用译名", new Point(16, 286));
             dictionary.Click += delegate { overlay.ShowDictionaryEditor(); };
-            Button shortcut = MakeButton("快捷键", new Point(152, 464), new Size(124, 38), false);
+            Button shortcut = CreateCardButton("快捷键\r\n键盘与手柄", new Point(220, 286));
+            shortcut.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             shortcut.Click += delegate { overlay.ShowHotkeyEditor(); };
-            Button ai = MakeButton("AI 翻译", new Point(284, 464), new Size(124, 38), false);
-            ai.Click += delegate { overlay.ShowChatTranslator(); };
-            Button update = MakeButton("一键更新", new Point(416, 464), new Size(124, 38), false);
-            update.Enabled = overlay != null;
-            update.Click += async delegate { await overlay.InstallLatestApplicationAsync(update); };
-            Label hint = new Label {
-                Text = "F8 翻译开/关；F9 对齐聊天框；F10 呼出AI悬浮窗；关闭后仍在托盘。",
-                Location = new Point(22, 510), Size = new Size(516, 32),
-                ForeColor = Color.FromArgb(107, 114, 128), TextAlign = ContentAlignment.MiddleLeft
+            Button ai = MakeButton("AI 实时翻译\r\n聊天分类、译文记录与中译英  →",
+                new Point(16, 380), new Size(398, 112), true);
+            ai.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            ai.TextAlign = ContentAlignment.MiddleLeft;
+            ai.Padding = new Padding(20, 0, 12, 0);
+            ai.Font = new Font("Microsoft YaHei UI", 13.0f, FontStyle.Bold);
+            ai.BackColor = Color.FromArgb(38, 105, 238);
+            ai.FlatAppearance.BorderColor = Color.FromArgb(38, 105, 238);
+            ai.Click += delegate { ShowAiPage(); };
+            Button trayButton = MakeButton("最小化到托盘", new Point(16, 516),
+                new Size(398, 42), false);
+            trayButton.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            trayButton.Click += delegate {
+                if (overlay != null) overlay.MinimizeMainPanelToTray();
+                else Hide();
             };
+            hotkeys.Location = new Point(16, 574);
+            hotkeys.Size = new Size(398, 36);
+            hotkeys.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            hotkeys.ForeColor = Color.FromArgb(103, 124, 153);
+            hotkeys.TextAlign = ContentAlignment.MiddleCenter;
+            hotkeys.AutoEllipsis = true;
+            dashboardPage.Controls.Add(hotkeys); dashboardPage.Controls.Add(trayButton);
+            dashboardPage.Controls.Add(ai);
+            dashboardPage.Controls.Add(shortcut); dashboardPage.Controls.Add(dictionary);
+            dashboardPage.Controls.Add(floatingCard); dashboardPage.Controls.Add(continuousCard);
+            dashboardPage.Controls.Add(rangeCard); dashboardPage.Controls.Add(header);
+            arrangeDashboardCards = delegate {
+                int cardWidth = ScaleValue(398, currentLayoutScale);
+                int left = Math.Max(0, (dashboardPage.ClientSize.Width - cardWidth) / 2);
+                rangeCard.Left = left;
+                continuousCard.Left = left;
+                floatingCard.Left = left + ScaleValue(204, currentLayoutScale);
+                dictionary.Left = left;
+                shortcut.Left = left + ScaleValue(204, currentLayoutScale);
+                ai.Left = left;
+                trayButton.Left = left;
+                hotkeys.Left = left;
+            };
+            dashboardPage.Resize += delegate {
+                if (arrangeDashboardCards != null) arrangeDashboardCards();
+            };
+            arrangeDashboardCards();
+        }
 
-            Controls.Add(hint); Controls.Add(update); Controls.Add(ai); Controls.Add(shortcut); Controls.Add(dictionary);
-            Controls.Add(ready); Controls.Add(rangeCard); Controls.Add(card); Controls.Add(header);
-            PerformLayout();
-            CaptureLogicalLayout(this);
-            dpiLayoutReady = true;
-            Shown += delegate { ApplyDpiLayout(GetCurrentDpi(), true, false); };
-            FormClosing += delegate(object sender, FormClosingEventArgs e) {
-                if (e.CloseReason == CloseReason.UserClosing) { e.Cancel = true; Hide(); }
+        private void BuildAiPage()
+        {
+            aiPage.Location = Point.Empty;
+            aiPage.Size = logicalClientSize;
+            aiPage.Anchor = AnchorStyles.Top | AnchorStyles.Bottom |
+                AnchorStyles.Left | AnchorStyles.Right;
+            aiPage.BackColor = Color.FromArgb(238, 245, 255);
+            Panel header = CreateHeader("AI 实时翻译", true);
+            Button back = MakeButton("←", new Point(14, 13), new Size(40, 38), false);
+            back.Font = new Font("Segoe UI Symbol", 13.0f, FontStyle.Regular);
+            back.Click += delegate { ShowDashboardPage(); };
+            header.Controls.Add(back);
+            foreach (Control child in header.Controls)
+            {
+                Label label = child as Label;
+                if (label != null) label.Location = new Point(66, label.Top);
+            }
+            aiHost.Location = new Point(0, 64);
+            aiHost.Size = new Size(430, 616);
+            aiHost.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            aiHost.BackColor = Color.FromArgb(238, 245, 255);
+            aiPage.Controls.Add(aiHost);
+            aiPage.Controls.Add(header);
+            aiPage.Resize += delegate {
+                int preferredWidth = ScaleValue(logicalClientSize.Width, currentLayoutScale);
+                aiHost.Width = Math.Min(preferredWidth, aiPage.ClientSize.Width);
+                aiHost.Left = Math.Max(0, (aiPage.ClientSize.Width - aiHost.Width) / 2);
             };
+        }
+
+        private Panel CreateHeader(string titleText, bool compact)
+        {
+            Panel header = new Panel {
+                Location = Point.Empty, Size = new Size(430, 64),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+                BackColor = Color.FromArgb(244, 248, 255)
+            };
+            Label title = new Label {
+                Text = titleText, ForeColor = Color.FromArgb(23, 46, 79), AutoSize = true,
+                Font = new Font("Microsoft YaHei UI", compact ? 14.0f : 17.0f,
+                    FontStyle.Bold), Location = new Point(18, compact ? 20 : 9)
+            };
+            header.Controls.Add(title);
+            return header;
+        }
+
+        private static Panel CreateCardPanel(Point location, Size size)
+        {
+            return new BlueGlassPanel { Location = location, Size = size };
+        }
+
+        private static Label CreateCardTitle(string text, Point location, Size size)
+        {
+            return new Label {
+                Text = text, Location = location, Size = size,
+                Font = new Font("Microsoft YaHei UI", 11.0f, FontStyle.Bold),
+                ForeColor = Color.FromArgb(26, 48, 79),
+                BackColor = Color.Transparent
+            };
+        }
+
+        private Button CreateCardButton(string text, Point location)
+        {
+            Button button = new BlueGlassButton();
+            ConfigureCardButton(button, text, location);
+            return button;
+        }
+
+        private static void ConfigureCardButton(Button button, string text, Point location)
+        {
+            button.Text = text;
+            button.Location = location;
+            button.Size = new Size(194, 68);
+            button.FlatStyle = FlatStyle.Flat;
+            button.FlatAppearance.BorderColor = Color.FromArgb(190, 210, 238);
+            button.BackColor = Color.FromArgb(244, 248, 255);
+            button.ForeColor = Color.FromArgb(30, 48, 78);
+            button.Font = new Font("Microsoft YaHei UI", 10.0f, FontStyle.Bold);
+            button.TextAlign = ContentAlignment.MiddleLeft;
+            button.Padding = new Padding(14, 0, 6, 0);
+            button.Cursor = Cursors.Hand;
+        }
+
+        private void ShowPage(Control page)
+        {
+            startPage.Visible = page == startPage;
+            dashboardPage.Visible = page == dashboardPage;
+            aiPage.Visible = page == aiPage;
+            page.BringToFront();
+        }
+
+        private void LayoutPageSurfaces()
+        {
+            if (applyingDpiLayout) return;
+            int contentWidth = ScaleValue(logicalClientSize.Width, currentLayoutScale);
+            int contentHeight = ScaleValue(logicalClientSize.Height, currentLayoutScale);
+            Size surfaceSize = new Size(Math.Max(contentWidth, ClientSize.Width),
+                Math.Max(contentHeight, ClientSize.Height));
+            startPage.Size = surfaceSize;
+            dashboardPage.Size = surfaceSize;
+            aiPage.Size = surfaceSize;
+            if (arrangeDashboardCards != null) arrangeDashboardCards();
+        }
+
+        internal void ShowDashboardPage()
+        {
+            ShowPage(dashboardPage);
+            RefreshStatus();
+        }
+
+        internal void ShowStartPage()
+        {
+            ShowPage(startPage);
+        }
+
+        internal void ShowAiPage()
+        {
+            ShowPage(aiPage);
+            if (overlay != null) overlay.AttachChatTranslator(aiHost);
+        }
+
+        internal void ShowDashboardForTest()
+        {
+            ShowDashboardPage();
+        }
+
+        internal void ShowAiPageForTest()
+        {
+            ShowPage(aiPage);
+            if (aiHost.Controls.Count == 0)
+            {
+                OfflineChatForm testChat = new OfflineChatForm(null,
+                    AppDomain.CurrentDomain.BaseDirectory);
+                testChat.PrepareForEmbeddedHost();
+                aiHost.Controls.Add(testChat);
+                testChat.Show();
+            }
+        }
+
+        private bool LoadSnapPreference()
+        {
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu"))
+                    return Convert.ToInt32(key.GetValue("MainWindowSnapEnabled", 1),
+                        CultureInfo.InvariantCulture) != 0;
+            }
+            catch { return true; }
+        }
+
+        private void SetSnapEnabled(bool enabled)
+        {
+            snapEnabled = enabled;
+            snapModeButton.Text = enabled ? "吸附" : "自由";
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu"))
+                    key.SetValue("MainWindowSnapEnabled", enabled ? 1 : 0,
+                        RegistryValueKind.DWord);
+            }
+            catch { }
+            if (enabled)
+            {
+                if (WindowState != FormWindowState.Normal) WindowState = FormWindowState.Normal;
+                ApplySnapToGameWindow();
+            }
+        }
+
+        private void ApplySnapToGameWindow()
+        {
+            if (!snapEnabled || overlay == null || !Visible ||
+                WindowState != FormWindowState.Normal || applyingDpiLayout) return;
+            Rectangle game;
+            if (!overlay.TryGetMapleWindowBounds(out game) || game.Width < 160 || game.Height < 300)
+                return;
+            Rectangle work = Screen.FromRectangle(game).WorkingArea;
+            int targetHeight = Math.Min(game.Height, work.Height);
+            int targetWidth = Math.Max(MinimumSize.Width, Math.Min(536,
+                (int)Math.Round(targetHeight * 0.44f)));
+            targetWidth = Math.Min(targetWidth, work.Width);
+            int left;
+            if (game.Right + targetWidth <= work.Right) left = game.Right;
+            else if (game.Left - targetWidth >= work.Left) left = game.Left - targetWidth;
+            else left = Math.Max(work.Left, work.Right - targetWidth);
+            int top = Math.Max(work.Top, Math.Min(game.Top, work.Bottom - targetHeight));
+            Rectangle target = new Rectangle(left, top, targetWidth, targetHeight);
+            if (Bounds != target) Bounds = target;
         }
 
         protected override void WndProc(ref Message message)
@@ -771,6 +1579,23 @@ namespace MapleOverlay
                 : scalePercent + "% DPI layout: " + String.Join(" | ", problems.ToArray());
         }
 
+        internal string RunExpandedLayoutSelfTest()
+        {
+            foreach (Control child in dashboardPage.Controls)
+            {
+                if (!child.Text.StartsWith("AI 实时翻译", StringComparison.Ordinal)) continue;
+                int childCenter = child.Left + child.Width / 2;
+                int pageCenter = dashboardPage.ClientSize.Width / 2;
+                return Math.Abs(childCenter - pageCenter) <= 3
+                    ? "OK: expanded layout centered"
+                    : "Expanded layout is not centered: " + child.Bounds + " / " +
+                        dashboardPage.ClientSize;
+            }
+            return "Expanded layout AI card missing";
+        }
+
+        internal bool SnapEnabledForTest { get { return snapEnabled; } }
+
         internal void ApplyDpiTestScale(int scalePercent)
         {
             int dpi = (int)Math.Round(BaseDpi * Math.Max(1.0f, scalePercent / 100.0f));
@@ -785,6 +1610,7 @@ namespace MapleOverlay
             {
                 logicalBounds[child] = child.Bounds;
                 logicalPaddings[child] = child.Padding;
+                logicalAnchors[child] = child.Anchor;
                 CaptureLogicalLayout(child);
             }
         }
@@ -803,11 +1629,40 @@ namespace MapleOverlay
         {
             if (!dpiLayoutReady || applyingDpiLayout) return;
             applyingDpiLayout = true;
+            bool layoutSuspended = false;
+            bool completed = false;
             try
             {
                 float scale = Math.Max(1.0f, dpi / (float)BaseDpi);
+                currentLayoutScale = scale;
                 SuspendLayout();
+                layoutSuspended = true;
                 AutoScrollPosition = Point.Empty;
+                // Clear the previous DPI's virtual canvas before shrinking. Otherwise WinForms
+                // can collapse anchored page panels to 0x0 while the stale larger canvas exists.
+                AutoScrollMinSize = Size.Empty;
+
+                Size contentSize = new Size(ScaleValue(logicalClientSize.Width, scale),
+                    ScaleValue(logicalClientSize.Height, scale));
+                Size windowSize = contentSize;
+                if (constrainToScreen && IsHandleCreated)
+                {
+                    Rectangle work = Screen.FromControl(this).WorkingArea;
+                    int nonClientWidth = Math.Max(0, Width - ClientSize.Width);
+                    int nonClientHeight = Math.Max(0, Height - ClientSize.Height);
+                    int maximumWidth = Math.Max(320, work.Width - nonClientWidth - 16);
+                    int maximumHeight = Math.Max(260, work.Height - nonClientHeight - 16);
+                    windowSize.Width = Math.Min(contentSize.Width, maximumWidth);
+                    windowSize.Height = Math.Min(contentSize.Height, maximumHeight);
+                    if (windowSize.Height < contentSize.Height &&
+                        windowSize.Width + SystemInformation.VerticalScrollBarWidth <= maximumWidth)
+                        windowSize.Width += SystemInformation.VerticalScrollBarWidth;
+                }
+
+                // Anchors otherwise react to ClientSize and parent-bound changes after the
+                // controls have already been scaled, effectively applying part of the scale twice.
+                foreach (Control control in logicalBounds.Keys) control.Anchor = AnchorStyles.None;
+                ClientSize = windowSize;
                 foreach (KeyValuePair<Control, Rectangle> item in logicalBounds)
                 {
                     Rectangle logical = item.Value;
@@ -830,28 +1685,21 @@ namespace MapleOverlay
                     }
                 }
 
-                Size contentSize = new Size(ScaleValue(logicalClientSize.Width, scale),
-                    ScaleValue(logicalClientSize.Height, scale));
-                Size windowSize = contentSize;
-                if (constrainToScreen && IsHandleCreated)
-                {
-                    Rectangle work = Screen.FromControl(this).WorkingArea;
-                    int nonClientWidth = Math.Max(0, Width - ClientSize.Width);
-                    int nonClientHeight = Math.Max(0, Height - ClientSize.Height);
-                    int maximumWidth = Math.Max(320, work.Width - nonClientWidth - 16);
-                    int maximumHeight = Math.Max(260, work.Height - nonClientHeight - 16);
-                    windowSize.Width = Math.Min(contentSize.Width, maximumWidth);
-                    windowSize.Height = Math.Min(contentSize.Height, maximumHeight);
-                    if (windowSize.Height < contentSize.Height &&
-                        windowSize.Width + SystemInformation.VerticalScrollBarWidth <= maximumWidth)
-                        windowSize.Width += SystemInformation.VerticalScrollBarWidth;
-                }
-                ClientSize = windowSize;
                 AutoScrollMinSize = contentSize;
-                ResumeLayout(true);
+                completed = true;
+            }
+            finally
+            {
+                foreach (KeyValuePair<Control, AnchorStyles> item in logicalAnchors)
+                    if (!item.Key.IsDisposed) item.Key.Anchor = item.Value;
+                if (layoutSuspended) ResumeLayout(true);
+                applyingDpiLayout = false;
+            }
+            if (completed)
+            {
+                LayoutPageSurfaces();
                 KeepInsideCurrentScreen();
             }
-            finally { applyingDpiLayout = false; }
         }
 
         private void KeepInsideCurrentScreen()
@@ -877,10 +1725,12 @@ namespace MapleOverlay
                     child.Right > parent.ClientSize.Width + 2 ||
                     child.Bottom > parent.ClientSize.Height + 2)
                 {
-                    problems.Add(child.GetType().Name + "越界(" + child.Text + ")");
+                    problems.Add(child.GetType().Name + "越界(" + child.Text + ") " +
+                        child.Bounds + " / parent " + parent.ClientSize);
                 }
                 Label label = child as Label;
-                if (label != null && !label.AutoSize && label.Text.Length > 0)
+                if (label != null && !label.AutoSize && !label.AutoEllipsis &&
+                    label.Text.Length > 0)
                 {
                     Size measured = TextRenderer.MeasureText(label.Text, label.Font,
                         new Size(Math.Max(1, label.Width), Int32.MaxValue),
@@ -895,11 +1745,12 @@ namespace MapleOverlay
 
         private static Button MakeButton(string text, Point location, Size size, bool primary)
         {
-            Button button = new Button {
+            BlueGlassButton button = new BlueGlassButton {
                 Text = text, Location = location, Size = size, FlatStyle = FlatStyle.Flat,
                 Cursor = Cursors.Hand, Font = new Font("Microsoft YaHei UI", 10.0f, FontStyle.Bold),
-                BackColor = primary ? Color.FromArgb(37, 99, 235) : Color.White,
-                ForeColor = primary ? Color.White : Color.FromArgb(31, 41, 55)
+                BackColor = primary ? Color.FromArgb(42, 103, 238) : Color.FromArgb(244, 248, 255),
+                ForeColor = primary ? Color.White : Color.FromArgb(30, 48, 78),
+                PrimaryCard = primary
             };
             button.FlatAppearance.BorderColor = primary ? Color.FromArgb(37, 99, 235) : Color.FromArgb(209, 213, 219);
             return button;
@@ -912,7 +1763,7 @@ namespace MapleOverlay
             string showKey = overlay == null ? "F8" : overlay.ShowHotkeyDescription;
             string hideKey = overlay == null ? "F9" : overlay.HideHotkeyDescription;
             string floatingKey = overlay == null ? "F10" : overlay.FloatingWindowHotkeyDescription;
-            status.Text = "已就绪 · 词库 " + dictionaryCount + " 条 · 任务文本 " + taskCount + " 条";
+            status.Text = "已就绪 · 词库 " + dictionaryCount + " · 任务 " + taskCount;
             string gamepadShow = overlay == null ? "未绑定" : overlay.ShowGamepadShortcutDescription;
             string gamepadHide = overlay == null ? "未绑定" : overlay.HideGamepadShortcutDescription;
             hotkeys.Text = "键盘 " + showKey + " 翻译 / " + hideKey + " 对齐 / " +
@@ -922,8 +1773,12 @@ namespace MapleOverlay
                 hotkeys.Text = overlay.HotkeyRegistrationStatus;
             if (overlay != null && range.Value != (int)overlay.TranslationRangeMode)
                 range.Value = (int)overlay.TranslationRangeMode;
-            if (overlay != null && continuousTranslation.Checked != overlay.ContinuousTranslationEnabled)
-                continuousTranslation.Checked = overlay.ContinuousTranslationEnabled;
+            bool continuous = overlay != null && overlay.ContinuousTranslationEnabled;
+            continuousCard.Text = "持续翻译\r\n" + (continuous ? "已开启" : "默认关闭");
+            continuousCard.BackColor = continuous ? Color.FromArgb(218, 233, 255) : Color.FromArgb(244, 248, 255);
+            bool floating = overlay != null && overlay.AiChatFloatingWindowEnabled;
+            floatingCard.Text = "悬浮窗\r\n" + (floating ? "已开启" : "默认关闭");
+            floatingCard.BackColor = floating ? Color.FromArgb(218, 233, 255) : Color.FromArgb(244, 248, 255);
             RefreshRangeText();
         }
 
@@ -931,6 +1786,16 @@ namespace MapleOverlay
         {
             rangeValue.Text = range.Value == 1 ? "翻译更多" :
                 (range.Value == 2 ? "日常推荐" : "只翻重点");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                snapTimer.Stop();
+                snapTimer.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 

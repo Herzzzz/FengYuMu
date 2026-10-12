@@ -1,9 +1,10 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 
 & (Join-Path $PSScriptRoot 'logic-regression-v2.1.1.ps1')
 
-$assembly = [Reflection.Assembly]::LoadFile((Join-Path $repoRoot '枫语幕.exe'))
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly (Join-Path $repoRoot '枫语幕.exe')
 $storeType = $assembly.GetType('MapleOverlay.TranslationStore', $true)
 $storeCtor = $storeType.GetConstructor(
     [Reflection.BindingFlags]'Instance,NonPublic,Public', $null,
@@ -60,7 +61,8 @@ foreach ($forbidden in @('D:\TEMP\codex-clipboard','ReadProcessMemory','WritePro
     'CreateRemoteThread','VirtualAllocEx','SetWindowsHookEx','SendInput')) {
     if ($recognitionSource.Contains($forbidden)) { throw "源码包含禁止能力或样本硬编码：$forbidden" }
 }
-if (-not ($source.Contains('枫语幕 v2.') -or $source.Contains('枫语幕 v3.'))) {
+if (-not ($source.Contains('枫语幕 v2.') -or $source.Contains('枫语幕 v3.') -or
+    $source.Contains('枫语幕 v4.'))) {
     throw '程序没有有效版本号'
 }
 

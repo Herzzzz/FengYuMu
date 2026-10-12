@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $assemblyPath = Join-Path $repoRoot '枫语幕.exe'
@@ -8,7 +8,8 @@ if (-not (Test-Path -LiteralPath $dictionaryPath)) { throw "找不到词库：$d
 
 # This is a dictionary-only regression test. It intentionally loads the existing EXE
 # and never builds or edits src, so it does not disturb another agent's source changes.
-$assembly = [Reflection.Assembly]::LoadFile($assemblyPath)
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly $assemblyPath
 $flags = [Reflection.BindingFlags]'Instance,NonPublic,Public'
 $storeType = $assembly.GetType('MapleOverlay.TranslationStore', $true)
 $storeCtor = $storeType.GetConstructor($flags, $null, [Type[]]@([string]), $null)

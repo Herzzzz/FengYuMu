@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$BaselineRoot = 'D:\GPT\文件\枫语幕',
     [string]$CandidateRoot = (Split-Path -Parent $PSScriptRoot),
     [string]$PublicRoot = 'D:\GPT\Codex\projects\2026-09-02\fengyumu-decky\tests\fixtures\public',
@@ -36,7 +36,8 @@ foreach ($variant in $variants) {
         $arguments = @('--benchmark', "--benchmark-image=$image")
         if ($variant.Range) { $arguments += "--benchmark-range=$($variant.Range)" }
         if ($case.Cursor) { $arguments += "--benchmark-cursor=$($case.Cursor)" }
-        Start-Process -FilePath $exe -ArgumentList $arguments -WorkingDirectory $variant.Root -Wait
+if (-not (Get-Command Start-ProductExe -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Start-ProductExe.ps1') }
+        Start-ProductExe -FilePath $exe -ArgumentList $arguments -WorkingDirectory $variant.Root -Wait
         $result = Get-Content (Join-Path $variant.Root 'last_run.txt') -Raw -Encoding UTF8
         $correct = @($case.Expected | Where-Object { $result.Contains($_) }).Count
         $wrong = @($case.Wrong | Where-Object { $result.Contains($_) }).Count

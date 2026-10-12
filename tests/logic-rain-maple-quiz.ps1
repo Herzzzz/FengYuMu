@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $dictionary = Get-Content (Join-Path $repoRoot '枫语幕词库.tsv') -Encoding UTF8
 
@@ -74,7 +74,8 @@ foreach ($entry in $quizQuestions) {
 }
 
 $assemblyPath = Join-Path $repoRoot '枫语幕.exe'
-$assembly = [Reflection.Assembly]::LoadFile($assemblyPath)
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly $assemblyPath
 $flags = [Reflection.BindingFlags]'Instance,NonPublic,Public'
 $storeType = $assembly.GetType('MapleOverlay.TranslationStore', $true)
 $ctor = $storeType.GetConstructor($flags, $null, [Type[]]@([string]), $null)

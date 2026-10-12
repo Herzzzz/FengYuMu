@@ -1,10 +1,11 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $exe = Join-Path $repoRoot '枫语幕.exe'
 $image = Join-Path $repoRoot 'tests\fixtures\character-info-pet-item-list-20260909.png'
 if (-not (Test-Path -LiteralPath $image)) { throw "缺少用户角色/宠物信息问题图：$image" }
 
-$process = Start-Process -FilePath $exe -ArgumentList @('--benchmark',
+if (-not (Get-Command Start-ProductExe -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Start-ProductExe.ps1') }
+$process = Start-ProductExe -FilePath $exe -ArgumentList @('--benchmark',
     "--benchmark-image=$image", '--benchmark-range=maximum', '--benchmark-cursor=621,205') `
     -WorkingDirectory $repoRoot -Wait -PassThru
 if ($process.ExitCode -ne 0) { throw "角色/宠物信息问题图执行失败：$($process.ExitCode)" }

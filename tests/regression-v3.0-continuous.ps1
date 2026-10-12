@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$PublicRoot = (Join-Path $PSScriptRoot 'fixtures\public-v3')
 )
 
@@ -20,7 +20,8 @@ $results = @()
 foreach ($case in $cases) {
     $image = Join-Path $PublicRoot $case.File
     if (-not (Test-Path -LiteralPath $image)) { throw "缺少公开样本：$image" }
-    Start-Process -FilePath $exe -ArgumentList @('--benchmark','--benchmark-scene-probe',
+if (-not (Get-Command Start-ProductExe -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Start-ProductExe.ps1') }
+    Start-ProductExe -FilePath $exe -ArgumentList @('--benchmark','--benchmark-scene-probe',
         '--benchmark-range=balanced', "--benchmark-image=$image") -WorkingDirectory $repoRoot -Wait
     $result = Get-Content (Join-Path $repoRoot 'last_run.txt') -Raw -Encoding UTF8
     if ($result.StartsWith('错误=')) { throw "$($case.Name) 自动探测失败：$result" }
@@ -35,7 +36,7 @@ foreach ($case in $cases) {
     $results += [pscustomobject]@{ 场景=$case.Name; 探测毫秒=$probe; 总响应毫秒=$elapsed; 结果='通过' }
 }
 
-Start-Process -FilePath $exe -ArgumentList @('--benchmark','--benchmark-scene-probe') `
+Start-ProductExe -FilePath $exe -ArgumentList @('--benchmark','--benchmark-scene-probe') `
     -WorkingDirectory $repoRoot -Wait
 $idle = Get-Content (Join-Path $repoRoot 'last_run.txt') -Raw -Encoding UTF8
 $idleElapsed = [int]([regex]::Match($idle, '耗时毫秒=(\d+)').Groups[1].Value)

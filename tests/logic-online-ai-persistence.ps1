@@ -1,9 +1,10 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $exe = Join-Path $repoRoot '枫语幕.exe'
 if (-not (Test-Path -LiteralPath $exe)) { throw "找不到程序集：$exe" }
 
-$assembly = [Reflection.Assembly]::LoadFile($exe)
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly $exe
 $all = [Reflection.BindingFlags]'Static,Instance,NonPublic,Public'
 $settingsType = $assembly.GetType('MapleOverlay.OnlineAiSettings', $true)
 if ($null -eq $settingsType) { throw '找不到 OnlineAiSettings' }

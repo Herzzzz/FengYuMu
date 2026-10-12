@@ -1,8 +1,9 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Drawing
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $exe = Join-Path $repoRoot '枫语幕.exe'
-$assembly = [Reflection.Assembly]::LoadFile($exe)
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly $exe
 $chatType = $assembly.GetType('MapleOverlay.OfflineChatForm', $true)
 $flags = [Reflection.BindingFlags]'Static,NonPublic,Public'
 $parse = $chatType.GetMethod('ParseChatLines', $flags)
@@ -46,6 +47,29 @@ if ($flattened.Count -ne 2 -or $flattened[0] -notlike 'Chadson:*' -or
     $flattened[1] -notlike 'TugaStyle:*') {
     throw "同一OCR行里的两个带频道聊天没有拆开：$($flattened -join ' | ')"
 }
+$lowResolutionWrap = @(Invoke-Parse "Obliterate CH02: selective`ncoupons 6: 9k each")
+if ($lowResolutionWrap.Count -ne 1 -or
+    $lowResolutionWrap[0] -ne 'Obliterate: selective coupons 6: 9k each') {
+    throw "低分辨率续行被误当成新玩家：$($lowResolutionWrap -join ' | ')"
+}
+$damagedWrap = @(Invoke-Parse "Obliterate CH02: selective`nons: 9k each")
+if ($damagedWrap.Count -ne 1 -or $damagedWrap[0] -ne 'Obliterate: selective ons: 9k each') {
+    throw "续行首词被OCR截断后仍误当成新玩家：$($damagedWrap -join ' | ')"
+}
+$flattenedWrap = @(Invoke-Parse 'Obliterate CH02: selective coupons 6: 9k each')
+if ($flattenedWrap.Count -ne 1 -or
+    $flattenedWrap[0] -ne 'Obliterate: selective coupons 6: 9k each') {
+    throw "同一OCR行里的续行词被误当成第二位玩家：$($flattenedWrap -join ' | ')"
+}
+$flattenedDamagedWrap = @(Invoke-Parse 'Obliterate CH02: selective cou ons 6: 9k each')
+if ($flattenedDamagedWrap.Count -ne 1 -or
+    $flattenedDamagedWrap[0] -ne 'Obliterate: selective cou ons 6: 9k each') {
+    throw "同一OCR行的残缺续行词被误拆：$($flattenedDamagedWrap -join ' | ')"
+}
+$letterBadge = @(Invoke-Parse 'RawrbY Di: S>2h Axe 60%, PM offer')
+if ($letterBadge.Count -ne 1 -or $letterBadge[0] -notlike 'RawrbY:*') {
+    throw "频道徽标被OCR成字母后没有保住玩家边界：$($letterBadge -join ' | ')"
+}
 
 $detectLanguage = $chatType.GetMethod('DetectChatSourceLanguage', $flags)
 if ([string]$detectLanguage.Invoke($null, @('first it was the JR wraiths')) -ne '英语' -or
@@ -75,7 +99,11 @@ $normalizeOcr = $chatType.GetMethod('NormalizeCommonChatOcr', $flags)
 foreach ($case in @(
     @{ Source='ima go chec* now'; Target="I'm going to check now" },
     @{ Source='S>60Ö/0 Ear LI-JK, 100/0 OA STR'; Target='S>60% Ear LUK, 10% OA STR' },
-    @{ Source='S>600/0 Ear LUKS, 100/0 OA STR'; Target='S>60% Ear LUK, 10% OA STR' })) {
+    @{ Source='S>600/0 Ear LUKS, 100/0 OA STR'; Target='S>60% Ear LUK, 10% OA STR' },
+    @{ Source='8>Random Hair Cupom and one Scrol'; Target='B>Random Hair coupon and one scroll' },
+    @{ Source='S>BROWN JESTER PWOFFER'; Target='S>BROWN JESTER PM OFFER' },
+    @{ Source='S>Bunny Éars, randorn nx, matkæ'; Target='S>Bunny Ears, random nx, matk' },
+    @{ Source='S> S ear attk 60 - E anded Auto Move'; Target='S> Spear attk 60 - Expanded Auto Move' })) {
     $actual = [string]$normalizeOcr.Invoke($null, @($case.Source))
     if ($actual -ne $case.Target) { throw "聊天OCR通用纠错失败：$($case.Source) => $actual" }
 }
@@ -126,6 +154,34 @@ if (-not [bool]$sameSource.Invoke($null, @('tor: ima go chec* now', 'tor: Ima go
 }
 $partialNotice = @(Invoke-Parse "[Notice] Money lost")
 if ($partialNotice.Count -ne 0) { throw "残缺系统公告不应送入AI：$($partialNotice -join ' | ')" }
+$commaPresence = @(Invoke-Parse '[Friend] Arrowshot has logged in,')
+if ($commaPresence.Count -ne 1 -or $commaPresence[0] -ne 'Arrowshot: [Friend] has logged in.') {
+    throw "好友上线句末逗号没有按系统句解析：$($commaPresence -join ' | ')"
+}
+$damagedChannelBadge = @(Invoke-Parse 'BeelsFad«HÖl 0 : T> Int Bamboo Hat for Dex Bamboo Hat')
+if ($damagedChannelBadge.Count -ne 1 -or $damagedChannelBadge[0] -notlike 'BeelsFad:*') {
+    throw "低清频道徽标损坏后没有保住玩家名：$($damagedChannelBadge -join ' | ')"
+}
+$apostropheBadgeRows = @(Invoke-Parse "bumbaloe : S> Archer Glove, 5k`nRawrby O': S>2h Axe 60%, PM offer")
+if ($apostropheBadgeRows.Count -ne 2 -or $apostropheBadgeRows[1] -notlike 'Rawrby:*') {
+    throw "频道徽标被识成O'后相邻两条消息被合并：$($apostropheBadgeRows -join ' | ')"
+}
+$strongBadgeRows = @(Invoke-Parse "Obliterate cwoa: B> Selective coupons`nMookie cwo : online now`nUwugi c11: B>STR scrolls`nBattleScars cHo6 [Ink Ring] T> offer")
+if ($strongBadgeRows.Count -ne 4 -or $strongBadgeRows[0] -notlike 'Obliterate:*' -or
+    $strongBadgeRows[1] -notlike 'Mookie:*' -or $strongBadgeRows[2] -notlike 'Uwugi:*' -or
+    $strongBadgeRows[3] -notlike 'BattleScars:*') {
+    throw "增强OCR频道徽标变体未逐条拆开：$($strongBadgeRows -join ' | ')"
+}
+$damagedLetterBadgeRows = @(Invoke-Parse "itskbb cis : S> bow scroll`nGo6go7 cm1s : B> Stolen Fence")
+if ($damagedLetterBadgeRows.Count -ne 2 -or $damagedLetterBadgeRows[0] -notlike 'itskbb:*' -or
+    $damagedLetterBadgeRows[1] -notlike 'Go6go7:*') {
+    throw "频道徽标被识成cis/cm1s后没有保住两条玩家消息"
+}
+$sameSpeakerOcr = $chatType.GetMethod('IsSameChatSpeakerOcr', $flags)
+if (-not [bool]$sameSpeakerOcr.Invoke($null, @('DarkMa', 'DarkMage')) -or
+    [bool]$sameSpeakerOcr.Invoke($null, @('DarkMa', 'Warpath'))) {
+    throw '增强OCR玩家名保守同一性判断边界错误'
+}
 
 $styleType = $assembly.GetType('MapleOverlay.ChatVisualStylePolicy', $true)
 $fromSample = $styleType.GetMethod('FromSample', $flags)
@@ -158,7 +214,8 @@ $fixtures = @(
 foreach ($fixture in $fixtures) {
     $image = Join-Path $repoRoot (Join-Path 'tests\fixtures' $fixture.File)
     if (-not (Test-Path -LiteralPath $image)) { throw "缺少AI聊天实图：$image" }
-    Start-Process -FilePath $exe -ArgumentList "--chat-style-benchmark=$image" `
+if (-not (Get-Command Start-ProductExe -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Start-ProductExe.ps1') }
+    Start-ProductExe -FilePath $exe -ArgumentList "--chat-style-benchmark=$image" `
         -WorkingDirectory $repoRoot -Wait
     $report = Get-Content (Join-Path $repoRoot 'chat_style_benchmark.txt') -Raw -Encoding UTF8
     if ($report -notmatch $fixture.Required) { throw "$($fixture.Name) 实图未识别关键聊天行：$report" }
@@ -212,7 +269,7 @@ $sweepParsedFrames = 0
 $sweepParsedLines = 0
 $sweepResults = @{}
 foreach ($image in $sweepImages) {
-    Start-Process -FilePath $exe -ArgumentList "--chat-style-benchmark=$($image.FullName)" `
+    Start-ProductExe -FilePath $exe -ArgumentList "--chat-style-benchmark=$($image.FullName)" `
         -WorkingDirectory $repoRoot -Wait
     $report = Get-Content (Join-Path $repoRoot 'chat_style_benchmark.txt') -Encoding UTF8
     $parsedLines = @($report | Where-Object { $_ -like 'PARSED | *' })
@@ -228,6 +285,10 @@ foreach ($image in $sweepImages) {
 }
 if ($sweepParsedFrames -lt 15 -or $sweepParsedLines -lt 30) {
     throw "AI聊天广覆盖识别量异常：帧=$sweepParsedFrames 行=$sweepParsedLines"
+}
+if (-not @($sweepResults['qq-180.0'] | Where-Object { $_ -like 'Kena:*' }).Count -or
+    -not @($sweepResults['qq-220.0'] | Where-Object { $_ -like 'XxAzNKiDxX:*' }).Count) {
+    throw '连续视频帧没有识别后来真实出现的Kena或XxAzNKiDxX消息'
 }
 
 $getNew = $chatType.GetMethod('GetNewChatLines', $flags)
@@ -247,8 +308,8 @@ foreach ($stamp in @('140.0','150.0','160.0','170.0','180.0','190.0','200.0','21
     while ($recent.Count -gt 3) { $recent.RemoveAt(0) }
     $previous = $current
 }
-if ($sequenceAdded -ne 5) {
-    throw "连续视频帧防重复失效：11帧应产生5条真正新增，实际$sequenceAdded条"
+if ($sequenceAdded -ne 7) {
+    throw "连续视频帧防重复失效：11帧应产生7条真正新增，实际${sequenceAdded}条"
 }
 
 $repeatPrevious = [Collections.Generic.List[string]]::new()

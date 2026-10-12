@@ -1,4 +1,4 @@
-param(
+﻿param(
     [Parameter(Mandatory=$true)][string]$SkillImage,
     [Parameter(Mandatory=$true)][string]$ItemImage,
     [Parameter(Mandatory=$true)][string]$ShopImage,
@@ -12,7 +12,8 @@ $exe = Join-Path $repoRoot '枫语幕.exe'
 function Test-Panel([string]$name, [string]$image, [string]$cursor,
     [string[]]$expected, [int]$budgetMs) {
     if (-not (Test-Path -LiteralPath $image)) { throw "缺少测试图片：$image" }
-    Start-Process -FilePath $exe -ArgumentList @('--benchmark',
+if (-not (Get-Command Start-ProductExe -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Start-ProductExe.ps1') }
+    Start-ProductExe -FilePath $exe -ArgumentList @('--benchmark',
         "--benchmark-image=$image", "--benchmark-cursor=$cursor") `
         -WorkingDirectory $repoRoot -Wait
     $result = Get-Content (Join-Path $repoRoot 'last_run.txt') -Raw -Encoding UTF8

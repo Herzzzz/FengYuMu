@@ -1,4 +1,4 @@
-param([string]$ExePath = '')
+﻿param([string]$ExePath = '')
 
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
@@ -6,7 +6,8 @@ $exe = if ([string]::IsNullOrWhiteSpace($ExePath)) { Join-Path $root '枫语幕.
 $source = Get-Content -LiteralPath (Join-Path $root 'src\MapleOverlay.cs') -Raw -Encoding UTF8
 $forms = Get-Content -LiteralPath (Join-Path $root 'src\SimpleForms.cs') -Raw -Encoding UTF8
 
-$process = Start-Process -FilePath $exe -ArgumentList '--gamepad-self-test' `
+if (-not (Get-Command Start-ProductExe -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Start-ProductExe.ps1') }
+$process = Start-ProductExe -FilePath $exe -ArgumentList '--gamepad-self-test' `
     -PassThru -Wait -WindowStyle Hidden
 if ($process.ExitCode -ne 0) {
     throw "手柄单键、双键、防连发或冲突自检失败，退出码 $($process.ExitCode)"

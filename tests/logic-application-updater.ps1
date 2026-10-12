@@ -3,7 +3,8 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 $exe = if ($env:FENGYUMU_TEST_EXE) { $env:FENGYUMU_TEST_EXE } else {
     Join-Path $repoRoot '枫语幕.exe'
 }
-$assembly = [Reflection.Assembly]::LoadFile($exe)
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly $exe
 $all = [Reflection.BindingFlags]'Static,Instance,NonPublic,Public'
 $updater = $assembly.GetType('MapleOverlay.ApplicationUpdater', $true)
 $manifestType = $assembly.GetType('MapleOverlay.ApplicationUpdateManifest', $true)
@@ -51,7 +52,13 @@ Add-Type -AssemblyName System.Web.Extensions
 $serializer = [Web.Script.Serialization.JavaScriptSerializer]::new()
 $manifestPath = Join-Path (Split-Path -Parent $stage) 'update-manifest.json'
 [IO.File]::WriteAllText($manifestPath, $serializer.Serialize($manifest), [Text.UTF8Encoding]::new($false))
+# The update flow finishes by starting the freshly installed program. In this sandbox those
+# files are text placeholders, so starting them would raise the Windows "unknown publisher"
+# prompt on the user's desktop mid-game. AutomationPolicy makes that one step a no-op while
+# every real assertion below (verify, back up, replace, roll back) still runs for real.
+$env:FENGYUMU_AUTOMATION = '1'
 $result = [int]$applyMethod.Invoke($null, [object[]]@([string]$manifestPath))
+Remove-Item Env:\FENGYUMU_AUTOMATION -ErrorAction SilentlyContinue
 if ($result -ne 0) { throw "沙盒更新执行失败，退出码 $result" }
 foreach ($name in $files) {
     if ([IO.File]::ReadAllText((Join-Path $install $name)) -ne "new-$name") {

@@ -1,4 +1,8 @@
 bin/
+obj/
+# 本地强 OCR 的可分发暂存目录由构建脚本生成，不提交二进制模型。
+/StrongOcr/
+/运行临时/
 *.log
 last_run.txt
 last_run*.txt

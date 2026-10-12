@@ -1,6 +1,9 @@
 param(
-    [string]$ExpectedVersion = '2.2.2.0',
-    [string]$ExpectedDisplayVersion = 'v2.2.2'
+    # Explicit current expectation, deliberately NOT derived from the assembly under test: a
+    # version check that reads its own expectation from the artefact can never fail. Release-time
+    # callers (regression-v3.0.ps1) may still pin a different release explicitly.
+    [string]$ExpectedVersion = '4.0.0.0',
+    [string]$ExpectedDisplayVersion = 'v4.0 测试版'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -9,7 +12,8 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 # v2.1.2 is the frozen accuracy baseline. Every v2.2 run must pass it first.
 & (Join-Path $PSScriptRoot 'logic-regression-v2.1.2.ps1')
 
-$assembly = [Reflection.Assembly]::LoadFile((Join-Path $repoRoot '枫语幕.exe'))
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly (Join-Path $repoRoot '枫语幕.exe')
 $storeType = $assembly.GetType('MapleOverlay.TranslationStore', $true)
 $ctor = $storeType.GetConstructor(
     [Reflection.BindingFlags]'Instance,NonPublic,Public', $null,
@@ -82,4 +86,4 @@ foreach ($iconAsset in @('src\MapleLeafIcon.png', 'src\FengYuMu.ico')) {
     }
 }
 
-Write-Output "$ExpectedDisplayVersion 冻结基线：装备/物品/技能/任务/角色/长短句/动态数字/同名词条/聊天排除逻辑通过"
+Write-Output "$ExpectedDisplayVersion 版本一致性 + v2.2 行为冻结基线：装备/物品/技能/任务/角色/长短句/动态数字/同名词条/聊天排除逻辑通过"

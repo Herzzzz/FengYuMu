@@ -1,4 +1,4 @@
-param(
+﻿param(
     [Parameter(Mandatory=$true)][string]$EquipmentImage,
     [Parameter(Mandatory=$true)][string]$SkillImage,
     [Parameter(Mandatory=$true)][string]$QuestImage
@@ -10,7 +10,8 @@ $exe = Join-Path $repoRoot '枫语幕.exe'
 
 function Test-Screenshot([string]$name, [string]$image, [string[]]$expected) {
     if (-not (Test-Path -LiteralPath $image)) { throw "缺少测试图片：$image" }
-    Start-Process -FilePath $exe -ArgumentList @('--benchmark', "--benchmark-image=$image") `
+if (-not (Get-Command Start-ProductExe -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Start-ProductExe.ps1') }
+    Start-ProductExe -FilePath $exe -ArgumentList @('--benchmark', "--benchmark-image=$image") `
         -WorkingDirectory $repoRoot -Wait
     $resultPath = Join-Path $repoRoot 'last_run.txt'
     $result = Get-Content -LiteralPath $resultPath -Raw -Encoding UTF8

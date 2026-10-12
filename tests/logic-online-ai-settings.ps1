@@ -1,7 +1,8 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $exe = Join-Path $repoRoot '枫语幕.exe'
-$assembly = [Reflection.Assembly]::LoadFile($exe)
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly $exe
 $all = [Reflection.BindingFlags]'Static,Instance,NonPublic,Public'
 
 $settingsType = $assembly.GetType('MapleOverlay.OnlineAiSettings', $true)
@@ -118,7 +119,8 @@ if (-not $overlaySource.Contains('重新显示AI翻译悬浮窗') -or
 $uiError = Join-Path $repoRoot 'online_ai_ui_test_error.txt'
 $uiImage = Join-Path $repoRoot 'online_ai_ui_test.png'
 Remove-Item -LiteralPath $uiError -Force -ErrorAction SilentlyContinue
-Start-Process -FilePath $exe -ArgumentList '--online-ai-ui-test' `
+if (-not (Get-Command Start-ProductExe -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Start-ProductExe.ps1') }
+Start-ProductExe -FilePath $exe -ArgumentList '--online-ai-ui-test' `
     -WorkingDirectory $repoRoot -WindowStyle Hidden -Wait
 if (Test-Path -LiteralPath $uiError) {
     throw "联网AI设置界面渲染失败：$(Get-Content $uiError -Raw -Encoding UTF8)"

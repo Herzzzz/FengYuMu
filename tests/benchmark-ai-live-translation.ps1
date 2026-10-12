@@ -1,11 +1,12 @@
-param(
+﻿param(
     [Parameter(Mandatory=$true)][string]$ModelRoot,
     [int]$MaximumHotMilliseconds = 5000
 )
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
-$assembly = [Reflection.Assembly]::LoadFile((Join-Path $repoRoot '枫语幕.exe'))
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly (Join-Path $repoRoot '枫语幕.exe')
 $flags = [Reflection.BindingFlags]'Instance,NonPublic,Public'
 $clientType = $assembly.GetType('MapleOverlay.OfflineAiClient', $true)
 $chatType = $assembly.GetType('MapleOverlay.OfflineChatForm', $true)

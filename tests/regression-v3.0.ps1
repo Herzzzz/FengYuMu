@@ -1,4 +1,4 @@
-param(
+﻿param(
     [Parameter(Mandatory=$true)][string]$EquipmentImage,
     [Parameter(Mandatory=$true)][string]$RushImage,
     [Parameter(Mandatory=$true)][string]$QuestImage,
@@ -12,7 +12,7 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 $exe = Join-Path $repoRoot '枫语幕.exe'
 
 & (Join-Path $PSScriptRoot 'logic-regression-v2.2.ps1') `
-    -ExpectedVersion '3.2.4.0' -ExpectedDisplayVersion 'v3.2.4'
+    -ExpectedVersion '4.0.0.0' -ExpectedDisplayVersion 'v4.0 测试版'
 & (Join-Path $PSScriptRoot 'logic-priority-modes.ps1')
 & (Join-Path $PSScriptRoot 'logic-panel-context-isolation.ps1')
 & (Join-Path $PSScriptRoot 'logic-skill-detail-semantics.ps1')
@@ -31,7 +31,7 @@ $exe = Join-Path $repoRoot '枫语幕.exe'
 & (Join-Path $PSScriptRoot 'logic-overlay-paint-safety.ps1')
 & (Join-Path $PSScriptRoot 'logic-chat-region-first-use.ps1')
 & (Join-Path $PSScriptRoot 'logic-regression-chat-abbreviations.ps1') `
-    -ExpectedVersion '3.2.4.0' -ExpectedDisplayVersion 'v3.2.4'
+    -ExpectedVersion '4.0.0.0' -ExpectedDisplayVersion 'v4.0 测试版'
 & (Join-Path $PSScriptRoot 'logic-glossary-hot-reload.ps1')
 & (Join-Path $PSScriptRoot 'logic-regression-v2.2.2-updater.ps1')
 & (Join-Path $PSScriptRoot 'logic-application-updater.ps1')
@@ -52,7 +52,8 @@ $exe = Join-Path $repoRoot '枫语幕.exe'
 
 $mainUiError = Join-Path $repoRoot 'main_ui_test_error.txt'
 Remove-Item -LiteralPath $mainUiError -Force -ErrorAction SilentlyContinue
-Start-Process -FilePath $exe -ArgumentList '--main-ui-test' -WorkingDirectory $repoRoot -Wait
+if (-not (Get-Command Start-ProductExe -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Start-ProductExe.ps1') }
+Start-ProductExe -FilePath $exe -ArgumentList '--main-ui-test' -WorkingDirectory $repoRoot -Wait
 if (Test-Path -LiteralPath $mainUiError) {
     throw "主界面渲染自检异常：$(Get-Content $mainUiError -Raw -Encoding UTF8)"
 }
@@ -60,16 +61,16 @@ $mainUi = Join-Path $repoRoot 'main_ui_test.png'
 if (-not (Test-Path -LiteralPath $mainUi) -or (Get-Item -LiteralPath $mainUi).Length -lt 20000) {
     throw '主界面高 DPI 渲染自检失败'
 }
-Start-Process -FilePath $exe -ArgumentList '--dictionary-ui-test' -WorkingDirectory $repoRoot -Wait
+Start-ProductExe -FilePath $exe -ArgumentList '--dictionary-ui-test' -WorkingDirectory $repoRoot -Wait
 $dictionaryUi = Get-Content (Join-Path $repoRoot 'dictionary_ui_test.txt') -Raw -Encoding UTF8
 foreach ($required in @('界面','地图/NPC','职业技能','详情说明','图标/其他')) {
     if (-not $dictionaryUi.Contains($required)) { throw "词库界面分类缺少：$required" }
 }
-Start-Process -FilePath $exe -ArgumentList '--hotkey-ui-test' -WorkingDirectory $repoRoot -Wait
+Start-ProductExe -FilePath $exe -ArgumentList '--hotkey-ui-test' -WorkingDirectory $repoRoot -Wait
 $hotkeyUi = Join-Path $repoRoot 'hotkey_ui_test.png'
 if (-not (Test-Path -LiteralPath $hotkeyUi) -or (Get-Item -LiteralPath $hotkeyUi).Length -lt 10000) {
     throw '快捷键界面渲染自检失败'
 }
 & (Join-Path $PSScriptRoot 'tray-recovery-integration.ps1')
 
-Write-Output 'v3.2.4 全量回归通过：旧逻辑/旧五图、公开实机图、持续模式、视频词库、设置/NPC、资源、A/B、界面、手柄、托盘与单实例'
+Write-Output 'v4.0 测试版全量回归通过：旧逻辑/旧五图、公开实机图、持续模式、视频词库、设置/NPC、资源、A/B、界面、手柄、托盘与单实例'

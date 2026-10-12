@@ -1,8 +1,9 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $exe = Join-Path $repoRoot '枫语幕.exe'
 Add-Type -AssemblyName System.Drawing
-$assembly = [Reflection.Assembly]::LoadFile($exe)
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly $exe
 
 $settings = $assembly.GetType('MapleOverlay.ChatRegionSettings', $true)
 $defaultMethod = $settings.GetMethod('DefaultForGame',
@@ -53,17 +54,24 @@ foreach ($required in @(
     'else if (id == HOTKEY_HIDE) { Task ignored = AutoAlignChatRegionFromHotkeyAsync(); }',
     'else if (id == HOTKEY_FLOATING_WINDOW) { RestoreAiChatFloatingWindowFromHotkey(); }',
     'ShowTranslationAsync(false, requestId)',
-    'RecognitionWasCancelled(automatic, requestId)',
+    'RecognitionWasCancelled(automatic, requestId, generation)',
     'ChatRegionSettings.ResaveForGame(resolved, gameBounds)',
     'Rectangle chatExclusion = GetChatExclusionBounds()',
     'SceneClassifier.LooksLikePlayerChat(candidate.Text)')) {
     if (-not $source.Contains($required)) { throw "F8/F9聊天区接入缺少：$required" }
 }
 foreach ($required in @(
+    'overlay.TryGetMapleWindowBounds(out game)',
+    'if (overlay == null || !overlay.TryGetMapleWindowBounds(out game))',
+    '请先启动 MapleStory 并切换为窗口模式，再框选游戏聊天区。',
+    'Form host = embeddedMode ? FindForm() : this;',
     'ChatRegionSettings.SaveManual(chatRegion, game)',
     'await overlay.CaptureChatAsync(chatRegion)',
     'F9自动聊天区')) {
     if (-not $chatSource.Contains($required)) { throw "AI聊天区接入缺少：$required" }
+}
+if ($chatSource.Contains('if (!lockedGame) game = OverlayForm.GetForegroundCaptureBounds();')) {
+    throw '手动聊天框选仍可能退回到任意前台窗口'
 }
 if ($source.Contains('lockChatRegionOnFirstUse')) {
     throw 'F8截屏翻译仍偷偷承担首次聊天框自动对齐'
@@ -72,7 +80,7 @@ if ($source.Contains('ChatRegionSettings.Save(resolved, gameBounds)')) {
     throw '游戏窗口缩放仍可能丢失聊天区来源'
 }
 foreach ($required in @(
-    'F8 翻译开/关；F9 对齐聊天框；F10 呼出AI悬浮窗',
+    'hotkeys.Text = "键盘 " + showKey + " 翻译 / " + hideKey + " 对齐 / " +',
     'Text = "翻译开/关："',
     'Text = "自动对齐聊天框："',
     'Text = "呼出AI悬浮窗："',

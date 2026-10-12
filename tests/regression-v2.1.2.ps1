@@ -1,4 +1,4 @@
-param(
+﻿param(
     [Parameter(Mandatory=$true)][string]$CharacterImage,
     [string]$Cursor = '1510,798',
     [int]$BudgetMs = 1900
@@ -11,7 +11,8 @@ if (-not (Test-Path -LiteralPath $CharacterImage)) {
     throw "缺少人物属性实图：$CharacterImage"
 }
 
-Start-Process -FilePath $exe -ArgumentList @('--benchmark',
+if (-not (Get-Command Start-ProductExe -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Start-ProductExe.ps1') }
+Start-ProductExe -FilePath $exe -ArgumentList @('--benchmark',
     "--benchmark-image=$CharacterImage", "--benchmark-cursor=$Cursor") `
     -WorkingDirectory $repoRoot -Wait
 $result = Get-Content (Join-Path $repoRoot 'last_run.txt') -Raw -Encoding UTF8

@@ -1,6 +1,7 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
-$assembly = [Reflection.Assembly]::LoadFile((Join-Path $repoRoot '枫语幕.exe'))
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly (Join-Path $repoRoot '枫语幕.exe')
 $type = $assembly.GetType('MapleOverlay.AiInstallForm', $true)
 $flags = [Reflection.BindingFlags]'Static,NonPublic'
 

@@ -1,9 +1,12 @@
-param(
+﻿param(
     [string]$BaselineRoot = (Join-Path (Split-Path -Parent $PSScriptRoot) '.bench\v2.3'),
     [string]$PublicRoot = (Join-Path $PSScriptRoot 'fixtures\public-v3'),
     [string]$ReportPath = (Join-Path (Split-Path -Parent $PSScriptRoot) '.bench\v2.3-v3.0-ab.csv')
 )
 
+# AUTOMATION_REQUIRES_EXTERNAL_RESOURCE: the historical v2.3 executable is intentionally not
+# committed to this worktree. The unified runner reports this comparison as skipped when that
+# external baseline is absent; direct invocations can still provide -BaselineRoot.
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $cases = @(
@@ -26,7 +29,8 @@ foreach ($variant in $variants) {
     if (-not (Test-Path -LiteralPath $exe)) { throw "缺少对比程序：$exe" }
     foreach ($case in $cases) {
         $image = Join-Path $PublicRoot $case.File
-        Start-Process -FilePath $exe -ArgumentList @('--benchmark','--benchmark-range=balanced',
+if (-not (Get-Command Start-ProductExe -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Start-ProductExe.ps1') }
+        Start-ProductExe -FilePath $exe -ArgumentList @('--benchmark','--benchmark-range=balanced',
             "--benchmark-image=$image") -WorkingDirectory $variant.Root -Wait
         $result = Get-Content (Join-Path $variant.Root 'last_run.txt') -Raw -Encoding UTF8
         $correct = 0

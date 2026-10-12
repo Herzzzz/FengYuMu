@@ -1,7 +1,8 @@
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $exe = Join-Path $repoRoot '枫语幕.exe'
-$assembly = [Reflection.Assembly]::LoadFile($exe)
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly $exe
 
 $labelType = $assembly.GetType('MapleOverlay.OverlayLabel', $true)
 $safetyType = $assembly.GetType('MapleOverlay.OverlayPaintSafety', $true)
@@ -54,13 +55,18 @@ Test-PaintLabel '负尺寸' '等级' 20 30 -5 22 $false | Out-Null
 Test-PaintLabel '异常大坐标' '等级' 100001 30 100 22 $false | Out-Null
 
 $long = '长' * 5000
-$trimmed = Test-PaintLabel '超长文本' $long 20 30 100 22 $true
-if (([string]$trimmed[1]).Length -ne 4096) { throw '超长文本没有按安全上限截断' }
+$kept = Test-PaintLabel '超长文本' $long 20 30 100 22 $true
+# The text is no longer silently truncated at the paint boundary: an over-long translation is
+# routed to the explicit overflow state by the renderer, so TryPrepare has to hand the full string
+# through (and the renderer must know the limit that triggers the overflow path).
+if (([string]$kept[1]).Length -ne 5000) { throw '超长文本被静默截断，应改为走显式溢出状态' }
 
 $source = Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -Encoding UTF8
 foreach ($required in @(
     'OverlayLabel[] snapshot = labels.ToArray()',
     'OverlayPaintSafety.TryPrepare',
+    'internal const int MaximumDrawableTextLength = 4096;',
+    'PaintOverflowNotice(graphics, label, r, safeArea, background, border, textBrush)',
     'catch (ArgumentException)',
     'catch (System.Runtime.InteropServices.ExternalException)',
     'shuttingDown = true;',

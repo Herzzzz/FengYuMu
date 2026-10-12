@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$PublicRoot = 'D:\GPT\Codex\projects\2026-09-02\fengyumu-decky\tests\fixtures\public'
 )
 
@@ -40,7 +40,8 @@ foreach ($mode in @('maximum','balanced','minimum')) {
         if (-not (Test-Path -LiteralPath $image)) { throw "缺少公开样本：$image" }
         $arguments = @('--benchmark', "--benchmark-image=$image", "--benchmark-range=$mode")
         if ($case.Cursor) { $arguments += "--benchmark-cursor=$($case.Cursor)" }
-        Start-Process -FilePath $exe -ArgumentList $arguments -WorkingDirectory $repoRoot -Wait
+if (-not (Get-Command Start-ProductExe -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Start-ProductExe.ps1') }
+        Start-ProductExe -FilePath $exe -ArgumentList $arguments -WorkingDirectory $repoRoot -Wait
         $result = Get-Content (Join-Path $repoRoot 'last_run.txt') -Raw -Encoding UTF8
         if ($result.StartsWith('错误=')) { throw "$($case.Name)/$mode 执行失败：$result" }
         $elapsed = [int]([regex]::Match($result, '耗时毫秒=(\d+)').Groups[1].Value)

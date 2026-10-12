@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $exe = Join-Path $repoRoot '枫语幕.exe'
 $reportPath = Join-Path $repoRoot 'chat_style_benchmark.txt'
@@ -6,7 +6,8 @@ $reportPath = Join-Path $repoRoot 'chat_style_benchmark.txt'
 function Test-ChatStyleFrame([string]$fileName, [string[]]$requiredPatterns) {
     $imagePath = Join-Path $PSScriptRoot (Join-Path 'fixtures' $fileName)
     if (-not (Test-Path -LiteralPath $imagePath)) { throw "聊天样式实帧不存在：$imagePath" }
-    $process = Start-Process -FilePath $exe `
+if (-not (Get-Command Start-ProductExe -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Start-ProductExe.ps1') }
+    $process = Start-ProductExe -FilePath $exe `
         -ArgumentList ('--chat-style-benchmark=' + $imagePath) `
         -WorkingDirectory $repoRoot -WindowStyle Hidden -PassThru -Wait
     if ($process.ExitCode -ne 0) { throw "聊天样式实帧测试失败：$fileName" }
@@ -29,7 +30,8 @@ Test-ChatStyleFrame 'chat-pink-super-megaphone-video.png' @(
     'BAND/Megaphone[^\r\n]*Kena'
 )
 
-$assembly = [Reflection.Assembly]::LoadFile($exe)
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly $exe
 $instance = [Reflection.BindingFlags]'Instance,NonPublic,Public'
 $offlineType = $assembly.GetType('MapleOverlay.OfflineChatForm', $true)
 $overlayType = $assembly.GetType('MapleOverlay.OverlayForm', $true)
@@ -65,7 +67,8 @@ foreach ($required in @(
     'timer.Interval = 140',
     '-c 1280 -b 512 -ub 256',
     '--parallel 1 --prio 1 --poll 80 --poll-batch 80',
-    'Task<bool> warmup = !online.IsReady && ai.IsInstalled ? ai.EnsureStartedAsync() : null',
+    'Task<bool> warmup = !online.IsReady && ai.IsInstalled',
+    '? ai.EnsureStartedAsync() : null',
     'if (online.IsReady)',
     'TranslateWithPreferredAiAsync',
     'firstLiveCapture = true',

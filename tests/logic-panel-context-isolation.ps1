@@ -1,8 +1,9 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $assemblyPath = Join-Path $repoRoot '枫语幕.exe'
 $dictionaryPath = Join-Path $repoRoot '枫语幕词库.tsv'
-$assembly = [Reflection.Assembly]::LoadFile($assemblyPath)
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly $assemblyPath
 
 $storeType = $assembly.GetType('MapleOverlay.TranslationStore', $true)
 $storeCtor = $storeType.GetConstructor([Reflection.BindingFlags]'Instance,NonPublic,Public', $null,
@@ -79,6 +80,14 @@ if ((Resolve-PanelContext 'Donating to Kerning City' @(
 }
 if ((Resolve-PanelContext '' @("Mai's Training", 'Letter for Lucas') $true $false) -ne '') {
     throw '多个任务上下文不应借用单一任务 ID'
+}
+if ((Resolve-PanelContext 'Vicious in Need of an Apprentice' @(
+    'Vicious in Need of an Apprentice',
+    'Quest Summary',
+    'After I told Vicious, the carpenter of Henesys.',
+    'that I wanted to become his apprentice, he gave me a test.'
+) $true $true) -ne '80017') {
+    throw 'focused Vicious 任务窗口未锁定任务 ID 80017'
 }
 
 $mapleSource = Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -Encoding UTF8

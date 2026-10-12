@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $exe = Join-Path $repoRoot '枫语幕.exe'
 $benchRoot = Join-Path $repoRoot ('.bench\glossary-reload-' + [Guid]::NewGuid().ToString('N'))
@@ -8,7 +8,8 @@ $updated = "# 枫语幕测试词库`r`nHot Reload Term`t新译文`t怀旧服-聊
 
 New-Item -ItemType Directory -Path $benchRoot -Force | Out-Null
 try {
-    $assembly = [Reflection.Assembly]::LoadFile($exe)
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly $exe
     $allStatic = [Reflection.BindingFlags]'Static,NonPublic,Public'
     $allInstance = [Reflection.BindingFlags]'Instance,NonPublic,Public'
 

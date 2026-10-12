@@ -28,9 +28,16 @@ Write-Host ""
 Write-Host "开始采集，请现在按背键……" -ForegroundColor Yellow
 
 # 程序自己采集并写文件；这里不等待它的消息框，按时间取结果即可。
-$process = Start-Process -FilePath $exe `
-    -ArgumentList @('--gamepad-probe', '--gamepad-probe-seconds=30', '--gamepad-probe-quiet') `
-    -WorkingDirectory $PSScriptRoot -PassThru
+#
+# 这里刻意不用 Start-Process：本仓库位于含中文目录的路径下，Windows 会把该路径
+# 视为不受信任，ShellExecute 每次启动 EXE 都会插入「发布者未知」确认框。
+# 直接经 CreateProcess 启动即可避免，且不修改任何系统安全设置。
+$psi = New-Object System.Diagnostics.ProcessStartInfo
+$psi.FileName = $exe
+$psi.Arguments = '--gamepad-probe --gamepad-probe-seconds=30 --gamepad-probe-quiet'
+$psi.WorkingDirectory = $PSScriptRoot
+$psi.UseShellExecute = $false
+$process = [System.Diagnostics.Process]::Start($psi)
 
 $deadline = (Get-Date).AddSeconds(70)
 $result = $null
