@@ -31,8 +31,10 @@ jobs:
         shell: powershell
         run: |
           $ErrorActionPreference = 'Stop'
-          ./tests/logic-r3-candidate-core.ps1 -ExePath "$PWD/枫语幕.exe"
-          ./tests/logic-candidate-transactions.ps1 -ExePath "$PWD/枫语幕.exe"
+          $exe = @(Get-ChildItem -LiteralPath $PWD -Filter *.exe -File)
+          if ($exe.Count -ne 1) { throw "Expected one built Windows executable" }
+          ./tests/logic-r3-candidate-core.ps1 -ExePath $exe[0].FullName
+          ./tests/logic-candidate-transactions.ps1 -ExePath $exe[0].FullName
           ./tests/logic-application-updater.ps1
       - name: Validate supplemental dictionary package paths
         shell: pwsh

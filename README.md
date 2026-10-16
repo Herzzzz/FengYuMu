@@ -27,6 +27,6 @@ Windows v4.0 正式版。《冒险岛》截图识别、词库匹配及中文原�
 
 r15 基线通过 44 组、758 项受控逻辑、词库及像素回放检查，包括 3,804 条技能等级效果、35 个职业/转职组简介路径，以及 36 张技能图的 41 个提示框。正式版另检查品牌、更新安装文件、包哈希和源码构建一致性。受控测试不等于所有服务器、所有职业的实机翻译成功率；Windows OCR、游戏滚动与颜色表现仍取决于本机环境。
 
-Windows 原生构建：`powershell -NoProfile -ExecutionPolicy Bypass -File src/build.ps1`。发布工作流构建 Windows 版本、运行升级与文件事务检查，再生成附带 SHA-256 的下载包。测试中的旧版编号表示回归来源；原始用户截图和运行日志不随发布包分发。
+Windows 原生构建需要 Visual Studio 2022 / Build Tools 的 .NET 桌面生成工具；脚本自动下载并校验固定版本的 .NET 4.8 与 Windows SDK 引用包。执行：`powershell -NoProfile -ExecutionPolicy Bypass -File src/build.ps1`。发布工作流构建 Windows 版本、运行升级与文件事务检查，再生成附带 SHA-256 的下载包。测试中的旧版编号表示回归来源；原始用户截图和运行日志不随发布包分发。
 
 macOS 源码沿用原有分支能力，本次发布与验证范围为 Windows。许可证见 [LICENSE](LICENSE)。
