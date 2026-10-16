@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $imagePath = 'D:\TEMP\codex-clipboard-20fc3ca0-07dd-4334-ab84-fef02d7ea5da.png'
 if (-not (Test-Path -LiteralPath $imagePath)) { throw "缺少玩家右键菜单实图：$imagePath" }

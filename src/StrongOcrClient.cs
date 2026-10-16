@@ -55,6 +55,7 @@ namespace MapleOverlay
         private readonly string helperPath;
         private readonly string tempRoot;
         private readonly int timeoutMilliseconds;
+        private readonly StrongOcrValidationCache validation = new StrongOcrValidationCache();
 
         internal StrongOcrClient(string helperPath, string tempRoot, int timeoutMilliseconds)
         {
@@ -62,6 +63,7 @@ namespace MapleOverlay
             this.tempRoot = String.IsNullOrWhiteSpace(tempRoot)
                 ? Path.Combine(Path.GetTempPath(), "FengYuMu", "StrongOcr") : tempRoot;
             this.timeoutMilliseconds = Math.Max(50, timeoutMilliseconds);
+            if (File.Exists(this.helperPath)) validation.ValidateAsync(Path.GetDirectoryName(this.helperPath));
         }
 
         internal static StrongOcrClient CreateDefault(string baseDirectory)
@@ -80,9 +82,7 @@ namespace MapleOverlay
             {
                 if (!File.Exists(helperPath)) return false;
                 string folder = Path.GetDirectoryName(helperPath) ?? "";
-                return File.Exists(Path.Combine(folder, "Sdcb.SimdPaddleOCR.dll")) &&
-                    File.Exists(Path.Combine(folder,
-                        "Sdcb.SimdPaddleOCR.Models.ChineseV6Small.dll"));
+                return validation.IsAvailable(folder);
             }
         }
 
@@ -91,7 +91,7 @@ namespace MapleOverlay
             Stopwatch watch = Stopwatch.StartNew();
             if (bitmap == null || bitmap.Width < 2 || bitmap.Height < 2)
                 return Failure(StrongOcrStatus.SaveFailed, "截图为空", watch, -1);
-            if (!IsAvailable)
+            if (!File.Exists(helperPath) || !await validation.ValidateAsync(Path.GetDirectoryName(helperPath)))
                 return Failure(StrongOcrStatus.Unavailable, "增强 OCR 组件未安装", watch, -1);
 
             string imagePath = "";

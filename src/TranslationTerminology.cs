@@ -5,6 +5,21 @@ using System.Text.RegularExpressions;
 
 namespace MapleOverlay
 {
+    internal static class TranslationValueSafety
+    {
+        internal static bool PreservesNumbers(string source, string translated)
+        {
+            const string pattern = @"[-+]?\d+(?:[.,]\d+)*(?:%|％)?";
+            MatchCollection expected = Regex.Matches(source ?? "", pattern);
+            MatchCollection actual = Regex.Matches(translated ?? "", pattern);
+            if (expected.Count != actual.Count) return false;
+            for (int i = 0; i < expected.Count; i++)
+                if (!String.Equals(expected[i].Value.Replace('％', '%'),
+                    actual[i].Value.Replace('％', '%'), StringComparison.Ordinal)) return false;
+            return true;
+        }
+    }
+
     // Canonical-name categories. Long prose (quest body, dialogue, objectives, chat) is deliberately
     // NOT a terminology source: locking whole sentences would freeze the very context we translate.
     internal enum TerminologyCategory

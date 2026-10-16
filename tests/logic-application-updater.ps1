@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $exe = if ($env:FENGYUMU_TEST_EXE) { $env:FENGYUMU_TEST_EXE } else {
     Join-Path $repoRoot '枫语幕.exe'
@@ -12,7 +12,21 @@ $hashMethod = $updater.GetMethod('ComputeSha256', $all)
 $childMethod = $updater.GetMethod('IsChildPath', $all)
 $applyMethod = $updater.GetMethod('ApplyPreparedUpdate', $all)
 
-$testRoot = Join-Path $repoRoot '.bench\application-updater-test'
+$previousAutomationForTest = $env:FENGYUMU_AUTOMATION
+$updateValueNames = @('ApplicationUpdateSuccess','ApplicationUpdateMessage','ApplicationUpdateDetail')
+$updateValues = @{}
+$registry = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey('Software\FengYuMu')
+if ($registry) {
+    try {
+        foreach ($name in $updateValueNames) {
+            if ($registry.GetValueNames() -contains $name) {
+                $updateValues[$name] = @{ Value=$registry.GetValue($name); Kind=$registry.GetValueKind($name) }
+            }
+        }
+    } finally { $registry.Dispose() }
+}
+try {
+$testRoot = Join-Path $repoRoot ('.bench\application-updater-' + [Guid]::NewGuid().ToString('N'))
 $resolvedRepo = [IO.Path]::GetFullPath($repoRoot).TrimEnd('\') + '\'
 $resolvedTest = [IO.Path]::GetFullPath($testRoot)
 if (-not $resolvedTest.StartsWith($resolvedRepo, [StringComparison]::OrdinalIgnoreCase)) {
@@ -61,6 +75,11 @@ $result = [int]$applyMethod.Invoke($null, [object[]]@([string]$manifestPath))
 Remove-Item Env:\FENGYUMU_AUTOMATION -ErrorAction SilentlyContinue
 if ($result -ne 0) { throw "沙盒更新执行失败，退出码 $result" }
 foreach ($name in $files) {
+    if ($name -eq '枫语幕词库.tsv') {
+        if ([IO.File]::ReadAllText((Join-Path $install $name)) -ne "old-$name") { throw '升级覆盖了活动用户词库' }
+        if ([IO.File]::ReadAllText((Join-Path $install '枫语幕官方词库-v3.0-test.tsv')) -ne "new-$name") { throw '官方词库未另存供合并' }
+        continue
+    }
     if ([IO.File]::ReadAllText((Join-Path $install $name)) -ne "new-$name") {
         throw "一键更新没有替换：$name"
     }
@@ -71,12 +90,29 @@ foreach ($name in $files) {
 
 $source = Get-Content (Join-Path $repoRoot 'src\ApplicationUpdater.cs') -Raw -Encoding UTF8
 foreach ($required in @('FengYuMu/releases/latest','安装包 SHA-256 校验失败',
-    'RestoreBackup(manifest)','更新失败，已继续使用更新前版本','File.Replace',
     '更新路径越过了枫语幕安装目录','HTTPS_PROXY','Windows系统代理',
     '已自动尝试 Windows 系统代理、环境代理和直连','UpdateWebClient',
     'DomesticMirrorManifestUrl','ParseMirrorManifest','ParseSha256Text',
     'TryLoadDomesticMirrorManifest')) {
     if (-not $source.Contains($required)) { throw "一键更新安全链路缺少：$required" }
+}
+
+# Invalid manifests must never read a pre-existing backup, mutate arbitrary install
+# paths, or start a program. Drive the real ApplyPreparedUpdate failure branch.
+$sentinel = Join-Path $install '枫语幕.exe'
+$beforeInvalid = [IO.File]::ReadAllText($sentinel)
+$manifestType.GetProperty('StageDirectory', $all).SetValue($manifest, (Join-Path $testRoot 'outside'), $null)
+[IO.File]::WriteAllText($manifestPath, $serializer.Serialize($manifest), [Text.UTF8Encoding]::new($false))
+$previousAutomation = $env:FENGYUMU_AUTOMATION
+$env:FENGYUMU_AUTOMATION = '1'
+try {
+    $invalidResult = [int]$applyMethod.Invoke($null, [object[]]@([string]$manifestPath))
+    if ($invalidResult -eq 0 -or [IO.File]::ReadAllText($sentinel) -ne $beforeInvalid) {
+        throw '非法清单进入了替换或回滚路径'
+    }
+} finally {
+    if ($null -eq $previousAutomation) { Remove-Item Env:\FENGYUMU_AUTOMATION -ErrorAction SilentlyContinue }
+    else { $env:FENGYUMU_AUTOMATION = $previousAutomation }
 }
 
 $parseMirror = $updater.GetMethod('ParseMirrorManifest', $all)
@@ -157,7 +193,17 @@ try {
 catch { $wrongHashRejected = $true }
 if (-not $wrongHashRejected) { throw '国内镜像错误 SHA-256 fixture 未被拒绝' }
 
-Remove-ItemProperty -Path 'HKCU:\Software\FengYuMu' -Name ApplicationUpdateSuccess,
-    ApplicationUpdateMessage,ApplicationUpdateDetail -ErrorAction SilentlyContinue
 if (Test-Path -LiteralPath $testRoot) { Remove-Item -LiteralPath $testRoot -Recurse -Force }
 Write-Output '程序一键更新：GitHub正式包、双SHA-256、路径边界、三文件备份、校验替换和失败回退链路通过'
+
+} finally {
+    $registry = [Microsoft.Win32.Registry]::CurrentUser.CreateSubKey('Software\FengYuMu')
+    try {
+        foreach ($name in $updateValueNames) {
+            if ($updateValues.ContainsKey($name)) { $registry.SetValue($name,$updateValues[$name].Value,$updateValues[$name].Kind) }
+            else { $registry.DeleteValue($name,$false) }
+        }
+    } finally { $registry.Dispose() }
+    if ($null -eq $previousAutomationForTest) { Remove-Item Env:\FENGYUMU_AUTOMATION -ErrorAction SilentlyContinue }
+    else { $env:FENGYUMU_AUTOMATION = $previousAutomationForTest }
+}

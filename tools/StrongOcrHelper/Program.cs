@@ -4,11 +4,9 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using System.Web.Script.Serialization;
 using Sdcb.SimdPaddleOCR;
-using Sdcb.SimdPaddleOCR.ModelProvider;
 
 namespace FengYuMu.StrongOcr
 {
@@ -76,25 +74,11 @@ namespace FengYuMu.StrongOcr
             Console.WriteLine(Serialize(summary));
         }
 
-        private static PaddleOcrModelBundle FindBundle()
-        {
-            Type type = Type.GetType("Sdcb.SimdPaddleOCR.Models.ChineseV6Small.ChineseV6SmallModels, " +
-                "Sdcb.SimdPaddleOCR.Models.ChineseV6Small");
-            if (type == null) throw new InvalidOperationException("Small model assembly not found");
-            foreach (PropertyInfo property in type.GetProperties(BindingFlags.Public | BindingFlags.Static))
-                if (property.PropertyType == typeof(PaddleOcrModelBundle))
-                    return (PaddleOcrModelBundle)property.GetValue(null, null);
-            foreach (MethodInfo method in type.GetMethods(BindingFlags.Public | BindingFlags.Static))
-                if (method.ReturnType == typeof(PaddleOcrModelBundle) && method.GetParameters().Length == 0)
-                    return (PaddleOcrModelBundle)method.Invoke(null, null);
-            throw new InvalidOperationException("no static PaddleOcrModelBundle on " + type.FullName);
-        }
-
         private static int Recognize(string imagePath)
         {
             Stopwatch watch = Stopwatch.StartNew();
-            PaddleOcrModelBundle bundle;
-            try { bundle = FindBundle(); }
+            StrongOcrEngine engine;
+            try { engine = new StrongOcrEngine(); }
             catch (Exception error)
             {
                 Console.Error.WriteLine("model bundle failed: " + error.Message);
@@ -102,13 +86,7 @@ namespace FengYuMu.StrongOcr
             }
             try
             {
-                using (Stream det = bundle.Detection.OpenRead())
-                using (Stream cls = bundle.Classification == null ? null : bundle.Classification.OpenRead())
-                using (Stream rec = bundle.Recognition.OpenRead())
-                using (Stream dict = bundle.Dictionary == null ? null : bundle.Dictionary.OpenRead())
-                using (PaddleOcrModelSet models = PaddleOcrModelSet.Load(det, cls, rec, dict))
-                using (PaddleOcrAll ocr = new PaddleOcrAll(models,
-                    new PaddleOcrOptions { UseDirectionClassification = false }))
+                using (engine)
                 {
                     long loadMs = watch.ElapsedMilliseconds;
                     using (Bitmap bitmap = new Bitmap(imagePath))
@@ -119,8 +97,7 @@ namespace FengYuMu.StrongOcr
                         System.Runtime.InteropServices.Marshal.Copy(data.Scan0, pixels, 0, pixels.Length);
                         bitmap.UnlockBits(data);
                         long start = watch.ElapsedMilliseconds;
-                        PaddleOcrResult result = ocr.Run(pixels, bitmap.Width, bitmap.Height, data.Stride,
-                            ImagePixelFormat.Bgra32);
+                        PaddleOcrResult result = engine.Recognize(pixels, bitmap.Width, bitmap.Height, data.Stride);
                         long runMs = watch.ElapsedMilliseconds - start;
                         int emitted = 0;
                         foreach (PaddleOcrLine line in result.Lines)

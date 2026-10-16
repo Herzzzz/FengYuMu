@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -17,111 +17,50 @@ using Microsoft.Win32;
 
 namespace MapleOverlay
 {
-    internal sealed class KnowledgeInitializationResult
-    {
-        public int Entries;
-        public int Categories;
-        public string Fingerprint;
-        public bool Changed;
-    }
-
-    internal static class MapleKnowledgeInitializer
-    {
-        private const string ManifestName = "枫语幕知识初始化.json";
-
-        public static KnowledgeInitializationResult Initialize(string aiRoot, string dictionaryPath)
-        {
-            if (!File.Exists(dictionaryPath)) throw new FileNotFoundException("找不到枫语幕词库", dictionaryPath);
-            Directory.CreateDirectory(aiRoot);
-            byte[] bytes = File.ReadAllBytes(dictionaryPath);
-            string fingerprint;
-            using (SHA256 sha = SHA256.Create())
-            {
-                byte[] hash = sha.ComputeHash(bytes);
-                StringBuilder value = new StringBuilder(hash.Length * 2);
-                foreach (byte item in hash) value.Append(item.ToString("x2"));
-                fingerprint = value.ToString();
-            }
-
-            int entries = 0;
-            HashSet<string> categories = new HashSet<string>(StringComparer.Ordinal);
-            foreach (string raw in File.ReadLines(dictionaryPath, Encoding.UTF8))
-            {
-                if (String.IsNullOrWhiteSpace(raw) || raw.TrimStart().StartsWith("#")) continue;
-                string[] parts = raw.Split('\t');
-                if (parts.Length < 2 || String.IsNullOrWhiteSpace(parts[0]) || String.IsNullOrWhiteSpace(parts[1])) continue;
-                entries++;
-                if (parts.Length > 2)
-                {
-                    string category = parts[2]; int separator = category.LastIndexOf('#');
-                    if (separator > 0) category = category.Substring(0, separator);
-                    if (category.Length > 0) categories.Add(category);
-                }
-            }
-
-            string path = Path.Combine(aiRoot, ManifestName);
-            string previousFingerprint = "";
-            if (File.Exists(path))
-            {
-                try
-                {
-                    Dictionary<string, object> old = new JavaScriptSerializer().Deserialize<Dictionary<string, object>>(File.ReadAllText(path, Encoding.UTF8));
-                    object oldValue; if (old.TryGetValue("dictionarySha256", out oldValue)) previousFingerprint = Convert.ToString(oldValue);
-                }
-                catch { }
-            }
-            bool changed = !String.Equals(previousFingerprint, fingerprint, StringComparison.OrdinalIgnoreCase);
-            if (changed)
-            {
-                Dictionary<string, object> manifest = new Dictionary<string, object> {
-                    { "format", 1 },
-                    { "initializedAt", DateTime.Now.ToString("s") },
-                    { "dictionarySha256", fingerprint },
-                    { "entries", entries },
-                    { "categories", categories.Count },
-                    { "mode", "local-retrieval-knowledge-initialization" },
-                    { "sources", new string[] {
-                        "https://mscw-guidebook.com/", "https://mxdgcw.dvg.cn/",
-                        "https://meowdb.com/msclassic/", "https://mxd079.dvg.cn/"
-                    } },
-                    { "note", "资料站已整理内容通过枫语幕词库按需检索；不修改GGUF模型权重。" }
-                };
-                string temp = path + ".new";
-                File.WriteAllText(temp, new JavaScriptSerializer().Serialize(manifest), new UTF8Encoding(false));
-                if (File.Exists(path)) File.Replace(temp, path, null); else File.Move(temp, path);
-            }
-            return new KnowledgeInitializationResult {
-                Entries = entries, Categories = categories.Count, Fingerprint = fingerprint, Changed = changed
-            };
-        }
-    }
-
     internal sealed class OnlineAiSettings
     {
-        public const string DefaultProvider = "豆包 2.1 Lite（推荐）";
+        public const string DefaultProvider = "豆包（火山方舟）";
         public const string DefaultEndpoint = "https://ark.cn-beijing.volces.com/api/v3/responses";
-        public const string DefaultModel = "doubao-seed-2-1-lite-260915";
+        public const string DefaultModel = "";
         public string Provider = DefaultProvider;
         public string Endpoint = DefaultEndpoint;
         public string Model = DefaultModel;
         public string ApiKey = "";
+        public bool PanelTranslationEnabled;
+        public bool KeyLoadFailed;
+        internal string NotReadyReason
+        {
+            get
+            {
+                if (KeyLoadFailed) return "保存的 Key 无法在当前 Windows 用户下解密，请重新填写并保存。";
+                try { OnlineAiProtocol.NormalizeEndpoint(Endpoint); }
+                catch (ArgumentException ex) { return ex.Message; }
+                if (String.IsNullOrWhiteSpace(ApiKey)) return "请先在联网 AI 设置中填写并保存 API Key。";
+                if (OnlineAiProtocol.SafeModel(Model, ApiKey) == "redacted") return "请在联网 AI 设置中填写有效的模型 ID。";
+                return "";
+            }
+        }
         public bool IsReady
         {
             get
             {
-                return Endpoint.StartsWith("https://", StringComparison.OrdinalIgnoreCase) &&
-                    Model.Length > 0 && ApiKey.Length > 0;
+                try { OnlineAiProtocol.NormalizeEndpoint(Endpoint); }
+                catch (ArgumentException) { return false; }
+                return !String.IsNullOrWhiteSpace(ApiKey) && OnlineAiProtocol.SafeModel(Model, ApiKey) != "redacted";
             }
         }
 
         public static OnlineAiSettings Load()
         {
             OnlineAiSettings value = new OnlineAiSettings();
-            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\FengYuMu\OnlineAI"))
+            using (UserSettingsSection key = UserSettings.Open(@"Software\FengYuMu\OnlineAI"))
             {
                 if (key == null) return value;
                 value.Endpoint = Convert.ToString(key.GetValue("Endpoint", DefaultEndpoint));
+                try { value.Endpoint = OnlineAiProtocol.NormalizeEndpoint(value.Endpoint); }
+                catch (ArgumentException) { } // Keep invalid input visible for correction; IsReady rejects it.
                 value.Model = Convert.ToString(key.GetValue("Model", DefaultModel));
+                value.PanelTranslationEnabled = Convert.ToInt32(key.GetValue("PanelTranslationEnabled", 0)) != 0;
                 object storedProvider = key.GetValue("Provider", null);
                 value.Provider = Convert.ToString(storedProvider);
                 if (String.Equals(value.Provider, "豆包 2.0 Lite（推荐）", StringComparison.Ordinal))
@@ -134,23 +73,33 @@ namespace MapleOverlay
                             StringComparison.OrdinalIgnoreCase);
                     value.Provider = legacyCustom ? "自定义兼容接口" : DefaultProvider;
                 }
+                if (value.Provider.StartsWith("豆包 2.", StringComparison.Ordinal))
+                    value.Provider = DefaultProvider; // retain saved model/Key; never invent a replacement ID
+                if (value.Provider == "DeepSeek V4 Flash（快速）")
+                {
+                    value.Provider = "DeepSeek（开放平台）";
+                    if (value.Model == "deepseek-v4-flash") value.Model = "deepseek-chat";
+                }
+                if (value.Provider == "智谱 GLM-4-Flash（免费备用）")
+                    value.Provider = "智谱（开放平台）";
                 string protectedKey = Convert.ToString(key.GetValue("ApiKey", ""));
                 try
                 {
                     if (protectedKey.Length > 0)
                         value.ApiKey = Encoding.UTF8.GetString(ProtectedData.Unprotect(Convert.FromBase64String(protectedKey), null, DataProtectionScope.CurrentUser));
                 }
-                catch { value.ApiKey = ""; }
+                catch { value.ApiKey = ""; value.KeyLoadFailed = true; }
             }
             return value;
         }
 
         public void Save()
         {
-            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu\OnlineAI"))
+            using (UserSettingsSection key = UserSettings.Open(@"Software\FengYuMu\OnlineAI"))
             {
                 key.SetValue("Provider", Provider); key.SetValue("Endpoint", Endpoint);
                 key.SetValue("Model", Model);
+                key.SetValue("PanelTranslationEnabled", PanelTranslationEnabled ? 1 : 0);
                 string encrypted = ApiKey.Length == 0 ? "" : Convert.ToBase64String(ProtectedData.Protect(Encoding.UTF8.GetBytes(ApiKey), null, DataProtectionScope.CurrentUser));
                 key.SetValue("ApiKey", encrypted);
             }
@@ -158,12 +107,13 @@ namespace MapleOverlay
 
         public static void Clear()
         {
-            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu\OnlineAI"))
+            using (UserSettingsSection key = UserSettings.Open(@"Software\FengYuMu\OnlineAI"))
             {
                 key.SetValue("Provider", DefaultProvider);
                 key.SetValue("Endpoint", DefaultEndpoint);
                 key.SetValue("Model", DefaultModel);
                 key.DeleteValue("ApiKey", false);
+                key.SetValue("PanelTranslationEnabled", 0);
             }
         }
     }
@@ -185,28 +135,21 @@ namespace MapleOverlay
                 Endpoint = OnlineAiSettings.DefaultEndpoint,
                 Model = OnlineAiSettings.DefaultModel,
                 ApplyUrl = "https://console.volcengine.com/ark",
-                PlainHint = "国内连接通常快，短句效果和费用比较均衡；需要火山方舟账号并开通模型。"
+                PlainHint = "模型 ID 以火山方舟控制台及账号权限为准，请读取模型列表或粘贴已开通的模型/接入点 ID。"
             },
             new OnlineAiPreset {
-                Name = "豆包 2.0 Lite（兼容旧配置）",
-                Endpoint = OnlineAiSettings.DefaultEndpoint,
-                Model = "doubao-seed-2-0-lite-260215",
-                ApplyUrl = "https://console.volcengine.com/ark",
-                PlainHint = "供已经开通豆包 2.0 Lite 的用户继续使用；新用户优先选择豆包 2.1 Lite。"
-            },
-            new OnlineAiPreset {
-                Name = "DeepSeek V4 Flash（快速）",
+                Name = "DeepSeek（开放平台）",
                 Endpoint = "https://api.deepseek.com/v1/chat/completions",
-                Model = "deepseek-v4-flash",
+                Model = "deepseek-chat",
                 ApplyUrl = "https://platform.deepseek.com/api_keys",
-                PlainHint = "短句速度快、理解口语不错；需要 DeepSeek 开放平台账号和可用余额。"
+                PlainHint = "先输入 Key 并读取可用模型，以服务端返回的模型 ID 为准；平台需有可用余额。"
             },
             new OnlineAiPreset {
-                Name = "智谱 GLM-4-Flash（免费备用）",
+                Name = "智谱（开放平台）",
                 Endpoint = "https://open.bigmodel.cn/api/paas/v4/chat/completions",
-                Model = "glm-4-flash-250414",
+                Model = "",
                 ApplyUrl = "https://bigmodel.cn/usercenter/proj-mgmt/apikeys",
-                PlainHint = "官方提供免费 API，适合先试用；繁忙时速度和译文稳定性可能不如前两项。"
+                PlainHint = "请按智谱控制台填写当前可用模型 ID；是否免费、额度与权限以平台为准。"
             },
             new OnlineAiPreset {
                 Name = "自定义兼容接口",
@@ -249,23 +192,37 @@ namespace MapleOverlay
         internal const int PanelTimeoutMaxMs = 1100;
 
         public static Task<string> TranslateAsync(OnlineAiSettings settings, string source,
-            string target, string glossary)
+            string target, string glossary, CancellationToken cancellationToken = default(CancellationToken))
         {
             // Always run the blocking HttpWebRequest on the thread pool.  Depending on the
             // caller's current scheduler, Task.Factory.StartNew without an explicit scheduler
             // can otherwise occupy the WinForms UI thread and make the live queue look frozen.
             return Task.Run(delegate {
+                cancellationToken.ThrowIfCancellationRequested();
+                Program.LogRuntimeEvent("ai-request", "host=" + new Uri(settings.Endpoint).Host +
+                    " protocol=" + RequestProtocol(settings) + " model=" +
+                    OnlineAiProtocol.SafeModel(settings.Model, settings.ApiKey));
                 string body = BuildRequestBody(settings, source, target, glossary);
                 byte[] data = Encoding.UTF8.GetBytes(body);
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(settings.Endpoint);
+                request.AllowAutoRedirect = false;
                 request.Method = "POST"; request.ContentType = "application/json";
                 request.Timeout = 12000; request.ReadWriteTimeout = 12000;
                 request.KeepAlive = true; request.ContentLength = data.Length;
                 request.Headers[HttpRequestHeader.Authorization] = "Bearer " + settings.ApiKey;
+                using (CancellationTokenRegistration registration = cancellationToken.Register(delegate { try { request.Abort(); } catch { } }))
+                {
+                try
+                {
                 using (Stream stream = request.GetRequestStream()) stream.Write(data, 0, data.Length);
                 string json;
+                int responseStatus;
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                using (StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8)) json = reader.ReadToEnd();
+                {
+                    responseStatus = (int)response.StatusCode;
+                    using (StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                        json = reader.ReadToEnd();
+                }
                 Dictionary<string, object> root = new JavaScriptSerializer().Deserialize<Dictionary<string, object>>(json);
                 string translated = ExtractText(root);
                 translated = Regex.Replace(translated, "<think>[\\s\\S]*?</think>", "",
@@ -274,8 +231,127 @@ namespace MapleOverlay
                     RegexOptions.IgnoreCase).Trim().Trim('`', '"');
                 translated = Regex.Replace(translated, @"[\r\n]+", " ").Trim();
                 if (translated.Length == 0) throw new InvalidOperationException("联网AI没有返回译文");
+                cancellationToken.ThrowIfCancellationRequested();
+                Program.LogRuntimeEvent("ai-http", "host=" + new Uri(settings.Endpoint).Host + " status=" + responseStatus + " protocol=" + RequestProtocol(settings));
                 return translated;
-            });
+                }
+                catch (WebException ex)
+                {
+                    if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException(cancellationToken);
+                    LogHttpFailure(ex, settings);
+                    throw;
+                }
+                }
+            }, cancellationToken);
+        }
+
+        internal static Task<List<string>> ListModelsAsync(OnlineAiSettings settings,
+            CancellationToken cancellationToken)
+        {
+            Uri address = OnlineAiProtocol.ModelsEndpoint(settings.Endpoint);
+            return Task.Run(delegate {
+                cancellationToken.ThrowIfCancellationRequested();
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(address);
+                request.Method = "GET"; request.AllowAutoRedirect = false;
+                request.Timeout = 12000; request.ReadWriteTimeout = 12000;
+                request.Headers[HttpRequestHeader.Authorization] = "Bearer " + settings.ApiKey;
+                using (CancellationTokenRegistration registration = cancellationToken.Register(
+                    delegate { try { request.Abort(); } catch { } }))
+                try
+                {
+                    string json;
+                    using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                    using (StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                    {
+                        char[] buffer = new char[1024 * 1024 + 1];
+                        int count = 0, read;
+                        while (count < buffer.Length && (read = reader.Read(buffer, count, buffer.Length - count)) > 0) count += read;
+                        if (count >= buffer.Length) throw new InvalidDataException("模型列表过大，已停止读取。");
+                        json = new string(buffer, 0, count);
+                    }
+                    Dictionary<string, object> root = new JavaScriptSerializer().Deserialize<Dictionary<string, object>>(json);
+                    object data;
+                    if (root == null || !root.TryGetValue("data", out data) || !(data is System.Collections.IEnumerable))
+                        throw new InvalidDataException("接口未返回兼容的模型列表；请按官方文档手动填写模型 ID。");
+                    HashSet<string> ids = new HashSet<string>(StringComparer.Ordinal);
+                    foreach (object item in (System.Collections.IEnumerable)data)
+                    {
+                        Dictionary<string, object> row = item as Dictionary<string, object>;
+                        object id;
+                        if (row != null && row.TryGetValue("id", out id))
+                        {
+                            string name = Convert.ToString(id);
+                            if (OnlineAiProtocol.SafeModel(name, settings.ApiKey) != "redacted") ids.Add(name);
+                        }
+                    }
+                    cancellationToken.ThrowIfCancellationRequested();
+                    if (ids.Count == 0) throw new InvalidOperationException("账号没有返回可用模型。请检查该平台的权限与额度。");
+                    List<string> result = new List<string>(ids); result.Sort(StringComparer.Ordinal);
+                    Program.LogRuntimeEvent("ai-model-list", "host=" + address.Host + " count=" + result.Count);
+                    return result;
+                }
+                catch (WebException ex)
+                {
+                    if (cancellationToken.IsCancellationRequested) throw new OperationCanceledException(cancellationToken);
+                    LogHttpFailure(ex, settings); throw;
+                }
+            }, cancellationToken);
+        }
+
+        private sealed class HttpFailureInfo
+        {
+            internal int Status;
+            internal string Code = "", RequestId = "";
+        }
+
+        private static string RequestProtocol(OnlineAiSettings settings)
+        {
+            return settings != null && (settings.Endpoint ?? "").TrimEnd('/').EndsWith(
+                "/responses", StringComparison.OrdinalIgnoreCase) ? "responses" : "chat-completions";
+        }
+
+        private static HttpFailureInfo ReadHttpFailure(WebException error)
+        {
+            const string cacheKey = "FengYuMu.SafeHttpFailure";
+            HttpFailureInfo cached = error.Data[cacheKey] as HttpFailureInfo;
+            if (cached != null) return cached;
+            HttpFailureInfo result = new HttpFailureInfo();
+            HttpWebResponse response = error.Response as HttpWebResponse;
+            if (response != null)
+            {
+                result.Status = (int)response.StatusCode;
+                try
+                {
+                    result.RequestId = response.Headers["x-request-id"] ?? "";
+                    using (response)
+                    using (StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                    {
+                        char[] buffer = new char[8192];
+                        int count = 0, read;
+                        while (count < buffer.Length && (read = reader.Read(buffer, count, buffer.Length - count)) > 0)
+                            count += read;
+                        string body = new string(buffer, 0, count);
+                        Match match = Regex.Match(body,
+                            @"""(?:code|error_code)""\s*:\s*""([A-Za-z0-9_.:-]{1,64})""");
+                        if (match.Success) result.Code = match.Groups[1].Value;
+                        else if (Regex.IsMatch(body, "model(?:_| )?not(?:_| )?open", RegexOptions.IgnoreCase))
+                            result.Code = "ModelNotOpen";
+                    }
+                }
+                catch { }
+            }
+            if (!Regex.IsMatch(result.RequestId, @"^[A-Za-z0-9_.:-]{1,128}$")) result.RequestId = "";
+            error.Data[cacheKey] = result; // Store only bounded, sanitized fields, never the response body.
+            return result;
+        }
+
+        private static void LogHttpFailure(WebException error, OnlineAiSettings settings)
+        {
+            HttpFailureInfo failure = ReadHttpFailure(error);
+            Program.LogRuntimeEvent("ai-http-failed", "host=" + new Uri(settings.Endpoint).Host +
+                " status=" + (failure.Status == 0 ? "none" : failure.Status.ToString()) +
+                " transport=" + error.Status + " code=" + OnlineAiProtocol.SafeDiagnosticToken(failure.Code, settings.ApiKey) + " requestId=" + OnlineAiProtocol.SafeDiagnosticToken(failure.RequestId, settings.ApiKey) +
+                " protocol=" + RequestProtocol(settings));
         }
 
         /// <summary>
@@ -331,6 +407,7 @@ namespace MapleOverlay
                 string body = BuildPanelRequestBody(settings, source, glossary);
                 byte[] data = Encoding.UTF8.GetBytes(body);
                 request = (HttpWebRequest)WebRequest.Create(settings.Endpoint);
+                request.AllowAutoRedirect = false;
                 request.Method = "POST";
                 request.ContentType = "application/json";
                 request.Timeout = timeout;
@@ -399,8 +476,6 @@ namespace MapleOverlay
             else
             {
                 requestBody["max_tokens"] = 256;
-                if (settings.Model.StartsWith("deepseek-", StringComparison.OrdinalIgnoreCase))
-                    requestBody["thinking"] = new Dictionary<string, string> { { "type", "disabled" } };
                 if (settings.Model.StartsWith("glm-", StringComparison.OrdinalIgnoreCase))
                     requestBody["do_sample"] = false;
                 requestBody["messages"] = new object[] {
@@ -428,22 +503,12 @@ namespace MapleOverlay
             WebException web = error as WebException;
             if (web != null)
             {
-                HttpWebResponse response = web.Response as HttpWebResponse;
-                if (response != null)
-                {
-                    int statusCode = (int)response.StatusCode;
-                    string responseText = "";
-                    try
-                    {
-                        using (response)
-                        using (StreamReader reader = new StreamReader(
-                            response.GetResponseStream(), Encoding.UTF8))
-                            responseText = reader.ReadToEnd();
-                    }
-                    catch { }
-                    return DescribeHttpFailure(statusCode, responseText,
-                        settings == null ? "" : settings.Provider);
-                }
+                HttpFailureInfo failure = ReadHttpFailure(web);
+                if (failure.Status != 0)
+                    return DescribeHttpFailure(failure.Status,
+                        "{\"error\":{\"code\":\"" + OnlineAiProtocol.SafeDiagnosticToken(failure.Code,
+                            settings == null ? "" : settings.ApiKey) + "\"}}",
+                        settings == null ? "" : settings.Provider) + "（HTTP " + failure.Status + "）";
                 if (web.Status == WebExceptionStatus.Timeout)
                     return "连接超时。先确认浏览器能打开服务商页面，再点一次测试。";
                 if (web.Status == WebExceptionStatus.NameResolutionFailure)
@@ -455,6 +520,7 @@ namespace MapleOverlay
                     web.Status == WebExceptionStatus.SecureChannelFailure)
                     return "安全连接失败。请校准 Windows 日期时间并确认已启用 TLS 1.2。";
             }
+            if (error is OnlineAiResponseException) return error.Message;
             if (error is InvalidOperationException)
                 return "已经连到服务商，但没有拿到有效译文。请稍后重试或换一家 AI 服务。";
             return "连接失败。请检查网络后再试；仍失败可换一家 AI 服务。";
@@ -469,7 +535,7 @@ namespace MapleOverlay
             string suffix = ExtractSafeErrorCode(responseText);
             if (lower.Contains("modelnotopen") || lower.Contains("model_not_open") ||
                 lower.Contains("model not open"))
-                return "API Key 已通过验证，但账号还没开通所选模型。点上面的“打开申请页面”→“开通管理”→选择并开通当前填写的豆包模型，等一两分钟再测试。" + suffix;
+                return "服务商报告当前模型未开通或无调用权限。请在相应平台核对模型权限，并读取可用模型后再试。" + suffix;
             if (statusCode == 401)
                 return "API Key 不对或复制不完整。请在" + service +
                     "的“API Key 管理”重新创建；不要填 Access Key 或 Secret Key。" + suffix;
@@ -477,7 +543,8 @@ namespace MapleOverlay
                 return "Key 已到达" + service +
                     "，但模型未开通、没有调用权限或余额不足。先开通所选模型再试。" + suffix;
             if (statusCode == 404)
-                return "接口地址或模型名不存在。重新选择上面的 AI 服务，可恢复官方地址和模型名。" + suffix;
+                return "接口或模型不可用（HTTP 404）。请核对完整接口路径，并读取服务端的可用模型 ID。" + suffix;
+            if (statusCode == 402) return "服务商余额不足，请检查账号余额（HTTP 402）。" + suffix;
             if (statusCode == 429)
                 return "免费额度、余额或调用频率已到上限。稍后重试，或到服务商页面检查额度。" + suffix;
             if (statusCode == 400 && (lower.Contains("model") ||
@@ -513,14 +580,12 @@ namespace MapleOverlay
             {
                 requestBody["instructions"] = system;
                 requestBody["input"] = user;
-                requestBody["max_output_tokens"] = 96;
+                requestBody["max_output_tokens"] = 512;
                 requestBody["thinking"] = new Dictionary<string, string> { { "type", "disabled" } };
             }
             else
             {
-                requestBody["max_tokens"] = 96;
-                if (settings.Model.StartsWith("deepseek-", StringComparison.OrdinalIgnoreCase))
-                    requestBody["thinking"] = new Dictionary<string, string> { { "type", "disabled" } };
+                requestBody["max_tokens"] = 512;
                 if (settings.Model.StartsWith("glm-", StringComparison.OrdinalIgnoreCase))
                     requestBody["do_sample"] = false;
                 requestBody["messages"] = new object[] {
@@ -570,40 +635,7 @@ namespace MapleOverlay
 
         private static string ExtractText(Dictionary<string, object> root)
         {
-            object value;
-            if (root.TryGetValue("output_text", out value) && Convert.ToString(value).Length > 0)
-                return Convert.ToString(value);
-            if (root.TryGetValue("choices", out value))
-            {
-                object[] choices = AsArray(value);
-                if (choices.Length > 0)
-                {
-                    Dictionary<string, object> choice = choices[0] as Dictionary<string, object>;
-                    object messageValue;
-                    if (choice != null && choice.TryGetValue("message", out messageValue))
-                    {
-                        Dictionary<string, object> message = messageValue as Dictionary<string, object>;
-                        object contentValue;
-                        if (message != null && message.TryGetValue("content", out contentValue))
-                            return Convert.ToString(contentValue);
-                    }
-                }
-            }
-            if (root.TryGetValue("output", out value))
-                foreach (object outputItem in AsArray(value))
-                {
-                    Dictionary<string, object> item = outputItem as Dictionary<string, object>;
-                    object contentValue;
-                    if (item == null || !item.TryGetValue("content", out contentValue)) continue;
-                    foreach (object contentItem in AsArray(contentValue))
-                    {
-                        Dictionary<string, object> content = contentItem as Dictionary<string, object>;
-                        object textValue;
-                        if (content != null && content.TryGetValue("text", out textValue) &&
-                            Convert.ToString(textValue).Length > 0) return Convert.ToString(textValue);
-                    }
-                }
-            throw new InvalidOperationException("联网AI返回格式中没有找到最终译文");
+            return OnlineAiResponse.Extract(root);
         }
 
         private static object[] AsArray(object value)
@@ -615,245 +647,9 @@ namespace MapleOverlay
         }
     }
 
-    internal sealed class OfflineAiClient
+    internal static class ChatTextRules
     {
-        private const int Port = 17891;
         private const uint LcmapSimplifiedChinese = 0x02000000;
-        private readonly string baseDir;
-        private readonly object startupLock = new object();
-        private readonly System.Threading.SemaphoreSlim translationGate =
-            new System.Threading.SemaphoreSlim(1, 1);
-        private Process process;
-        private Task<bool> startupTask;
-        private string cachedServerPath;
-        private string cachedModelPath;
-        public string Status { get; private set; }
-
-        public OfflineAiClient(string programDir) { baseDir = programDir; Status = "AI模型尚未启动"; }
-
-        public string AiRoot
-        {
-            get { return Path.Combine(baseDir, "模型"); }
-        }
-
-        private string LegacyAiRoot
-        {
-            get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FengYuMu", "AI"); }
-        }
-
-        public bool IsInstalled
-        {
-            get { return FindServer() != null && FindModel() != null; }
-        }
-
-        private string FindServer()
-        {
-            if (!String.IsNullOrEmpty(cachedServerPath) && File.Exists(cachedServerPath))
-                return cachedServerPath;
-            string[] roots = new string[] { AiRoot, Path.Combine(baseDir, "AI"), LegacyAiRoot };
-            foreach (string root in roots)
-            {
-                if (!Directory.Exists(root)) continue;
-                string direct = Path.Combine(root, "llama-server.exe");
-                if (File.Exists(direct)) { cachedServerPath = direct; return direct; }
-                string[] found = Directory.GetFiles(root, "llama-server.exe", SearchOption.AllDirectories);
-                if (found.Length > 0) { cachedServerPath = found[0]; return cachedServerPath; }
-            }
-            return null;
-        }
-
-        private string FindModel()
-        {
-            if (!String.IsNullOrEmpty(cachedModelPath) && File.Exists(cachedModelPath))
-                return cachedModelPath;
-            string[] roots = new string[] { AiRoot, Path.Combine(baseDir, "AI"), LegacyAiRoot };
-            foreach (string root in roots)
-            {
-                if (!Directory.Exists(root)) continue;
-                string selected = Path.Combine(root, "selected-model.txt");
-                if (File.Exists(selected))
-                {
-                    string selectedPath = Path.Combine(root, File.ReadAllText(selected).Trim());
-                    if (File.Exists(selectedPath)) { cachedModelPath = selectedPath; return selectedPath; }
-                }
-                string[] found = Directory.GetFiles(root, "Qwen3-*.gguf", SearchOption.AllDirectories);
-                if (found.Length > 0)
-                {
-                    Array.Sort(found, delegate(string left, string right) {
-                        return new FileInfo(left).Length.CompareTo(new FileInfo(right).Length);
-                    });
-                    cachedModelPath = found[0];
-                    return cachedModelPath;
-                }
-            }
-            return null;
-        }
-
-        public void RefreshInstallationPaths()
-        {
-            cachedServerPath = null;
-            cachedModelPath = null;
-            startupTask = null;
-        }
-
-        public Task<bool> EnsureStartedAsync()
-        {
-            lock (startupLock)
-            {
-                if (startupTask == null || startupTask.IsCompleted)
-                    startupTask = EnsureStartedCoreAsync();
-                return startupTask;
-            }
-        }
-
-        private async Task<bool> EnsureStartedCoreAsync()
-        {
-            if (await PingAsync()) { Status = "本地AI已就绪"; return true; }
-            string server = FindServer(), model = FindModel();
-            if (server == null || model == null)
-            {
-                Status = "未安装AI模型包";
-                return false;
-            }
-            // The selected Qwen3 model normally fits on supported Vulkan GPUs.
-            // Try a full offload first, while retaining the old partial/CPU fallbacks.
-            int[] gpuLayers = new int[] { 99, 32, 12, 0 };
-            foreach (int layers in gpuLayers)
-            {
-                try
-                {
-                    // The game is light on modern PCs. Keep two logical cores free, then
-                    // spend the remaining moderate headroom on lower chat latency.
-                    int threads = Math.Max(2, Math.Min(10, Environment.ProcessorCount - 2));
-                    ProcessStartInfo info = new ProcessStartInfo(server,
-                        "-m \"" + model + "\" --host 127.0.0.1 --port " + Port +
-                        " -ngl " + layers + " -c 1280 -b 512 -ub 256 -t " + threads + " -tb " + threads +
-                        " --parallel 1 --prio 1 --poll 80 --poll-batch 80 --no-webui");
-                    info.WorkingDirectory = Path.GetDirectoryName(server);
-                    info.UseShellExecute = false;
-                    info.CreateNoWindow = true;
-                    info.RedirectStandardOutput = false;
-                    info.RedirectStandardError = false;
-                    process = Process.Start(info);
-                    try { process.PriorityClass = ProcessPriorityClass.Normal; } catch { }
-                    string mode = layers > 0 ? "Vulkan显卡（" + layers + "层）" : "CPU兼容模式";
-                    Status = "正在载入本地AI模型：" + mode + "…";
-                    for (int i = 0; i < 120; i++)
-                    {
-                        await Task.Delay(500);
-                        if (await PingAsync()) { Status = "本地AI已就绪｜" + mode + "｜游戏友好限载"; return true; }
-                        if (process.HasExited) break;
-                    }
-                    Stop();
-                }
-                catch { Stop(); }
-            }
-            Status = "AI启动失败：显卡和CPU兼容模式均未能载入";
-            return false;
-        }
-
-        private Task<bool> PingAsync()
-        {
-            return Task.Run(delegate {
-                try
-                {
-                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:" + Port + "/health");
-                    request.Timeout = 450;
-                    using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                        return (int)response.StatusCode >= 200 && (int)response.StatusCode < 300;
-                }
-                catch { return false; }
-            });
-        }
-
-        public async Task<string> TranslateAsync(string text, string sourceLanguage,
-            string targetLanguage, string glossary)
-        {
-            // llama-server is launched with --parallel 1.  Keep local fallbacks serialized even
-            // when several cloud requests fail together, so they cannot contend with the game.
-            await translationGate.WaitAsync();
-            try
-            {
-                if (!await EnsureStartedAsync()) throw new InvalidOperationException(Status);
-                string system = BuildSystemPrompt(sourceLanguage, targetLanguage, glossary);
-                string userText = "待翻译消息：\n" + text + "\n/no_think";
-                string body = new JavaScriptSerializer().Serialize(new Dictionary<string, object> {
-                    { "model", "local-qwen3" },
-                    { "temperature", 0.0 }, { "top_p", 0.7 }, { "max_tokens", 96 },
-                    { "messages", new object[] {
-                        new Dictionary<string, string> { { "role", "system" }, { "content", system } },
-                        new Dictionary<string, string> { { "role", "user" }, { "content", userText } }
-                    } }
-                });
-                string result = await Task.Run(delegate { return Post(body); });
-                if (targetLanguage.IndexOf("中文", StringComparison.OrdinalIgnoreCase) >= 0 &&
-                    Regex.IsMatch(text, "[A-Za-z]") &&
-                    (Regex.Matches(result, "[\\u3400-\\u9fff]").Count < 2 ||
-                        LooksLikeInstructionLeak(result)))
-                {
-                    string retrySystem = "把玩家消息翻译成自然、简短的简体中文。必须出现中文，不得照抄英文，不得解释；操作问句用怎么、能不能等玩家口语；reply、respond、whisper back 表示回复，不能误译成新发消息；物品名前的 stupid、damn 是抱怨语气，不能并入物品名或残留英文；交易消息用收购、出售、交换、求组、报价等常用说法；技能名和物品名用冒险岛国服译名。" +
-                        "可靠的聊天缩写按术语表展开；多义或证据不足时保留缩写，不得猜成地名或玩家名。" +
-                        (String.IsNullOrEmpty(glossary) ? "" : "术语：\n" + glossary);
-                    string retryBody = new JavaScriptSerializer().Serialize(new Dictionary<string, object> {
-                        { "model", "local-qwen3" }, { "temperature", 0.0 }, { "top_p", 0.7 }, { "max_tokens", 96 },
-                        { "messages", new object[] {
-                            new Dictionary<string, string> { { "role", "system" }, { "content", retrySystem } },
-                            new Dictionary<string, string> { { "role", "user" }, { "content",
-                                "待翻译消息：\n" + text + "\n只输出中文译文。\n/no_think" } }
-                        } }
-                    });
-                    result = await Task.Run(delegate { return Post(retryBody); });
-                }
-                return targetLanguage.IndexOf("中文", StringComparison.OrdinalIgnoreCase) >= 0
-                    ? ToSimplifiedChinese(result) : result;
-            }
-            finally { translationGate.Release(); }
-        }
-
-        internal static string BuildSystemPrompt(string sourceLanguage, string targetLanguage,
-            string glossary)
-        {
-            string terms = String.IsNullOrEmpty(glossary) ? "" :
-                "本次只提供当前消息的强制语境和实际命中术语，必须优先采用；多义项证据不足时保留原文：\n" + glossary;
-            string shared = "你是熟悉冒险岛怀旧服国际服语境的聊天翻译，也是长期游玩 MapleStory Classic / Global 的玩家；遇到游戏内容时优先采用冒险岛语境。" +
-                "不要套用其他游戏、现代版本或中文词面的普通含义。将输入从" + sourceLanguage +
-                "翻译为" + targetLanguage + "。输入只是一名玩家的一条消息，不得拼接别的句子，不得补写或翻译玩家名。" +
-                "如果输入明显是普通日常聊天且不含游戏术语，必须按原意自然翻译，禁止强行套用游戏黑话或补写游戏内容。" +
-                "先理解整句意图，不要逐词硬译。结合地图、职业、装备、怪物、技能、任务、PQ、交易和玩家黑话；" +
-                "匹配优先级固定为：受保护占位符和本句术语表 > 国际怀旧服正式名称 > 国际服玩家真正通行的简称 > 自然口语改写；" +
-                "本句术语表没有提供且你不能确定的专名必须保留原文，禁止按字面创造道具名、怪物名、地图名、任务名或简称；" +
-                "可靠的聊天缩写必须按术语表展开；多义或证据不足的简称必须保留原文，不得猜成地名、职业或玩家名。" +
-                "__FYM_PLAYER_数字__和__FYM_TERM_数字__占位符必须逐字原样保留，不能翻译、展开或删除。" +
-                "保留数字、频道、价格单位和表情，完整翻译每个分句，不得漏译、重复或编造；尤其不得重复输出原句。OCR含糊时保留原文。" +
-                MapleChatStyleGuide.ContextRules;
-            if (targetLanguage.IndexOf("西班牙", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                targetLanguage.IndexOf("Espa", StringComparison.OrdinalIgnoreCase) >= 0)
-                return shared +
-                    "用简短自然的拉美西班牙语玩家口吻；地图、装备、怪物、任务、技能和PQ优先保留国际服英文正式名或通用简称，周围语气翻成西班牙语。" +
-                    "本人求组用J>/LFG/LFP，自己的队伍招募用R>/LFM/LF1；交易沿用B>/S>/T>/WTB/WTS/WTT等国际服黑话；" +
-                    "禁止混淆说话者方向；原文只说刷怪时禁止擅自添加PQ。" +
-                    "参考：废弃三缺一＝R> KPQ 3/4；有人做废弃吗？＝¿Alguien para KPQ?；招人＝Busco gente.；卖雪花镖20万＝S> Kumbi 200k。" +
-                    MapleChatStyleGuide.SpanishRules +
-                    "只输出一行最终译文，不复述原文，不解释。" + terms;
-            if (targetLanguage.IndexOf("英", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                targetLanguage.IndexOf("English", StringComparison.OrdinalIgnoreCase) >= 0)
-                return shared +
-                    "用简短自然、像国际服老玩家会发的英语；优先使用国际服正式名称和真正通行的简称。" +
-                    "本人求组用J>/LFG/LFP，自己的队伍招募用R>/LFM/LF1/人数进度；" +
-                    "交易用B>/S>/T>/WTB/WTS/WTT；收/求购用B>或WTB，卖/出售用S>或WTS，禁止混淆说话者方向。" +
-                    "不要照搬中文语序；原文只说刷怪时禁止擅自添加PQ。" +
-                    "参考：废弃三缺一＝R> KPQ 3/4；招人＝R> members；有人做废弃吗？＝Anyone for KPQ?；卖雪花镖20万＝S> Kumbi 200k。" +
-                    MapleChatStyleGuide.EnglishExamples +
-                    "只输出一行最终译文，不复述原文，不解释。" + terms;
-            return shared +
-                "用简短自然的简体中文玩家口语；问操作方法时用怎么、能不能等自然说法；reply、respond、whisper back表示回复。" +
-                "技能、装备、怪物、地图和任务优先用国服怀旧译名；交易用收购、出售、交换、求组、报价等玩家说法。" +
-                "参考：B> Claw 60%, offer＝收60%拳套攻击卷，请报价；S> Kumbi 200k＝卖雪花镖，20万；" +
-                "How do you whisper back someone?＝怎么回复别人的悄悄话？；ima go check now＝我现在去看看。" +
-                MapleChatStyleGuide.ChineseExamples +
-                "必须使用简体中文。只输出一行最终译文，不复述原文，不解释。" + terms;
-        }
-
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
         private static extern int LCMapStringEx(string localeName, uint mapFlags,
             string source, int sourceLength, StringBuilder destination, int destinationLength,
@@ -882,40 +678,6 @@ namespace MapleOverlay
                 output.IndexOf("系统提示", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
-        private static string Post(string body)
-        {
-            byte[] data = Encoding.UTF8.GetBytes(body);
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:" + Port + "/v1/chat/completions");
-            request.Method = "POST"; request.ContentType = "application/json";
-            request.Timeout = 30000; request.ContentLength = data.Length;
-            using (Stream stream = request.GetRequestStream()) stream.Write(data, 0, data.Length);
-            string json;
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            using (StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8)) json = reader.ReadToEnd();
-            Dictionary<string, object> root = new JavaScriptSerializer().Deserialize<Dictionary<string, object>>(json);
-            object choicesValue;
-            if (!root.TryGetValue("choices", out choicesValue)) throw new InvalidOperationException("本地AI没有返回译文");
-            object[] choices = choicesValue as object[];
-            if (choices == null)
-            {
-                System.Collections.ArrayList list = choicesValue as System.Collections.ArrayList;
-                if (list != null) choices = list.ToArray();
-            }
-            if (choices == null || choices.Length == 0) throw new InvalidOperationException("本地AI返回为空");
-            Dictionary<string, object> choice = (Dictionary<string, object>)choices[0];
-            Dictionary<string, object> message = (Dictionary<string, object>)choice["message"];
-            string result = Convert.ToString(message["content"]);
-            result = Regex.Replace(result, "<think>[\\s\\S]*?</think>", "", RegexOptions.IgnoreCase).Trim();
-            return result;
-        }
-
-        public void Stop()
-        {
-            try { if (process != null && !process.HasExited) { process.Kill(); process.WaitForExit(5000); } }
-            catch { }
-            process = null;
-            Status = "本地AI已释放内存";
-        }
     }
 
     internal sealed class ChatRegionSelectorForm : Form
@@ -923,13 +685,26 @@ namespace MapleOverlay
         private const int LeftEdge = 1, RightEdge = 2, TopEdge = 4, BottomEdge = 8;
         private const int MoveArea = 16, NewArea = 32;
         private readonly Rectangle gameBounds;
-        private readonly Bitmap snapshot;
         private readonly Panel toolbar = new Panel();
+        private readonly Panel selectionActions = new Panel();
+        private bool captureRestoreScheduled;
+        [DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
         private Rectangle selection;
         private Rectangle dragOriginal;
         private System.Drawing.Point dragStart;
         private int dragMode;
         private bool dragging;
+        private const int MinimumCanvasY = 46;
+        private bool liveInputCapture;
+        private Button pendingToolbarButton;
+        private System.Drawing.Point CanvasPoint(System.Drawing.Point point) { return point; }
+
+        internal void BeginLiveInputCapture()
+        {
+            liveInputCapture = true;
+            Focus(); Capture = true;
+            if (!Capture) throw new InvalidOperationException("未能进入游戏框选，请返回游戏后重试。");
+        }
 
         public Rectangle SelectedScreenRegion
         {
@@ -937,20 +712,15 @@ namespace MapleOverlay
                 selection.Width, selection.Height); }
         }
 
-        public ChatRegionSelectorForm(Rectangle game, Rectangle initialScreenRegion)
+        public ChatRegionSelectorForm(Rectangle game, Rectangle initialScreenRegion, Bitmap safeSnapshot = null)
         {
             gameBounds = game;
-            snapshot = new Bitmap(Math.Max(1, game.Width), Math.Max(1, game.Height),
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            using (Graphics graphics = Graphics.FromImage(snapshot))
-            {
-                try { graphics.CopyFromScreen(game.Location, System.Drawing.Point.Empty, game.Size,
-                    CopyPixelOperation.SourceCopy); }
-                catch { graphics.Clear(Color.FromArgb(44, 48, 56)); }
-            }
+            // The game stays live beneath a transparent selection surface; no image copy.
+            BackColor = Color.Magenta; TransparencyKey = Color.Magenta;
+            AutoScaleMode = AutoScaleMode.None;
 
             Rectangle initial = Rectangle.Intersect(initialScreenRegion, game);
-            selection = initial.Width >= 80 && initial.Height >= 30
+            selection = ChatRegionSettings.IsUsable(initial)
                 ? new Rectangle(initial.X - game.X, initial.Y - game.Y, initial.Width, initial.Height)
                 : new Rectangle(game.Width * 10 / 100, game.Height * 76 / 100,
                     game.Width * 55 / 100, game.Height * 21 / 100);
@@ -963,30 +733,67 @@ namespace MapleOverlay
             Label help = new Label { Text = "拖动框体移动｜拖边缘或四角调整大小｜框内仅由AI翻译，F8完全跳过",
                 ForeColor = Color.White, AutoSize = true, Location = new System.Drawing.Point(14, 14),
                 Font = new Font("Microsoft YaHei UI", 9.0f, FontStyle.Bold) };
-            Button confirm = new Button { Text = "确定区域", AutoSize = true, Anchor = AnchorStyles.Top | AnchorStyles.Right };
-            Button cancel = new Button { Text = "取消", AutoSize = true, Anchor = AnchorStyles.Top | AnchorStyles.Right };
-            confirm.Location = new System.Drawing.Point(Math.Max(420, game.Width - 176), 9);
-            cancel.Location = new System.Drawing.Point(Math.Max(510, game.Width - 88), 9);
-            confirm.Click += delegate { DialogResult = DialogResult.OK; Close(); };
-            cancel.Click += delegate { DialogResult = DialogResult.Cancel; Close(); };
-            toolbar.Controls.Add(help); toolbar.Controls.Add(confirm); toolbar.Controls.Add(cancel); Controls.Add(toolbar);
+            selectionActions.Size = new Size(210, 38);
+            selectionActions.BackColor = Color.FromArgb(24, 31, 42);
+            Button confirm = new Button { Text = "确认区域", Size = new Size(108, 30), Location = new System.Drawing.Point(4, 4), TabStop = false };
+            Button cancel = new Button { Text = "取消", Size = new Size(88, 30), Location = new System.Drawing.Point(116, 4), TabStop = false };
+            confirm.Click += delegate { CompleteSelection(true); };
+            cancel.Click += delegate { CompleteSelection(false); };
+            selectionActions.Controls.Add(confirm); selectionActions.Controls.Add(cancel);
+            toolbar.Controls.Add(help); Controls.Add(toolbar); Controls.Add(selectionActions);
+            PositionSelectionActions();
             KeyDown += delegate(object sender, KeyEventArgs e) {
-                if (e.KeyCode == Keys.Enter) { DialogResult = DialogResult.OK; Close(); }
-                else if (e.KeyCode == Keys.Escape) { DialogResult = DialogResult.Cancel; Close(); }
+                if (e.KeyCode == Keys.Enter) { e.Handled = true; e.SuppressKeyPress = true; }
+                else if (e.KeyCode == Keys.Escape) { e.Handled = true; CompleteSelection(false); }
             };
             MouseDown += SelectorMouseDown; MouseMove += SelectorMouseMove; MouseUp += SelectorMouseUp;
+            MouseCaptureChanged += delegate { ScheduleInputCaptureRestore(); };
+        }
+
+        internal void CompleteSelection(bool confirmed)
+        {
+            liveInputCapture = false;
+            DialogResult = confirmed ? DialogResult.OK : DialogResult.Cancel;
+            Close();
+        }
+
+        private void PositionSelectionActions()
+        {
+            int top = selection.Bottom + 10;
+            if (top + selectionActions.Height > gameBounds.Height)
+                top = Math.Max(MinimumCanvasY, selection.Top - selectionActions.Height - 10);
+            selectionActions.Location = new System.Drawing.Point(
+                Math.Max(0, Math.Min(selection.Left, gameBounds.Width - selectionActions.Width)), top);
+            selectionActions.BringToFront();
+        }
+
+        private void ScheduleInputCaptureRestore()
+        {
+            if (!liveInputCapture || Capture || captureRestoreScheduled || IsDisposed || Disposing || !IsHandleCreated) return;
+            captureRestoreScheduled = true;
+            try { BeginInvoke((MethodInvoker)delegate {
+                captureRestoreScheduled = false;
+                if (!liveInputCapture || IsDisposed || Disposing) return;
+                Form host = TopLevelControl as Form;
+                if (host != null && GetForegroundWindow() == host.Handle)
+                    Capture = true; // WinForms releases capture after MouseUp; keep selection open.
+                else CompleteSelection(false);
+            }); }
+            catch (InvalidOperationException) { captureRestoreScheduled = false; }
+        }
+
+        private bool OverAction(Button button, System.Drawing.Point point)
+        {
+            Rectangle bounds = button.Bounds;
+            bounds.Offset(selectionActions.Location);
+            return bounds.Contains(point);
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            e.Graphics.DrawImageUnscaled(snapshot, 0, 0);
-            using (SolidBrush shade = new SolidBrush(Color.FromArgb(145, 0, 0, 0)))
-            {
-                e.Graphics.FillRectangle(shade, 0, toolbar.Height, Width, Math.Max(0, selection.Top - toolbar.Height));
-                e.Graphics.FillRectangle(shade, 0, selection.Bottom, Width, Math.Max(0, Height - selection.Bottom));
-                e.Graphics.FillRectangle(shade, 0, selection.Top, Math.Max(0, selection.Left), selection.Height);
-                e.Graphics.FillRectangle(shade, selection.Right, selection.Top, Math.Max(0, Width - selection.Right), selection.Height);
-            }
+            // Every body pixel participates in hit testing; color-key holes
+            // otherwise pass mouse input through to the game underneath.
+            using(SolidBrush glass=new SolidBrush(Color.FromArgb(45,78,103)))e.Graphics.FillRectangle(glass,selection);
             using (Pen border = new Pen(Color.FromArgb(255, 255, 170, 25), 3.0f))
                 e.Graphics.DrawRectangle(border, selection);
             foreach (Rectangle handle in Handles())
@@ -994,12 +801,12 @@ namespace MapleOverlay
                 e.Graphics.FillRectangle(Brushes.White, handle);
                 e.Graphics.DrawRectangle(Pens.DarkOrange, handle);
             }
-            string size = selection.Width + " × " + selection.Height;
+            string size = selection.Width + " × " + selection.Height + "　框内拖动移动";
             using (Font font = new Font("Microsoft YaHei UI", 10.0f, FontStyle.Bold))
             using (SolidBrush background = new SolidBrush(Color.FromArgb(220, 18, 18, 20)))
             {
                 SizeF measured = e.Graphics.MeasureString(size, font);
-                RectangleF label = new RectangleF(selection.Left, Math.Max(toolbar.Height, selection.Top - measured.Height - 8),
+                RectangleF label = new RectangleF(selection.Left, Math.Max(MinimumCanvasY, selection.Top - measured.Height - 8),
                     measured.Width + 12, measured.Height + 5);
                 e.Graphics.FillRectangle(background, label);
                 e.Graphics.DrawString(size, font, Brushes.White, label.X + 6, label.Y + 2);
@@ -1027,10 +834,11 @@ namespace MapleOverlay
         private int HitTest(System.Drawing.Point point)
         {
             const int margin = 11;
+            int verticalMargin = Math.Min(margin, Math.Max(3, selection.Height / 4));
             bool left = Math.Abs(point.X - selection.Left) <= margin;
             bool right = Math.Abs(point.X - selection.Right) <= margin;
-            bool top = Math.Abs(point.Y - selection.Top) <= margin;
-            bool bottom = Math.Abs(point.Y - selection.Bottom) <= margin;
+            bool top = Math.Abs(point.Y - selection.Top) <= verticalMargin;
+            bool bottom = Math.Abs(point.Y - selection.Bottom) <= verticalMargin;
             if (point.X >= selection.Left - margin && point.X <= selection.Right + margin &&
                 point.Y >= selection.Top - margin && point.Y <= selection.Bottom + margin)
             {
@@ -1043,21 +851,28 @@ namespace MapleOverlay
 
         private void SelectorMouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button != MouseButtons.Left || e.Y < toolbar.Height) return;
-            dragging = true; dragStart = e.Location; dragOriginal = selection; dragMode = HitTest(e.Location);
-            if (dragMode == NewArea) selection = new Rectangle(e.X, e.Y, 1, 1);
-            Capture = true; Invalidate();
+            if (e.Button != MouseButtons.Left) return;
+            foreach (Control control in selectionActions.Controls)
+            {
+                Button button = control as Button;
+                if (button != null && OverAction(button, e.Location)) { pendingToolbarButton = button; return; }
+            }
+            if (e.Y < toolbar.Height) return;
+            System.Drawing.Point point = CanvasPoint(e.Location);
+            dragging = true; dragStart = point; dragOriginal = selection; dragMode = HitTest(CanvasPoint(e.Location));
+            if (dragMode == NewArea) selection = new Rectangle(point.X, point.Y, 1, 1);
+            Capture = true; PositionSelectionActions(); Invalidate();
         }
 
         private void SelectorMouseMove(object sender, MouseEventArgs e)
         {
             if (!dragging)
             {
-                int hit = HitTest(e.Location);
+                int hit = HitTest(CanvasPoint(e.Location));
                 Cursor = CursorFor(hit); return;
             }
-            int x = Math.Max(0, Math.Min(Width - 1, e.X));
-            int y = Math.Max(toolbar.Height, Math.Min(Height - 1, e.Y));
+            int x = Math.Max(0, Math.Min(gameBounds.Width - 1, CanvasPoint(e.Location).X));
+            int y = Math.Max(MinimumCanvasY, Math.Min(gameBounds.Height - 1, CanvasPoint(e.Location).Y));
             if (dragMode == NewArea)
             {
                 selection = Rectangle.FromLTRB(Math.Min(dragStart.X, x), Math.Min(dragStart.Y, y),
@@ -1065,8 +880,8 @@ namespace MapleOverlay
             }
             else if (dragMode == MoveArea)
             {
-                int nx = Math.Max(0, Math.Min(Width - dragOriginal.Width, dragOriginal.X + x - dragStart.X));
-                int ny = Math.Max(toolbar.Height, Math.Min(Height - dragOriginal.Height, dragOriginal.Y + y - dragStart.Y));
+                int nx = Math.Max(0, Math.Min(gameBounds.Width - dragOriginal.Width, dragOriginal.X + x - dragStart.X));
+                int ny = Math.Max(MinimumCanvasY, Math.Min(gameBounds.Height - dragOriginal.Height, dragOriginal.Y + y - dragStart.Y));
                 selection = new Rectangle(nx, ny, dragOriginal.Width, dragOriginal.Height);
             }
             else
@@ -1075,23 +890,29 @@ namespace MapleOverlay
                 int top = dragOriginal.Top, bottom = dragOriginal.Bottom;
                 if ((dragMode & LeftEdge) != 0) left = Math.Min(x, right - 80);
                 if ((dragMode & RightEdge) != 0) right = Math.Max(x, left + 80);
-                if ((dragMode & TopEdge) != 0) top = Math.Min(y, bottom - 40);
-                if ((dragMode & BottomEdge) != 0) bottom = Math.Max(y, top + 40);
-                left = Math.Max(0, left); top = Math.Max(toolbar.Height, top);
-                right = Math.Min(Width - 1, right); bottom = Math.Min(Height - 1, bottom);
+                if ((dragMode & TopEdge) != 0) top = Math.Min(y, bottom - ChatRegionSettings.MinimumHeight);
+                if ((dragMode & BottomEdge) != 0) bottom = Math.Max(y, top + ChatRegionSettings.MinimumHeight);
+                left = Math.Max(0, left); top = Math.Max(MinimumCanvasY, top);
+                right = Math.Min(gameBounds.Width - 1, right); bottom = Math.Min(gameBounds.Height - 1, bottom);
                 selection = Rectangle.FromLTRB(left, top, right, bottom);
             }
-            Invalidate();
+            PositionSelectionActions(); Invalidate();
         }
 
         private void SelectorMouseUp(object sender, MouseEventArgs e)
         {
+            if (pendingToolbarButton != null)
+            {
+                Button button = pendingToolbarButton; pendingToolbarButton = null;
+                if (OverAction(button, e.Location)) button.PerformClick();
+                return;
+            }
             if (!dragging) return;
-            dragging = false; Capture = false;
-            if (selection.Width < 80 || selection.Height < 40)
+            dragging = false; Capture = liveInputCapture;
+            if (!ChatRegionSettings.IsUsable(selection))
                 selection = dragOriginal.Width >= 80 ? dragOriginal :
-                    new Rectangle(Width * 10 / 100, Height * 76 / 100, Width * 55 / 100, Height * 21 / 100);
-            Invalidate();
+                    new Rectangle(gameBounds.Width * 10 / 100, gameBounds.Height * 76 / 100, gameBounds.Width * 55 / 100, gameBounds.Height * 21 / 100);
+            PositionSelectionActions(); Invalidate();
         }
 
         private static Cursor CursorFor(int hit)
@@ -1105,7 +926,7 @@ namespace MapleOverlay
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && snapshot != null) snapshot.Dispose();
+            if (disposing) { liveInputCapture = false; Capture = false; }
             base.Dispose(disposing);
         }
     }
@@ -1115,7 +936,15 @@ namespace MapleOverlay
         private sealed class PendingChatLine
         {
             internal string Text = "";
+            internal DateTime EnqueuedUtc = DateTime.UtcNow;
             internal ChatVisualStyle Style = ChatVisualStyle.Default;
+        }
+
+        private sealed class ChatTranslationOutcome
+        {
+            internal string Text;
+            internal string Failure = "";
+            internal string Provider = "";
         }
 
         private sealed class PreparedChatLine
@@ -1125,14 +954,15 @@ namespace MapleOverlay
             internal string SpeakerPrefix = "";
             internal string CacheKey = "";
             internal string Translated = "";
+            internal string Untranslated = "";
             internal Dictionary<string, string> NameTokens;
-            internal Task<string> TranslationTask;
+            internal Task<ChatTranslationOutcome> TranslationTask;
+            internal string Failure = "";
             internal bool CacheAfterTranslation;
         }
 
         private readonly OverlayForm overlay;
         private readonly string dictionaryPath;
-        private readonly OfflineAiClient ai;
         private readonly RichTextBox output = new RichTextBox();
         private readonly ChatCategoryFilterBar categoryFilter = new ChatCategoryFilterBar();
         private readonly ChatTranslationHistory translationHistory = new ChatTranslationHistory(24000);
@@ -1145,11 +975,12 @@ namespace MapleOverlay
         private readonly TextBox manualInput = new TextBox();
         private readonly Button manualTranslate = new BlueGlassButton();
         private readonly System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
-        private readonly System.Windows.Forms.Timer releaseTimer = new System.Windows.Forms.Timer();
         private readonly HashSet<string> protectedPlayerNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private readonly Queue<PendingChatLine> pendingChatLines = new Queue<PendingChatLine>();
         private readonly Dictionary<string, string> translationCache = new Dictionary<string, string>(StringComparer.Ordinal);
         private readonly Queue<string> translationCacheOrder = new Queue<string>();
+        private readonly ChatFrameContinuity chatContinuity = new ChatFrameContinuity();
+        private DateTime lastChatDiagnosticUtc;
         private List<string> previousChatFrame = new List<string>();
         private readonly List<List<string>> recentChatFrames = new List<List<string>>();
         private List<KeyValuePair<string, string>> glossaryEntries = new List<KeyValuePair<string, string>>();
@@ -1168,14 +999,18 @@ namespace MapleOverlay
         private HashSet<string> contextOnlyGlossaryKeys =
             new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private List<string> outboundCorrectableChineseTerms = new List<string>();
-        private KnowledgeInitializationResult knowledge;
-        private bool knowledgeInitializationBusy;
         private Rectangle chatRegion;
         private bool live;
         private bool firstLiveCapture;
         private bool captureBusy;
         private bool translateBusy;
         private int liveSessionVersion;
+        private CancellationTokenSource liveCancellation = new CancellationTokenSource();
+        private const int MaximumPendingChatLines = 60;
+        private const int PendingChatLifetimeSeconds = 30;
+        private int droppedChatLines;
+        private string lastTranslationFailure = "";
+        private CancellationTokenSource manualCancellation;
         private int screenshotCaptureSuspendCount;
         private bool screenshotSurfaceWasVisible;
         private bool screenshotFloatingWasVisible;
@@ -1183,7 +1018,6 @@ namespace MapleOverlay
         private AiTranslationWindowForm floatingWindow;
         private bool embeddedMode;
         private bool surfaceInitializationStarted;
-        private DateTime lastAiUse = DateTime.MinValue;
 
         public OfflineChatForm(OverlayForm owner, string baseDir)
         {
@@ -1191,7 +1025,6 @@ namespace MapleOverlay
             AutoScaleDimensions = new SizeF(96.0f, 96.0f);
             AutoScaleMode = AutoScaleMode.Dpi;
             dictionaryPath = Path.Combine(baseDir, "枫语幕词库.tsv");
-            ai = new OfflineAiClient(baseDir);
             LoadGlossary();
             Text = "枫语幕｜AI实时聊天翻译｜@奇怪小鸭";
             Icon = SystemIcons.Information; TopMost = true;
@@ -1199,17 +1032,8 @@ namespace MapleOverlay
             Size = new Size(600, 560); MinimumSize = new Size(520, 480);
             Font = new Font("Microsoft YaHei UI", 9.0f);
             BuildUi(); LoadRegion();
-            timer.Interval = 140;
+            timer.Interval = 117; // 140 / 1.2: approximately 20% more capture opportunities.
             timer.Tick += async delegate { await PollChatAsync(); };
-            releaseTimer.Interval = 30000;
-            releaseTimer.Tick += delegate {
-                if (!live && lastAiUse != DateTime.MinValue && DateTime.Now - lastAiUse > TimeSpan.FromMinutes(5))
-                {
-                    ai.Stop(); lastAiUse = DateTime.MinValue;
-                    status.Text = "空闲5分钟，已释放AI模型内存";
-                }
-            };
-            releaseTimer.Start();
             Shown += delegate {
                 if (!embeddedMode)
                 {
@@ -1230,7 +1054,7 @@ namespace MapleOverlay
                         floatingWindow.ShowPassiveIfAllowed();
                 }
             };
-            Disposed += delegate { outputOriginalFont.Dispose(); outputTranslationFont.Dispose(); };
+            Disposed += delegate { if (manualCancellation != null) { manualCancellation.Cancel(); manualCancellation.Dispose(); } timer.Dispose(); outputOriginalFont.Dispose(); outputTranslationFont.Dispose(); };
         }
 
         internal void PrepareForEmbeddedHost()
@@ -1252,29 +1076,9 @@ namespace MapleOverlay
             InitializeSurfaceAsync();
         }
 
-        private async void InitializeSurfaceAsync()
+        private void InitializeSurfaceAsync()
         {
-            try
-            {
-                RefreshAiStatus();
-                OnlineAiSettings online = OnlineAiSettings.Load();
-                Task<bool> warmup = !online.IsReady && ai.IsInstalled
-                    ? ai.EnsureStartedAsync() : null;
-                await InitializeKnowledgeInBackgroundAsync(false);
-                if (IsDisposed) return;
-                if (warmup != null)
-                {
-                    bool ready = await warmup;
-                    if (!IsDisposed)
-                        status.Text = ready ? "AI已预热｜热态翻译约数百毫秒" : ai.Status;
-                }
-                else if (online.IsReady)
-                    status.Text = "联网AI已就绪｜离线模型仅在联网失败时启动";
-            }
-            catch (Exception ex)
-            {
-                if (!IsDisposed) status.Text = "AI初始化未完成｜" + ex.Message;
-            }
+            RefreshAiStatus(); RefreshCloudAiState();
         }
 
         private void BuildUi()
@@ -1379,26 +1183,18 @@ namespace MapleOverlay
             Button onlineSettings = new BlueGlassButton { Text = "联网 AI 设置" };
             StyleAiCardButton(onlineSettings);
             onlineSettings.Click += delegate {
-                using (OnlineAiForm form = new OnlineAiForm()) form.ShowDialog(this);
-                translationCache.Clear(); translationCacheOrder.Clear();
-                RefreshCloudAiState();
-            };
-            Button install = new BlueGlassButton { Text = "离线备用模型" };
-            StyleAiCardButton(install);
-            install.Click += async delegate {
-                ai.Stop();
-                using (AiInstallForm form = new AiInstallForm(ai.AiRoot, dictionaryPath)) form.ShowDialog(this);
-                ai.RefreshInstallationPaths();
-                LoadGlossary(); RefreshAiStatus();
-                await InitializeKnowledgeInBackgroundAsync(false);
+                StopLiveTranslation();
+                if (overlay != null) overlay.ShowOnlineSettings(delegate {
+                    translationCache.Clear(); translationCacheOrder.Clear(); RefreshCloudAiState();
+                });
             };
             Button credits = new BlueGlassButton { Text = "鸣谢与声明" };
             StyleAiCardButton(credits);
             credits.Click += delegate { ShowCreditsAndDisclaimer(); };
             tools.Controls.Add(bind, 0, 2);
             tools.Controls.Add(onlineSettings, 1, 2);
-            tools.Controls.Add(install, 0, 3);
-            tools.Controls.Add(credits, 1, 3);
+            tools.Controls.Add(credits, 0, 3);
+            tools.SetColumnSpan(credits, 2);
             toolsCard.Controls.Add(tools);
             root.Controls.Add(toolsCard, 0, 0);
 
@@ -1409,7 +1205,7 @@ namespace MapleOverlay
             output.ScrollBars = RichTextBoxScrollBars.Vertical;
             output.BackColor = Color.FromArgb(12, 31, 55); output.ForeColor = Color.White;
             output.DetectUrls = false; output.Font = outputOriginalFont;
-            output.Text = "准备好了。配好联网AI后会直接使用；联网失败时自动改用离线备用。\r\n\r\n";
+            output.Text = "准备好了。请先配置联网 AI；连接失败时会显示原因并保留原文。\r\n\r\n";
             root.Controls.Add(output, 0, 2);
 
             TableLayoutPanel manual = new TableLayoutPanel {
@@ -1458,7 +1254,7 @@ namespace MapleOverlay
 
         private void ShowCreditsAndDisclaimer()
         {
-            using (Form dialog = new Form())
+            Form dialog = new Form();
             {
                 dialog.AutoScaleDimensions = new SizeF(96.0f, 96.0f);
                 dialog.AutoScaleMode = AutoScaleMode.Dpi;
@@ -1494,7 +1290,7 @@ namespace MapleOverlay
                         "启用联网 AI 时，当前聊天短句、命中术语和固定提示词会发送给你选择的 AI 服务商。请勿输入账号、密码等敏感信息。"
                 };
                 text.LinkClicked += delegate(object sender, LinkClickedEventArgs e) {
-                    try { Process.Start(e.LinkText); } catch { }
+                    try { Clipboard.SetText(e.LinkText); } catch { }
                 };
                 Button close = new Button {
                     Text = "知道了", Dock = DockStyle.Right,
@@ -1506,15 +1302,16 @@ namespace MapleOverlay
                 contentPanel.Controls.Add(text);
                 dialog.Controls.Add(contentPanel); dialog.Controls.Add(footer);
                 dialog.AcceptButton = close; dialog.CancelButton = close;
-                dialog.ShowDialog(this);
+                close.Click += delegate { dialog.Close(); };
+                if (overlay != null) overlay.ShowEmbeddedPage(dialog, null);
+                else dialog.Dispose();
             }
         }
 
         private void RefreshAiStatus()
         {
-            status.Text = ai.IsInstalled
-                ? "模型已安装｜知识初始化" + (knowledge == null ? "待检查" : "完成 " + knowledge.Entries + "条") + "｜游戏友好模式"
-                : "未安装模型包";
+            OnlineAiSettings settings = OnlineAiSettings.Load();
+            status.Text = settings.IsReady ? settings.Provider + "已配置｜可开始实时翻译" : settings.NotReadyReason;
         }
 
         private void RefreshCloudAiState()
@@ -1522,14 +1319,14 @@ namespace MapleOverlay
             OnlineAiSettings settings = OnlineAiSettings.Load();
             cloudMode.Text = settings.IsReady
                 ? "当前：" + settings.Provider + "｜联网优先"
-                : "当前：离线模式｜点“联网AI设置”可提速提准";
+                : "当前：尚未配置｜请打开“联网 AI 设置”";
         }
 
         private static int LoadTranslationDirection()
         {
             try
             {
-                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\FengYuMu\AIChat"))
+                using (UserSettingsSection key = UserSettings.Open(@"Software\FengYuMu\AIChat"))
                 {
                     int value = key == null ? 0 : Convert.ToInt32(key.GetValue("TranslationDirection", 0));
                     return value >= 0 && value <= 2 ? value : 0;
@@ -1542,7 +1339,7 @@ namespace MapleOverlay
         {
             try
             {
-                using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu\AIChat"))
+                using (UserSettingsSection key = UserSettings.Open(@"Software\FengYuMu\AIChat"))
                     key.SetValue("TranslationDirection", value, RegistryValueKind.DWord);
             }
             catch { }
@@ -1576,10 +1373,10 @@ namespace MapleOverlay
             {
                 int directionIndex = translationDirection.SelectedIndex;
                 string translated = await TranslateManualTextAsync(source, directionIndex);
-                AppendTranslation(source, translated, ChatVisualStyle.Default,
+                AppendTranslation(source, translated, ChatVisualStyle.Manual,
                     OutputLabelForDirection(directionIndex));
-                try { Clipboard.SetText(translated); } catch { }
-                status.Text = "已翻译并复制，可直接粘贴到游戏";
+                try { Clipboard.SetText(translated); status.Text = "已翻译并复制，可直接粘贴到游戏"; }
+                catch { status.Text = "翻译完成，但复制失败，请从译文中手动复制"; }
             }
             catch (Exception ex) { status.Text = "翻译失败：" + ex.Message; }
             finally { manualTranslate.Enabled = true; }
@@ -1590,14 +1387,17 @@ namespace MapleOverlay
             string text = (source ?? "").Trim();
             if (text.Length == 0) throw new InvalidOperationException("先输入一句中文");
             string translated = await TranslateManualTextAsync(text, 1);
-            AppendTranslation(text, translated, ChatVisualStyle.Default, "English");
-            try { Clipboard.SetText(translated); } catch { }
-            status.Text = "悬浮窗已翻译并复制，可直接粘贴到游戏";
+            AppendTranslation(text, translated, ChatVisualStyle.Manual, "English");
+            try { Clipboard.SetText(translated); status.Text = "悬浮窗已翻译并复制，可直接粘贴到游戏"; }
+            catch { status.Text = "翻译完成，但复制失败，请从译文中手动复制"; }
             return translated;
         }
 
         private async Task<string> TranslateManualTextAsync(string source, int directionIndex)
         {
+            if (manualCancellation != null) { manualCancellation.Cancel(); manualCancellation.Dispose(); }
+            manualCancellation = new CancellationTokenSource();
+            CancellationToken manualToken = manualCancellation.Token;
             string target = TargetLanguageForDirection(directionIndex);
             string translationSource = CorrectOutboundChineseTerms(source, target);
             OutboundChatIntent intent = OutboundChatIntentPolicy.Analyze(translationSource);
@@ -1615,10 +1415,13 @@ namespace MapleOverlay
                     glossary = OutboundChatIntentPolicy.AppendPromptConstraint(glossary,
                         intent, target);
                     translated = await TranslateWithPreferredAiAsyncForTarget(protectedSource,
-                        SourceLanguageForDirection(translationSource, directionIndex), target, glossary);
+                        SourceLanguageForDirection(translationSource, directionIndex), target, glossary, manualToken);
                 }
+                if (String.IsNullOrWhiteSpace(translated))
+                    throw new InvalidOperationException(String.IsNullOrEmpty(lastTranslationFailure) ? "翻译服务未返回有效译文，已保留输入，未复制" : lastTranslationFailure);
                 translated = RestoreProtectedTokens(translated, termTokens);
             }
+            manualToken.ThrowIfCancellationRequested();
             return OutboundChatIntentPolicy.NormalizeTranslation(translationSource,
                 translated, target, intent);
         }
@@ -1634,13 +1437,30 @@ namespace MapleOverlay
             chatRegion = region;
             if (changed)
             {
-                previousChatFrame.Clear();
+                previousChatFrame.Clear(); chatContinuity.Reset();
                 recentChatFrames.Clear();
                 pendingChatLines.Clear();
             }
             if (IsHandleCreated)
                 status.Text = (origin == ChatRegionOrigin.Manual ? "手动聊天区" : "F9自动聊天区") +
                     "已按当前游戏窗口同步 " + region.Width + "×" + region.Height;
+        }
+
+        internal void OnCaptureGeometryChanged(Rectangle region)
+        {
+            RenewChatCancellation();
+            previousChatFrame.Clear(); chatContinuity.Reset(); recentChatFrames.Clear(); pendingChatLines.Clear();
+            firstLiveCapture = true;
+            chatRegion = region;
+            if (!IsDisposed) status.Text = "游戏窗口变化，已取消旧画面；聊天区域将自动同步";
+        }
+
+        private void RenewChatCancellation()
+        {
+            liveSessionVersion++;
+            CancellationTokenSource previous = liveCancellation;
+            liveCancellation = new CancellationTokenSource();
+            if (previous != null) { previous.Cancel(); previous.Dispose(); }
         }
 
         internal void ApplyFloatingWindow(bool enabled)
@@ -1688,6 +1508,8 @@ namespace MapleOverlay
         {
             screenshotCaptureSuspendCount++;
             timer.Stop();
+            Program.LogRuntimeEvent("chat-capture-paused", "live=" + live + " count=" + screenshotCaptureSuspendCount);
+            if (live) status.Text = "聊天监听暂挂：正在处理游戏截图";
             if (screenshotCaptureSuspendCount == 1)
             {
                 // In embedded mode the page sits in the main window, outside the locked game
@@ -1718,13 +1540,15 @@ namespace MapleOverlay
             if (live)
             {
                 timer.Start();
+                status.Text = "截图结束，继续监听新聊天";
+                Program.LogRuntimeEvent("chat-capture-resumed", "count=" + screenshotCaptureSuspendCount);
             }
         }
 
         private async Task BindRegionAsync()
         {
             StopLiveTranslation();
-            Form host = embeddedMode ? FindForm() : this;
+            Form host = embeddedMode ? TopLevelControl as Form : this;
             bool hostWasVisible = host != null && host.Visible;
             Rectangle game = Rectangle.Empty;
             // Manual chat selection is meaningful only inside the locked MapleStory client.
@@ -1733,8 +1557,7 @@ namespace MapleOverlay
             if (overlay == null || !overlay.TryGetMapleWindowBounds(out game))
             {
                 status.Text = "未找到可用的 MapleStory 窗口";
-                MessageBox.Show("请先启动 MapleStory 并切换为窗口模式，再框选游戏聊天区。",
-                    "实时聊天翻译");
+                status.Text = "请先启动 MapleStory 并切换为窗口模式，再框选游戏聊天区。";
                 return;
             }
             try
@@ -1744,18 +1567,24 @@ namespace MapleOverlay
                 // treated the application itself as the capture target.
                 if (hostWasVisible) host.Hide();
                 await Task.Delay(80);
-                Rectangle initial = ChatRegionSettings.ResolveForGame(game);
-                using (ChatRegionSelectorForm selector = new ChatRegionSelectorForm(game, initial))
-                {
-                    if (selector.ShowDialog() == DialogResult.OK)
-                    {
-                        chatRegion = selector.SelectedScreenRegion;
-                        ChatRegionSettings.SaveManual(chatRegion, game);
-                        previousChatFrame.Clear(); recentChatFrames.Clear(); pendingChatLines.Clear();
-                        status.Text = "聊天区已统一绑定 " + chatRegion.Width + "×" + chatRegion.Height +
-                            "｜框内AI翻译，F8跳过";
+                ChatRegionSelectorForm selector = new ChatRegionSelectorForm(game,
+                    ChatRegionSettings.ResolveForGame(game));
+                overlay.ShowGameRegionSelector(selector, game, delegate {
+                    if (selector.DialogResult != DialogResult.OK) return;
+                    Rectangle current;
+                    if (!overlay.TryGetMapleWindowBounds(out current) || current != game) {
+                        status.Text = "框选期间游戏窗口发生变化，未保存，请重新框选。"; return;
                     }
-                }
+                    chatRegion = selector.SelectedScreenRegion;
+                    ChatRegionSettings.SaveManual(chatRegion, game);
+                    previousChatFrame.Clear(); chatContinuity.Reset(); recentChatFrames.Clear(); pendingChatLines.Clear();
+                    status.Text = "聊天区已绑定 " + chatRegion.Width + "×" + chatRegion.Height + "｜框内AI翻译，F8跳过";
+                });
+            }
+            catch (Exception ex)
+            {
+                status.Text = "框选已取消：" + ex.Message;
+                Program.LogRuntimeEvent("chat-region-refused", "type=" + ex.GetType().Name);
             }
             finally
             {
@@ -1774,11 +1603,14 @@ namespace MapleOverlay
                 StopLiveTranslation();
                 return;
             }
-            if (chatRegion.Width < 80) { MessageBox.Show("请先按 F9 自动对齐聊天框，或点击“框选/调整游戏聊天区”手动设置。", "实时聊天翻译"); return; }
+            OnlineAiSettings online = OnlineAiSettings.Load();
+            if (!online.IsReady) { status.Text = online.NotReadyReason; return; }
+            if (chatRegion.Width < 80) { status.Text = "请先按 F9 自动对齐聊天框，或在本页设置聊天区。"; return; }
             live = true;
-            liveSessionVersion++;
+            RenewChatCancellation();
+            droppedChatLines = 0;
             liveButton.Text = "停止实时翻译";
-            previousChatFrame.Clear();
+            previousChatFrame.Clear(); chatContinuity.Reset();
             recentChatFrames.Clear();
             pendingChatLines.Clear();
             firstLiveCapture = true;
@@ -1786,23 +1618,14 @@ namespace MapleOverlay
             // The user's saved floating-window preference remains authoritative.
             ApplyFloatingWindow(overlay != null && overlay.AiChatFloatingWindowEnabled);
             timer.Start();
-            OnlineAiSettings online = OnlineAiSettings.Load();
-            if (online.IsReady)
-            {
-                status.Text = online.Provider + "已就绪｜140ms快速监听";
-            }
-            else
-            {
-                status.Text = "正在预热离线AI，同时开始监听聊天…";
-                int sessionVersion = liveSessionVersion;
-                bool ready = await ai.EnsureStartedAsync();
-                if (live && sessionVersion == liveSessionVersion)
-                    status.Text = ready ? "离线AI已预热｜140ms快速监听" : ai.Status;
-            }
+            status.Text = online.Provider + "已就绪｜正在监听新聊天";
+            await Task.FromResult(0);
         }
 
         internal void StopLiveTranslation()
         {
+            if (liveCancellation != null) liveCancellation.Cancel();
+            if (manualCancellation != null) manualCancellation.Cancel();
             live = false;
             liveSessionVersion++;
             timer.Stop();
@@ -1813,18 +1636,21 @@ namespace MapleOverlay
 
         private async Task PollChatAsync(bool forceOnce = false)
         {
+            if (forceOnce && liveCancellation.IsCancellationRequested) RenewChatCancellation();
             if ((!live && !forceOnce) || captureBusy || screenshotCaptureSuspendCount > 0) return;
             int sessionVersion = liveSessionVersion;
             captureBusy = true;
             try
             {
-                ChatCaptureFrame capture = await overlay.CaptureChatAsync(chatRegion);
-                if (!forceOnce && (!live || sessionVersion != liveSessionVersion)) return;
+                ChatCaptureFrame capture = await overlay.CaptureChatAsync(chatRegion, liveCancellation.Token);
+                if (sessionVersion != liveSessionVersion || (!forceOnce && !live)) return;
                 // OcrResult.Text may flatten unrelated visual rows into one sentence.
                 // Preserve the OCR engine's physical line boundaries for chat parsing.
                 List<string> lines = ParseChatLines(capture.PhysicalLineText());
                 List<string> newLines = GetNewChatLines(previousChatFrame, lines);
-                if (firstLiveCapture)
+                bool advanceFrame;
+                newLines = chatContinuity.Resolve(previousChatFrame, lines, newLines, SameChatLine, out advanceFrame);
+                if (firstLiveCapture && lines.Count > 0)
                 {
                     firstLiveCapture = false;
                     int first = Math.Max(0, lines.Count - 2);
@@ -1832,9 +1658,13 @@ namespace MapleOverlay
                 }
                 newLines = SuppressRecentOcrReappearances(recentChatFrames,
                     previousChatFrame, lines, newLines);
-                previousChatFrame = lines;
-                recentChatFrames.Add(new List<string>(lines));
-                while (recentChatFrames.Count > 3) recentChatFrames.RemoveAt(0);
+                if (advanceFrame)
+                {
+                    previousChatFrame = lines;
+                    recentChatFrames.Add(new List<string>(lines));
+                    while (recentChatFrames.Count > 3) recentChatFrames.RemoveAt(0);
+                }
+                int queuedBefore = pendingChatLines.Count;
                 // Frame differencing already preserves genuine repeated messages while
                 // suppressing a static OCR frame. Text-based queue filtering would swallow
                 // a real duplicate sent while the first copy is still being translated.
@@ -1846,10 +1676,28 @@ namespace MapleOverlay
                     pendingChatLines.Enqueue(new PendingChatLine {
                         Text = line, Style = visualStyle
                     });
+                    while (pendingChatLines.Count > MaximumPendingChatLines)
+                    {
+                        pendingChatLines.Dequeue(); droppedChatLines++;
+                    }
                 }
-                status.Text = pendingChatLines.Count > 0 ? "检测到新消息，待翻译 " + pendingChatLines.Count + " 条" : status.Text;
+                if ((DateTime.UtcNow - lastChatDiagnosticUtc).TotalSeconds >= 2 || pendingChatLines.Count > queuedBefore)
+                {
+                    lastChatDiagnosticUtc = DateTime.UtcNow;
+                    Program.LogRuntimeEvent("chat-capture", "session=" + sessionVersion + " live=" + live +
+                        " rawLines=" + capture.Lines.Count + " lines=" + lines.Count + " candidates=" + newLines.Count +
+                        " queued=" + pendingChatLines.Count + " advancing=" + advanceFrame +
+                        " regionWidth=" + chatRegion.Width + " regionHeight=" + chatRegion.Height);
+                    if (!translateBusy && pendingChatLines.Count == 0)
+                        status.Text = "监听中｜识别 " + lines.Count + " 行｜" +
+                            (!advanceFrame && lines.Count > 0 ? "新画面确认中" : "等待新消息");
+                }
+                if (pendingChatLines.Count > 0)
+                    status.Text = "检测到新消息，待翻译 " + pendingChatLines.Count + " 条" +
+                        (droppedChatLines > 0 ? "｜累计丢弃积压消息 " + droppedChatLines + " 条" : "");
             }
-            catch (Exception ex) { status.Text = ex.Message; }
+            catch (OperationCanceledException) { }
+            catch (Exception ex) { if (!IsDisposed) status.Text = ex.Message; }
             finally { captureBusy = false; }
             if (!translateBusy) await ProcessPendingChatAsync(sessionVersion, forceOnce);
         }
@@ -1858,19 +1706,24 @@ namespace MapleOverlay
         {
             if (translateBusy) return;
             translateBusy = true;
+            CancellationToken cancellationToken = liveCancellation.Token;
             try
             {
                 while (pendingChatLines.Count > 0 &&
                     (forceOnce || (live && sessionVersion == liveSessionVersion)))
                 {
                     OnlineAiSettings online = OnlineAiSettings.Load();
+                    cancellationToken.ThrowIfCancellationRequested();
+                    if (sessionVersion != liveSessionVersion) return;
                     int batchLimit = forceOnce || !online.IsReady ? 1 : 3;
                     List<PreparedChatLine> batch = new List<PreparedChatLine>();
-                    Dictionary<string, Task<string>> tasksByCacheKey =
-                        new Dictionary<string, Task<string>>(StringComparer.Ordinal);
+                    Dictionary<string, Task<ChatTranslationOutcome>> tasksByCacheKey =
+                        new Dictionary<string, Task<ChatTranslationOutcome>>(StringComparer.Ordinal);
                     while (pendingChatLines.Count > 0 && batch.Count < batchLimit)
                     {
                         PendingChatLine pending = pendingChatLines.Dequeue();
+                        if ((DateTime.UtcNow - pending.EnqueuedUtc).TotalSeconds > PendingChatLifetimeSeconds)
+                        { droppedChatLines++; continue; }
                         string speakerPrefix, message;
                         SplitSpeaker(pending.Text, out speakerPrefix, out message);
                         string cleanedMessage = NormalizeCommonChatOcr(message);
@@ -1882,25 +1735,33 @@ namespace MapleOverlay
                             SpeakerPrefix = speakerPrefix,
                             NameTokens = nameTokens
                         };
-                        lastAiUse = DateTime.Now;
+                        prepared.Untranslated = protectedMessage;
+                        if (ChatBoundaryPolicy.HasUnresolvedSpeaker(cleanedMessage))
+                        {
+                            prepared.Translated = null;
+                            prepared.Failure = "聊天分句未确认，暂未发送给 AI；请等待下一帧或检查聊天选区。";
+                            batch.Add(prepared); continue;
+                        }
                         if (!TryKnownChatIntentTranslation(protectedMessage, out prepared.Translated) &&
                             !TryExactGlossaryTranslation(protectedMessage, out prepared.Translated))
                         {
                             const string targetLanguage = "简体中文";
                             prepared.CacheKey = targetLanguage + "|" +
                                 NormalizeChatPhrase(cleanedMessage);
-                            if (!translationCache.TryGetValue(prepared.CacheKey,
-                                out prepared.Translated))
+                            bool cached = translationCache.TryGetValue(prepared.CacheKey, out prepared.Translated);
+                            if (cached && !IsPlausibleChatTranslationForTarget(protectedMessage, prepared.Translated, targetLanguage))
+                            { ForgetTranslation(prepared.CacheKey); cached = false; prepared.Translated = null; }
+                            if (!cached)
                             {
-                                Task<string> existingTask;
+                                Task<ChatTranslationOutcome> existingTask;
                                 if (!tasksByCacheKey.TryGetValue(prepared.CacheKey,
                                     out existingTask))
                                 {
                                     string glossary = BuildGlossaryForTarget(protectedMessage,
                                         targetLanguage);
                                     string sourceLanguage = DetectChatSourceLanguage(cleanedMessage);
-                                    existingTask = TranslateWithPreferredAiAsync(protectedMessage,
-                                        sourceLanguage, glossary);
+                                    existingTask = RequestChatTranslationAsync(protectedMessage,
+                                        sourceLanguage, targetLanguage, glossary, cancellationToken);
                                     tasksByCacheKey[prepared.CacheKey] = existingTask;
                                 }
                                 prepared.TranslationTask = existingTask;
@@ -1911,26 +1772,28 @@ namespace MapleOverlay
                     }
 
                     if (tasksByCacheKey.Count > 0)
-                        await Task.WhenAll(new List<Task<string>>(tasksByCacheKey.Values));
-                    if (!forceOnce && (!live || sessionVersion != liveSessionVersion)) return;
+                        await Task.WhenAll(new List<Task<ChatTranslationOutcome>>(tasksByCacheKey.Values));
+                    if (sessionVersion != liveSessionVersion || (!forceOnce && !live)) return;
 
+                    int failedTranslations = 0; string batchFailure = "";
                     foreach (PreparedChatLine prepared in batch)
                     {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        if (sessionVersion != liveSessionVersion || (!forceOnce && !live)) return;
                         if (prepared.TranslationTask != null)
                         {
-                            prepared.Translated = prepared.TranslationTask.Result;
-                            if (prepared.CacheAfterTranslation)
-                                RememberTranslation(prepared.CacheKey, prepared.Translated);
+                            ChatTranslationOutcome outcome = prepared.TranslationTask.Result;
+                            prepared.Translated = outcome.Text; prepared.Failure = outcome.Failure;
                         }
-                        string translated = RestorePlayerNames(prepared.Translated,
-                            prepared.NameTokens);
-                        AppendTranslation(prepared.Source,
-                            prepared.SpeakerPrefix + translated, prepared.Pending.Style);
+                        if (!PublishPreparedChatLine(prepared)) { failedTranslations++; batchFailure = prepared.Failure; }
                     }
-                    status.Text = pendingChatLines.Count == 0 ? "新消息已翻译" : "正在翻译，剩余 " + pendingChatLines.Count + " 条";
+                    status.Text = (pendingChatLines.Count == 0 ? "本批处理完成" : "正在翻译，剩余 " + pendingChatLines.Count + " 条") +
+                        (failedTranslations > 0 ? "｜" + failedTranslations + " 条未翻译，原因已写入对应记录：" + batchFailure : "") +
+                        (droppedChatLines > 0 ? "｜已丢弃过期或积压消息 " + droppedChatLines + " 条" : "");
                 }
             }
-            catch (Exception ex) { status.Text = ex.Message; }
+            catch (OperationCanceledException) { }
+            catch (Exception ex) { if (!IsDisposed) status.Text = ex.Message; }
             finally { translateBusy = false; }
         }
 
@@ -1942,40 +1805,68 @@ namespace MapleOverlay
         }
 
         private async Task<string> TranslateWithPreferredAiAsyncForTarget(string source,
-            string sourceLanguage, string targetLanguage, string glossary)
+            string sourceLanguage, string targetLanguage, string glossary,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
+            ChatTranslationOutcome outcome = await RequestChatTranslationAsync(source, sourceLanguage,
+                targetLanguage, glossary, cancellationToken);
+            lastTranslationFailure = outcome.Failure;
+            status.Text = outcome.Text == null ? outcome.Failure : outcome.Provider + "已翻译";
+            return outcome.Text;
+        }
+
+        private async Task<ChatTranslationOutcome> RequestChatTranslationAsync(string source,
+            string sourceLanguage, string targetLanguage, string glossary, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
             OnlineAiSettings online = OnlineAiSettings.Load();
-            if (online.IsReady)
-            {
-                try
-                {
-                    string translated = await OnlineAiClient.TranslateAsync(online, source,
-                        targetLanguage, glossary);
-                    if (targetLanguage.IndexOf("中文", StringComparison.OrdinalIgnoreCase) >= 0)
-                        translated = OfflineAiClient.ToSimplifiedChinese(translated);
-                    if (IsPlausibleChatTranslationForTarget(source, translated, targetLanguage))
-                    {
-                        status.Text = online.Provider + "已翻译";
-                        return translated;
-                    }
-                    status.Text = online.Provider + "返回异常，自动改用离线备用";
-                }
-                catch
-                {
-                    status.Text = online.Provider + "连接失败，自动改用离线备用";
-                }
-            }
+            ChatTranslationOutcome outcome = new ChatTranslationOutcome { Provider = online.Provider };
+            if (!online.IsReady) { outcome.Failure = online.NotReadyReason; return outcome; }
             try
             {
-                string translated = await ai.TranslateAsync(source, sourceLanguage, targetLanguage, glossary);
-                return IsPlausibleChatTranslationForTarget(source, translated, targetLanguage) ? translated : source;
+                string translated = await OnlineAiClient.TranslateAsync(online, source,
+                    targetLanguage, glossary, cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+                if (targetLanguage.IndexOf("中文", StringComparison.OrdinalIgnoreCase) >= 0)
+                    translated = ChatTextRules.ToSimplifiedChinese(translated);
+                if (IsPlausibleChatTranslationForTarget(source, translated, targetLanguage))
+                { outcome.Text = translated; return outcome; }
+                outcome.Failure = "服务商已响应，但译文未通过完整性检查；原文保留在上方。";
             }
-            catch
+            catch (OperationCanceledException) { throw; }
+            catch (Exception ex)
             {
-                status.Text = online.IsReady
-                    ? "联网和离线备用都不可用，已保留原文"
-                    : "请先配置联网AI或安装离线备用模型";
-                return source;
+                cancellationToken.ThrowIfCancellationRequested();
+                outcome.Failure = OnlineAiClient.DescribeFailure(ex, online);
+            }
+            return outcome;
+        }
+
+        private bool PublishPreparedChatLine(PreparedChatLine prepared)
+        {
+            if (!IsPlausibleChatTranslationForTarget(prepared.Untranslated, prepared.Translated, "简体中文"))
+            {
+                ForgetTranslation(prepared.CacheKey);
+                if (String.IsNullOrEmpty(prepared.Failure)) prepared.Failure = "未取得有效中文译文；原文保留在上方。";
+                AppendTranslation(prepared.Source, prepared.Failure, prepared.Pending.Style, "未翻译", false);
+                Program.LogRuntimeEvent("chat-translation-result", "success=false");
+                return false;
+            }
+            if (prepared.CacheAfterTranslation) RememberTranslation(prepared.CacheKey, prepared.Translated);
+            string translated = RestorePlayerNames(prepared.Translated, prepared.NameTokens);
+            AppendTranslation(prepared.Source, prepared.SpeakerPrefix + translated, prepared.Pending.Style);
+            Program.LogRuntimeEvent("chat-translation-result", "success=true");
+            return true;
+        }
+
+        private void ForgetTranslation(string key)
+        {
+            if (String.IsNullOrEmpty(key) || !translationCache.Remove(key)) return;
+            int count = translationCacheOrder.Count;
+            for (int i = 0; i < count; i++)
+            {
+                string current = translationCacheOrder.Dequeue();
+                if (!String.Equals(current, key, StringComparison.Ordinal)) translationCacheOrder.Enqueue(current);
             }
         }
 
@@ -2147,7 +2038,7 @@ namespace MapleOverlay
                     output.Add(presence);
                     continue;
                 }
-                line = RepairChatSpeakerMarker(line);
+                line = ChatBoundaryPolicy.RepairBadges(RepairChatSpeakerMarker(line));
                 int noticeAt = line.IndexOf("[Notice]", StringComparison.OrdinalIgnoreCase);
                 if (noticeAt < 0 && Regex.IsMatch(line, @"^\[[^\]]{2,12}\]\s*Money\s+lost\s+through\s+cash\s+transactions", RegexOptions.IgnoreCase))
                     noticeAt = line.IndexOf(']') + 1;
@@ -2189,8 +2080,15 @@ namespace MapleOverlay
                     if (output.Count > 0 && IsLikelyWrappedChatTail(output[output.Count - 1], line))
                         output[output.Count - 1] = output[output.Count - 1] + " " + line;
                 }
-                else for (int i = 0; i < matches.Count; i++)
+                else
                 {
+                    // A new speaker may begin after the previous message's wrapped price
+                    // on the same physical OCR row. Preserve that price before splitting.
+                    string tail = line.Substring(0, matches[0].Index).Trim();
+                    if (output.Count > 0 && IsLikelyWrappedChatTail(output[output.Count - 1], tail))
+                        output[output.Count - 1] += " " + tail;
+                    for (int i = 0; i < matches.Count; i++)
+                    {
                     Match marker = matches[i];
                     string name = marker.Groups[1].Value;
                     // Channel badges are frequently glued to the name by OCR (SHO±9/CHO1).
@@ -2201,6 +2099,7 @@ namespace MapleOverlay
                     string message = line.Substring(messageStart, messageEnd - messageStart).Trim(' ', '-', '>', '|');
                     if (message.Length < 2) continue;
                     output.Add(name + ": " + message);
+                    }
                 }
                 if (IsCompleteChatNotice(notice)) output.Add("系统公告: " + notice);
             }
@@ -2968,7 +2867,7 @@ namespace MapleOverlay
             string output = (translation ?? "").Trim();
             if (input.Length == 0 || output.Length == 0) return false;
             if (output.IndexOf('\r') >= 0 || output.IndexOf('\n') >= 0) return false;
-            if (OfflineAiClient.LooksLikeInstructionLeak(output)) return false;
+            if (ChatTextRules.LooksLikeInstructionLeak(output)) return false;
             int maximum = Math.Max(32, input.Length * 3 + 12);
             if (output.Length > maximum) return false;
             bool targetChinese = (targetLanguage ?? "").IndexOf("中文", StringComparison.OrdinalIgnoreCase) >= 0;
@@ -3180,38 +3079,6 @@ namespace MapleOverlay
             });
             translationCache.Clear();
             translationCacheOrder.Clear();
-            knowledge = null;
-        }
-
-        private async Task InitializeKnowledgeInBackgroundAsync(bool force)
-        {
-            if (!ai.IsInstalled) return;
-            while (knowledgeInitializationBusy) await Task.Delay(40);
-            if (!force && knowledge != null) return;
-            knowledgeInitializationBusy = true;
-            status.Text = force ? "正在后台同步AI词库…" : "词库已就绪｜后台检查AI知识…";
-            try
-            {
-                KnowledgeInitializationResult result = await Task.Factory.StartNew(delegate {
-                    return MapleKnowledgeInitializer.Initialize(ai.AiRoot, dictionaryPath);
-                });
-                knowledge = result;
-                status.Text = (result.Changed ? "AI已切换到新词库 " : "AI词库已就绪 ") + result.Entries + "条";
-            }
-            catch (Exception ex) { status.Text = "AI知识检查失败：" + ex.Message; }
-            finally { knowledgeInitializationBusy = false; }
-        }
-
-        internal KnowledgeInitializationResult SyncKnowledge()
-        {
-            LoadGlossary();
-            if (ai.IsInstalled)
-            {
-                try { knowledge = MapleKnowledgeInitializer.Initialize(ai.AiRoot, dictionaryPath); }
-                catch { knowledge = null; }
-            }
-            RefreshAiStatus();
-            return knowledge;
         }
 
         internal int ReloadGlossary()
@@ -3296,7 +3163,7 @@ namespace MapleOverlay
                 else AppendVisibleTranslation(record);
             }
             else
-                status.Text = "新译文已归入“" +
+                status.Text = (outputLabel == "未翻译" ? "未翻译记录已归入“" : "新译文已归入“") +
                     AiTranslationWindowForm.CategoryName(visualStyle.Category) + "”";
             if (showInFloatingWindow && floatingWindowEnabled && live && screenshotCaptureSuspendCount == 0)
             {
@@ -3356,7 +3223,7 @@ namespace MapleOverlay
         public void StopService()
         {
             StopLiveTranslation();
-            releaseTimer.Stop(); ai.Stop();
+            if (manualCancellation != null) manualCancellation.Cancel();
             if (floatingWindow != null && !floatingWindow.IsDisposed)
                 floatingWindow.ClosePermanently();
         }
@@ -3372,518 +3239,198 @@ namespace MapleOverlay
         }
     }
 
-    internal sealed class AiInstallForm : Form
-    {
-        private readonly string aiRoot;
-        private readonly string dictionaryPath;
-        private readonly Label progress = new Label();
-        private readonly ProgressBar progressBar = new ProgressBar();
-        private readonly Button install17 = new Button();
-        private readonly Button install4 = new Button();
-        private readonly Button install8 = new Button();
-        private readonly Button update = new Button();
-
-        private sealed class RemoteFileInfo
-        {
-            public long Length;
-            public string ETag;
-        }
-
-        public AiInstallForm(string aiRoot, string dictionaryPath)
-        {
-            this.aiRoot = aiRoot;
-            this.dictionaryPath = dictionaryPath;
-            AutoScaleDimensions = new SizeF(96.0f, 96.0f);
-            AutoScaleMode = AutoScaleMode.Dpi;
-            Text = "安装离线AI模型"; StartPosition = FormStartPosition.CenterParent;
-            Size = new Size(690, 390); Font = new Font("Microsoft YaHei UI", 9.0f);
-            TextBox info = new TextBox { Dock = DockStyle.Fill, Multiline = true, ReadOnly = true, ScrollBars = ScrollBars.Vertical,
-                Text = "模型安装位置（就在程序旁边）：\r\n" + aiRoot + "\r\n\r\n程序自动识别 AMD、NVIDIA、Intel Vulkan 显卡；显卡不可用时自动回退CPU。\r\n老电脑推荐1.7B约1.1GB；4B约2.5GB；8B约5GB。下载后永久离线免费。\r\n\r\n下载完成后会自动用资料站整理内容和本地词库完成首次知识初始化；这是轻量检索知识库，不修改模型权重。\r\n如果官方站下载不畅，也可以从QQ群取得模型包并解压到上面的目录。" };
-            Panel bottom = new Panel { Dock = DockStyle.Bottom, Height = 145 };
-            FlowLayoutPanel buttons = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 82, WrapContents = true };
-            install17.Text = "安装超轻1.7B（老电脑推荐）"; install17.AutoSize = true;
-            install17.Click += async delegate { await InstallAsync("1.7B"); };
-            install4.Text = "一键安装轻量4B"; install4.AutoSize = true;
-            install4.Click += async delegate { await InstallAsync("4B"); };
-            install8.Text = "一键安装高质量8B"; install8.AutoSize = true;
-            install8.Click += async delegate { await InstallAsync("8B"); };
-            update.Text = "检查并更新现有模型"; update.AutoSize = true;
-            update.Click += async delegate { await UpdateExistingAsync(); };
-            Button folder = new Button { Text = "打开模型文件夹", AutoSize = true };
-            folder.Click += delegate { Directory.CreateDirectory(aiRoot); Process.Start("explorer.exe", aiRoot); };
-            buttons.Controls.Add(install17); buttons.Controls.Add(install4); buttons.Controls.Add(install8); buttons.Controls.Add(update); buttons.Controls.Add(folder);
-            progressBar.Location = new Point(8, 92); progressBar.Size = new Size(430, 20);
-            progress.Location = new Point(447, 94); progress.AutoSize = true; progress.Text = "尚未开始";
-            bottom.Controls.Add(buttons); bottom.Controls.Add(progressBar); bottom.Controls.Add(progress);
-            Controls.Add(info); Controls.Add(bottom);
-        }
-
-        private async Task InstallAsync(string size)
-        {
-            SetButtons(false);
-            try
-            {
-                Directory.CreateDirectory(aiRoot);
-                await InstallRuntimeAsync(false);
-
-                string fileName = "Qwen3-" + size + "-Q4_K_M.gguf";
-                string modelUrl = await Task.Factory.StartNew(delegate { return FindModelUrl(size, fileName); });
-                await InstallModelAsync(modelUrl, Path.Combine(aiRoot, fileName), "下载" + size + "模型", false);
-                File.WriteAllText(Path.Combine(aiRoot, "selected-model.txt"), fileName, new UTF8Encoding(false));
-                KnowledgeInitializationResult knowledge = await InitializeKnowledgeAsync();
-                progressBar.Style = ProgressBarStyle.Continuous; progressBar.Value = 100; progress.Text = "安装及知识初始化完成";
-                MessageBox.Show("离线AI模型已安装，并已使用资料站整理内容和本地词库完成首次知识初始化（" +
-                    knowledge.Entries + "条、" + knowledge.Categories + "类）。\n\n关闭本窗口后点击AI翻译，首次载入模型可能需要几十秒。", "安装完成");
-            }
-            catch (Exception ex)
-            {
-                progressBar.Style = ProgressBarStyle.Continuous; progressBar.Value = 0; progress.Text = "安装未完成";
-                MessageBox.Show(ex.Message + "\n\n已下载的完整文件会保留；也可以从QQ群获取离线模型包。", "安装失败");
-            }
-            finally { SetButtons(true); }
-        }
-
-        private async Task UpdateExistingAsync()
-        {
-            SetButtons(false);
-            try
-            {
-                Directory.CreateDirectory(aiRoot);
-                string[] models = Directory.GetFiles(aiRoot, "Qwen3-*-Q4_K_M.gguf", SearchOption.AllDirectories);
-                if (models.Length == 0) { MessageBox.Show("没有发现已安装模型，请先选择1.7B、4B或8B安装。", "检查更新"); return; }
-                bool changed = false;
-                string runtimeWarning = null;
-                try { changed = await InstallRuntimeAsync(true); }
-                catch (Exception ex)
-                {
-                    runtimeWarning = ex.Message;
-                    progress.Text = "运行库沿用当前版本，继续检查模型…";
-                }
-                foreach (string modelPath in models)
-                {
-                    string fileName = Path.GetFileName(modelPath);
-                    string size = fileName.IndexOf("1.7B", StringComparison.OrdinalIgnoreCase) >= 0 ? "1.7B" :
-                        (fileName.IndexOf("8B", StringComparison.OrdinalIgnoreCase) >= 0 ? "8B" : "4B");
-                    string url = await Task.Factory.StartNew(delegate { return FindModelUrl(size, fileName); });
-                    changed = await InstallModelAsync(url, modelPath, "更新" + size + "模型", true) || changed;
-                }
-                KnowledgeInitializationResult knowledge = await InitializeKnowledgeAsync();
-                progressBar.Style = ProgressBarStyle.Continuous; progressBar.Value = 100;
-                progress.Text = runtimeWarning == null
-                    ? (changed ? "更新及知识初始化完成" : "模型与知识库已是最新版")
-                    : "模型与知识库检查完成；运行库沿用当前版本";
-                string summary = changed ? "模型和运行库检查完成，已安装可用更新。" : "当前模型和运行库已经是最新版。";
-                if (runtimeWarning != null)
-                    summary = "模型与知识库已正常检查；显卡运行库暂时无法联网核对，已继续使用当前可用版本。\n原因：" + runtimeWarning;
-                MessageBox.Show(summary + "\n知识初始化：" + knowledge.Entries + "条、" + knowledge.Categories + "类。", "检查更新");
-            }
-            catch (Exception ex)
-            {
-                progress.Text = "更新失败，旧版仍保留";
-                MessageBox.Show(ex.Message + "\n\n更新使用临时文件，失败不会覆盖当前可用模型。", "更新失败");
-            }
-            finally { SetButtons(true); }
-        }
-
-        private void SetButtons(bool enabled)
-        {
-            install17.Enabled = enabled; install4.Enabled = enabled; install8.Enabled = enabled; update.Enabled = enabled;
-        }
-
-        private Task<KnowledgeInitializationResult> InitializeKnowledgeAsync()
-        {
-            progressBar.Style = ProgressBarStyle.Marquee; progress.Text = "首次知识初始化…";
-            return Task.Factory.StartNew(delegate { return MapleKnowledgeInitializer.Initialize(aiRoot, dictionaryPath); });
-        }
-
-        private async Task<bool> InstallRuntimeAsync(bool updateOnly)
-        {
-            progressBar.Style = ProgressBarStyle.Marquee; progress.Text = "检查官方运行库…";
-            string marker = Path.Combine(aiRoot, "runtime.url.txt");
-            string server = Directory.Exists(aiRoot) ? FindFile(aiRoot, "llama-server.exe") : null;
-            // The normal release includes a ready-to-use Vulkan runtime, so first
-            // installation does not depend on GitHub being reachable in China.
-            if (!updateOnly && server != null) { progress.Text = "已使用随程序提供的显卡运行库"; return false; }
-            string runtimeUrl = await Task.Factory.StartNew(delegate { return FindRuntimeUrl(); });
-            if (updateOnly && server != null && File.Exists(marker) && File.ReadAllText(marker).Trim() == runtimeUrl) return false;
-            string zipPath = Path.Combine(aiRoot, "llama-vulkan.zip.download");
-            await DownloadAsync(runtimeUrl, zipPath, "下载显卡运行库");
-            progressBar.Style = ProgressBarStyle.Marquee; progress.Text = "安全解压运行库…";
-            string staging = Path.Combine(aiRoot, "runtime-new");
-            string current = Path.Combine(aiRoot, "runtime-current");
-            if (Directory.Exists(staging)) Directory.Delete(staging, true);
-            Directory.CreateDirectory(staging);
-            await Task.Factory.StartNew(delegate { ExtractSafe(zipPath, staging); });
-            if (FindFile(staging, "llama-server.exe") == null) throw new InvalidDataException("运行包中没有 llama-server.exe");
-            try { File.Delete(zipPath); } catch { }
-            string old = Path.Combine(aiRoot, "runtime-old");
-            try { if (Directory.Exists(old)) Directory.Delete(old, true); } catch { }
-            if (Directory.Exists(current)) Directory.Move(current, old);
-            try { Directory.Move(staging, current); }
-            catch { if (Directory.Exists(old) && !Directory.Exists(current)) Directory.Move(old, current); throw; }
-            if (Directory.Exists(old)) Directory.Delete(old, true);
-            File.WriteAllText(marker, runtimeUrl, new UTF8Encoding(false));
-            return true;
-        }
-
-        private async Task<bool> InstallModelAsync(string url, string destination, string stage, bool updateOnly)
-        {
-            progressBar.Style = ProgressBarStyle.Marquee; progress.Text = "检查官方模型…";
-            RemoteFileInfo remote = await Task.Factory.StartNew(delegate { return GetRemoteInfo(url); });
-            string etagPath = destination + ".etag";
-            bool sameLength = File.Exists(destination) && remote.Length > 0 && new FileInfo(destination).Length == remote.Length;
-            bool sameEtag = !File.Exists(etagPath) || String.IsNullOrEmpty(remote.ETag) || File.ReadAllText(etagPath).Trim() == remote.ETag;
-            if (sameLength && sameEtag) { progress.Text = "模型已经是最新版"; return false; }
-            string temp = destination + ".download";
-            if (File.Exists(temp) && remote.Length > 0 && new FileInfo(temp).Length > remote.Length) File.Delete(temp);
-            if (!(File.Exists(temp) && remote.Length > 0 && new FileInfo(temp).Length == remote.Length))
-                await DownloadAsync(url, temp, stage);
-            if (remote.Length > 0 && new FileInfo(temp).Length != remote.Length) throw new InvalidDataException("模型下载大小不完整，可再次点击继续下载");
-            if (File.Exists(destination)) File.Replace(temp, destination, null); else File.Move(temp, destination);
-            if (!String.IsNullOrEmpty(remote.ETag)) File.WriteAllText(etagPath, remote.ETag, new UTF8Encoding(false));
-            return true;
-        }
-
-        private static string FindFile(string root, string name)
-        {
-            string[] files = Directory.GetFiles(root, name, SearchOption.AllDirectories);
-            return files.Length > 0 ? files[0] : null;
-        }
-
-        private static RemoteFileInfo GetRemoteInfo(string url)
-        {
-            return WithNetworkRetry(delegate {
-                HttpWebRequest request = CreateRequest(url, 30000);
-                request.Method = "HEAD";
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                    return new RemoteFileInfo { Length = response.ContentLength, ETag = (response.Headers["ETag"] ?? "").Trim() };
-            });
-        }
-
-        private static string FindModelUrl(string size, string fileName)
-        {
-            string repo = "Qwen/Qwen3-" + size + "-GGUF";
-            string[] urls = new string[] {
-                "https://modelscope.cn/models/" + repo + "/resolve/master/" + fileName,
-                "https://hf-mirror.com/" + repo + "/resolve/main/" + fileName + "?download=true",
-                "https://huggingface.co/" + repo + "/resolve/main/" + fileName + "?download=true"
-            };
-            Exception last = null;
-            foreach (string url in urls)
-            {
-                try { GetRemoteInfo(url); return url; }
-                catch (Exception ex) { last = ex; }
-            }
-            throw new InvalidOperationException("国内模型源和海外备用源均无法连接。无需强制开启VPN；请先确认浏览器能打开 ModelScope（魔搭社区），或从QQ群取得离线模型放入‘模型’文件夹。", last);
-        }
-
-        private static string FindRuntimeUrl()
-        {
-            Exception latestError = null;
-            try
-            {
-                string json = ReadTextUrl("https://api.github.com/repos/ggml-org/llama.cpp/releases/latest");
-                string direct = FindRuntimeAssetUrl(json);
-                if (!String.IsNullOrEmpty(direct)) return direct;
-
-                string tagUrl = FindNamedAssetUrl(json, "nightly-tag.txt");
-                if (!String.IsNullOrEmpty(tagUrl))
-                    return BuildRuntimeUrlFromNightlyTag(ReadTextUrl(tagUrl));
-            }
-            catch (Exception ex) { latestError = ex; }
-
-            try
-            {
-                // The stable release can intentionally contain only nightly-tag.txt.
-                // This download endpoint avoids GitHub API rate limits and still points
-                // to the official build selected by the llama.cpp maintainers.
-                string tag = ReadTextUrl("https://github.com/ggml-org/llama.cpp/releases/latest/download/nightly-tag.txt");
-                return BuildRuntimeUrlFromNightlyTag(tag);
-            }
-            catch (Exception fallbackError)
-            {
-                throw new InvalidOperationException(
-                    "无法从 llama.cpp 官方稳定版或官方 nightly 索引找到 Windows Vulkan 运行包；当前运行库未被改动。",
-                    latestError ?? fallbackError);
-            }
-        }
-
-        private static string ReadTextUrl(string url)
-        {
-            return WithNetworkRetry(delegate {
-                HttpWebRequest request = CreateRequest(url, 30000);
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                using (StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8)) return reader.ReadToEnd();
-            });
-        }
-
-        private static string FindRuntimeAssetUrl(string json)
-        {
-            return FindNamedAssetUrl(json, "bin-win-vulkan-x64.zip", true);
-        }
-
-        private static string FindNamedAssetUrl(string json, string expectedName)
-        {
-            return FindNamedAssetUrl(json, expectedName, false);
-        }
-
-        private static string FindNamedAssetUrl(string json, string expectedName, bool contains)
-        {
-            Dictionary<string, object> root = new JavaScriptSerializer().Deserialize<Dictionary<string, object>>(json);
-            object assetsValue;
-            if (root == null || !root.TryGetValue("assets", out assetsValue)) return null;
-            object[] assets = assetsValue as object[];
-            if (assets == null)
-            {
-                System.Collections.ArrayList list = assetsValue as System.Collections.ArrayList;
-                if (list != null) assets = list.ToArray();
-            }
-            if (assets != null) foreach (object item in assets)
-            {
-                Dictionary<string, object> asset = item as Dictionary<string, object>;
-                if (asset == null) continue;
-                object nameValue;
-                object urlValue;
-                if (!asset.TryGetValue("name", out nameValue) || !asset.TryGetValue("browser_download_url", out urlValue)) continue;
-                string name = Convert.ToString(nameValue);
-                bool match = contains
-                    ? name.IndexOf(expectedName, StringComparison.OrdinalIgnoreCase) >= 0
-                    : String.Equals(name, expectedName, StringComparison.OrdinalIgnoreCase);
-                if (match) return Convert.ToString(urlValue);
-            }
-            return null;
-        }
-
-        private static string BuildRuntimeUrlFromNightlyTag(string tagText)
-        {
-            string tag = (tagText ?? "").Trim();
-            if (!Regex.IsMatch(tag, "^b[0-9]+$"))
-                throw new InvalidDataException("官方 nightly 版本标记格式无效");
-            return "https://github.com/ggml-org/llama.cpp/releases/download/" + tag +
-                "/llama-" + tag + "-bin-win-vulkan-x64.zip";
-        }
-
-        private async Task DownloadAsync(string url, string destination, string stage)
-        {
-            await Task.Factory.StartNew(delegate {
-                WithNetworkRetry(delegate {
-                    long existing = File.Exists(destination) ? new FileInfo(destination).Length : 0;
-                    HttpWebRequest request = CreateRequest(url, 60000);
-                    request.ReadWriteTimeout = 60000;
-                    if (existing > 0) request.AddRange(existing);
-                    using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                    {
-                        bool resumed = response.StatusCode == HttpStatusCode.PartialContent;
-                        if (!resumed) existing = 0;
-                        long total = response.ContentLength > 0 ? existing + response.ContentLength : 0;
-                        using (Stream input = response.GetResponseStream())
-                        using (FileStream output = new FileStream(destination, resumed ? FileMode.Append : FileMode.Create, FileAccess.Write, FileShare.Read))
-                        {
-                            byte[] buffer = new byte[1024 * 256]; int read; long done = existing; DateTime last = DateTime.MinValue;
-                            while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
-                            {
-                                output.Write(buffer, 0, read); done += read;
-                                if ((DateTime.Now - last).TotalMilliseconds < 180) continue;
-                                last = DateTime.Now;
-                                int percent = total > 0 ? (int)Math.Min(100, done * 100 / total) : 0;
-                                BeginInvoke((MethodInvoker)delegate {
-                                    progressBar.Style = total > 0 ? ProgressBarStyle.Continuous : ProgressBarStyle.Marquee;
-                                    if (total > 0) progressBar.Value = percent;
-                                    progress.Text = stage + " " + (done / 1024 / 1024) + "MB" + (total > 0 ? "/" + (total / 1024 / 1024) + "MB" : "");
-                                });
-                            }
-                        }
-                    }
-                    return true;
-                });
-            });
-        }
-
-        private static HttpWebRequest CreateRequest(string url, int timeout)
-        {
-            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072; // TLS 1.2
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.UserAgent = "FengYuMu-ModelInstaller/1.4.2";
-            request.Timeout = timeout;
-            request.KeepAlive = false;
-            request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-            request.Proxy = WebRequest.GetSystemWebProxy();
-            if (request.Proxy != null) request.Proxy.Credentials = CredentialCache.DefaultCredentials;
-            return request;
-        }
-
-        private static T WithNetworkRetry<T>(Func<T> action)
-        {
-            Exception last = null;
-            for (int attempt = 0; attempt < 3; attempt++)
-            {
-                try { return action(); }
-                catch (WebException ex)
-                {
-                    last = ex;
-                    if (attempt < 2) System.Threading.Thread.Sleep(800 * (attempt + 1));
-                }
-            }
-            WebException web = last as WebException;
-            if (web != null && web.Status == WebExceptionStatus.SecureChannelFailure)
-                throw new InvalidOperationException("无法建立 TLS 1.2 安全连接。请确认 Windows 日期时间正确，并在系统的 Internet 选项→高级中启用‘使用 TLS 1.2’；如果使用代理，请先确认浏览器可以打开 GitHub 和 Hugging Face。", web);
-            throw last ?? new InvalidOperationException("网络连接失败");
-        }
-
-        private static void ExtractSafe(string zipPath, string destination)
-        {
-            string root = Path.GetFullPath(destination).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
-            using (ZipArchive archive = ZipFile.OpenRead(zipPath))
-            {
-                foreach (ZipArchiveEntry entry in archive.Entries)
-                {
-                    string target = Path.GetFullPath(Path.Combine(destination, entry.FullName));
-                    if (!target.StartsWith(root, StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("运行包包含不安全路径");
-                    if (String.IsNullOrEmpty(entry.Name)) { Directory.CreateDirectory(target); continue; }
-                    Directory.CreateDirectory(Path.GetDirectoryName(target));
-                    using (Stream input = entry.Open())
-                    using (FileStream output = new FileStream(target, FileMode.Create, FileAccess.Write)) input.CopyTo(output);
-                }
-            }
-        }
-    }
-
     internal sealed class OnlineAiForm : Form
     {
         private readonly ComboBox provider = new ComboBox();
         private readonly TextBox endpoint = new TextBox();
-        private readonly TextBox model = new TextBox();
+        private readonly ComboBox model = new ComboBox();
         private readonly TextBox apiKey = new TextBox();
         private readonly Label providerHint = new Label();
         private readonly Label testStatus = new Label();
+        private readonly CheckBox panelTranslation = new CheckBox();
+        private readonly CancellationTokenSource lifetime = new CancellationTokenSource();
+        private bool loadingSettings = true;
+        private string credentialAuthority = "";
+        private int configurationVersion;
+        private List<string> listedModels;
+        private string catalogEndpoint = "", catalogKey = "";
 
         public OnlineAiForm()
         {
             AutoScaleDimensions = new SizeF(96.0f, 96.0f);
             AutoScaleMode = AutoScaleMode.Dpi;
-            Text = "联网AI实时翻译（不用租服务器）"; StartPosition = FormStartPosition.CenterParent;
-            FormBorderStyle = FormBorderStyle.FixedDialog; MaximizeBox = false; MinimizeBox = false;
-            ClientSize = new Size(760, 560); Font = new Font("Microsoft YaHei UI", 9.0f);
+            Text = "联网 AI 设置";
+            ClientSize = new Size(390, 900);
+            Font = new Font("Microsoft YaHei UI", 9.0f);
+            BackColor = Color.FromArgb(238, 245, 255);
             OnlineAiSettings value = OnlineAiSettings.Load();
-            Label heading = new Label {
-                Text = "选一家 → 申请密钥 → 粘贴 → 保存并测试，以后点“开始实时翻译”就行。",
-                Location = new Point(24, 18), Size = new Size(710, 28),
-                Font = new Font(Font, FontStyle.Bold), ForeColor = Color.FromArgb(22, 101, 52)
+            FlowLayoutPanel fields = new FlowLayoutPanel {
+                Dock = DockStyle.Fill, FlowDirection = FlowDirection.TopDown,
+                WrapContents = false, AutoScroll = true, Padding = new Padding(16)
             };
-            Label tutorial = new Label {
-                Location = new Point(24, 50), Size = new Size(710, 105),
-                ForeColor = Color.FromArgb(55, 65, 81),
-                Text = "小白教程：\r\n1. 不知道选谁就先用豆包；想先免费试就选智谱。\r\n" +
-                    "2. 点“打开申请页面”，按网页提示注册、开通对应模型并新建 API Key。\r\n" +
-                    "3. 把“API Key 管理”页给你的整串 Key 复制到下面；不要填 Access Key 或 Secret Key。\r\n" +
-                    "不用租服务器，也不用每次打开网页；费用/免费额度由你选的服务商账号结算。"
-            };
-
-            Controls.Add(new Label { Text = "AI服务：", Location = new Point(24, 174), AutoSize = true });
-            provider.Location = new Point(112, 169); provider.Size = new Size(430, 28);
+            Controls.Add(fields);
+            AddHint(fields, "联网 AI 设置", 34, true);
+            AddHint(fields, "选择服务 → 输入该平台的 Key → 读取可用模型 → 保存并测试。\r\n费用与调用权限由服务商账号决定。", 62, false);
             provider.DropDownStyle = ComboBoxStyle.DropDownList;
             foreach (OnlineAiPreset item in OnlineAiPresets.All) provider.Items.Add(item.Name);
-            Button open = new Button { Text = "打开申请页面", Location = new Point(558, 168), Size = new Size(176, 30) };
-            open.Click += delegate { OpenApplyPage(); };
-            providerHint.Location = new Point(112, 202); providerHint.Size = new Size(622, 38);
-            providerHint.ForeColor = Color.FromArgb(75, 85, 99);
-
-            AddField("接口地址：", endpoint, 250);
-            AddField("模型名称：", model, 296);
-            AddField("API Key：", apiKey, 342);
+            AddField(fields, "AI 服务", provider);
+            providerHint.ForeColor = Color.DimGray;
+            providerHint.Height = 64;
+            fields.Controls.Add(providerHint);
+            AddField(fields, "接口地址（完整 HTTPS 接口）", endpoint);
+            AddField(fields, "API Key（仅保存为本机加密值）", apiKey);
             apiKey.UseSystemPasswordChar = true;
-
-            Label privacy = new Label {
-                Location = new Point(24, 384), Size = new Size(710, 56),
-                ForeColor = Color.DimGray,
-                Text = "枫语幕只把当前聊天短句、命中的冒险岛词库术语和固定游戏提示词发给你选的服务商。" +
-                    "中间分析不会显示，悬浮窗只给最终译文。Key 用 Windows 当前账户加密保存在本机，不写进词库或压缩包。"
-            };
-            testStatus.Location = new Point(24, 449); testStatus.Size = new Size(710, 44);
-            testStatus.ForeColor = Color.FromArgb(37, 99, 235);
-
-            Button offline = new Button { Text = "清除密钥，改用离线", Location = new Point(365, 500), Size = new Size(170, 34) };
-            offline.Click += delegate {
-                OnlineAiSettings.Clear();
-                DialogResult = DialogResult.OK;
-                Close();
-            };
-            Button save = new Button { Text = "保存并测试", Location = new Point(552, 500), Size = new Size(182, 34) };
+            AddField(fields, "模型 ID（服务端可用列表或官方控制台 ID）", model);
+            model.DropDownStyle = ComboBoxStyle.DropDown;
+            Button fetch = new BlueGlassButton { Text = "读取可用模型", Height = 38 };
+            fetch.Click += async delegate { await LoadModelsAsync(fetch); };
+            fields.Controls.Add(fetch);
+            Button open = new BlueGlassButton { Text = "复制申请页面地址", Height = 38 };
+            open.Click += delegate { OpenApplyPage(); };
+            fields.Controls.Add(open);
+            panelTranslation.Text = "允许 F8 上传未收录的面板正文（默认关闭）";
+            panelTranslation.Height = 46; panelTranslation.Checked = value.PanelTranslationEnabled;
+            fields.Controls.Add(panelTranslation);
+            AddHint(fields, "聊天会发送短句、命中术语及提示词；识别到的名字会替换。开启上项后还会发送面板 OCR 正文。不会上传截图。", 76, false);
+            testStatus.Height = 100; testStatus.ForeColor = Color.FromArgb(37, 99, 235);
+            fields.Controls.Add(testStatus);
+            Button save = new BlueGlassButton { Text = "保存并测试", Height = 42 };
             save.Click += async delegate { await SaveAndTestAsync(save); };
-
-            provider.SelectedIndexChanged += delegate { ApplySelectedPreset(); };
-            string savedProvider = value.Provider;
-            if (!provider.Items.Contains(savedProvider)) savedProvider = "自定义兼容接口";
+            fields.Controls.Add(save);
+            Button offline = new BlueGlassButton { Text = "清除联网 AI 配置", Height = 38 };
+            offline.Click += delegate {
+                try { configurationVersion++; OnlineAiSettings.Clear(); apiKey.Clear();
+                    listedModels = null; catalogKey = ""; SetStatus("已清除配置。聊天翻译需重新配置联网 AI。", false); }
+                catch (Exception ex) { SetStatus("设置未保存：" + ex.Message, true); }
+            };
+            fields.Controls.Add(offline);
+            fields.SizeChanged += delegate {
+                int width = Math.Max(240, fields.ClientSize.Width - fields.Padding.Horizontal -
+                    SystemInformation.VerticalScrollBarWidth - 8);
+                foreach (Control control in fields.Controls) control.Width = width;
+            };
+            provider.SelectedIndexChanged += delegate {
+                if (!loadingSettings) { apiKey.Clear(); listedModels = null;
+                    SetStatus("已切换服务商，请输入该平台的 Key。", false); }
+                ApplySelectedPreset();
+            };
+            endpoint.TextChanged += delegate {
+                Uri address;
+                string authority = Uri.TryCreate(endpoint.Text, UriKind.Absolute, out address)
+                    ? address.GetLeftPart(UriPartial.Authority) : "";
+                if (!loadingSettings && authority != credentialAuthority) apiKey.Clear();
+                credentialAuthority = authority;
+            };
+            foreach (Control control in new Control[] { endpoint, model, apiKey })
+                control.TextChanged += delegate { configurationVersion++; };
+            panelTranslation.CheckedChanged += delegate { configurationVersion++; };
+            string savedProvider = provider.Items.Contains(value.Provider) ? value.Provider : "自定义兼容接口";
             provider.SelectedItem = savedProvider;
             endpoint.Text = value.Endpoint; model.Text = value.Model; apiKey.Text = value.ApiKey;
-            ApplySelectedPresetHintOnly();
-
-            Controls.Add(heading); Controls.Add(tutorial); Controls.Add(provider);
-            Controls.Add(open); Controls.Add(providerHint); Controls.Add(privacy);
-            Controls.Add(testStatus); Controls.Add(offline); Controls.Add(save);
+            ApplySelectedPresetHintOnly(); loadingSettings = false;
+            fields.PerformLayout();
         }
 
-        private void AddField(string label, TextBox box, int y)
+        private static void AddHint(FlowLayoutPanel fields, string text, int height, bool heading)
         {
-            Controls.Add(new Label { Text = label, Location = new Point(24, y + 5), AutoSize = true });
-            box.Location = new Point(112, y); box.Size = new Size(622, 27); Controls.Add(box);
+            Label label = new Label { Text = text, Height = height, Width = 350,
+                ForeColor = heading ? Color.FromArgb(23, 55, 96) : Color.DimGray };
+            if (heading) label.Font = new Font(fields.Font, FontStyle.Bold);
+            fields.Controls.Add(label);
         }
-
+        private static void AddField(FlowLayoutPanel fields, string label, Control box)
+        {
+            AddHint(fields, label, 22, false);
+            box.Width = 350; box.Height = 28;
+            fields.Controls.Add(box);
+        }
+        private void SetStatus(string text, bool failed)
+        {
+            if (IsDisposed) return;
+            testStatus.Text = text;
+            testStatus.ForeColor = failed ? Color.FromArgb(185, 28, 28) : Color.FromArgb(37, 99, 235);
+        }
         private void ApplySelectedPreset()
         {
             OnlineAiPreset selected = OnlineAiPresets.Find(Convert.ToString(provider.SelectedItem));
-            endpoint.Text = selected.Endpoint;
-            model.Text = selected.Model;
+            endpoint.Text = selected.Endpoint; model.Text = selected.Model;
             ApplySelectedPresetHintOnly();
         }
-
         private void ApplySelectedPresetHintOnly()
         {
             providerHint.Text = OnlineAiPresets.Find(Convert.ToString(provider.SelectedItem)).PlainHint;
         }
-
+        private OnlineAiSettings ReadSettings()
+        {
+            return new OnlineAiSettings { Provider = Convert.ToString(provider.SelectedItem),
+                Endpoint = OnlineAiProtocol.NormalizeEndpoint(endpoint.Text), Model = model.Text.Trim(),
+                ApiKey = apiKey.Text.Trim(), PanelTranslationEnabled = panelTranslation.Checked };
+        }
         private void OpenApplyPage()
         {
             string url = OnlineAiPresets.Find(Convert.ToString(provider.SelectedItem)).ApplyUrl;
-            if (url.Length == 0)
-            {
-                MessageBox.Show("自定义接口没有统一申请页面，请向接口提供方获取地址、模型名和 Key。", "联网AI设置");
-                return;
+            if (url.Length == 0) { SetStatus("自定义接口请向提供方获取模型 ID 和 Key。", true); return; }
+            try {
+                Program.LogRuntimeEvent("apply-page-copy", "host=" + new Uri(url).Host);
+                Clipboard.SetText(url);
+                SetStatus("申请地址已复制，请粘贴到浏览器打开：" + url, false);
             }
-            try { Process.Start(new ProcessStartInfo(url) { UseShellExecute = true }); }
-            catch { MessageBox.Show("浏览器没有成功打开，请检查系统默认浏览器。", "联网AI设置"); }
+            catch (Exception ex) {
+                Program.LogRuntimeEvent("apply-page-failed", "type=" + ex.GetType().Name);
+                SetStatus("复制失败，可手动复制此网址：" + url, true);
+            }
         }
-
+        private async Task LoadModelsAsync(Button fetch)
+        {
+            OnlineAiSettings settings = null;
+            int version = configurationVersion;
+            fetch.Enabled = false;
+            try {
+                settings = ReadSettings();
+                if (settings.ApiKey.Length == 0) { SetStatus("先输入该平台的 API Key。", true); return; }
+                SetStatus("正在读取服务端可用模型列表…", false);
+                List<string> ids = await OnlineAiClient.ListModelsAsync(settings, lifetime.Token);
+                if (IsDisposed || version != configurationVersion) return;
+                listedModels = ids; catalogEndpoint = settings.Endpoint; catalogKey = settings.ApiKey;
+                string previous = model.Text; model.Items.Clear();
+                foreach (string id in ids) model.Items.Add(id);
+                model.Text = ids.Contains(previous) ? previous : "";
+                SetStatus("读取到 " + ids.Count + " 个模型，请选择模型 ID。列表可用不等于推理权限已验证。", false);
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex) { SetStatus("模型列表未读取：" + OnlineAiClient.DescribeFailure(ex, settings) +
+                " 若平台不支持 /models，请按官方控制台填写 ID。", true); }
+            finally { if (!fetch.IsDisposed) fetch.Enabled = true; }
+        }
         private async Task SaveAndTestAsync(Button save)
         {
-            OnlineAiSettings settings = new OnlineAiSettings {
-                Provider = Convert.ToString(provider.SelectedItem),
-                Endpoint = endpoint.Text.Trim(), Model = model.Text.Trim(), ApiKey = apiKey.Text.Trim()
-            };
-            if (!settings.IsReady)
-            {
-                MessageBox.Show("还差接口地址、模型名或 API Key。按上面的 1、2、3 步补齐就行。", "联网AI设置");
-                return;
-            }
-            save.Enabled = false; testStatus.Text = "正在试连并翻译一句冒险岛聊天……";
-            try
-            {
+            OnlineAiSettings settings = null;
+            int version = configurationVersion;
+            bool saved = false;
+            save.Enabled = false;
+            try {
+                settings = ReadSettings();
+                if (!settings.IsReady) { SetStatus("请补齐模型 ID 与 API Key。", true); return; }
+                settings.Save(); saved = true;
+                SetStatus("配置已保存，正在试连并翻译一句聊天…", false);
                 string result = await OnlineAiClient.TranslateAsync(settings,
-                    "How do you whisper back someone?", "简体中文", "whisper = 悄悄话\n");
+                    "How do you whisper back someone?", "简体中文", "whisper = 悄悄话\n", lifetime.Token);
+                if (IsDisposed || version != configurationVersion) {
+                    SetStatus("测试期间输入已更改，旧结果不用于当前输入，请重新保存并测试。", true); return;
+                }
                 if (!OfflineChatForm.IsPlausibleChatTranslation("How do you whisper back someone?", result) ||
                     !Regex.IsMatch(result, "[\\u3400-\\u9fff]"))
                     throw new InvalidOperationException("返回内容不像有效译文");
-                settings.Save();
-                testStatus.Text = "连接成功，已保存。以后直接开始实时翻译。";
-                await Task.Delay(550);
-                DialogResult = DialogResult.OK; Close();
+                SetStatus("连接成功，配置已保存。返回实时翻译页后生效。", false);
             }
-            catch (Exception ex)
-            {
-                testStatus.Text = OnlineAiClient.DescribeFailure(ex, settings);
-                testStatus.ForeColor = Color.FromArgb(185, 28, 28);
-            }
-            finally { save.Enabled = true; }
+            catch (OperationCanceledException) { }
+            catch (Exception ex) { SetStatus(saved ? "配置已保存，测试失败：" + OnlineAiClient.DescribeFailure(ex, settings) : "配置未保存，请检查本地配置目录是否可写及输入是否合法。", true); }
+            finally { if (!save.IsDisposed) save.Enabled = true; }
+        }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && !IsDisposed) { lifetime.Cancel(); lifetime.Dispose(); catalogKey = ""; }
+            base.Dispose(disposing);
         }
     }
 }

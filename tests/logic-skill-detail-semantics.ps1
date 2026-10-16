@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 # This repository lives under a path with non-ASCII directory names, where the CLR's
 # Assembly.LoadFile rejects the assembly as a "remote" location. The shared loader probes

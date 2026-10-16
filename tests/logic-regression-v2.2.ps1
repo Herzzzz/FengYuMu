@@ -1,4 +1,4 @@
-param(
+﻿param(
     # Explicit current expectation, deliberately NOT derived from the assembly under test: a
     # version check that reads its own expectation from the artefact can never fail. Release-time
     # callers (regression-v3.0.ps1) may still pin a different release explicitly.

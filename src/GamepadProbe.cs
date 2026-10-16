@@ -156,12 +156,16 @@ namespace MapleOverlay
         private static extern uint WaitForSingleObject(IntPtr handle, uint milliseconds);
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool GetOverlappedResult(SafeHandle handle,
-            ref NativeOverlapped overlapped, out uint bytesTransferred, bool wait);
+            IntPtr overlapped, out uint bytesTransferred, bool wait);
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool CancelIoEx(SafeHandle handle, IntPtr overlapped);
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool ResetEvent(IntPtr handle);
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool CloseHandle(IntPtr handle);
         [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern bool ReadFile(SafeHandle handle, byte[] buffer, uint bytesToRead,
-            IntPtr bytesRead, ref NativeOverlapped overlapped);
+        private static extern bool ReadFile(SafeHandle handle, IntPtr buffer, uint bytesToRead,
+            IntPtr bytesRead, IntPtr overlapped);
 
         private sealed class ProbeDevice : IDisposable
         {
@@ -319,14 +323,36 @@ namespace MapleOverlay
             byte[] report = new byte[device.ReportLength];
             NativeOverlapped overlapped = new NativeOverlapped();
             overlapped.EventHandle = device.ReadEvent;
-            if (device.ReadEvent != IntPtr.Zero) WaitForSingleObject(device.ReadEvent, 0);
-            bool started = ReadFile(device.Handle, report, (uint)report.Length, IntPtr.Zero, ref overlapped);
-            if (!started)
+            IntPtr nativeReport = Marshal.AllocHGlobal(report.Length);
+            IntPtr nativeOverlapped = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(NativeOverlapped)));
+            bool pending = false;
+            try
             {
-                if (Marshal.GetLastWin32Error() != ErrorIoPending) return pressed;
-                if (WaitForSingleObject(device.ReadEvent, ReadTimeoutMs) != WaitObject0) return pressed;
+                Marshal.StructureToPtr(overlapped, nativeOverlapped, false);
+                ResetEvent(device.ReadEvent);
+                bool started = ReadFile(device.Handle, nativeReport, (uint)report.Length, IntPtr.Zero, nativeOverlapped);
+                if (!started && Marshal.GetLastWin32Error() != ErrorIoPending) return pressed;
+                pending = !started;
+                if (pending && WaitForSingleObject(device.ReadEvent, ReadTimeoutMs) != WaitObject0)
+                    return pressed;
                 uint transferred;
-                if (!GetOverlappedResult(device.Handle, ref overlapped, out transferred, false)) return pressed;
+                bool completed = GetOverlappedResult(device.Handle, nativeOverlapped, out transferred, true);
+                pending = false;
+                if (!completed || transferred == 0 || transferred > report.Length) return pressed;
+                Marshal.Copy(nativeReport, report, 0, (int)transferred);
+            }
+            finally
+            {
+                if (pending)
+                {
+                    // Cancel is only a request. Wait for completion/ERROR_OPERATION_ABORTED
+                    // before releasing either native buffer, including during hot unplug.
+                    CancelIoEx(device.Handle, nativeOverlapped);
+                    uint transferred;
+                    GetOverlappedResult(device.Handle, nativeOverlapped, out transferred, true);
+                }
+                Marshal.FreeHGlobal(nativeOverlapped);
+                Marshal.FreeHGlobal(nativeReport);
             }
             readOk = true;
             rawReport = report;

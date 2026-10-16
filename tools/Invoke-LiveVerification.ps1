@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param(
     # How long the translation overlay stays on screen before it is dismissed.
     [int]$HoldSeconds = 5,
@@ -7,7 +7,8 @@ param(
     [string]$OutDir,
 
     # Send F8 automatically. Set to $false to press the key yourself when prompted.
-    [bool]$AutoPressKey = $true
+    [bool]$AutoPressKey = $false,
+    [string]$ExePath
 )
 
 # One-click live verification against the running game.
@@ -30,8 +31,12 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
-$exe = Join-Path $repoRoot '枫语幕.exe'
+$exe = if ($ExePath) { (Resolve-Path -LiteralPath $ExePath).Path } else { Join-Path $repoRoot '枫语幕.exe' }
 if (-not (Test-Path -LiteralPath $exe)) { throw "找不到程序集：$exe" }
+. (Join-Path $repoRoot 'tools/Build-Evidence.ps1')
+Assert-BuildEvidence $exe $repoRoot
+$diagnostic = Join-Path (Split-Path -Parent $exe) '运行诊断.log'
+$diagnosticOffset = if (Test-Path -LiteralPath $diagnostic) { @(Get-Content -LiteralPath $diagnostic -Encoding UTF8).Count } else { 0 }
 
 if ([String]::IsNullOrEmpty($OutDir)) {
     $OutDir = Join-Path (Split-Path -Parent $repoRoot) 'live-verification'
@@ -72,6 +77,7 @@ function Save-Screen([string]$path) {
 if (-not (Get-Command Start-ProductExe -ErrorAction SilentlyContinue)) {
     . (Join-Path $repoRoot 'tests\Start-ProductExe.ps1')
 }
+$previousAutomation = $env:FENGYUMU_AUTOMATION
 $env:FENGYUMU_AUTOMATION = '1'
 
 $stamp = Get-Date -Format 'HHmmss'
@@ -83,6 +89,8 @@ Write-Host '采集翻译前画面……'
 Save-Screen $beforePath
 
 Write-Host '启动 枫语幕……'
+$product = $null
+try {
 $product = Start-ProductExe -FilePath $exe -WorkingDirectory $repoRoot -PassThru
 Start-Sleep -Seconds 4   # 启动 + 锁定层首次识别 + 托盘就绪
 
@@ -99,12 +107,25 @@ Save-Screen $duringPath
 
 Write-Host '关闭覆盖层并退出 枫语幕……'
 if ($AutoPressKey) { [LiveKey]::Tap(0x77) }
+else { Read-Host '请切回游戏，物理按 F8 隐藏译文，再按回车继续' | Out-Null }
 Start-Sleep -Milliseconds 800
 Save-Screen $afterPath
 if ($product -and -not $product.HasExited) {
     try { $product.Kill() } catch { }
 }
-Remove-Item Env:\FENGYUMU_AUTOMATION -ErrorAction SilentlyContinue
+if ($null -eq $previousAutomation) { Remove-Item Env:\FENGYUMU_AUTOMATION -ErrorAction SilentlyContinue }
+else { $env:FENGYUMU_AUTOMATION = $previousAutomation }
+} finally {
+    if ($product -and -not $product.HasExited) { try { $product.Kill() } catch { } }
+    if ($null -eq $previousAutomation) { Remove-Item Env:\FENGYUMU_AUTOMATION -ErrorAction SilentlyContinue }
+    else { $env:FENGYUMU_AUTOMATION = $previousAutomation }
+}
+$events = if (Test-Path -LiteralPath $diagnostic) { @(Get-Content -LiteralPath $diagnostic -Encoding UTF8 | Select-Object -Skip $diagnosticOffset | Where-Object { $_ -match "PID=$($product.Id) " }) } else { @() }
+$events | Set-Content -LiteralPath (Join-Path $OutDir "events-$stamp.log") -Encoding UTF8
+. (Join-Path $PSScriptRoot 'Runtime-Acceptance.ps1')
+$toggle = Assert-LiveToggleEvidence $events
+$toggle | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $OutDir "toggle-$stamp.json") -Encoding UTF8
+Write-Host "输入证据：$(if ($AutoPressKey) { '自动注入，物理按键未验证' } else { '用户物理按键' })"
 
 Write-Host ''
 Write-Host '实机验证完成。三张截图：'
@@ -116,4 +137,4 @@ Write-Host '请检查「翻译中」截图：'
 Write-Host '  1. 是否出现中文译文；'
 Write-Host '  2. 译文是黑底卡片还是与背景同色的无缝替换；'
 Write-Host '  3. 有无色块突兀、遮挡数值、文字溢出。'
-Write-Host '把三张图发给开发者即可完成验收。'
+Write-Host '本脚本只覆盖显示/隐藏及绘制诊断；取消、再次识别、F9/F10、托盘和其他生产交互仍需单独验收。'

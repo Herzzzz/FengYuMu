@@ -26,6 +26,14 @@ if (-not [bool]$usableMethod.Invoke($null, $singleLineArguments) -or
     throw '用户手动框选的单行24像素聊天区可用性判定错误'
 }
 
+$canonical = $settings.GetMethod('ResolveCanonical', [Reflection.BindingFlags]'Static,NonPublic,Public')
+$reference = [Drawing.Rectangle]::new(0,0,1366,768)
+$selection = [Drawing.Rectangle]::new(100,500,600,36)
+foreach ($step in 1..100) {
+    $moved = [Drawing.Rectangle]::new(($step*5),0,1366,768)
+    $resolved = $canonical.Invoke($null,[object[]]@($selection,$reference,$moved))
+    if ($resolved -ne [Drawing.Rectangle]::new((100+$step*5),500,600,36)) { throw 'Canonical region drifted during movement' }
+}
 $detector = $assembly.GetType('MapleOverlay.ChatRegionDetector', $true)
 $detectMethod = $detector.GetMethod('Detect',
     [Reflection.BindingFlags]'Static,NonPublic,Public')
@@ -55,7 +63,6 @@ foreach ($required in @(
     'else if (id == HOTKEY_FLOATING_WINDOW) { RestoreAiChatFloatingWindowFromHotkey(); }',
     'ShowTranslationAsync(false, requestId)',
     'RecognitionWasCancelled(automatic, requestId, generation)',
-    'ChatRegionSettings.ResaveForGame(resolved, gameBounds)',
     'Rectangle chatExclusion = GetChatExclusionBounds()',
     'SceneClassifier.LooksLikePlayerChat(candidate.Text)')) {
     if (-not $source.Contains($required)) { throw "F8/F9聊天区接入缺少：$required" }
@@ -66,7 +73,7 @@ foreach ($required in @(
     '请先启动 MapleStory 并切换为窗口模式，再框选游戏聊天区。',
     'Form host = embeddedMode ? FindForm() : this;',
     'ChatRegionSettings.SaveManual(chatRegion, game)',
-    'await overlay.CaptureChatAsync(chatRegion)',
+    'await overlay.CaptureChatAsync(chatRegion, liveCancellation.Token)',
     'F9自动聊天区')) {
     if (-not $chatSource.Contains($required)) { throw "AI聊天区接入缺少：$required" }
 }

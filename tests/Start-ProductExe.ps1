@@ -1,4 +1,4 @@
-# Shared test helper: start 枫语幕.exe without triggering the attachment-manager warning.
+﻿# Shared test helper: start 枫语幕.exe without triggering the attachment-manager warning.
 #
 # Why this exists:
 # The repository lives under a path with non-ASCII directory names, and Windows classifies

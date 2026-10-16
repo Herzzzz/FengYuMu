@@ -1,7 +1,8 @@
-﻿$ErrorActionPreference = 'Stop'
+﻿param([string]$ExePath)
+$ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Drawing
 $repoRoot = Split-Path -Parent $PSScriptRoot
-$exe = Join-Path $repoRoot '枫语幕.exe'
+$exe = if($ExePath){$ExePath}else{Join-Path $repoRoot 'bin/candidate-r3/枫语幕.exe'}
 if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
 $assembly = Load-TestAssembly $exe
 $chatType = $assembly.GetType('MapleOverlay.OfflineChatForm', $true)
@@ -77,7 +78,7 @@ if ([string]$detectLanguage.Invoke($null, @('first it was the JR wraiths')) -ne 
     throw 'AI聊天源语言快速判定失败'
 }
 $plausible = $chatType.GetMethod('IsPlausibleChatTranslation', $flags)
-$aiType = $assembly.GetType('MapleOverlay.OfflineAiClient', $true)
+$aiType = $assembly.GetType('MapleOverlay.ChatTextRules', $true)
 $toSimplified = $aiType.GetMethod('ToSimplifiedChinese', $flags)
 $instructionLeak = $aiType.GetMethod('LooksLikeInstructionLeak', $flags)
 $multiLine = '第一行' + [Environment]::NewLine + '第二行'

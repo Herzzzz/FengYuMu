@@ -1,9 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -30,7 +31,8 @@ namespace MapleOverlay
         Whisper = 5,
         System = 6,
         Notice = 7,
-        Megaphone = 8
+        Megaphone = 8,
+        Manual = 9
     }
 
     internal sealed class ChatVisualStyle
@@ -40,6 +42,9 @@ namespace MapleOverlay
         internal Color BackColor;
         internal bool HasBackground;
         internal ChatSourceCategory Category;
+
+        internal static ChatVisualStyle Manual
+        {get{ChatVisualStyle style=Default;style.Category=ChatSourceCategory.Manual;return style;}}
 
         internal static ChatVisualStyle Default
         {
@@ -61,9 +66,15 @@ namespace MapleOverlay
         internal static ChatVisualStyle FromSample(string sourceText, Color sampledForeground,
             Color sampledBackground, bool coloredBackground)
         {
-            bool broadcast = coloredBackground || LooksLikeBroadcast(sourceText);
+            bool personal=HasChannelPrefix(StripTimePrefix(sourceText).TrimStart(),"buddy","好友")||
+                HasChannelPrefix(StripTimePrefix(sourceText).TrimStart(),"friend","好友")||
+                HasChannelPrefix(StripTimePrefix(sourceText).TrimStart(),"party","组队")||
+                HasChannelPrefix(StripTimePrefix(sourceText).TrimStart(),"guild","家族")||
+                HasChannelPrefix(StripTimePrefix(sourceText).TrimStart(),"alliance","联盟")||
+                HasChannelPrefix(StripTimePrefix(sourceText).TrimStart(),"whisper","悄悄话");
+            bool broadcast = !personal&&(coloredBackground || LooksLikeBroadcast(sourceText));
             bool system = LooksLikeSystem(sourceText);
-            bool blueMegaphone = coloredBackground && IsCoolMegaphoneBackground(sampledBackground);
+            bool blueMegaphone = broadcast && coloredBackground && IsCoolMegaphoneBackground(sampledBackground);
             Color background = sampledBackground.IsEmpty
                 ? Color.FromArgb(172, 46, 112) : sampledBackground;
             Color foreground = sampledForeground.IsEmpty
@@ -93,52 +104,46 @@ namespace MapleOverlay
         internal static ChatSourceCategory ClassifySource(string sourceText, Color foreground,
             ChatVisualKind visualKind)
         {
-            if (visualKind == ChatVisualKind.Megaphone ||
-                visualKind == ChatVisualKind.SuperMegaphone)
-                return ChatSourceCategory.Megaphone;
-
             string text = StripTimePrefix(sourceText).TrimStart();
             if (Regex.IsMatch(text, @"^(\[\s*notice\s*\]|notice\s*[:：]|公告\s*[:：])",
                 RegexOptions.IgnoreCase)) return ChatSourceCategory.Notice;
             if (Regex.IsMatch(text, @"^(\[\s*system\s*\]|system\s*[:：]|系统\s*[:：])",
                 RegexOptions.IgnoreCase)) return ChatSourceCategory.System;
-            if (HasChannelPrefix(text, "buddy", "好友")) return ChatSourceCategory.Buddy;
+            if (HasChannelPrefix(text, "buddy", "好友")||HasChannelPrefix(text,"friend","好友")) return ChatSourceCategory.Buddy;
             if (HasChannelPrefix(text, "party", "组队")) return ChatSourceCategory.Party;
             if (HasChannelPrefix(text, "guild", "家族")) return ChatSourceCategory.Guild;
             if (HasChannelPrefix(text, "alliance", "联盟")) return ChatSourceCategory.Alliance;
             if (HasChannelPrefix(text, "whisper", "悄悄话")) return ChatSourceCategory.Whisper;
+
+            if (visualKind == ChatVisualKind.Megaphone || visualKind == ChatVisualKind.SuperMegaphone)
+                return ChatSourceCategory.Megaphone;
 
             // GMS chat colors stay stable while antialiasing, UI scale and capture scaling
             // shift individual pixels. Classify by the nearest color family, not one exact RGB.
             if (!foreground.IsEmpty)
             {
                 Color[] anchors = {
-                    Color.FromArgb(235, 235, 235), Color.FromArgb(235, 151, 62),
-                    Color.FromArgb(194, 143, 235), Color.FromArgb(120, 70, 160),
-                    Color.FromArgb(126, 205, 126), Color.FromArgb(50, 150, 80),
-                    Color.FromArgb(225, 115, 145), Color.FromArgb(220, 190, 90)
+                    Color.FromArgb(235,235,235),Color.FromArgb(255,204,102),Color.FromArgb(235,151,62),
+                    Color.FromArgb(255,153,255),Color.FromArgb(194,143,235),
+                    Color.FromArgb(153,153,255),Color.FromArgb(120,70,160),
+                    Color.FromArgb(153,255,153),Color.FromArgb(126,205,126),
+                    Color.FromArgb(0,255,0),Color.FromArgb(50,150,80),
+                    Color.FromArgb(225,115,145),Color.FromArgb(220,190,90)
                 };
                 ChatSourceCategory[] categories = {
-                    ChatSourceCategory.Normal, ChatSourceCategory.Buddy,
-                    ChatSourceCategory.Party, ChatSourceCategory.Guild,
-                    ChatSourceCategory.Alliance, ChatSourceCategory.Whisper,
-                    ChatSourceCategory.System, ChatSourceCategory.Notice
+                    ChatSourceCategory.Normal,ChatSourceCategory.Buddy,ChatSourceCategory.Buddy,
+                    ChatSourceCategory.Party,ChatSourceCategory.Party,
+                    ChatSourceCategory.Guild,ChatSourceCategory.Guild,
+                    ChatSourceCategory.Alliance,ChatSourceCategory.Alliance,
+                    ChatSourceCategory.Whisper,ChatSourceCategory.Whisper,
+                    ChatSourceCategory.System,ChatSourceCategory.Notice
                 };
-                int best = Int32.MaxValue;
-                int second = Int32.MaxValue;
-                int bestIndex = 0;
-                for (int index = 0; index < anchors.Length; index++)
-                {
-                    int distance = ColorDistance(foreground, anchors[index]);
-                    if (distance < best)
-                    {
-                        second = best; best = distance; bestIndex = index;
-                    }
-                    else if (distance < second) second = distance;
-                }
-                // Conservative fallback: uncertain colors remain ordinary chat instead of
-                // disappearing under a wrong filter.
-                if (best <= 5200 && second - best >= 650) return categories[bestIndex];
+                Dictionary<ChatSourceCategory,int> distances=new Dictionary<ChatSourceCategory,int>();
+                for(int i=0;i<anchors.Length;i++){int distance=ColorDistance(foreground,anchors[i]);int previous;
+                    if(!distances.TryGetValue(categories[i],out previous)||distance<previous)distances[categories[i]]=distance;}
+                int best=Int32.MaxValue,second=Int32.MaxValue;ChatSourceCategory winner=ChatSourceCategory.Normal;
+                foreach(KeyValuePair<ChatSourceCategory,int> item in distances)if(item.Value<best){second=best;best=item.Value;winner=item.Key;}else second=Math.Min(second,item.Value);
+                if(best<=5200&&second-best>=650)return winner;
             }
             return visualKind == ChatVisualKind.System
                 ? ChatSourceCategory.System : ChatSourceCategory.Normal;
@@ -198,22 +203,13 @@ namespace MapleOverlay
 
         internal static bool LooksLikeBroadcast(string value)
         {
-            string text = (value ?? "").ToLowerInvariant();
-            return text.IndexOf("megaphone", StringComparison.Ordinal) >= 0 ||
-                text.IndexOf("gift-filled message", StringComparison.Ordinal) >= 0 ||
-                text.IndexOf("super message", StringComparison.Ordinal) >= 0 ||
-                text.IndexOf("[world]", StringComparison.Ordinal) >= 0 ||
-                text.IndexOf("喇叭", StringComparison.Ordinal) >= 0 ||
-                text.IndexOf("广播", StringComparison.Ordinal) >= 0;
+            return Regex.IsMatch(value??"",@"^\s*(?:\[(?:world|megaphone|smega|广播|喇叭)\]|(?:megaphone|super message|喇叭|广播)\s*[:：]|.{1,30}gift-filled message\s*:)",RegexOptions.IgnoreCase);
         }
 
         private static bool LooksLikeSystem(string value)
         {
             string text = (value ?? "").ToLowerInvariant();
-            return text.IndexOf("[notice]", StringComparison.Ordinal) >= 0 ||
-                text.IndexOf("system", StringComparison.Ordinal) >= 0 ||
-                text.IndexOf("系统公告", StringComparison.Ordinal) >= 0 ||
-                text.IndexOf("公告", StringComparison.Ordinal) == 0;
+            return Regex.IsMatch(text,@"^\s*(?:\[notice\]|\[system\]|system\s*[:：]|系统公告|公告\s*[:：])",RegexOptions.IgnoreCase);
         }
 
         private static Color MakeReadableOnDark(Color color)
@@ -719,6 +715,7 @@ namespace MapleOverlay
         {
             switch (category)
             {
+                case ChatSourceCategory.Manual: return "手动译文";
                 case ChatSourceCategory.Buddy: return "好友";
                 case ChatSourceCategory.Party: return "组队";
                 case ChatSourceCategory.Guild: return "家族";
@@ -767,7 +764,7 @@ namespace MapleOverlay
                 string translated = await translateOutbound(source);
                 if (!String.IsNullOrWhiteSpace(translated))
                 {
-                    AppendTranslation("English  " + translated.Trim(), ChatVisualStyle.Default);
+                    AppendTranslation("English  " + translated.Trim(), ChatVisualStyle.Manual);
                     status.Text = "已翻译并复制，可直接回游戏粘贴";
                     outboundInput.SelectAll();
                 }
@@ -849,7 +846,7 @@ namespace MapleOverlay
             Rectangle saved = fallback;
             try
             {
-                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\FengYuMu"))
+                using (UserSettingsSection key = UserSettings.Open(@"Software\FengYuMu"))
                 {
                     if (key != null)
                     {
@@ -890,7 +887,7 @@ namespace MapleOverlay
             if (WindowState != FormWindowState.Normal || Width < 300 || Height < 150) return;
             try
             {
-                using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu"))
+                using (UserSettingsSection key = UserSettings.Open(@"Software\FengYuMu"))
                 {
                     key.SetValue("AiChatWindowX", Left, RegistryValueKind.DWord);
                     key.SetValue("AiChatWindowY", Top, RegistryValueKind.DWord);
@@ -944,7 +941,19 @@ namespace MapleOverlay
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            e.Graphics.Clear(Parent == null ? Color.FromArgb(238, 245, 255) : Parent.BackColor);
+            if (Parent == null) e.Graphics.Clear(Color.FromArgb(238, 245, 255));
+            else
+            {
+                // Render the parent's real gradient at this location, including rounded corners.
+                // A flat Parent.BackColor rectangle leaves a visible square behind the card.
+                System.Drawing.Drawing2D.GraphicsState saved = e.Graphics.Save();
+                try
+                {
+                    e.Graphics.TranslateTransform(-Left, -Top);
+                    InvokePaintBackground(Parent, new PaintEventArgs(e.Graphics, Bounds));
+                }
+                finally { e.Graphics.Restore(saved); }
+            }
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
             Rectangle faceBounds = new Rectangle(1, pressed ? 2 : 1,
@@ -1013,7 +1022,19 @@ namespace MapleOverlay
 
         protected override void OnPaintBackground(PaintEventArgs e)
         {
-            e.Graphics.Clear(Parent == null ? Color.FromArgb(238, 245, 255) : Parent.BackColor);
+            if (Parent == null) e.Graphics.Clear(Color.FromArgb(238, 245, 255));
+            else
+            {
+                // Render the parent's real gradient at this location, including rounded corners.
+                // A flat Parent.BackColor rectangle leaves a visible square behind the card.
+                System.Drawing.Drawing2D.GraphicsState saved = e.Graphics.Save();
+                try
+                {
+                    e.Graphics.TranslateTransform(-Left, -Top);
+                    InvokePaintBackground(Parent, new PaintEventArgs(e.Graphics, Bounds));
+                }
+                finally { e.Graphics.Restore(saved); }
+            }
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
             Rectangle faceBounds = new Rectangle(1, 1, Math.Max(1, Width - 3),
@@ -1143,6 +1164,32 @@ namespace MapleOverlay
         private readonly Label hotkeys = new Label();
         private readonly TrackBar range = new TrackBar();
         private readonly Label rangeValue = new Label();
+        private readonly Label[] rangeLegendLabels = new Label[3];
+        private Action arrangeRangeLegend;
+        private bool arrangingRangeLegend;
+        [StructLayout(LayoutKind.Sequential)] private struct RangeRect { internal int Left, Top, Right, Bottom; }
+        [DllImport("user32.dll", EntryPoint = "SendMessageW")] private static extern IntPtr SendMessage(IntPtr h, uint m, IntPtr w, IntPtr l);
+        [DllImport("user32.dll", EntryPoint = "SendMessageW")] private static extern IntPtr ReadRangeRect(IntPtr h, uint m, IntPtr w, ref RangeRect r);
+
+        private int[] ReadRangeThumbCenters()
+        {
+            int[] result = new int[] { 12, range.Width / 2, Math.Max(12, range.Width - 12) };
+            if (!range.IsHandleCreated) return result;
+            int original = SendMessage(range.Handle, 0x0400, IntPtr.Zero, IntPtr.Zero).ToInt32();
+            try
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    // Native TBM_SETPOS with redraw=false sends no scroll/value notifications.
+                    SendMessage(range.Handle, 0x0405, IntPtr.Zero, new IntPtr(i + 1));
+                    RangeRect thumb = new RangeRect();
+                    ReadRangeRect(range.Handle, 0x0419, IntPtr.Zero, ref thumb);
+                    if (thumb.Right > thumb.Left) result[i] = (thumb.Left + thumb.Right) / 2;
+                }
+            }
+            finally { SendMessage(range.Handle, 0x0405, IntPtr.Zero, new IntPtr(original)); }
+            return result;
+        }
         private readonly Panel startPage = new BlueSurfacePanel();
         private readonly Panel dashboardPage = new BlueSurfacePanel();
         private readonly Panel aiPage = new BlueSurfacePanel();
@@ -1152,10 +1199,18 @@ namespace MapleOverlay
         private readonly Button snapModeButton = new BlueGlassButton();
         private readonly System.Windows.Forms.Timer snapTimer = new System.Windows.Forms.Timer();
         private bool snapEnabled;
+        private bool snapInteraction;
+        private bool gameRegionSelection;
+        private ChatRegionSelectorForm activeGameRegionSelector;
+        private Point snapOffset;
+        private Size snapUserSize;
+        private Rectangle lastSnapAnchor;
         private bool dpiLayoutReady;
         private bool applyingDpiLayout;
         private float currentLayoutScale = 1.0f;
         private Action arrangeDashboardCards;
+        private Control currentPage;
+        private readonly List<Control> embeddedPages = new List<Control>();
 
         // Capture-time restoration must not steal keyboard focus back from the game.
         // Explicit entry points still call Activate() when the user asks to open the panel.
@@ -1166,7 +1221,7 @@ namespace MapleOverlay
             overlay = owner;
             AutoScaleDimensions = new SizeF(96.0f, 96.0f);
             AutoScaleMode = AutoScaleMode.Dpi;
-            Text = "枫语幕 v4.0 测试版";
+            Text = "枫语幕 v4.0";
             StartPosition = FormStartPosition.CenterScreen;
             FormBorderStyle = FormBorderStyle.Sizable;
             MaximizeBox = true;
@@ -1189,6 +1244,8 @@ namespace MapleOverlay
             snapTimer.Interval = 500;
             snapTimer.Tick += delegate { ApplySnapToGameWindow(); };
             snapTimer.Start();
+            ResizeBegin += delegate { snapInteraction = true; };
+            ResizeEnd += delegate { EndUserWindowInteraction(); };
             Resize += delegate { LayoutPageSurfaces(); };
             PerformLayout();
             CaptureLogicalLayout(this);
@@ -1201,6 +1258,8 @@ namespace MapleOverlay
                 if (e.CloseReason == CloseReason.UserClosing)
                 {
                     e.Cancel = true;
+                    if (activeGameRegionSelector != null && !activeGameRegionSelector.IsDisposed)
+                    { activeGameRegionSelector.DialogResult = DialogResult.Cancel; activeGameRegionSelector.Close(); return; }
                     if (overlay != null) overlay.MinimizeMainPanelToTray();
                     else Hide();
                 }
@@ -1214,8 +1273,9 @@ namespace MapleOverlay
             startPage.Anchor = AnchorStyles.Top | AnchorStyles.Bottom |
                 AnchorStyles.Left | AnchorStyles.Right;
             startPage.BackColor = Color.FromArgb(238, 245, 255);
-            Button update = MakeButton("v4.0 测试版   ·   检查更新", Point.Empty,
+            Button update = MakeButton("枫语幕4.0 正式版", Point.Empty,
                 new Size(250, 44), false);
+            update.Enabled = true;
             update.Font = new Font("Microsoft YaHei UI", 9.5f, FontStyle.Bold);
             update.Click += async delegate {
                 if (overlay != null) await overlay.InstallLatestApplicationAsync(update);
@@ -1226,6 +1286,8 @@ namespace MapleOverlay
                 Cursor = Cursors.Hand, TabStop = false
             };
             start.Click += delegate { ShowDashboardPage(); };
+            Button picture=MakeButton("打开图片测试（无需登录游戏）",Point.Empty,new Size(360,42),false);
+            picture.Click+=delegate{overlay.ShowImageTest();};
             EventHandler centerStart = delegate {
                 int diameter = Math.Max(190, Math.Min(280,
                     (int)(Math.Min(startPage.ClientSize.Width, startPage.ClientSize.Height) * 0.54f)));
@@ -1233,8 +1295,12 @@ namespace MapleOverlay
                 start.Location = new Point((startPage.ClientSize.Width - diameter) / 2,
                     (startPage.ClientSize.Height - diameter) / 2 + 28);
                 update.Location = new Point((startPage.ClientSize.Width - update.Width) / 2, 34);
+                picture.Width=Math.Max(100,Math.Min(360,startPage.ClientSize.Width-60));
+                picture.Location=new Point((startPage.ClientSize.Width-picture.Width)/2,110);
             };
             startPage.Resize += centerStart;
+            picture.Anchor=AnchorStyles.Top|AnchorStyles.Left;
+            startPage.Controls.Add(picture);
             startPage.Controls.Add(update);
             startPage.Controls.Add(start);
             centerStart(startPage, EventArgs.Empty);
@@ -1286,24 +1352,53 @@ namespace MapleOverlay
             rangeValue.Font = new Font("Microsoft YaHei UI", 9.5f, FontStyle.Bold);
             rangeValue.ForeColor = Color.FromArgb(42, 103, 238);
             rangeValue.BackColor = Color.Transparent;
+            range.AutoSize = false; range.Visible = false; range.Enabled = false;
             range.Minimum = 1; range.Maximum = 3; range.TickStyle = TickStyle.TopLeft;
             range.TickFrequency = 1; range.SmallChange = 1; range.LargeChange = 1;
-            range.Location = new Point(14, 44); range.Size = new Size(370, 38);
+            range.Location = new Point(14, 44); range.Size = new Size(370, 30);
             range.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             range.Value = overlay == null ? 2 : (int)overlay.TranslationRangeMode;
-            Label rangeLabels = new Label {
-                Text = "更多                         推荐                         重点",
-                Location = new Point(19, 84), Size = new Size(360, 20),
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
-                ForeColor = Color.FromArgb(103, 124, 153),
-                BackColor = Color.Transparent
+            string[] captions = new string[] { "", "", "" };
+            for (int i = 0; i < captions.Length; i++)
+            {
+                rangeLegendLabels[i] = new Label { Text = captions[i], TextAlign = ContentAlignment.MiddleCenter,
+                    ForeColor = Color.FromArgb(103, 124, 153), BackColor = Color.Transparent };
+                rangeCard.Controls.Add(rangeLegendLabels[i]);
+            }
+            arrangeRangeLegend = delegate {
+                if (arrangingRangeLegend || applyingDpiLayout) return;
+                arrangingRangeLegend = true;
+                try
+                {
+                    int height = Math.Max(ScaleValue(20, currentLayoutScale), rangeLegendLabels[0].Font.Height + 2);
+                    int top = rangeCard.ClientSize.Height - ScaleValue(8, currentLayoutScale) - height;
+                    // Keep a dedicated legend row inside the card even when TrackBar's native
+                    // preferred height changes with DPI. Its AutoSize must not push labels out.
+                    range.Height = Math.Max(16, Math.Min(ScaleValue(30, currentLayoutScale), top - range.Top - 2));
+                    int[] centers = ReadRangeThumbCenters();
+                    for (int i = 0; i < rangeLegendLabels.Length; i++)
+                    {
+                        Label legend = rangeLegendLabels[i];
+                        int width = Math.Max(ScaleValue(32, currentLayoutScale), legend.PreferredWidth + 8);
+                        int left = Math.Max(2, Math.Min(range.Left + centers[i] - width / 2, rangeCard.ClientSize.Width - width - 2));
+                        legend.Bounds = new Rectangle(left, top, width, height);
+                        legend.Visible = true; legend.BringToFront();
+                    }
+                }
+                finally { arrangingRangeLegend = false; }
             };
+            range.SizeChanged += delegate { arrangeRangeLegend(); };
+            range.HandleCreated += delegate { arrangeRangeLegend(); };
+            rangeCard.SizeChanged += delegate { arrangeRangeLegend(); };
+            arrangeRangeLegend();
             range.ValueChanged += delegate {
                 if (overlay != null) overlay.ApplyTranslationRangeMode((TranslationRangeMode)range.Value);
                 RefreshRangeText();
             };
+            rangeCard.Controls.Add(new Label { Text = "识别整个游戏窗口中的词库内容", AutoSize = true,
+                Location = new Point(18, 48), ForeColor = Color.FromArgb(103, 124, 153), BackColor = Color.Transparent });
             rangeCard.Controls.Add(rangeTitle); rangeCard.Controls.Add(rangeValue);
-            rangeCard.Controls.Add(rangeLabels); rangeCard.Controls.Add(range);
+            rangeCard.Controls.Add(range);
 
             ConfigureCardButton(continuousCard, "持续翻译\r\n按变化自动识别", new Point(16, 206));
             continuousCard.Click += delegate {
@@ -1454,12 +1549,129 @@ namespace MapleOverlay
             startPage.Visible = page == startPage;
             dashboardPage.Visible = page == dashboardPage;
             aiPage.Visible = page == aiPage;
+            foreach (Control embedded in embeddedPages) embedded.Visible = page == embedded;
+            currentPage = page;
             page.BringToFront();
+        }
+
+        internal void ShowEmbeddedPage(Form content, Action completed)
+        {
+            if (content.Parent != null && content.TopLevelControl == this)
+            {
+                ShowPage(content.Parent.Parent);
+                return;
+            }
+            Control previous = currentPage ?? dashboardPage;
+            Panel page = new BlueSurfacePanel { Dock = DockStyle.Fill };
+            Panel host = new Panel { Dock = DockStyle.Fill, AutoScroll = true };
+            Button back = new BlueGlassButton { Text = "← 返回", Dock = DockStyle.Top, Height = 44 };
+            page.Controls.Add(host); page.Controls.Add(back);
+            content.TopLevel = false;
+            content.FormBorderStyle = FormBorderStyle.None;
+            content.ShowInTaskbar = false;
+            content.Dock = DockStyle.Top;
+            host.Controls.Add(content);
+            content.FormClosed += delegate {
+                host.Controls.Remove(content);
+                embeddedPages.Remove(page);
+                Controls.Remove(page);
+                page.Dispose();
+                ShowPage(previous.IsDisposed ? dashboardPage : previous);
+                if (completed != null) completed();
+                RefreshStatus();
+            };
+            back.Click += delegate { content.Close(); };
+            embeddedPages.Add(page);
+            Controls.Add(page);
+            ShowPage(page);
+            content.Show();
+        }
+
+        internal void ShowGameRegionSelector(ChatRegionSelectorForm selector, Rectangle game, Action completed)
+        {
+            if (gameRegionSelection) { selector.Dispose(); return; }
+            Rectangle savedBounds = Bounds;
+            FormBorderStyle savedBorder = FormBorderStyle;
+            Size savedMinimum = MinimumSize, savedMaximum = MaximumSize;
+            Color savedColor = BackColor, savedKey = TransparencyKey;
+            double savedOpacity=Opacity;
+            bool savedScroll = AutoScroll, savedTopMost = TopMost;
+            Control previous = currentPage;
+            bool savedSnapInteraction = snapInteraction;
+            gameRegionSelection = true; activeGameRegionSelector = selector;
+            bool savedKeyPreview = KeyPreview;
+            KeyPreview = true;
+            KeyEventHandler selectionKeys = delegate(object sender, KeyEventArgs e) {
+                if (e.KeyCode == Keys.Escape || e.KeyCode == Keys.Enter)
+                {
+                    e.Handled = true; e.SuppressKeyPress = true;
+                    if (e.KeyCode == Keys.Escape) selector.CompleteSelection(false);
+                }
+            };
+            KeyDown += selectionKeys;
+            foreach (Control child in Controls) child.Visible = false;
+            AutoScroll = false; AutoScrollMinSize = Size.Empty;
+            MinimumSize = Size.Empty; MaximumSize = Size.Empty;
+            FormBorderStyle = FormBorderStyle.None;
+            BackColor = Color.Magenta; TransparencyKey = Color.Magenta; TopMost = true; Opacity=0.72;
+            Bounds = game;
+            selector.TopLevel = false; selector.TopMost = false;
+            selector.Dock = DockStyle.Fill; Controls.Add(selector);
+            Action restore = delegate {
+                selector.Capture = false;
+                Controls.Remove(selector);
+                TransparencyKey = savedKey; BackColor = savedColor; TopMost = savedTopMost; Opacity=savedOpacity;
+                FormBorderStyle = savedBorder; MinimumSize = savedMinimum; MaximumSize = savedMaximum;
+                AutoScroll = savedScroll; Bounds = savedBounds;
+                gameRegionSelection = false; activeGameRegionSelector = null;
+                snapInteraction = savedSnapInteraction;
+                KeyDown -= selectionKeys; KeyPreview = savedKeyPreview;
+                ShowPage(previous != null && !previous.IsDisposed ? previous : dashboardPage);
+                LayoutPageSurfaces();
+            };
+            System.Windows.Forms.Timer selectionGuard = new System.Windows.Forms.Timer { Interval = 300 };
+            selectionGuard.Tick += delegate {
+                Rectangle current;
+                if (overlay != null && (!overlay.TryGetSnapWindowBounds(out current) || current != game))
+                { selector.DialogResult = DialogResult.Cancel; selector.Close(); }
+            };
+            selector.FormClosed += delegate {
+                selectionGuard.Stop(); selectionGuard.Dispose();
+                restore();
+                if (completed != null) completed();
+            };
+            try
+            {
+                selector.Show(); selector.BringToFront();
+                Activate(); selector.BeginLiveInputCapture(); selectionGuard.Start();
+            }
+            catch { selectionGuard.Dispose(); restore(); selector.Dispose(); throw; }
+        }
+
+        internal void ShowOnlineSettingsPage(Action completed)
+        {
+            ShowEmbeddedPage(new OnlineAiForm(), completed);
+        }
+
+        private void EndUserWindowInteraction()
+        {
+            if (gameRegionSelection) return;
+            // WM_EXITSIZEMOVE also covers paths where WinForms skipped ResizeEnd.
+            // Commit the actual released size before allowing the timer to act again.
+            snapUserSize = Size;
+            if (snapEnabled && !lastSnapAnchor.IsEmpty)
+            {
+                Rectangle game;
+                if (overlay != null && overlay.TryGetSnapWindowBounds(out game))
+                    lastSnapAnchor = CalculateSnapAnchor(game, snapUserSize);
+                snapOffset = new Point(Left - lastSnapAnchor.Left, Top - lastSnapAnchor.Top);
+            }
+            snapInteraction = false;
         }
 
         private void LayoutPageSurfaces()
         {
-            if (applyingDpiLayout) return;
+            if (applyingDpiLayout || gameRegionSelection) return;
             int contentWidth = ScaleValue(logicalClientSize.Width, currentLayoutScale);
             int contentHeight = ScaleValue(logicalClientSize.Height, currentLayoutScale);
             Size surfaceSize = new Size(Math.Max(contentWidth, ClientSize.Width),
@@ -1468,6 +1680,7 @@ namespace MapleOverlay
             dashboardPage.Size = surfaceSize;
             aiPage.Size = surfaceSize;
             if (arrangeDashboardCards != null) arrangeDashboardCards();
+            if (arrangeRangeLegend != null) arrangeRangeLegend();
         }
 
         internal void ShowDashboardPage()
@@ -1509,7 +1722,7 @@ namespace MapleOverlay
         {
             try
             {
-                using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu"))
+                using (UserSettingsSection key = UserSettings.Open(@"Software\FengYuMu"))
                     return Convert.ToInt32(key.GetValue("MainWindowSnapEnabled", 1),
                         CultureInfo.InvariantCulture) != 0;
             }
@@ -1522,13 +1735,15 @@ namespace MapleOverlay
             snapModeButton.Text = enabled ? "吸附" : "自由";
             try
             {
-                using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu"))
+                using (UserSettingsSection key = UserSettings.Open(@"Software\FengYuMu"))
                     key.SetValue("MainWindowSnapEnabled", enabled ? 1 : 0,
                         RegistryValueKind.DWord);
             }
             catch { }
             if (enabled)
             {
+                snapOffset = Point.Empty;
+                snapUserSize = Size.Empty;
                 if (WindowState != FormWindowState.Normal) WindowState = FormWindowState.Normal;
                 ApplySnapToGameWindow();
             }
@@ -1536,36 +1751,59 @@ namespace MapleOverlay
 
         private void ApplySnapToGameWindow()
         {
-            if (!snapEnabled || overlay == null || !Visible ||
+            if (gameRegionSelection || !snapEnabled || snapInteraction || overlay == null || !Visible ||
                 WindowState != FormWindowState.Normal || applyingDpiLayout) return;
             Rectangle game;
-            if (!overlay.TryGetMapleWindowBounds(out game) || game.Width < 160 || game.Height < 300)
+            if (!overlay.TryGetSnapWindowBounds(out game) || game.Width < 160 || game.Height < 300)
                 return;
+            Rectangle work = Screen.FromRectangle(game).WorkingArea;
+            Rectangle target = CalculateSnapAnchor(game, snapUserSize);
+            lastSnapAnchor = target;
+            target.Offset(snapOffset);
+            target.X = Math.Max(work.Left, Math.Min(target.X, work.Right - target.Width));
+            target.Y = Math.Max(work.Top, Math.Min(target.Y, work.Bottom - target.Height));
+            if (Bounds != target) Bounds = target;
+        }
+
+        private Rectangle CalculateSnapAnchor(Rectangle game, Size userSize)
+        {
             Rectangle work = Screen.FromRectangle(game).WorkingArea;
             int targetHeight = Math.Min(game.Height, work.Height);
             int targetWidth = Math.Max(MinimumSize.Width, Math.Min(536,
                 (int)Math.Round(targetHeight * 0.44f)));
+            if (!userSize.IsEmpty)
+            {
+                targetWidth = Math.Max(MinimumSize.Width, userSize.Width);
+                targetHeight = Math.Max(MinimumSize.Height, userSize.Height);
+            }
+            targetHeight = Math.Min(targetHeight, work.Height);
             targetWidth = Math.Min(targetWidth, work.Width);
             int left;
             if (game.Right + targetWidth <= work.Right) left = game.Right;
             else if (game.Left - targetWidth >= work.Left) left = game.Left - targetWidth;
             else left = Math.Max(work.Left, work.Right - targetWidth);
             int top = Math.Max(work.Top, Math.Min(game.Top, work.Bottom - targetHeight));
-            Rectangle target = new Rectangle(left, top, targetWidth, targetHeight);
-            if (Bounds != target) Bounds = target;
+            return new Rectangle(left, top, targetWidth, targetHeight);
         }
 
         protected override void WndProc(ref Message message)
         {
             const int WmDpiChanged = 0x02E0;
+            const int WmEnterSizeMove = 0x0231, WmExitSizeMove = 0x0232;
+            if (message.Msg == WmEnterSizeMove) snapInteraction = true;
             int newDpi = 0;
             if (message.Msg == WmDpiChanged)
                 newDpi = (int)(message.WParam.ToInt64() & 0xffff);
             base.WndProc(ref message);
+            if (message.Msg == WmExitSizeMove) EndUserWindowInteraction();
             if (newDpi > 0 && dpiLayoutReady && IsHandleCreated && !IsDisposed)
             {
                 BeginInvoke((MethodInvoker)delegate {
-                    if (!IsDisposed) ApplyDpiLayout(newDpi, true, false);
+                    if (!IsDisposed)
+                    {
+                        ApplyDpiLayout(newDpi, true, false);
+                        if (!snapInteraction && !snapUserSize.IsEmpty) EndUserWindowInteraction();
+                    }
                 });
             }
         }
@@ -1627,7 +1865,7 @@ namespace MapleOverlay
 
         private void ApplyDpiLayout(int dpi, bool constrainToScreen, bool simulateFontScale)
         {
-            if (!dpiLayoutReady || applyingDpiLayout) return;
+            if (!dpiLayoutReady || applyingDpiLayout || gameRegionSelection) return;
             applyingDpiLayout = true;
             bool layoutSuspended = false;
             bool completed = false;
@@ -1662,7 +1900,8 @@ namespace MapleOverlay
                 // Anchors otherwise react to ClientSize and parent-bound changes after the
                 // controls have already been scaled, effectively applying part of the scale twice.
                 foreach (Control control in logicalBounds.Keys) control.Anchor = AnchorStyles.None;
-                ClientSize = windowSize;
+                // A DPI notification scales content; it must not undo a manual resize.
+                if (snapUserSize.IsEmpty && !snapInteraction) ClientSize = windowSize;
                 foreach (KeyValuePair<Control, Rectangle> item in logicalBounds)
                 {
                     Rectangle logical = item.Value;
@@ -1763,7 +2002,8 @@ namespace MapleOverlay
             string showKey = overlay == null ? "F8" : overlay.ShowHotkeyDescription;
             string hideKey = overlay == null ? "F9" : overlay.HideHotkeyDescription;
             string floatingKey = overlay == null ? "F10" : overlay.FloatingWindowHotkeyDescription;
-            status.Text = "已就绪 · 词库 " + dictionaryCount + " · 任务 " + taskCount;
+            status.Text = overlay != null && !String.IsNullOrEmpty(overlay.InteractionStatus)
+                ? overlay.InteractionStatus : "已就绪 · 词库 " + dictionaryCount + " · 任务 " + taskCount;
             string gamepadShow = overlay == null ? "未绑定" : overlay.ShowGamepadShortcutDescription;
             string gamepadHide = overlay == null ? "未绑定" : overlay.HideGamepadShortcutDescription;
             hotkeys.Text = "键盘 " + showKey + " 翻译 / " + hideKey + " 对齐 / " +
@@ -1784,8 +2024,7 @@ namespace MapleOverlay
 
         private void RefreshRangeText()
         {
-            rangeValue.Text = range.Value == 1 ? "翻译更多" :
-                (range.Value == 2 ? "日常推荐" : "只翻重点");
+            rangeValue.Text = "整个窗口";
         }
 
         protected override void Dispose(bool disposing)
@@ -1816,6 +2055,7 @@ namespace MapleOverlay
         }
 
         private readonly OverlayForm overlay;
+        private readonly Label saveStatus = new Label();
         private readonly ComboBox showKey = new ComboBox();
         private readonly ComboBox hideKey = new ComboBox();
         private readonly ComboBox floatingWindowKey = new ComboBox();
@@ -1838,7 +2078,8 @@ namespace MapleOverlay
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;
-            ClientSize = new Size(590, 425);
+            ClientSize = new Size(390, 565);
+            BackColor = Color.FromArgb(238, 245, 255);
             Font = new Font("Microsoft YaHei UI", 9.0f);
             BuildUi();
             showKey.SelectedItem = overlay == null ? "F8" : overlay.ShowKey.ToString();
@@ -1858,44 +2099,46 @@ namespace MapleOverlay
         private void BuildUi()
         {
             FillKeys(showKey); FillKeys(hideKey); FillKeys(floatingWindowKey);
-            GroupBox keyboard = new GroupBox { Text = "键盘快捷键", Location = new Point(16, 12), Size = new Size(558, 182) };
+            GroupBox keyboard = new GroupBox { Text = "键盘快捷键", Location = new Point(16, 12), Size = new Size(350, 182) };
             Label showLabel = new Label { Text = "翻译开/关：", Location = new Point(14, 29), AutoSize = true };
-            showKey.Location = new Point(115, 25);
-            showModifiers.Location = new Point(230, 25); showModifiers.Width = 300;
+            showKey.Location = new Point(140, 25);
+            showModifiers.Location = new Point(237, 25); showModifiers.Width = 90;
             Label hideLabel = new Label { Text = "自动对齐聊天框：", Location = new Point(14, 70), AutoSize = true };
-            hideKey.Location = new Point(115, 66);
-            hideModifiers.Location = new Point(230, 66); hideModifiers.Width = 300;
+            hideKey.Location = new Point(140, 66);
+            hideModifiers.Location = new Point(237, 66); hideModifiers.Width = 90;
             Label floatingLabel = new Label { Text = "呼出AI悬浮窗：", Location = new Point(14, 111), AutoSize = true };
-            floatingWindowKey.Location = new Point(115, 107);
-            floatingWindowModifiers.Location = new Point(230, 107); floatingWindowModifiers.Width = 300;
-            Label hint = new Label { Text = "误关悬浮窗时用第三项重新呼出；右侧组合键可留空。", Location = new Point(14, 143), Size = new Size(520, 28), ForeColor = Color.DimGray };
+            floatingWindowKey.Location = new Point(140, 107);
+            floatingWindowModifiers.Location = new Point(237, 107); floatingWindowModifiers.Width = 90;
+            Label hint = new Label { Text = "误关悬浮窗时用第三项重新呼出；右侧组合键可留空。", Location = new Point(14, 143), Size = new Size(320, 38), ForeColor = Color.DimGray };
             keyboard.Controls.AddRange(new Control[] { showLabel, showKey, showModifiers,
                 hideLabel, hideKey, hideModifiers, floatingLabel, floatingWindowKey,
                 floatingWindowModifiers, hint });
 
-            GroupBox gamepad = new GroupBox { Text = "手柄快捷键（独立于键盘）", Location = new Point(16, 202), Size = new Size(558, 150) };
+            GroupBox gamepad = new GroupBox { Text = "手柄快捷键（独立于键盘）", Location = new Point(16, 202), Size = new Size(350, 150) };
             FillGamepadButtons(showGamepadFirst, false); FillGamepadButtons(showGamepadSecond, true);
             FillGamepadButtons(hideGamepadFirst, false); FillGamepadButtons(hideGamepadSecond, true);
             Label gamepadShowLabel = new Label { Text = "翻译开/关：", Location = new Point(14, 30), AutoSize = true };
             Label gamepadHideLabel = new Label { Text = "隐藏翻译：", Location = new Point(14, 72), AutoSize = true };
-            showGamepadFirst.Location = new Point(115, 26); showGamepadFirst.Width = 170;
-            showGamepadSecond.Location = new Point(320, 26); showGamepadSecond.Width = 210;
-            hideGamepadFirst.Location = new Point(115, 68); hideGamepadFirst.Width = 170;
-            hideGamepadSecond.Location = new Point(320, 68); hideGamepadSecond.Width = 210;
-            Label plus1 = new Label { Text = "+", Location = new Point(296, 30), AutoSize = true };
-            Label plus2 = new Label { Text = "+", Location = new Point(296, 72), AutoSize = true };
+            showGamepadFirst.Location = new Point(140, 26); showGamepadFirst.Width = 90;
+            showGamepadSecond.Location = new Point(244, 26); showGamepadSecond.Width = 90;
+            hideGamepadFirst.Location = new Point(140, 68); hideGamepadFirst.Width = 90;
+            hideGamepadSecond.Location = new Point(244, 68); hideGamepadSecond.Width = 90;
+            Label plus1 = new Label { Text = "+", Location = new Point(230, 30), AutoSize = true };
+            Label plus2 = new Label { Text = "+", Location = new Point(230, 72), AutoSize = true };
             Label gamepadHint = new Label {
                 Text = "支持单键或双键同时按；松开后才能再次触发。兼容 XInput。",
-                Location = new Point(14, 110), Size = new Size(520, 28), ForeColor = Color.DimGray
+                Location = new Point(14, 110), Size = new Size(320, 38), ForeColor = Color.DimGray
             };
             showGamepadFirst.SelectedIndexChanged += delegate { UpdateGamepadSecondBoxes(); };
             hideGamepadFirst.SelectedIndexChanged += delegate { UpdateGamepadSecondBoxes(); };
             gamepad.Controls.AddRange(new Control[] { gamepadShowLabel, showGamepadFirst, plus1, showGamepadSecond,
                 gamepadHideLabel, hideGamepadFirst, plus2, hideGamepadSecond, gamepadHint });
 
-            Button save = new Button { Text = "保存并生效", Location = new Point(410, 371), Size = new Size(164, 38) };
+            Button save = new Button { Text = "保存并生效", Location = new Point(16, 371), Size = new Size(350, 38) };
             save.Click += delegate { SaveSettings(); };
-            Controls.AddRange(new Control[] { keyboard, gamepad, save });
+            saveStatus.Location = new Point(16, 426); saveStatus.Size = new Size(350, 116);
+            saveStatus.ForeColor = Color.FromArgb(185, 28, 28);
+            Controls.AddRange(new Control[] { keyboard, gamepad, save, saveStatus });
         }
 
         private static void FillKeys(ComboBox box)
@@ -1940,6 +2183,11 @@ namespace MapleOverlay
 
         private void SaveSettings()
         {
+            if (overlay == null) return;
+            Keys oldShow = overlay.ShowKey, oldHide = overlay.HideKey, oldFloat = overlay.FloatingWindowKey;
+            uint oldShowModifiers = overlay.ShowModifiers, oldHideModifiers = overlay.HideModifiers,
+                oldFloatModifiers = overlay.FloatingWindowModifiers;
+            bool applied = false;
             try
             {
                 Keys sk = (Keys)Enum.Parse(typeof(Keys), Convert.ToString(showKey.SelectedItem), true);
@@ -1953,7 +2201,7 @@ namespace MapleOverlay
                 bool alignMatchesFloating = hk == fk && hm == fm;
                 if (showMatchesAlign || showMatchesFloating || alignMatchesFloating)
                 {
-                    MessageBox.Show("三个功能不能使用完全相同的快捷键。", "快捷键");
+                    saveStatus.Text = "三个功能不能使用完全相同的快捷键。";
                     return;
                 }
                 GamepadButton showFirst = SelectedGamepadButton(showGamepadFirst);
@@ -1963,19 +2211,21 @@ namespace MapleOverlay
                 if ((showSecond != GamepadButton.None && showFirst == showSecond) ||
                     (hideSecond != GamepadButton.None && hideFirst == hideSecond))
                 {
-                    MessageBox.Show("双键组合不能选择两个相同按键。", "快捷键");
+                    saveStatus.Text = "双键组合不能选择两个相同按键。";
                     return;
                 }
                 GamepadShortcut gs = new GamepadShortcut(showFirst, showSecond);
                 GamepadShortcut gh = new GamepadShortcut(hideFirst, hideSecond);
                 if (gs.ConflictsWith(gh))
                 {
-                    MessageBox.Show("手柄呼出和缩回组合会同时触发，请换成不重叠的按键。", "快捷键");
+                    saveStatus.Text = "手柄呼出和缩回组合会同时触发，请换成不重叠的按键。";
                     return;
                 }
-                if (!overlay.ApplyHotkeys(sk, sm, hk, hm, fk, fm)) return;
-                overlay.ApplyGamepadShortcuts(gs, gh);
-                using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu"))
+                if (!overlay.ApplyHotkeys(sk, sm, hk, hm, fk, fm)) {
+                    saveStatus.Text = "快捷键被其他程序占用，旧设置仍然有效。请换一个组合。"; return;
+                }
+                applied = true;
+                using (UserSettingsSection key = UserSettings.Open(@"Software\FengYuMu"))
                 {
                     key.SetValue("ShowKey", sk.ToString());
                     key.SetValue("ShowModifiers", OverlayForm.ModifiersText(sm));
@@ -1986,9 +2236,16 @@ namespace MapleOverlay
                     key.SetValue("GamepadShowShortcut", gs.Serialize());
                     key.SetValue("GamepadHideShortcut", gh.Serialize());
                 }
-                Close();
+                overlay.ApplyGamepadShortcuts(gs, gh);
+                saveStatus.ForeColor = Color.FromArgb(22, 101, 52);
+                saveStatus.Text = "已保存并生效。设置存于当前用户本地文件，不需要修改注册表权限。";
             }
-            catch (Exception ex) { MessageBox.Show(ex.Message, "保存失败"); }
+            catch (Exception ex) {
+                if (applied) overlay.ApplyHotkeys(oldShow, oldShowModifiers, oldHide, oldHideModifiers,
+                    oldFloat, oldFloatModifiers);
+                saveStatus.ForeColor = Color.FromArgb(185, 28, 28);
+                saveStatus.Text = "保存失败，旧快捷键已恢复：" + ex.Message;
+            }
         }
     }
 
@@ -2054,7 +2311,7 @@ namespace MapleOverlay
                     "本站和社区资料仅用于查询、术语核对与翻译适配；若游戏实际内容发生变化，以当前客户端显示为准。" };
             thanks.Controls.Add(thanksText, 0, 1);
             LinkLabel guideLink = new LinkLabel { Text = "打开 MSCW Guidebook", AutoSize = true, Font = new Font("Microsoft YaHei UI", 10, FontStyle.Underline) };
-            guideLink.LinkClicked += delegate { try { Process.Start("https://mscw-guidebook.com/"); } catch { } };
+            guideLink.LinkClicked += delegate { try { Clipboard.SetText("https://mscw-guidebook.com/"); status.Text = "资料站地址已复制。"; } catch { status.Text = "资料站：https://mscw-guidebook.com/"; } };
             thanks.Controls.Add(guideLink, 0, 2);
             thanksTab.Controls.Add(thanks);
 
@@ -2129,8 +2386,7 @@ namespace MapleOverlay
             taskGrid.CellDoubleClick += delegate(object sender, DataGridViewCellEventArgs e) {
                 if (e.RowIndex < 0) return;
                 string taskId = Convert.ToString(taskGrid.Rows[e.RowIndex].Cells[1].Value);
-                using (TaskEditorForm editor = new TaskEditorForm(taskId, taskRows)) editor.ShowDialog(this);
-                RefreshTaskGrid();
+                overlay.ShowEmbeddedPage(new TaskEditorForm(taskId, taskRows), delegate { RefreshTaskGrid(); });
             };
             Panel taskPanel = new Panel { Dock = DockStyle.Fill, Padding = new Padding(10) };
             FlowLayoutPanel taskTop = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 42, WrapContents = false };
@@ -2159,22 +2415,20 @@ namespace MapleOverlay
 
         private void AddTask()
         {
-            using (NewTaskForm dialog = new NewTaskForm())
-            {
-                if (dialog.ShowDialog(this) != DialogResult.OK) return;
-                if (taskRows.Exists(delegate(TaskDictionaryRow row) { return row.TaskId == dialog.TaskId; }))
-                {
-                    MessageBox.Show("任务代码 " + dialog.TaskId + " 已经存在，可在列表中双击编辑。", "新增任务");
-                    return;
+            NewTaskForm dialog = new NewTaskForm();
+            overlay.ShowEmbeddedPage(dialog, delegate {
+                if (dialog.DialogResult != DialogResult.OK) return;
+                if (taskRows.Exists(delegate(TaskDictionaryRow row) { return row.TaskId == dialog.TaskId; })) {
+                    status.Text = "该任务代码已存在，可在列表中双击编辑。"; return;
                 }
                 taskRows.Add(new TaskDictionaryRow { TaskId = dialog.TaskId,
                     English = dialog.EnglishName, Chinese = dialog.ChineseName,
                     Category = "怀旧服-任务#" + dialog.TaskId, IconHash = "", StartMap = dialog.StartMap });
                 RefreshTaskGrid();
-                using (TaskEditorForm editor = new TaskEditorForm(dialog.TaskId, taskRows)) editor.ShowDialog(this);
-                RefreshTaskGrid();
-                status.Text = "已新增任务 " + dialog.TaskId + "，请点击保存全部并载入内存";
-            }
+                overlay.ShowEmbeddedPage(new TaskEditorForm(dialog.TaskId, taskRows), delegate {
+                    RefreshTaskGrid(); status.Text = "已新增任务，请保存全部并载入内存。";
+                });
+            });
         }
 
         private void LoadRows()
@@ -2393,7 +2647,7 @@ namespace MapleOverlay
                 WriteDictionaryAtomically(path, SerializeRows());
                 overlay.ReloadDictionary(); LoadRows(); status.Text = "已保存并生效";
             }
-            catch (Exception ex) { MessageBox.Show(ex.Message, "保存失败"); }
+            catch (Exception ex) { status.Text = "保存失败：" + ex.Message; }
         }
 
         private static void WriteDictionaryAtomically(string targetPath, string contents)
@@ -2418,12 +2672,12 @@ namespace MapleOverlay
 
         private void ImportRows()
         {
-            using (OpenFileDialog dialog = new OpenFileDialog())
-            {
-                dialog.Filter = "枫语幕词库 (*.tsv)|*.tsv|文本文件 (*.txt)|*.txt";
-                if (dialog.ShowDialog(this) != DialogResult.OK) return;
-                Merge(File.ReadAllText(dialog.FileName, Encoding.UTF8));
-            }
+            EmbeddedFilePicker picker = new EmbeddedFilePicker(Path.GetDirectoryName(path), false, "");
+            overlay.ShowEmbeddedPage(picker, delegate {
+                if (picker.DialogResult != DialogResult.OK) return;
+                try { Merge(File.ReadAllText(picker.SelectedPath, Encoding.UTF8)); }
+                catch (Exception ex) { status.Text = "导入失败：" + ex.Message; }
+            });
         }
 
         private void Merge(string text)
@@ -2475,13 +2729,13 @@ namespace MapleOverlay
 
         private void ExportRows()
         {
-            using (SaveFileDialog dialog = new SaveFileDialog())
-            {
-                dialog.Filter = "枫语幕词库 (*.tsv)|*.tsv";
-                dialog.FileName = "枫语幕词库_" + DateTime.Now.ToString("yyyyMMdd") + ".tsv";
-                if (Directory.Exists(@"D:\GPT\文件")) dialog.InitialDirectory = @"D:\GPT\文件";
-                if (dialog.ShowDialog(this) == DialogResult.OK) File.WriteAllText(dialog.FileName, SerializeRows(), new UTF8Encoding(true));
-            }
+            EmbeddedFilePicker picker = new EmbeddedFilePicker(Path.GetDirectoryName(path), true,
+                "枫语幕词库_" + DateTime.Now.ToString("yyyyMMdd") + ".tsv");
+            overlay.ShowEmbeddedPage(picker, delegate {
+                if (picker.DialogResult != DialogResult.OK) return;
+                try { WriteDictionaryAtomically(picker.SelectedPath, SerializeRows()); status.Text = "已导出词库。"; }
+                catch (Exception ex) { status.Text = "导出失败：" + ex.Message; }
+            });
         }
     }
 
@@ -2491,6 +2745,7 @@ namespace MapleOverlay
         private readonly TextBox english = new TextBox();
         private readonly TextBox chinese = new TextBox();
         private readonly TextBox startMap = new TextBox();
+        private readonly Label validationStatus = new Label();
         public string TaskId { get; private set; }
         public string EnglishName { get; private set; }
         public string ChineseName { get; private set; }
@@ -2504,22 +2759,24 @@ namespace MapleOverlay
             StartPosition = FormStartPosition.CenterParent;
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false; MinimizeBox = false;
-            ClientSize = new Size(520, 250);
+            ClientSize = new Size(390, 345);
             Font = new Font("Microsoft YaHei UI", 9.0f);
             AddField("任务代码：", id, 24);
             AddField("英文任务名：", english, 68);
             AddField("中文任务名：", chinese, 112);
             AddField("接取地图/区域：", startMap, 156);
-            Button save = new Button { Text = "创建并编辑内容", Location = new Point(342, 202), Size = new Size(145, 31) };
+            Button save = new Button { Text = "创建并编辑内容", Location = new Point(22, 202), Size = new Size(345, 36) };
             save.Click += delegate { AcceptTask(); };
             Controls.Add(save);
+            validationStatus.Location = new Point(22, 255); validationStatus.Size = new Size(345, 70);
+            validationStatus.ForeColor = Color.FromArgb(185, 28, 28); Controls.Add(validationStatus);
             AcceptButton = save;
         }
 
         private void AddField(string label, TextBox box, int y)
         {
             Controls.Add(new Label { Text = label, Location = new Point(22, y + 4), AutoSize = true });
-            box.Location = new Point(126, y); box.Width = 360;
+            box.Location = new Point(126, y); box.Width = 240;
             Controls.Add(box);
         }
 
@@ -2533,7 +2790,7 @@ namespace MapleOverlay
             TaskId = Clean(id.Text); EnglishName = Clean(english.Text); ChineseName = Clean(chinese.Text); StartMap = Clean(startMap.Text);
             if (TaskId.Length == 0 || EnglishName.Length == 0 || ChineseName.Length == 0 || StartMap.Length == 0)
             {
-                MessageBox.Show("任务代码、任务名和接取地图/区域都必须填写。", "新增任务");
+                validationStatus.Text = "任务代码、任务名和接取地图/区域都必须填写。";
                 return;
             }
             DialogResult = DialogResult.OK;

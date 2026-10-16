@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Drawing
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $exe = Join-Path $repoRoot '枫语幕.exe'
@@ -63,6 +63,9 @@ foreach ($mode in $modes) {
     if ($LASTEXITCODE -ne 0) { throw "假 helper 编译失败：$mode" }
     New-Item -ItemType File -Path (Join-Path $folder 'Sdcb.SimdPaddleOCR.dll') | Out-Null
     New-Item -ItemType File -Path (Join-Path $folder 'Sdcb.SimdPaddleOCR.Models.ChineseV6Small.dll') | Out-Null
+    Get-ChildItem -LiteralPath $folder -File | Sort-Object Name | ForEach-Object {
+        $_.Name + "`t" + (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash
+    } | Set-Content -LiteralPath (Join-Path $folder 'component-manifest.tsv') -Encoding UTF8
 }
 
 function Invoke-StrongOcrCase([string]$mode, [int]$timeout = 1200) {

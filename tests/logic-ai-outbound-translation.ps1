@@ -1,13 +1,14 @@
-﻿$ErrorActionPreference = 'Stop'
+﻿param([string]$ExePath)
+$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
-$exe = Join-Path $repoRoot '枫语幕.exe'
+$exe = if($ExePath){$ExePath}else{Join-Path $repoRoot 'bin/candidate-r3/枫语幕.exe'}
 if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
 $assembly = Load-TestAssembly $exe
 $all = [Reflection.BindingFlags]'Static,Instance,NonPublic,Public'
 
 $settingsType = $assembly.GetType('MapleOverlay.OnlineAiSettings', $true)
 $onlineType = $assembly.GetType('MapleOverlay.OnlineAiClient', $true)
-$offlineType = $assembly.GetType('MapleOverlay.OfflineAiClient', $true)
+if($null -ne $assembly.GetType('MapleOverlay.OfflineAiClient',$false)){throw 'Offline inference remains in candidate'}
 $chatType = $assembly.GetType('MapleOverlay.OfflineChatForm', $true)
 $overlayType = $assembly.GetType('MapleOverlay.OverlayForm', $true)
 $intentPolicyType = $assembly.GetType('MapleOverlay.OutboundChatIntentPolicy', $true)
@@ -38,16 +39,9 @@ foreach ($body in @($englishBody, $spanishBody)) {
     }
 }
 
-$buildOffline = $offlineType.GetMethod('BuildSystemPrompt', $all)
-$offlineEnglish = [string]$buildOffline.Invoke($null, [object[]]@('中文','英语',
-    "雪花镖 => Kumbi`n"))
-$offlineSpanish = [string]$buildOffline.Invoke($null, [object[]]@('中文','拉美西班牙语',
-    "废弃都市组队任务 => KPQ (full: Kerning Party Quest)`n"))
-if (-not $offlineEnglish.Contains('R> KPQ 3/4') -or
-    -not $offlineSpanish.Contains('¿Alguien para KPQ?') -or
-    $offlineEnglish.Contains('必须使用简体中文') -or
-    $offlineSpanish.Contains('必须使用简体中文')) {
-    throw '离线备用模型的中译英/西提示词不完整或含中文冲突规则'
+$onlineParameters=$onlineType.GetMethod('TranslateAsync',$all).GetParameters()
+if($onlineParameters.Count -ne 5 -or $onlineParameters[4].ParameterType -ne [Threading.CancellationToken]) {
+    throw 'Online translation does not accept cancellation'
 }
 
 $known = $chatType.GetMethod('TryKnownChatIntentTranslationForTarget', $all)

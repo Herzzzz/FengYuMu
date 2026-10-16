@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MapleOverlay
@@ -44,6 +46,7 @@ namespace MapleOverlay
         public int Dpi = 96;
         public bool IsForeground;
         public bool IsMinimized;
+        public bool CaptureAllowed;
         public int Evidence;
     }
 
@@ -57,10 +60,12 @@ namespace MapleOverlay
         DpiChanged = 4,
         Minimized = 5,
         // Windowed client turned into a full-screen one, or the other way round.
-        FullScreenChanged = 6
+        FullScreenChanged = 6,
+        ClientMoved = 7,
+        VisibilityChanged = 8
     }
 
-    internal sealed class MapleWindowTracker
+    internal sealed class MapleWindowTracker : IDisposable
     {
         // Clients are re-identified on a low frequency timer. A MapleStory client is not a
         // chat window; nothing here needs to react within milliseconds, and the whole point
@@ -92,6 +97,11 @@ namespace MapleOverlay
         private int lockedClientHeight;
         private int lockedDpi;
         private bool hadLock;
+        private long geometryVersion;
+        private readonly WindowCaptureClient captureClient = new WindowCaptureClient();
+        internal Task WarmCaptureAsync() { return captureClient.WarmAsync(); }
+        public void Dispose() { captureClient.Dispose(); }
+        internal long GeometryVersion { get { lock (gate) return geometryVersion; } }
         private string diagnostic = "尚未查找 MapleStory 窗口";
 
         internal MapleWindowState State { get { lock (gate) return state; } }
@@ -230,6 +240,10 @@ namespace MapleOverlay
                 lockedClientHeight != chosen.ClientBounds.Height)
                 reason = MapleRebindReason.ClientResized;
             else if (lockedDpi != chosen.Dpi) reason = MapleRebindReason.DpiChanged;
+            else if (lastCaptureBounds.Location != chosen.ClientBounds.Location)
+                reason = MapleRebindReason.ClientMoved;
+            else if (locked.CaptureAllowed != chosen.CaptureAllowed)
+                reason = MapleRebindReason.VisibilityChanged;
 
             locked = chosen;
             // The last known-good rectangle is retained so a temporarily hidden window (for
@@ -240,7 +254,8 @@ namespace MapleOverlay
             lockedDpi = chosen.Dpi;
             state = MapleWindowState.Locked;
             hadLock = true;
-            diagnostic = "已锁定 MapleStory，按 F8 翻译";
+            diagnostic = chosen.CaptureAllowed ? "已锁定 MapleStory，按 F8 翻译" :
+                "游戏被其他窗口遮挡或不在前台，已暂停截图";
 
             if (reason != MapleRebindReason.None) OnRebound(reason);
         }
@@ -249,11 +264,7 @@ namespace MapleOverlay
         {
             if (found.Count == 0)
             {
-                // Keep a still-valid lock even when the enumeration momentarily fails.
-                lock (gate)
-                {
-                    if (locked != null && IsWindow(locked.Handle)) return locked;
-                }
+                // A live handle does not prove a visible, non-minimized client.
                 return null;
             }
 
@@ -345,6 +356,7 @@ namespace MapleOverlay
             found.Dpi = DpiOf(handle);
             found.IsMinimized = false;
             found.Evidence = evidence;
+            found.CaptureAllowed = IsCaptureSurfaceVisible(handle, found.ClientBounds);
             info = found;
             return true;
         }
@@ -389,6 +401,7 @@ namespace MapleOverlay
         // safe to capture, in which case callers must NOT fall back to a full-desktop scan.
         internal bool TryGetCaptureBounds(out Rectangle bounds, out bool fullScreen)
         {
+            Refresh();
             lock (gate)
             {
                 bounds = Rectangle.Empty;
@@ -396,16 +409,10 @@ namespace MapleOverlay
                 if (state == MapleWindowState.FullScreen) return false;
                 if (state != MapleWindowState.Locked || locked == null)
                 {
-                    // A window that is momentarily hidden (minimised animation, owned modal)
-                    // keeps its last measured rectangle, which is strictly better than
-                    // silently screenshotting the whole desktop.
-                    if (hadLock && lastCaptureBounds.Width >= 160 && lastCaptureBounds.Height >= 120)
-                    {
-                        bounds = lastCaptureBounds;
-                        return true;
-                    }
                     return false;
                 }
+                if (!locked.CaptureAllowed || !IsWindow(locked.Handle) ||
+                    !IsWindowVisible(locked.Handle) || IsIconic(locked.Handle)) return false;
                 // Re-measure on demand: the client may have moved since the last poll.
                 RECT client;
                 POINT origin = new POINT();
@@ -415,18 +422,60 @@ namespace MapleOverlay
                         client.Right - client.Left, client.Bottom - client.Top);
                     if (current.Width >= 160 && current.Height >= 120 && !IsFullScreenClient(current))
                     {
-                        lastCaptureBounds = current;
+                        if (current != locked.ClientBounds) return false;
                         bounds = current;
                         return true;
                     }
                 }
-                if (lastCaptureBounds.Width >= 160 && lastCaptureBounds.Height >= 120)
-                {
-                    bounds = lastCaptureBounds;
-                    return true;
-                }
                 return false;
             }
+        }
+
+        private static bool IsCaptureSurfaceVisible(IntPtr target, Rectangle client)
+        {
+            if (!IsWindow(target) || !IsWindowVisible(target) || IsIconic(target)) return false;
+            if (Rectangle.Intersect(client, SystemInformation.VirtualScreen) != client) return false;
+            uint ownProcess = (uint)Process.GetCurrentProcess().Id;
+            IntPtr above = GetWindow(target, GW_HWNDPREV);
+            int inspected = 0;
+            while (above != IntPtr.Zero && inspected++ < 2048)
+            {
+                uint owner;
+                GetWindowThreadProcessId(above, out owner);
+                RECT rect;
+                if (owner != ownProcess && IsWindowVisible(above) && !IsIconic(above) &&
+                    GetWindowRect(above, out rect) &&
+                    Rectangle.Intersect(client, Rectangle.FromLTRB(rect.Left, rect.Top,
+                        rect.Right, rect.Bottom)).Width > 0 &&
+                    Rectangle.Intersect(client, Rectangle.FromLTRB(rect.Left, rect.Top,
+                        rect.Right, rect.Bottom)).Height > 0) return false;
+                above = GetWindow(above, GW_HWNDPREV);
+            }
+            return above == IntPtr.Zero;
+        }
+
+        // Capture only the target's client DC. Never substitute desktop pixels if the
+        // target refuses WM_PRINT, changes identity/geometry, or is covered/minimized.
+        internal async Task<WindowCaptureFrame> CaptureClientBitmapAsync(
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            Rectangle bounds;
+            bool fullScreen;
+            if (!TryGetCaptureBounds(out bounds, out fullScreen))
+                throw new InvalidOperationException(Diagnostic);
+            MapleWindowInfo target = Locked;
+            long version = GeometryVersion;
+            Bitmap bitmap = await captureClient.CaptureAsync(target, bounds, cancellationToken);
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                Refresh();
+                if (GeometryVersion != version || Locked == null ||
+                    Locked.Handle != target.Handle || Locked.ProcessId != target.ProcessId || !Locked.CaptureAllowed)
+                    throw new OperationCanceledException("截图期间游戏窗口发生变化，已丢弃画面");
+                return new WindowCaptureFrame { Bitmap = bitmap, Bounds = bounds, Version = version };
+            }
+            catch { bitmap.Dispose(); throw; }
         }
 
         internal string Describe()
@@ -450,6 +499,7 @@ namespace MapleOverlay
 
         private void OnRebound(MapleRebindReason reason)
         {
+            lock (gate) geometryVersion++;
             EventHandler<MapleRebindReason> handler = Rebound;
             if (handler != null) handler(this, reason);
         }
@@ -459,6 +509,7 @@ namespace MapleOverlay
         // ---------------------------------------------------------------------------
 
         private const int GW_OWNER = 4;
+        private const int GW_HWNDPREV = 3;
         private const uint MONITOR_DEFAULTTONEAREST = 2;
         // The least privilege that still allows reading the image name; no VM_READ, no writes.
         private const uint PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
@@ -486,6 +537,7 @@ namespace MapleOverlay
         [DllImport("user32.dll")] private static extern IntPtr GetWindow(IntPtr handle, int command);
         [DllImport("user32.dll")] private static extern uint GetWindowThreadProcessId(IntPtr handle, out uint processId);
         [DllImport("user32.dll")] private static extern bool GetClientRect(IntPtr handle, out RECT rect);
+        [DllImport("user32.dll")] private static extern bool GetWindowRect(IntPtr handle, out RECT rect);
         [DllImport("user32.dll")] private static extern bool ClientToScreen(IntPtr handle, ref POINT point);
         [DllImport("user32.dll", CharSet = CharSet.Unicode)] private static extern int GetWindowTextLength(IntPtr handle);
         [DllImport("user32.dll", CharSet = CharSet.Unicode)] private static extern int GetWindowText(IntPtr handle, StringBuilder text, int maximum);

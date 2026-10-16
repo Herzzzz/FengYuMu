@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 
 # Real-image regression for the consumable tooltip in
 # D:\TEMP\codex-clipboard-792115d3-a3d4-48bf-803b-20be0ca6d81c.png.

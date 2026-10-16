@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 
 # The visual detector is intentionally exercised with a small synthetic scene instead of a
@@ -90,24 +90,6 @@ finally {
     if ($bitmap -ne $null) { $bitmap.Dispose() }
 }
 
-# The scan animation is a user-visible acknowledgement after the clean client screenshot is
-# captured. These guards prevent a future edit from painting the animation into its own OCR input
-# or silently removing the calm QQ/WeChat-style progress text.
-$source = Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -Encoding UTF8
-$showMethod = [regex]::Match($source,
-    '(?s)private async Task ShowTranslationAsync\(.*?\r?\n\s*private void ShowWindowScanIndicator\(\)').Value
-if ($showMethod.Length -eq 0) { throw '无法定位 ShowTranslationAsync 扫描流程' }
-$captureMarker = 'g.CopyFromScreen(screen.Left, screen.Top, 0, 0, screen.Size, CopyPixelOperation.SourceCopy);'
-$indicatorMarker = 'if (!automatic && !Program.Benchmark) ShowWindowScanIndicator();'
-$captureIndex = $showMethod.IndexOf($captureMarker, [StringComparison]::Ordinal)
-$indicatorIndex = $showMethod.IndexOf($indicatorMarker, [StringComparison]::Ordinal)
-if ($captureIndex -lt 0) { throw '扫描流程缺少窗口 CopyFromScreen 捕获步骤' }
-if ($indicatorIndex -le $captureIndex) {
-    throw '扫描动画必须在干净窗口截图完成后启动，避免把自身绘制内容送入 OCR'
-}
-foreach ($required in @('正在扫描游戏窗口', '只读取屏幕画面', '正在定位文字面板')) {
-    if (-not $source.Contains($required)) { throw "缺少扫描提示文案：$required" }
-}
-
-Write-Output ('视觉面板回归通过：合成场景识别浅色任务面板与深蓝提示框，' +
-    '忽略小气泡和不规则蓝噪声；扫描动画在 CopyFromScreen 后启动且提示文案完整')
+# Pixel capture and cancellation are tested through the production worker by
+# logic-window-capture.ps1; this test retains its actual scene-vision assertions.
+Write-Output '视觉面板回归通过：合成场景识别浅色任务面板与深蓝提示框，忽略小气泡和不规则蓝噪声；窗口捕获另由生产子进程行为测试覆盖。'

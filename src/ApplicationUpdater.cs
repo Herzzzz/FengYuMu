@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -116,6 +116,17 @@ namespace MapleOverlay
             "枫语幕.exe", "枫语幕词库.tsv", "使用说明.txt"
         };
 
+        // Optional for compatibility with older three-file release packages.
+        private static readonly string[] OptionalPackageFiles = new string[] {
+            "基础补充词库.tsv", "任务正文.tsv"
+        };
+
+        private static bool IsPackageFile(string name)
+        {
+            return Array.IndexOf(PackageFiles, name) >= 0 ||
+                Array.IndexOf(OptionalPackageFiles, name) >= 0;
+        }
+
         internal static Task<PreparedApplicationUpdate> PrepareLatestAsync(string installDirectory)
         {
             return Task.Factory.StartNew(delegate {
@@ -125,12 +136,39 @@ namespace MapleOverlay
 
         private static PreparedApplicationUpdate PrepareLatest(string installDirectory)
         {
+            return PrepareLatestCore(installDirectory, true);
+        }
+
+        private static PreparedApplicationUpdate PrepareLatestCore(string installDirectory, bool allowMirror)
+        {
             string install = Path.GetFullPath(installDirectory);
             string updateRoot = Path.Combine(install, "更新临时");
             Directory.CreateDirectory(updateRoot);
             string tag = "", zipUrl = "", shaUrl = "", releaseDigest = "";
             string fixedSha256 = "";
-            MirrorReleaseManifest mirror = TryLoadDomesticMirrorManifest();
+            MirrorReleaseManifest mirror = allowMirror ? TryLoadDomesticMirrorManifest() : null;
+            if (mirror != null)
+            {
+                // GitHub's latest tag is authoritative. Only an identical mirror release
+                // may stand in for it; a reachable but stale mirror must not pin upgrades.
+                try
+                {
+                    string officialTag = ResolveLatestTag();
+                    if (!String.Equals(mirror.Tag, officialTag, StringComparison.OrdinalIgnoreCase)) mirror = null;
+                }
+                catch
+                {
+                    // A reachable, verified mirror remains usable when GitHub is blocked.
+                    // It must still meet the local no-downgrade policy; latest is unknown.
+                    try
+                    {
+                        if (ParseReleaseVersion(mirror.Tag).CompareTo(typeof(ApplicationUpdater).Assembly.GetName().Version) < 0)
+                            mirror = null;
+                        else Program.LogRuntimeEvent("update-official-unavailable", "using=verified-mirror latest=unknown");
+                    }
+                    catch { mirror = null; }
+                }
+            }
             if (mirror != null)
             {
                 tag = mirror.Tag;
@@ -192,6 +230,10 @@ namespace MapleOverlay
                 throw new InvalidDataException("发布页版本号格式无效");
             string versionPart = tag.StartsWith("v", StringComparison.OrdinalIgnoreCase)
                 ? tag.Substring(1) : tag;
+            Version incoming = ParseReleaseVersion(tag);
+            Version running = typeof(ApplicationUpdater).Assembly.GetName().Version;
+            if (incoming.CompareTo(running) < 0)
+                throw new InvalidDataException("最新发布的数值版本低于当前程序，已拒绝降级；测试版不自动退回旧稳定版");
             string expectedZipName = "FengYuMu_v" + versionPart + ".zip";
 
             string stage = Path.Combine(updateRoot, "v" + versionPart + "-" +
@@ -199,6 +241,9 @@ namespace MapleOverlay
                 Guid.NewGuid().ToString("N").Substring(0, 8));
             Directory.CreateDirectory(stage);
             string zipPath = Path.Combine(stage, expectedZipName);
+            string payload = Path.Combine(stage, "payload");
+            try
+            {
             DownloadFile(zipUrl, zipPath);
             string expectedHash = fixedSha256.Length > 0
                 ? fixedSha256
@@ -212,24 +257,38 @@ namespace MapleOverlay
                     StringComparison.OrdinalIgnoreCase))
                 throw new InvalidDataException("发布页摘要与安装包不一致，已停止更新");
 
-            string payload = Path.Combine(stage, "payload");
             Directory.CreateDirectory(payload);
             ExtractRequiredFiles(zipPath, payload);
+            }
+            catch (Exception)
+            {
+                if (mirror == null) throw;
+                Program.LogRuntimeEvent("update-mirror-fallback", "phase=download-hash-extract");
+                return PrepareLatestCore(installDirectory, false);
+            }
             Dictionary<string, string> hashes = new Dictionary<string, string>(
                 StringComparer.OrdinalIgnoreCase);
             bool changed = false;
-            foreach (string name in PackageFiles)
+            foreach (string stagedFile in Directory.GetFiles(payload, "*", SearchOption.AllDirectories))
             {
-                string stagedFile = Path.Combine(payload, name);
+                string name = stagedFile.Substring(payload.TrimEnd(Path.DirectorySeparatorChar).Length + 1);
                 string hash = ComputeSha256(stagedFile);
                 hashes[name] = hash;
                 string currentFile = Path.Combine(install, name);
+                if (name == "枫语幕词库.tsv" && File.Exists(currentFile)) continue;
                 if (!File.Exists(currentFile) || !String.Equals(ComputeSha256(currentFile), hash,
                     StringComparison.OrdinalIgnoreCase)) changed = true;
             }
+            string existingOcr = Path.Combine(install, "StrongOcr");
+            if (Directory.Exists(existingOcr))
+                foreach (string oldFile in Directory.GetFiles(existingOcr, "*", SearchOption.AllDirectories))
+                {
+                    string relative = oldFile.Substring(install.TrimEnd(Path.DirectorySeparatorChar).Length + 1);
+                    if (!hashes.ContainsKey(relative)) changed = true;
+                }
 
             string backup = Path.Combine(install, "更新备份", tag + "-" +
-                DateTime.Now.ToString("yyyyMMdd-HHmmss"));
+                DateTime.Now.ToString("yyyyMMdd-HHmmss") + "-" + Guid.NewGuid().ToString("N"));
             ApplicationUpdateManifest manifest = new ApplicationUpdateManifest {
                 InstallDirectory = install,
                 StageDirectory = payload,
@@ -250,44 +309,69 @@ namespace MapleOverlay
         internal static int ApplyPreparedUpdate(string manifestPath)
         {
             ApplicationUpdateManifest manifest = null;
-            string error = "";
+            bool validated = false, oldStopped = false, safeToRestart = false;
             try
             {
                 string fullManifest = Path.GetFullPath(manifestPath);
                 manifest = new JavaScriptSerializer().Deserialize<ApplicationUpdateManifest>(
                     File.ReadAllText(fullManifest, Encoding.UTF8));
                 ValidateManifest(manifest, fullManifest);
+                validated = true;
                 WaitForOldProcess(manifest.OldProcessId);
-                Directory.CreateDirectory(manifest.BackupDirectory);
-                foreach (string name in PackageFiles)
-                {
-                    string current = Path.Combine(manifest.InstallDirectory, name);
-                    if (!File.Exists(current))
-                        throw new FileNotFoundException("当前安装缺少 " + name, current);
-                    File.Copy(current, Path.Combine(manifest.BackupDirectory, name), false);
-                }
-                foreach (string name in PackageFiles)
-                    ReplaceVerifiedFile(manifest, name);
-                SaveResult(true, "已安全更新到 " + manifest.Tag + "；旧版已备份。", "");
+                oldStopped = true;
+                List<UpdateFilePlan> plan = BuildInstallPlan(manifest);
+                UpdateFileTransaction.Execute(manifest.InstallDirectory, manifest.StageDirectory,
+                    manifest.BackupDirectory, plan);
+                safeToRestart = true;
+                SaveResult(true, "已安全更新到 " + manifest.Tag + "；已保留用户词库，官方词库另存。", "");
             }
             catch (Exception ex)
             {
-                error = ex.Message;
-                if (manifest != null)
-                {
-                    try { RestoreBackup(manifest); }
-                    catch (Exception rollback)
-                    {
-                        error += "；自动回退也失败：" + rollback.Message;
-                    }
-                }
-                SaveResult(false, "更新失败，已继续使用更新前版本。", error);
+                UpdateTransactionFailure transaction = ex as UpdateTransactionFailure;
+                bool restored = transaction != null && transaction.RollbackSucceeded;
+                safeToRestart = validated && oldStopped && (transaction == null || restored);
+                string message = !validated ? "更新清单校验失败，未替换文件，也未使用清单路径回滚或启动。" :
+                    transaction != null && transaction.ReplacementStarted ?
+                        (restored ? "更新失败，本次已替换文件已验证回滚。" : "更新失败且回滚不完整，请从备份恢复；未启动程序。") :
+                        "更新失败，尚未替换安装文件。";
+                SaveResult(false, message, ex.GetType().Name + " HResult=" + ex.HResult +
+                    (transaction == null ? "" : " phase=" + transaction.Phase + " file=" + transaction.Target +
+                        " cause=" + transaction.InnerException.GetType().Name + " HResult=" + transaction.InnerException.HResult));
+                Program.LogRuntimeEvent("update-failed", "validated=" + validated +
+                    " oldStopped=" + oldStopped + " rollback=" + restored + " type=" + ex.GetType().Name);
+                if (safeToRestart && !StartInstalledApplication(manifest.InstallDirectory))
+                    SaveResult(false, message + "自动重启失败，请手动启动。", "restart-failed");
+                return 3;
             }
-            finally
+            if (safeToRestart && !StartInstalledApplication(manifest.InstallDirectory))
             {
-                if (manifest != null) StartInstalledApplication(manifest.InstallDirectory);
+                SaveResult(false, "文件已更新，但自动重启失败，请手动启动。", "restart-failed");
+                return 4;
             }
-            return error.Length == 0 ? 0 : 3;
+            return 0;
+        }
+
+        private static List<UpdateFilePlan> BuildInstallPlan(ApplicationUpdateManifest manifest)
+        {
+            List<UpdateFilePlan> plan = new List<UpdateFilePlan>();
+            foreach (KeyValuePair<string, string> file in manifest.Hashes)
+            {
+                string target = file.Key;
+                if (file.Key == "枫语幕词库.tsv" && File.Exists(Path.Combine(manifest.InstallDirectory, file.Key)))
+                    target = "枫语幕官方词库-" + manifest.Tag + ".tsv";
+                plan.Add(new UpdateFilePlan { SourceName = file.Key, TargetName = target, Sha256 = file.Value });
+            }
+            // Retire files not present in this package, so a partial old OCR runtime cannot
+            // masquerade as the component supplied by a clean installation of this version.
+            string oldOcr = Path.Combine(manifest.InstallDirectory, "StrongOcr");
+            if (Directory.Exists(oldOcr))
+                foreach (string file in Directory.GetFiles(oldOcr, "*", SearchOption.AllDirectories))
+                {
+                    string relative = file.Substring(manifest.InstallDirectory.TrimEnd(Path.DirectorySeparatorChar).Length + 1);
+                    if (!manifest.Hashes.ContainsKey(relative))
+                        plan.Add(new UpdateFilePlan { SourceName = null, TargetName = relative });
+                }
+            return plan;
         }
 
         private static void ValidateManifest(ApplicationUpdateManifest manifest,
@@ -295,6 +379,8 @@ namespace MapleOverlay
         {
             if (manifest == null || manifest.Hashes == null)
                 throw new InvalidDataException("更新清单无效");
+            if (!Regex.IsMatch(manifest.Tag ?? "", @"(?i)^v?\d+(?:\.\d+){1,3}(?:-[a-z0-9.-]+)?$"))
+                throw new InvalidDataException("更新清单版本无效");
             manifest.InstallDirectory = Path.GetFullPath(manifest.InstallDirectory);
             manifest.StageDirectory = Path.GetFullPath(manifest.StageDirectory);
             manifest.BackupDirectory = Path.GetFullPath(manifest.BackupDirectory);
@@ -303,6 +389,13 @@ namespace MapleOverlay
                 !IsChildPath(manifest.InstallDirectory, manifest.BackupDirectory) ||
                 !IsChildPath(manifest.InstallDirectory, manifestDirectory))
                 throw new InvalidDataException("更新路径越过了枫语幕安装目录");
+            if (IsChildPath(manifest.StageDirectory, manifest.BackupDirectory) ||
+                IsChildPath(manifest.BackupDirectory, manifest.StageDirectory) ||
+                String.Equals(manifest.StageDirectory, manifest.BackupDirectory, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidDataException("更新暂存与备份路径重叠");
+            RejectReparsePoints(manifest.InstallDirectory);
+            RejectReparsePoints(manifest.StageDirectory);
+            RejectReparsePoints(manifest.BackupDirectory);
             foreach (string name in PackageFiles)
             {
                 string hash;
@@ -314,33 +407,50 @@ namespace MapleOverlay
                     StringComparison.OrdinalIgnoreCase))
                     throw new InvalidDataException(name + " 在安装前校验失败");
             }
-        }
-
-        private static void ReplaceVerifiedFile(ApplicationUpdateManifest manifest, string name)
-        {
-            string source = Path.Combine(manifest.StageDirectory, name);
-            string target = Path.Combine(manifest.InstallDirectory, name);
-            string pending = target + ".update";
-            File.Copy(source, pending, true);
-            if (!String.Equals(ComputeSha256(pending), manifest.Hashes[name],
-                StringComparison.OrdinalIgnoreCase))
-                throw new InvalidDataException(name + " 写入临时文件后校验失败");
-            if (File.Exists(target)) File.Replace(pending, target, null, true);
-            else File.Move(pending, target);
-            if (!String.Equals(ComputeSha256(target), manifest.Hashes[name],
-                StringComparison.OrdinalIgnoreCase))
-                throw new InvalidDataException(name + " 替换后校验失败");
-        }
-
-        private static void RestoreBackup(ApplicationUpdateManifest manifest)
-        {
-            if (!Directory.Exists(manifest.BackupDirectory)) return;
-            foreach (string name in PackageFiles)
+            foreach (KeyValuePair<string, string> file in manifest.Hashes)
             {
-                string backup = Path.Combine(manifest.BackupDirectory, name);
-                if (File.Exists(backup))
-                    File.Copy(backup, Path.Combine(manifest.InstallDirectory, name), true);
+                if (!IsPackageFile(file.Key) &&
+                    !file.Key.StartsWith("StrongOcr" + Path.DirectorySeparatorChar, StringComparison.Ordinal))
+                    throw new InvalidDataException("更新清单包含未支持的组件路径");
+                string staged = Path.GetFullPath(Path.Combine(manifest.StageDirectory, file.Key));
+                string target = Path.GetFullPath(Path.Combine(manifest.InstallDirectory, file.Key));
+                if (!IsPackageFile(file.Key) &&
+                    (!IsChildPath(Path.Combine(manifest.StageDirectory, "StrongOcr"), staged) ||
+                    !IsChildPath(Path.Combine(manifest.InstallDirectory, "StrongOcr"), target)))
+                    throw new InvalidDataException("组件路径越过 StrongOcr 边界");
+                if (!IsChildPath(manifest.StageDirectory, staged) || !IsChildPath(manifest.InstallDirectory, target))
+                    throw new InvalidDataException("更新组件路径越界");
+                RejectReparsePoints(staged); RejectReparsePoints(target);
+                if (!File.Exists(staged) || !String.Equals(ComputeSha256(staged), file.Value, StringComparison.OrdinalIgnoreCase))
+                    throw new InvalidDataException("更新组件哈希校验失败");
             }
+            string oldOcr = Path.Combine(manifest.InstallDirectory, "StrongOcr");
+            RejectReparsePoints(oldOcr);
+            if (Directory.Exists(oldOcr))
+            {
+                foreach (string directory in Directory.GetDirectories(oldOcr, "*", SearchOption.AllDirectories)) RejectReparsePoints(directory);
+                foreach (string file in Directory.GetFiles(oldOcr, "*", SearchOption.AllDirectories)) RejectReparsePoints(file);
+            }
+        }
+
+        private static void RejectReparsePoints(string path)
+        {
+            string current = Path.GetFullPath(path);
+            while (!String.IsNullOrEmpty(current))
+            {
+                if ((File.Exists(current) || Directory.Exists(current)) &&
+                    (File.GetAttributes(current) & FileAttributes.ReparsePoint) != 0)
+                    throw new InvalidDataException("更新路径包含符号链接或重解析点");
+                current = Path.GetDirectoryName(current);
+            }
+        }
+
+        internal static Version ParseReleaseVersion(string tag)
+        {
+            string value = Regex.Replace(tag ?? "", @"^(?i)v", "").Split('-')[0];
+            Version version;
+            if (!Version.TryParse(value, out version)) throw new InvalidDataException("版本号无效");
+            return new Version(version.Major, version.Minor, Math.Max(0, version.Build), Math.Max(0, version.Revision));
         }
 
         private static void WaitForOldProcess(int processId)
@@ -355,9 +465,9 @@ namespace MapleOverlay
             catch (ArgumentException) { }
         }
 
-        private static void StartInstalledApplication(string installDirectory)
+        private static bool StartInstalledApplication(string installDirectory)
         {
-            if (AutomationPolicy.SkipGuiRestart) return;
+            if (AutomationPolicy.SkipGuiRestart) return true;
             try
             {
                 Process.Start(new ProcessStartInfo {
@@ -365,15 +475,16 @@ namespace MapleOverlay
                     WorkingDirectory = installDirectory,
                     UseShellExecute = true
                 });
+                return true;
             }
-            catch { }
+            catch (Exception ex) { Program.LogRuntimeEvent("update-restart-failed", "type=" + ex.GetType().Name); return false; }
         }
 
         private static void SaveResult(bool success, string message, string detail)
         {
             try
             {
-                using (RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\FengYuMu"))
+                using (UserSettingsSection key = UserSettings.Open(@"Software\FengYuMu"))
                 {
                     key.SetValue("ApplicationUpdateSuccess", success ? 1 : 0,
                         RegistryValueKind.DWord);
@@ -522,13 +633,27 @@ namespace MapleOverlay
         {
             HashSet<string> remaining = new HashSet<string>(PackageFiles,
                 StringComparer.OrdinalIgnoreCase);
+            HashSet<string> extracted = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            long expandedBytes = 0;
             using (ZipArchive archive = ZipFile.OpenRead(zipPath))
                 foreach (ZipArchiveEntry entry in archive.Entries)
                 {
-                    string name = entry.FullName.Replace('/', '\\');
-                    if (name.IndexOf('\\') >= 0 || !remaining.Contains(name)) continue;
+                    string name = entry.FullName.Replace('\\', '/');
+                    bool component = name.StartsWith("StrongOcr/", StringComparison.Ordinal);
+                    if (String.IsNullOrEmpty(entry.Name)) continue;
+                    if (!component && !IsPackageFile(name)) continue;
+                    if (name.StartsWith("/", StringComparison.Ordinal) || name.IndexOf(':') >= 0 ||
+                        !extracted.Add(name)) throw new InvalidDataException("安装包路径无效或重复");
+                    name = name.Replace('/', Path.DirectorySeparatorChar);
+                    string target = Path.GetFullPath(Path.Combine(destination, name));
+                    if (!IsChildPath(destination, target)) throw new InvalidDataException("安装包包含越界路径");
+                    if (component && !IsChildPath(Path.Combine(destination, "StrongOcr"), target))
+                        throw new InvalidDataException("组件安装包路径越过 StrongOcr 边界");
+                    expandedBytes += entry.Length;
+                    if (expandedBytes > 512L * 1024 * 1024) throw new InvalidDataException("安装包解压体积异常");
+                    Directory.CreateDirectory(Path.GetDirectoryName(target));
                     using (Stream input = entry.Open())
-                    using (FileStream output = new FileStream(Path.Combine(destination, name),
+                    using (FileStream output = new FileStream(target,
                         FileMode.CreateNew, FileAccess.Write, FileShare.None))
                         input.CopyTo(output);
                     remaining.Remove(name);
@@ -536,6 +661,9 @@ namespace MapleOverlay
             if (remaining.Count > 0)
                 throw new InvalidDataException("安装包缺少：" +
                     String.Join("、", new List<string>(remaining).ToArray()));
+            string componentDirectory = Path.Combine(destination, "StrongOcr");
+            if (Directory.Exists(componentDirectory) && !StrongOcrComponent.Validate(componentDirectory))
+                throw new InvalidDataException("强 OCR 组件清单缺失、不完整或校验失败");
         }
 
         private static string DownloadText(string url)
@@ -558,7 +686,7 @@ namespace MapleOverlay
         {
             WebClient client = new UpdateWebClient();
             client.Encoding = Encoding.UTF8;
-            client.Headers[HttpRequestHeader.UserAgent] = "FengYuMu/4.0-beta";
+            client.Headers[HttpRequestHeader.UserAgent] = "FengYuMu/4.0";
             client.Headers[HttpRequestHeader.Accept] = "application/vnd.github+json, text/plain, */*";
             client.Proxy = proxy;
             return client;
@@ -644,7 +772,7 @@ namespace MapleOverlay
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(LatestReleasePage);
                     request.Method = "HEAD";
                     request.AllowAutoRedirect = false;
-                    request.UserAgent = "FengYuMu/4.0-beta";
+                    request.UserAgent = "FengYuMu/4.0";
                     request.Proxy = route.Proxy;
                     request.Timeout = 12000;
                     request.ReadWriteTimeout = 12000;

@@ -1,6 +1,7 @@
-﻿$ErrorActionPreference = 'Stop'
+﻿param([string]$ExePath)
+$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
-$exe = Join-Path $repoRoot '枫语幕.exe'
+$exe = if($ExePath){$ExePath}else{Join-Path $repoRoot 'bin/candidate-r3/枫语幕.exe'}
 $corpusPath = Join-Path $PSScriptRoot 'video-bv1l8yc67et4-chat-corpus.tsv'
 if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
 $assembly = Load-TestAssembly $exe
@@ -8,7 +9,7 @@ $all = [Reflection.BindingFlags]'Static,Instance,NonPublic,Public'
 $chatType = $assembly.GetType('MapleOverlay.OfflineChatForm', $true)
 $overlayType = $assembly.GetType('MapleOverlay.OverlayForm', $true)
 $onlineType = $assembly.GetType('MapleOverlay.OnlineAiClient', $true)
-$offlineType = $assembly.GetType('MapleOverlay.OfflineAiClient', $true)
+if($null -ne $assembly.GetType('MapleOverlay.OfflineAiClient',$false)){throw 'Offline inference remains'}
 $settingsType = $assembly.GetType('MapleOverlay.OnlineAiSettings', $true)
 
 $constructor = $chatType.GetConstructor($all, $null, [Type[]]@($overlayType, [string]), $null)
@@ -73,11 +74,10 @@ $settings = [Activator]::CreateInstance($settingsType, $true)
 $settingsType.GetField('ApiKey', $all).SetValue($settings, 'test-key')
 $onlineBody = [string]$onlineType.GetMethod('BuildRequestBody', $all).Invoke($null,
     [object[]]@($settings, '药水不多了，我得补药', '英语', ''))
-$offlinePrompt = [string]$offlineType.GetMethod('BuildSystemPrompt', $all).Invoke($null,
-    [object[]]@('英语', '简体中文', ''))
+$chinesePrompt = [string]$onlineType.GetMethod('BuildSystemPrompt', $all).Invoke($null,[object[]]@('简体中文'))
 foreach ($required in @('repot', 'rebuff', 'short on dps', 'cc')) {
-    if (-not $onlineBody.Contains($required) -or -not $offlinePrompt.Contains($required)) {
-        throw "在线或离线提示词缺少视频语境约束：$required"
+    if (-not $onlineBody.Contains($required) -or -not $chinesePrompt.Contains($required)) {
+        throw "联网英译中或中译英提示词缺少视频语境约束：$required"
     }
 }
 

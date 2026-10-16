@@ -1,4 +1,4 @@
-param(
+﻿param(
     [Parameter(Mandatory=$true)][string]$EquipmentImage,
     [Parameter(Mandatory=$true)][string]$RushImage,
     [Parameter(Mandatory=$true)][string]$QuestImage,

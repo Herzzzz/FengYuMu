@@ -1,4 +1,4 @@
-# Shared test helper: load the built 枫语幕.exe for reflection-based assertions.
+﻿# Shared test helper: load the built 枫语幕.exe for reflection-based assertions.
 #
 # Why this exists:
 # This repository lives under a path that contains non-ASCII directory names
@@ -18,13 +18,15 @@
 # same expectations. If the CLR ever stops mis-judging the path, the plain LoadFile
 # branch is taken and the fallback never runs.
 
+$script:TestAssemblyRepositoryRoot = Split-Path -Parent $PSScriptRoot
 function Load-TestAssembly([string]$path) {
     if ([String]::IsNullOrEmpty($path)) { throw 'Load-TestAssembly 需要一个程序集路径' }
     if (-not (Test-Path -LiteralPath $path)) { throw "找不到程序集：$path" }
     # Build synchronization gate. A reflection test against a stale EXE silently validates the
     # previous build: the sources and the artefact can drift apart while the suite still passes.
     # The assembly therefore has to be at least as new as every source file it was built from.
-    $repoRoot = Split-Path -Parent (Split-Path -Parent $path)
+    $path = (Resolve-Path -LiteralPath $path).Path
+    $repoRoot = $script:TestAssemblyRepositoryRoot
     $srcDir = Join-Path $repoRoot 'src'
     if (Test-Path -LiteralPath $srcDir) {
         $assemblyTime = (Get-Item -LiteralPath $path).LastWriteTimeUtc
@@ -34,6 +36,8 @@ function Load-TestAssembly([string]$path) {
             throw ("程序集比源码旧：$($newest.Name) 晚于程序集构建时间。请先运行 src\build.ps1。")
         }
     }
+    . (Join-Path $repoRoot 'tools/Build-Evidence.ps1')
+    Assert-BuildEvidence $path $repoRoot
     try {
         return [Reflection.Assembly]::LoadFile($path)
     } catch [System.NotSupportedException] {

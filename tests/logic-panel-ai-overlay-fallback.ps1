@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $overlayPath = Join-Path $repoRoot 'src\MapleOverlay.cs'
 $chatPath = Join-Path $repoRoot 'src\OfflineChat.cs'
@@ -50,7 +50,6 @@ Require-Text $overlay 'PanelAiCacheCapacity = 128' '面板AI缓存没有小容�
 Require-Text $overlay 'settings.Endpoint ?? ""' '面板AI缓存键缺少endpoint'
 Require-Text $overlay 'settings.Model ?? ""' '面板AI缓存键缺少model'
 Require-Text $overlay '(source ?? "").Trim()' '面板AI缓存键缺少source'
-Require-Text $overlay 'Regex.Matches(source ?? "", @"\d+(?:\.\d+)?")' '面板AI没有提取源文本数字'
 Require-Text $overlay 'Regex.IsMatch(translated, "[\\u4e00-\\u9fff]")' '面板AI没有要求中文返回'
 
 # Compile the product first in the caller, then exercise only pure safety helpers through
@@ -72,6 +71,9 @@ $missingNumberRejected = -not [bool]$safe.Invoke($null, [object[]]@($sourceText,
 $noChinese = [bool]$safe.Invoke($null, [object[]]@($sourceText, 'Make a Pig & Mushroom Omok Set. Level 12+ requires 30/50 items.'))
 if (-not $good -or -not $missingNumberRejected -or $noChinese) {
     throw '面板AI中文或数字校验结果不符合安全策略'
+}
+foreach ($case in @(@('5','数量50'), @('5/12','进度12/5'), @('5 5','数量5'), @('5%','数量5'))) {
+    if ([bool]$safe.Invoke($null, [object[]]$case)) { throw "错误完整数值被接受：$($case -join ' -> ')" }
 }
 
 $settingsType = $assembly.GetType('MapleOverlay.OnlineAiSettings', $true)

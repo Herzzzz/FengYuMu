@@ -1,6 +1,7 @@
-﻿$ErrorActionPreference = 'Stop'
+﻿param([string]$ExePath)
+$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
-$exe = Join-Path $repoRoot '枫语幕.exe'
+$exe = if($ExePath){$ExePath}else{Join-Path $repoRoot 'bin/candidate-r3/枫语幕.exe'}
 $reportPath = Join-Path $repoRoot 'chat_style_benchmark.txt'
 
 function Test-ChatStyleFrame([string]$fileName, [string[]]$requiredPatterns) {
@@ -55,30 +56,24 @@ try {
     $form.Dispose()
 }
 
-$aiType = $assembly.GetType('MapleOverlay.OfflineAiClient', $true)
-if ($null -eq $aiType.GetField('startupLock', $instance) -or
-    $null -eq $aiType.GetField('startupTask', $instance)) {
-    throw 'AI模型启动缺少并发去重'
-}
-
+if($null -ne $assembly.GetType('MapleOverlay.OfflineAiClient',$false) -or
+    $null -ne $assembly.GetType('MapleOverlay.AiInstallForm',$false)) {throw 'Offline inference/installer remains'}
+$onlineType=$assembly.GetType('MapleOverlay.OnlineAiClient',$true)
+$parameters=$onlineType.GetMethod('TranslateAsync',[Reflection.BindingFlags]'Static,Public,NonPublic').GetParameters()
+if($parameters.Count -ne 5 -or $parameters[4].ParameterType -ne [Threading.CancellationToken]){throw 'Online cancellation contract missing'}
 $source = Get-Content (Join-Path $repoRoot 'src\OfflineChat.cs') -Raw -Encoding UTF8
 $overlaySource = Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -Encoding UTF8
 foreach ($required in @(
     'timer.Interval = 140',
-    '-c 1280 -b 512 -ub 256',
-    '--parallel 1 --prio 1 --poll 80 --poll-batch 80',
-    'Task<bool> warmup = !online.IsReady && ai.IsInstalled',
-    '? ai.EnsureStartedAsync() : null',
-    'if (online.IsReady)',
     'TranslateWithPreferredAiAsync',
     'firstLiveCapture = true',
     'int first = Math.Max(0, lines.Count - 2)',
     'DetectChatSourceLanguage(cleanedMessage)',
-    '{ "temperature", 0.0 }, { "top_p", 0.7 }, { "max_tokens", 96 }')) {
+    'MaximumPendingChatLines = 60')) {
     if (-not $source.Contains($required)) { throw "AI实时翻译性能或隔离路径缺少：$required" }
 }
 if (-not $overlaySource.Contains('PrepareForOcr(bitmap, out scale, false, 1800.0f)')) {
     throw 'AI聊天OCR没有保留实图胜出的1800紧裁缩放'
 }
 
-Write-Output 'AI实时翻译：140ms监听、1800实图优选紧裁OCR、联网时跳过本地预热、离线模型按需兜底、首帧仅最新2条、OCR变体短时去重、确定性96-token翻译、256条缓存、普通/超级喇叭实帧分类通过'
+Write-Output 'AI实时翻译：140ms监听、1800实图优选紧裁OCR、联网请求可取消、离线推理已移除、首帧仅最新2条、OCR变体短时去重、有界待处理队列、256条缓存、普通/超级喇叭实帧分类通过'

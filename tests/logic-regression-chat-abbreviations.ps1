@@ -1,4 +1,4 @@
-param(
+﻿param(
     # Explicit current expectation. It is passed straight to logic-regression-v2.2.ps1 and is never
     # read back from the assembly under test, so the check cannot validate its own answer.
     [string]$ExpectedVersion = '4.0.0.0',

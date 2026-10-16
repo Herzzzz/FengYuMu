@@ -155,7 +155,9 @@ namespace MapleOverlay
         {
             string normalized = TranslationStore.Normalize(text);
             string padded = " " + normalized + " ";
-            if (!padded.Contains(" options ")) return false;
+            bool settingsCaption = normalized.Contains("game settings") || normalized.Contains("system settings") ||
+                normalized.Contains("sound settings") || normalized.Contains("graphics settings");
+            if (!padded.Contains(" options ") && !settingsCaption) return false;
             string[] tabs = new string[] {
                 " graphics ", " sound ", " game ", " social ", " controller "
             };

@@ -1,4 +1,7 @@
-﻿param(
+﻿# Historical offline-model benchmark. The r3 product removes this feature.
+# Retained as prior-version evidence; it is not a current online latency benchmark.
+# Do not run against r3 or substitute paid HTTP calls without explicit authorization.
+param(
     [Parameter(Mandatory=$true)][string]$ModelRoot,
     [int]$MaximumHotMilliseconds = 5000
 )
@@ -41,7 +44,7 @@ try {
         if ([bool]$knownIntent.Invoke($null, $intentArgs)) {
             $translated = [string]$intentArgs[1]
         } else {
-            $task = $translate.Invoke($client, [object[]]@($source, '英语', '中文', $glossary))
+            $task = $translate.Invoke($client, [object[]]@($source, '英语', '中文', $glossary, [Threading.CancellationToken]::None))
             $translated = [string]$task.GetAwaiter().GetResult()
         }
         $watch.Stop()

@@ -1,0 +1,58 @@
+name: Windows v4.0 release
+
+on:
+  push:
+    branches: [release/windows-v4.0]
+    paths:
+      - src/**
+      - tools/**
+      - tests/**
+      - '*.tsv'
+      - '*.txt'
+      - release-notes-v4.0.md
+      - .github/workflows/windows-v4-release.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: windows-v4.0-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - name: Native Windows build
+        shell: powershell
+        run: ./src/build.ps1
+      - name: Validate assembly and update transactions
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          ./tests/logic-r3-candidate-core.ps1 -ExePath "$PWD/枫语幕.exe"
+          ./tests/logic-candidate-transactions.ps1 -ExePath "$PWD/枫语幕.exe"
+          ./tests/logic-application-updater.ps1
+      - name: Validate supplemental dictionary package paths
+        shell: pwsh
+        run: ./tests/logic-update-dictionaries-v4.ps1
+      - name: Create and verify release packages
+        shell: pwsh
+        run: python tools/Package-Windows-Release.py "$PWD/dist-windows-v4"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FengYuMu-v4.0-Windows
+          path: dist-windows-v4/*
+          if-no-files-found: error
+      - name: Publish stable Windows release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          gh release view v4.0 --repo "$env:GITHUB_REPOSITORY" 2>$null
+          if ($LASTEXITCODE -eq 0) { throw 'v4.0 already exists; refusing to replace a published release.' }
+          $assets = @(Get-ChildItem dist-windows-v4 -File | ForEach-Object FullName)
+          gh release create v4.0 @assets --repo "$env:GITHUB_REPOSITORY" --target "$env:GITHUB_SHA" --title '枫语幕 v4.0（Windows 正式版）' --notes-file release-notes-v4.0.md --latest
+          if ($LASTEXITCODE -ne 0) { throw 'GitHub release publication failed' }

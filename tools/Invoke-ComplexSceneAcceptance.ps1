@@ -1,12 +1,14 @@
-param(
+﻿param(
     [string]$ImageDirectory = 'D:\TEMP',
-    [string]$OutputDirectory = 'D:\GPT\文件\枫语幕\验收\2026-10-12-14图'
+    [string]$OutputDirectory = 'D:\GPT\文件\枫语幕\验收\2026-10-12-14图',
+    [string]$ExpectationsPath
 )
 
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
 . (Join-Path $repoRoot 'tests\Start-ProductExe.ps1')
+. (Join-Path $PSScriptRoot 'Benchmark-Acceptance.ps1')
 
 $imageIds = @(
     'c29685ee-ee32-4914-860e-430128b712b2',
@@ -25,10 +27,16 @@ $imageIds = @(
     '2444a6b3-1a9b-413e-87e8-25c612bed62a'
 )
 
+$runId = [DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss') + '-' + [Guid]::NewGuid().ToString('N')
+$OutputDirectory = Join-Path $OutputDirectory $runId
 New-Item -ItemType Directory -Force -Path $OutputDirectory | Out-Null
+Write-Host "本次证据目录：$OutputDirectory"
 $exe = Join-Path $repoRoot '枫语幕.exe'
+. (Join-Path $repoRoot 'tools/Build-Evidence.ps1')
+Assert-BuildEvidence $exe $repoRoot
 $runFile = Join-Path $repoRoot 'last_run.txt'
 $rows = @()
+$expectations = if ($ExpectationsPath) { Get-Content -LiteralPath $ExpectationsPath -Raw -Encoding UTF8 | ConvertFrom-Json } else { $null }
 
 for ($index = 0; $index -lt $imageIds.Count; $index++) {
     $number = $index + 1
@@ -38,9 +46,10 @@ for ($index = 0; $index -lt $imageIds.Count; $index++) {
 
     Write-Host ('[IMAGE {0:00}] {1}' -f $number, $image)
     if (Test-Path -LiteralPath $runFile) { Remove-Item -LiteralPath $runFile -Force }
-    Start-ProductExe -FilePath $exe -ArgumentList @(
+    $process = Start-ProductExe -FilePath $exe -ArgumentList @(
         '--benchmark', "--benchmark-image=$image", '--benchmark-range=balanced'
-    ) -WorkingDirectory $repoRoot -Wait
+    ) -WorkingDirectory $repoRoot -Wait -PassThru
+    if ($null -eq $process -or $process.ExitCode -ne 0) { throw "第 $number 张进程失败" }
     if (-not (Test-Path -LiteralPath $runFile)) { throw "第 $number 张未产生 last_run.txt" }
 
     $raw = Get-Content -LiteralPath $runFile -Raw -Encoding UTF8
@@ -56,12 +65,15 @@ for ($index = 0; $index -lt $imageIds.Count; $index++) {
     $finalMs = [int]$final.Groups[1].Value
     $row = [pscustomobject]@{
         image = $number
+        runId = $runId
         id = $id
         firstMs = [int]$first.Groups[1].Value
         finalMs = $finalMs
         hits = [int]$hits.Groups[1].Value
         under2500 = $finalMs -le 2500
         labels = $labels.Groups[1].Value
+        contentVerified = $false
+        exeSha256 = (Get-FileHash -LiteralPath $exe -Algorithm SHA256).Hash
     }
     $requiredLabels = @{
         1 = @('我把所需物品交给了射手村公园的凯茜', '猪猪/蘑菇五子棋')
@@ -71,18 +83,24 @@ for ($index = 0; $index -lt $imageIds.Count; $index++) {
         9 = @('角色信息', '保存名字', '交易请求', '悄悄话', '邀请聊天',
             '加为好友', '加入黑名单', '举报')
     }
-    if ($requiredLabels.ContainsKey($number)) {
+    if ($expectations -and $expectations.PSObject.Properties[$id]) {
+        $requiredLabels[$number] = @($expectations.PSObject.Properties[$id].Value)
+    }
+    if ($requiredLabels.ContainsKey($number) -and @($requiredLabels[$number]).Count -gt 0) {
         foreach ($required in $requiredLabels[$number]) {
             if (-not $row.labels.Contains($required)) {
                 throw "第 $number 张缺少关键译文：$required"
             }
         }
+        $row.contentVerified = $true
     }
     $rows += $row
     Copy-Item -LiteralPath $runFile -Destination (Join-Path $OutputDirectory (
         'final-{0:00}-{1}.last_run.txt' -f $number, $id)) -Force
+    $rows | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $OutputDirectory 'final-summary.json') -Encoding UTF8
     Write-Host ('[RESULT {0:00}] {1}ms hits={2} pass={3}' -f
         $number, $row.finalMs, $row.hits, $row.under2500)
+    Assert-BenchmarkAcceptance $raw 0 2500 1
 }
 
 $summaryPath = Join-Path $OutputDirectory 'final-summary.json'
@@ -93,3 +111,8 @@ $median = [math]::Round(($sorted[6] + $sorted[7]) / 2, 1)
 $passed = @($rows | Where-Object under2500).Count
 $rows | Format-Table image, firstMs, finalMs, hits, under2500 -AutoSize
 Write-Host "FINAL_AVG_MS=$average FINAL_MEDIAN_MS=$median PASS_COUNT=$passed/14"
+if ($passed -ne $imageIds.Count) { throw '复杂场景性能硬门槛失败（最终收敛必须 <=2500ms）' }
+if (@($rows | Where-Object { $_.hits -le 0 }).Count -gt 0) { throw '复杂场景存在零命中' }
+if (@($rows | Where-Object { -not $_.contentVerified }).Count -gt 0) {
+    throw '内容验收未完成：请提供其余场景的关键译文 ExpectationsPath；不将缺少期望值视为通过'
+}
