@@ -1,9 +1,10 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 
 & (Join-Path $PSScriptRoot 'logic-regression-v2.1.0.ps1')
 
-$assembly = [Reflection.Assembly]::LoadFile((Join-Path $repoRoot '枫语幕.exe'))
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly (Join-Path $repoRoot '枫语幕.exe')
 $storeType = $assembly.GetType('MapleOverlay.TranslationStore', $true)
 $constructor = $storeType.GetConstructor(
     [Reflection.BindingFlags]'Instance,NonPublic,Public', $null,
@@ -33,7 +34,7 @@ $taskChinese = @($taskMatches | ForEach-Object {
     $entry = $_.GetType().GetField('Entry').GetValue($_)
     $entry.GetType().GetField('Chinese').GetValue($entry)
 })
-if (-not ($taskChinese -contains '比格斯的物品收集')) {
+if (-not ($taskChinese -contains '比格斯的收集品')) {
     throw '多任务列表中的非当前任务标题被上下文吞掉'
 }
 

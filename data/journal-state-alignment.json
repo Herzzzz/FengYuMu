@@ -1,0 +1,2082 @@
+{
+  "scope": "Entire173GCWJournalRows",
+  "runtimeTaskExceptions": false,
+  "entries": [
+    {
+      "category": "怀旧服-任务说明#1000",
+      "english": "You meet Heena, who was worried the sun would damage her skin. You should get a mirror from her sister, Sera, so she can check.",
+      "before": "去和希娜说话。你遇到了担心阳光会晒伤皮肤的希娜。她想照照镜子，于是你需要去找她的妹妹莎丽借一面镜子。希娜拜托你从她妹妹那里拿镜子，所以你一路走到了莎丽那里。",
+      "after": "你遇到了担心阳光会晒伤皮肤的希娜。她想照照镜子，于是你需要去找她的妹妹莎丽借一面镜子。",
+      "selection": {
+        "startAt": "你遇到了",
+        "endBefore": "希娜拜托"
+      },
+      "oldSha256": "A5C56E540C8278F2E3D8ABDADC3D42C74393968ED00F25FDF1997636FF114014",
+      "newSha256": "13641441028E3FFF062CC2648F24002C9570DB7148D4EC70F88227D0FD47B74A"
+    },
+    {
+      "category": "怀旧服-任务说明#1001",
+      "english": "You got the mirror from Sera, who was doing her laundry. You have to take it to Heena.",
+      "before": "你从正在洗衣服的莎丽那里拿到了镜子。现在要把它交给希娜。你把从莎丽那里借来的镜子带给了希娜。",
+      "after": "你从正在洗衣服的莎丽那里拿到了镜子。现在要把它交给希娜。",
+      "selection": {
+        "startAt": "",
+        "endBefore": "你把"
+      },
+      "oldSha256": "78703968E261D68B5C8B574C0BB1F979BF16FD771FBB882EE1FA2C1A60BFEAB7",
+      "newSha256": "04C3028CAB2CE360D8B6E054AF0574C858959E6C00006CDCA34DFCC9D8A043EB"
+    },
+    {
+      "category": "怀旧服-任务说明#1002",
+      "english": "By pressing the hotkey I, you can consume k in the Use window. Now talk to Roger.",
+      "before": "和罗杰说话。按下快捷键 I 后，可以在消耗栏使用 Unknown(2001000)。现在去和罗杰说话吧。你学会了如何使用道具！以后冒险会方便很多！",
+      "after": "按下快捷键 I 后，可以在消耗栏使用该物品。现在去和罗杰说话。",
+      "selection": {
+        "startAt": "按下",
+        "endBefore": "你学会"
+      },
+      "oldSha256": "767CA0665142879AD57E22D185B8C4F29BC9E56DC91C15D2F11F8311B11E6C15",
+      "newSha256": "2C83EB59395A4D35A08125F03D4772E294037988F777E855F7FEFE0281D51DAA"
+    },
+    {
+      "category": "怀旧服-任务说明#1003",
+      "english": "Nina is wondering what to make her brother, Sen, for dinner. Go talk to Sen, who's in the house next to Nina, and ask him what he wants to eat.",
+      "before": "和妮娜说话。妮娜正在烦恼晚饭要给弟弟珊做什么。去妮娜旁边的屋子找珊，问问他想吃什么。你问了妮娜的弟弟珊晚饭想吃什么，他说想喝蘑菇汤。",
+      "after": "妮娜正在烦恼晚饭要给弟弟珊做什么。去妮娜旁边的屋子找珊，问问他想吃什么。",
+      "selection": {
+        "startAt": "妮娜正在",
+        "endBefore": "你问了"
+      },
+      "oldSha256": "3125480D0E49F11E40779BD7B48F412370F1FACAA3EEE8393A0E7461A7CB2DF2",
+      "newSha256": "9DB38F43684E324BDF556C887718FDCB2FA6E0B9411BFA1E6173703654F096C6"
+    },
+    {
+      "category": "怀旧服-任务说明#1004",
+      "english": "Sen wants Mushroom Soup for dinner. Better tell Nina now.",
+      "before": "珊晚饭想喝蘑菇汤。赶快告诉妮娜吧。你把珊想吃的晚饭告诉了妮娜。",
+      "after": "珊晚饭想喝蘑菇汤。赶快告诉妮娜吧。",
+      "selection": {
+        "startAt": "",
+        "endBefore": "你把"
+      },
+      "oldSha256": "C524D9C71F058F2C0D8944A5973AF5E7E2F133C263864F265F23B48836B4BB01",
+      "newSha256": "E96D3EFB2FE3BED92F7CB6240F760B4E2D38F93711937588DBC0C3D0148EBB2D"
+    },
+    {
+      "category": "怀旧服-任务说明#1005",
+      "english": "Todd asks you to attack and defeat Tutorial Jr. Sentinels, then talk to Peter.",
+      "before": "听说透德可以教你打猎的方法……透德让你攻击并打倒教学用小石球，然后去找彼得。你按照透德的指示打倒了怪物。",
+      "after": "透德让你攻击并打倒教学用小石球，然后去找彼得。",
+      "selection": {
+        "startAt": "透德让你",
+        "endBefore": "你按照"
+      },
+      "oldSha256": "15FC900AC3D708E53ADC330831412B7E1D8A1B2BD8FC79B472FD242E8922C0F7",
+      "newSha256": "569B890340A127636163069FCF7F4EEBA302F08EAF9400196CD1B01A81D3C1F9"
+    },
+    {
+      "category": "怀旧服-任务说明#1006",
+      "english": "When you talk to Sam, he tells you to head to the east and hunt 10 Snail before meeting Mai.",
+      "before": "萨姆建议新手冒险家先做好准备。和萨姆交谈后，他让我往东走，在见麦加之前先打倒 10 只蜗牛。我照做后见到了麦加。她就是传说中的高手吗？看起来确实很强。",
+      "after": "和萨姆交谈后，他让我往东走，在见麦加之前先打倒 10 只蜗牛。",
+      "selection": {
+        "startAt": "和萨姆交谈后",
+        "endBefore": "我照做后"
+      },
+      "oldSha256": "2776B2F02FBA579270AC717C9AD1A610CCE8314B04A99D737EC1310CBA56692B",
+      "newSha256": "C69F5DA8FE3D5DC15F075C29E53885DABEFEF7B1B5450AAFD01F13AAF08CF1AF"
+    },
+    {
+      "category": "怀旧服-任务说明#1007",
+      "english": "Maria needs someone to help her. She wants you to deliver a letter to Lucas inAmherst.",
+      "before": "玛丽亚需要有人帮忙……玛丽亚希望我把信送给阿姆斯特的卢卡斯。我把玛丽亚的信交给了阿姆斯特的卢卡斯。",
+      "after": "玛丽亚需要有人帮忙……玛丽亚希望",
+      "selection": {
+        "startAt": "",
+        "endBefore": "我把"
+      },
+      "oldSha256": "463278F842936DE19A2F36243BF191519241A7F49DC181B688947D9C2A8F1058",
+      "newSha256": "8E035C6527CB4F99C0500D31DD1ED48435901F60579751CBB105F49523F96F1D"
+    },
+    {
+      "category": "怀旧服-任务说明#1008",
+      "english": "You delivered Maria's Letter to Lucas who was in Amherst. He wrote her a reply, which you should bring to Maria.",
+      "before": "你把玛丽亚的信送到了阿姆斯特的卢卡斯手中。他写了一封回信，要你带回给玛丽亚。玛丽亚读完卢卡斯的回信后松了一口气。现在你也想看看里面写了什么。真好奇这到底是怎么回事……",
+      "after": "你把玛丽亚的信送到了阿姆斯特的卢卡斯手中。他写了一封回信，要你带回给玛丽亚。",
+      "selection": {
+        "startAt": "",
+        "endBefore": "玛丽亚读完"
+      },
+      "oldSha256": "4C36EE8344F79A9E1425481B4597622566652EC770D2C11DD1747AAFF3EA18F9",
+      "newSha256": "477B2FEC765B1A9F6D9AD41EBBED82C94C6AF7C64D8FA69F4F0C8D6269400765"
+    },
+    {
+      "category": "怀旧服-任务说明#1009",
+      "english": "You're under the tutelage of the famous swordmaster, Mai, in A Split Road. She wants you to hunt Blue Snails, Shrooms, and Red Snails. Ah, Mai also said to meet with Biggs in Southperry to get another quest.",
+      "before": "在岔路口的麦加看起来像是能训练新手的武术专家。你接受了著名剑术大师麦加的指导。她让你狩猎蓝蜗牛、蘑菇仔和红蜗牛。啊，麦加还说要去南港找比格斯接另一个任务。经过麦加的训练后，你感觉自己变强了。",
+      "after": "你接受了著名剑术大师麦加的指导。她让你狩猎蓝蜗牛、蘑菇仔和红蜗牛。啊，麦加还说要去南港找比格斯接另一个任务。",
+      "selection": {
+        "startAt": "你接受了",
+        "endBefore": "经过麦加"
+      },
+      "oldSha256": "7F1F4149F93158C2218C72D5555CFE02434C7494F3E8A8EB1C0620AD5B8EDE11",
+      "newSha256": "9FF54DAEF46DBBF0C1ACEAFAC3AF8BE21271ADCC74AE145DB5AFECC2C8A732DB"
+    },
+    {
+      "category": "怀旧服-任务说明#1010",
+      "english": "Mai believes that while knowing your abilities is important, defeating stronger monsters is also great training to improve them. They asked you to defeat Orange Mushroom. Orange Mushroom...? It sounds really strong. Do you think you can defeat it?",
+      "before": "麦加的训练虽然只是打倒怪物，但似乎非常适合学习狩猎的方法。继续接受麦加的训练吧。麦加认为，了解自己的能力固然重要，挑战更强的怪物也是提升实力的好训练。她让你打倒绿蘑菇。绿蘑菇……听起来很强。你能打倒它吗？完成麦加的训练后，你感觉自己变得强多了。是时候离开冒险岛了！去南港坐船前往维多利亚岛吧。",
+      "after": "麦加认为，了解自己的能力固然重要，挑战更强的怪物也是提升实力的好训练。她让你打倒花蘑菇。花蘑菇……听起来很强。你能打倒它吗？",
+      "selection": {
+        "startAt": "麦加认为",
+        "endBefore": "完成麦加"
+      },
+      "oldSha256": "6A49C7B8EEA46F52FE6171BAED7A8ADDCF3E7C865A33F3A4386BF21EED1B568E",
+      "newSha256": "08294D8331F02B823467FB53105BD97AD4D9989A47E83A98EE2A22EA22E962B4"
+    },
+    {
+      "category": "怀旧服-任务说明#1011",
+      "english": "You meet Biggs in Southperry. He wants you to get him 1 Orange Mushroom Cap and 10 Blue Snail Shells. He doesn't look too convinced that you can do it, but it sounds like a piece of cake.",
+      "before": "南港的比格斯有事情拜托你。你在南港见到了比格斯。他想让你带来 1 个绿蘑菇盖和 10 个蓝蜗牛壳。他看起来不太相信你能做到，不过听起来很简单。你为南港的比格斯收集到了 1 个绿蘑菇盖和 10 个蓝蜗牛壳。他给你的奖励武器还算不错。",
+      "after": "你在南港见到了比格斯。他想让你带来 1 个花蘑菇盖和 10 个蓝蜗牛壳。他看起来不太相信你能做到，不过听起来很简单。",
+      "selection": {
+        "startAt": "你在南港",
+        "endBefore": "你为南港"
+      },
+      "oldSha256": "3F904A322D85723649A6B1218E26F4893BBCA2624BA31B04D9369A0625D5CB6F",
+      "newSha256": "900EB22CE9939467C6CD7CFA2BF6F7A14C8F4377D68E77F3FB04BC5ED68B485C"
+    },
+    {
+      "category": "怀旧服-任务说明#1012",
+      "english": "You ran into Pio, who is famous in Amherst for fixing broken goods. He asks you to break down scrap boxes from around town and bring back Rusty Screws and Old Wooden Boards.",
+      "before": "阿姆斯特的皮奥想让你帮忙收集可回收物。你遇到了皮奥，他在阿姆斯特以修理破损物品而出名。他让你打破镇上的废箱子，带回生锈的螺丝和旧木板。你打破箱子并为皮奥收集到了材料。箱子里还能找到其他有用的东西，挺有意思的。",
+      "after": "你遇到了皮奥，他在阿姆斯特以修理破损物品而出名。他让你打破镇上的废箱子，带回生锈的螺丝和旧木板。",
+      "selection": {
+        "startAt": "你遇到了",
+        "endBefore": "你打破箱子"
+      },
+      "oldSha256": "92FD06C9F1FDCBB9AAA1AE017D962409DA9D6B42FBA1991478963480A0E35670",
+      "newSha256": "894DFA8B259DAF929B5933E8B02B593DB1F0F8AF936CEC4EB2AAB225742E7C75"
+    },
+    {
+      "category": "怀旧服-任务说明#1013",
+      "english": "You're not a beginner anymore. Talk to Rain and take the Maple Quiz!",
+      "before": "你已经不再是新手了。去阿姆斯特找瑞恩参加冒险岛问答吧！瑞恩的第一题是关于如何挂在梯子或绳子上。好！是方向键上，一定要记清楚。",
+      "after": "你已经不再是新手了。去阿姆斯特找瑞恩参加冒险岛问答吧！",
+      "selection": {
+        "startAt": "",
+        "endBefore": "瑞恩的第一题"
+      },
+      "oldSha256": "648BD38631E224217BEACB59B6331A2B26B353935C12C35EBB2D4D963BD1A0BD",
+      "newSha256": "943FE9F0E82BF9F740FF4A821C860E61DA2ABF89CED0004870D3050BC05E81A9"
+    },
+    {
+      "category": "怀旧服-任务说明#1014",
+      "english": "What's Rain's second question?",
+      "before": "回答瑞恩的第二个问题。瑞恩的第二题是什么呢？问题是关于可装备道具的，道具可以通过双击来穿戴。",
+      "after": "瑞恩的第二题是什么呢？",
+      "selection": {
+        "startAt": "瑞恩的第二题是什么呢？",
+        "endBefore": "问题是"
+      },
+      "oldSha256": "9792DA8483E82B076CAA08D9FCEA5F99387A1DCF26E84F6133C7586608F9697D",
+      "newSha256": "D2349755E45F72A11E786CED727FADA5A950B68E301A343C6D3D467F803C2A28"
+    },
+    {
+      "category": "怀旧服-任务说明#1015",
+      "english": "Time for Rain's thirds question.",
+      "before": "瑞恩的第三个问题。现在该回答瑞恩的第三题了。在装备栏里，可以查看自己穿着的装备，也可以双击装备把它脱下来。",
+      "after": "现在该回答瑞恩的第三题了。",
+      "selection": {
+        "startAt": "现在该回答",
+        "endBefore": "在装备栏"
+      },
+      "oldSha256": "2AFBE490D9F364D80AEE803F17E21FFB5BBEA4FE92B7905A2BA98C3B85BED057",
+      "newSha256": "88E0B6F3EB7596F5C76A8D98273E20970DA06C858AF4388119AC6D44DEB5B208"
+    },
+    {
+      "category": "怀旧服-任务说明#1016",
+      "english": "You can answer Rain's questions if you think carefully.",
+      "before": "该回答瑞恩的第四个问题了。只要认真想，就能答出瑞恩的问题。瑞恩的第四题是关于恢复 HP 的方法。原来恢复 HP 的办法有这么多！看到椅子或长椅时，记得坐下来休息。",
+      "after": "只要认真想，就能答出瑞恩的问题。",
+      "selection": {
+        "startAt": "只要认真想",
+        "endBefore": "瑞恩的第四题"
+      },
+      "oldSha256": "2596926832125004833E858987EE46DEF5AAFF3264C9F719B155DBCE589CA214",
+      "newSha256": "6676B098D4F3D2710DDF3A9B09134CACC27C86F28C1B9B6883EE1B3CC0FE0DE8"
+    },
+    {
+      "category": "怀旧服-任务说明#1017",
+      "english": "What's the fifth question?",
+      "before": "瑞恩的第五个问题。不知道会问什么呢？第五题问的是转职。战士、飞侠、弓箭手和魔法师都需要至少 10 级才能转职。",
+      "after": "瑞恩的第五个问题。不知道会问什么呢？",
+      "selection": {
+        "startAt": "瑞恩的第五个问题",
+        "endBefore": "第五题问的是"
+      },
+      "oldSha256": "CE8FE20B56C84AEF606C93C60BBA259EB51B77AB9A14DE7E94C282BA4BEA1438",
+      "newSha256": "16E7F2A91750886366FF8E0AEC8A7CE06BFB2F6B7B7254EC151C4064254D9A7C"
+    },
+    {
+      "category": "怀旧服-任务说明#1018",
+      "english": "Finally, the sixth question.",
+      "before": "该回答瑞恩的问题了。终于到第六题了。你学到升级时会获得 AP。如果把 AP 加到想要提升的能力值上，就能增强这些属性，一定要记住。",
+      "after": "终于到第六题了。",
+      "selection": {
+        "startAt": "终于到第六题了。",
+        "endBefore": "你学到"
+      },
+      "oldSha256": "864F47BDA0FCB040A1428064AA3CC7223AF3AB3F2DA64E2A42F482E92D167EAF",
+      "newSha256": "AB50B5CA4FF6AFB4408FB9633C0046214F884B925E13D3166ABD05C4E3029F56"
+    },
+    {
+      "category": "怀旧服-任务说明#1019",
+      "english": "Finally the last question. After this, you'll no longer be a beginner.",
+      "before": "这是瑞恩的最后一个问题。是不是有点激动？终于到最后一题了。答完之后，你就不再是新手了。瑞恩建议你该离开冒险岛了。在维多利亚岛，你可以选择职业，开始更多新的冒险。前往南港，去维多利亚岛吧！",
+      "after": "终于到最后一题了。答完之后，你就不再是新手了。",
+      "selection": {
+        "startAt": "终于到最后一题了。",
+        "endBefore": "瑞恩建议"
+      },
+      "oldSha256": "0715432322560FA6C4BFD06A8A3DF44863E2EE53A88DBACBFCB2751324993819",
+      "newSha256": "276791BDF930865DBE49153B427773BF3D68C76630424C247EC4077EC24D957E"
+    },
+    {
+      "category": "怀旧服-任务说明#10000",
+      "english": "I met Olaf at Lith Harbor. Olaf mentioned that once I reach level 10, I could advance my job, but wondered if I truly had what it takes. To prove myself, Olaf gave me a task to hunt monsters outside the village. I’m feeling a bit nervous since there seem to be stronger monsters on Victoria Island.",
+      "before": "明珠港的奥拉夫似乎有话要对刚到维多利亚岛的新手冒险家说。我在明珠港见到了奥拉夫。奥拉夫说只要达到 10 级就可以转职，但他怀疑我是否真的具备资格。为了证明自己，奥拉夫让我去村外狩猎怪物。想到维多利亚岛上可能有更强的怪物，我有点紧张……我成功通过了奥拉夫的训练。但这样真的就够了吗？",
+      "after": "我在明珠港见到了奥拉夫。奥拉夫说只要达到 10 级就可以转职，但他怀疑我是否真的具备资格。为了证明自己，奥拉夫让我去村外狩猎怪物。想到维多利亚岛上可能有更强的怪物，我有点紧张……",
+      "selection": {
+        "startAt": "我在明珠港",
+        "endBefore": "我成功通过"
+      },
+      "oldSha256": "DAE4241C68345A95CC4E3F49DC9BC2424F3EDFE2BFC95089C0318181C2EB962D",
+      "newSha256": "68B0AEFACCF73088B0E0B9C1B5ABBDA7B33D07D776FA893E839B2B1BADAF9786"
+    },
+    {
+      "category": "怀旧服-任务说明#10001",
+      "english": "Let’s head to the Information Broker Phil in Lith Harbor to learn more about job advancement.",
+      "before": "我终于达到 10 级了！说起来，我记得听过达到 10 级后可以选择职业……去明珠港找情报商人菲尔了解转职吧。菲尔告诉我，可以选择成为剑士、魔法师、弓箭手或飞侠。看来一旦选择就不能更改，所以必须慎重考虑……",
+      "after": "去明珠港找情报商人菲尔了解转职吧。",
+      "selection": {
+        "startAt": "去明珠港找情报商人",
+        "endBefore": "菲尔告诉我"
+      },
+      "oldSha256": "83CFD96822C1DDD6B5A386E8FF7EF6BDEF2E60E6E6BF3A36EE076EB4A3329EF5",
+      "newSha256": "0F30EAAA07221CC62B74E73C0D0F93E31CEC76D37F0C5C9BE8EFD06D3C9774DC"
+    },
+    {
+      "category": "怀旧服-任务说明#10002",
+      "english": "In Lith Harbor, I met Jane, a girl wearing bunny ears. Jane says she wants to travel the world, but her dad won't let her. She thinks if I get her 15 Blue Mushroom Caps and 15 s, her father will change his mind.",
+      "before": "去明珠港找珍。在明珠港，我遇到了戴着兔耳朵的女孩珍。珍说她想环游世界，但爸爸不让她去。她觉得如果我帮她收集 15 个蓝蘑菇盖和 15 个刺蘑菇盖，她爸爸也许会改变主意。你把蓝蘑菇盖和刺蘑菇盖交给了珍。不知道这是否真的能让她爸爸改变想法……她可是戴着兔耳朵啊！算了，不关我的事。作为回报，珍给了我一张攻击卷轴。要是卷轴成功，我的武器就会变得很厉害。",
+      "after": "在明珠港，我遇到了戴着兔耳朵的女孩珍。珍说她想环游世界，但爸爸不让她去。她觉得如果我帮她收集 15 个蓝蘑菇盖和 15 个刺蘑菇盖，她爸爸也许会改变主意。",
+      "selection": {
+        "startAt": "在明珠港，我遇到了",
+        "endBefore": "你把"
+      },
+      "oldSha256": "5986C4923E9FFFD10E75CC9F73B19651C69C968F21032DE6C493CFF1347A6541",
+      "newSha256": "7CADBA256B6FEC37EE053F2039438E9FE60C8C8D40E7E1E941E805727CC3BAC6"
+    },
+    {
+      "category": "怀旧服-任务说明#10003",
+      "english": "Last time, I got Jane some mushroom caps and boar's teeth to convince her dad to let her travel. That didn't work. Now she has a new dream: she wants to be an alchemist! A bit fickle, but whatever. Now, she needs materials... I can guess where this is going. She wants me to collect 1 Pure Water, 25 Drake Skull, and 25 Medicine With Weird Vibes by defeating several monsters so she can make some Elixirs.",
+      "before": "听说珍有了新的人生目标……上次我帮她收集蘑菇盖和野猪牙，想说服她爸爸让她去旅行，但失败了。现在她有了新梦想：成为炼金术士！有点三分钟热度，不过算了。现在她需要材料……我大概猜到接下来会怎样。她想让我打怪收集 1 个纯净水、25 个飞龙头骨和 25 个奇怪感觉的药，好制作一些万能药。你收集到了珍制作万能药所需的材料。如果她失败了……整个地方会不会爆炸？",
+      "after": "上次我帮她收集蘑菇盖和野猪牙，想说服她爸爸让她去旅行，但失败了。现在她有了新梦想：成为炼金术士！有点三分钟热度，不过算了。现在她需要材料……我大概猜到接下来会怎样。她想让我打怪收集 1 个纯净水、25 个飞龙头骨和 25 个奇怪感觉的药，好制作一些万能药。",
+      "selection": {
+        "startAt": "上次我帮她",
+        "endBefore": "你收集到了"
+      },
+      "oldSha256": "E1C5D13761B973944041A23DBAF1F84CDE0EF6629F23BFA13F9C704F38AC3952",
+      "newSha256": "D650C2F6AA3DFA0A8A549710D481F5E8F5822626F32773291AE9CDCAEAF31081"
+    },
+    {
+      "category": "怀旧服-任务说明#10004",
+      "english": "This time, Jane promises to make a better item, so she needs me to gather 1 Mushmom Spore, 3 vials of Drake's Blood, 25 Medicine With Weird Vibes, and 25 Malady's Experimental Frogs by defeating several monsters. She says it can be used to make an even more powerful elixir…",
+      "before": "珍说她会给我做出更好的东西。这次，珍保证会制作更好的道具，所以需要我打怪收集 1 个蘑菇王孢子、3 瓶飞龙之血、25 个奇怪感觉的药和 25 只玛勒迪的实验青蛙。她说这些可以用来做出更强力的万能药……你把珍需要的材料都交给了她。如果她成功，我就能得到不错的万能药；如果失败……呃，我不太确定自己还想不想收她给的东西。",
+      "after": "这次，珍保证会制作更好的道具，所以需要我打怪收集 1 个蘑菇王孢子、3 瓶飞龙之血、25 个奇怪感觉的药和 25 只玛勒迪的实验青蛙。她说这些可以用来做出更强力的万能药……",
+      "selection": {
+        "startAt": "这次，珍保证",
+        "endBefore": "你把"
+      },
+      "oldSha256": "1804CFB8A4DAD8A3E4EA4242CFD34D75CB71F1AE8F3B91E0DF7CC69D73ED1E95",
+      "newSha256": "45B0F6C8EF5ECD52A3C7CA5C93DE3D556AB755AA6DFD1FBD6E1BC89DC0B2B9CA"
+    },
+    {
+      "category": "怀旧服-任务说明#10005",
+      "english": "For this last experiment, Jane promises to make me a mysterious Scroll. For that, she needs a Moon Rock, 20 Dragon Skins, and 10 Sap of Ancient Tree. Maybe I should ask the fairies at Ellinia for the Moon Rock.",
+      "before": "珍说她会做出更好的东西。最后一次实验中，珍答应为我制作一张神秘卷轴。为此，她需要一块月石、20 张龙皮和 10 个古木树液。也许我该去魔法密林问问妖精关于月石的事……你把珍需要的材料交给了她，手套卷轴也顺利完成了。太好了！珍表现出继续实验的强烈愿望。也许下次回来时，我就能从她那里买到商店里买不到的东西……",
+      "after": "最后一次实验中，珍答应为我制作一张神秘卷轴。为此，她需要一块月石、20 张龙皮和 10 个古木树液。也许我该去魔法密林问问妖精关于月石的事……",
+      "selection": {
+        "startAt": "最后一次实验中",
+        "endBefore": "你把"
+      },
+      "oldSha256": "ABE46A34A5B7F2545E4EF1D1CB0F011D65437C1563E1A0B8582442A9B34C251A",
+      "newSha256": "D6557B05E04373005BA3D70ABD85955CDB9AFB67BE7C4E6D3FFC45C2B9553E9B"
+    },
+    {
+      "category": "怀旧服-任务说明#10006",
+      "english": "I met a fisherman named John in Lith Harbor. He wanted to get his wife a nice flower basket for their upcoming anniversary. He asked me if I could get him 10 Pink Violas for her. According to him, a Mysterious Statue can lead me to where the flower is. Sleepywood... Sleepywood??? That's FAR!!!",
+      "before": "去明珠港找约翰吧。我在明珠港遇到了一位叫约翰的渔夫。他想在即将到来的结婚纪念日给妻子准备一个漂亮的花篮，问我能不能帮他拿到 10 朵粉色紫罗兰。据他说，神秘雕像能带我到花所在的地方。林中之城……林中之城？那也太远了！！！你收集到了全部 10 朵粉色紫罗兰。有了这些，约翰就能在纪念日给妻子做一个美丽的花篮。作为谢礼，约翰给了我一大堆从船上剩下的螺丝。话说，如果那艘船掉了这么多螺丝，它到底是怎么还能正常航行的……还在载客吗？",
+      "after": "我在明珠港遇到了一位叫约翰的渔夫。他想在即将到来的结婚纪念日给妻子准备一个漂亮的花篮，问我能不能帮他拿到 10 朵粉色紫罗兰。据他说，神秘雕像能带我到花所在的地方。林中之城……林中之城？那也太远了！！！",
+      "selection": {
+        "startAt": "我在明珠港遇到了",
+        "endBefore": "你收集到了"
+      },
+      "oldSha256": "830014EDB46BA7D8313F612B7F619F71391205D1E95C7B33A87657081A20E620",
+      "newSha256": "57ABE122589E6F3F414572FED03824D386D69A44C2AD4E8627709195F4D4A8F9"
+    },
+    {
+      "category": "怀旧服-任务说明#10007",
+      "english": "I ran into John the fisherman again in Lith Harbor. This time, he wanted to get his wife Blue Violas for her birthday. He asked me to get 20 Blue Violas for him. The scent of Blue Viola last over 500 years... and according to John, they can be found in the Mysterious Statue again, where the flower may be found. Man... do I HAVE to go in there again??",
+      "before": "再去明珠港见约翰吧。我又在明珠港遇到了渔夫约翰。这次，他想给妻子生日准备蓝色紫罗兰。他让我帮忙收集 20 朵蓝色紫罗兰。蓝色紫罗兰的香味能持续 500 年以上……据约翰说，它们又可以通过神秘雕像找到。唉……我真的还得再进去一次吗？你收集到了全部 20 朵蓝色紫罗兰。香味确实不错，但 20 朵放在一起让我头都晕了……作为谢礼，约翰送了我一只他在船里找到的不错的手套。看起来像是有人不小心落下的……他这样送给我真的可以吗？要是我戴着它在镇上遇到原主人怎么办？",
+      "after": "我又在明珠港遇到了渔夫约翰。这次，他想给妻子生日准备蓝色紫罗兰。他让我帮忙收集 20 朵蓝色紫罗兰。蓝色紫罗兰的香味能持续 500 年以上……据约翰说，它们又可以通过神秘雕像找到。唉……我真的还得再进去一次吗？",
+      "selection": {
+        "startAt": "我又在明珠港",
+        "endBefore": "你收集到了"
+      },
+      "oldSha256": "D9D0E1D9FECF6A336753C085C36F8AC9D239203B58EAA0BEACF6C803A9D3B1A6",
+      "newSha256": "1C233CB88672ED1BF0E0176816386F86D47CB8544204368DC6E07D90FD19B278"
+    },
+    {
+      "category": "怀旧服-任务说明#10008",
+      "english": "I ran into John the fisherman again in Lith Harbor. This time, he told me his mother passed away recently, and he wanted to get some White Violas for her. He asked me to get 30 White Violas for him. The scent of White Violas last over 1000 years... and according to John, they can be found through the Mysterious Statue again, where the flowers may be found. Man... do I HAVE to go in there again??",
+      "before": "听说约翰还有最后一件事想拜托我……我又在明珠港遇到了渔夫约翰。这次他告诉我，他的母亲最近去世了，他想为她准备一些白色紫罗兰。他让我帮忙收集 30 朵白色紫罗兰。白色紫罗兰的香味能持续 1000 年以上……据约翰说，它们仍然可以通过神秘雕像找到。唉……我真的还得再进去一次吗？你收集到了全部 30 朵白色紫罗兰。香味确实不错，但 30 朵放在一起让我头都晕了……作为谢礼，约翰送给我一对他母亲的耳环。这耳环看起来像是用普通花朵做成的，但似乎另有玄机……",
+      "after": "我又在明珠港遇到了渔夫约翰。这次他告诉我，他的母亲最近去世了，他想为她准备一些白色紫罗兰。他让我帮忙收集 30 朵白色紫罗兰。白色紫罗兰的香味能持续 1000 年以上……据约翰说，它们仍然可以通过神秘雕像找到。唉……我真的还得再进去一次吗？",
+      "selection": {
+        "startAt": "我又在明珠港",
+        "endBefore": "你收集到了"
+      },
+      "oldSha256": "9235DA2B562B43DEB94C94C6B4C808240EECD8D79119F96AF557BBA15E5A2F07",
+      "newSha256": "8F34EF2C691ED83695ADB4A96027680CEB31B570626252041B1D8273AFD13A30"
+    },
+    {
+      "category": "怀旧服-任务说明#10009",
+      "english": "I met Olaf again in Lith Harbor. He says my training is still far from over and gave me a mission to hunt stronger monsters outside the town. Will I finally become a true adventurer once I finish this training?",
+      "before": "看起来明珠港的奥拉夫又准备了一轮训练。我再次在明珠港见到了奥拉夫。他说我的训练还远远没有结束，并让我去镇外狩猎更强的怪物。完成这次训练后，我终于能成为真正的冒险家吗？我出色地通过了奥拉夫的第二次训练！等我达到 10 级，就可以准备选择职业了！",
+      "after": "我再次在明珠港见到了奥拉夫。他说我的训练还远远没有结束，并让我去镇外狩猎更强的怪物。完成这次训练后，我终于能成为真正的冒险家吗？",
+      "selection": {
+        "startAt": "我再次在明珠港",
+        "endBefore": "我出色地通过"
+      },
+      "oldSha256": "E7F0B3B32BFB1A3AA47104370073BAE84FFB5ACD8DF8CA4E2C1FB228F523BB0A",
+      "newSha256": "B8E32F81D2CE0410E5C1E34ABAA5876B40FA82D0B2338B6043F0351DD6514B3E"
+    },
+    {
+      "category": "怀旧服-任务说明#10010",
+      "english": "Teo in Lith Harbor says his hobby is collecting weird things. He asked me to hunt Slimes near the town and bring back 1 Slime Bubble. He warned me that it might be hard to find!",
+      "before": "明珠港的水手特奥似乎在找能帮忙的冒险家。明珠港的特奥说他的爱好是收集奇怪的东西。他让我去镇子附近狩猎绿水灵，带回 1 个绿水灵泡泡。他提醒我这东西可能不太好找！你把 1 个绿水灵泡泡交给了明珠港的特奥。不过看他的表情，他似乎已经开始想要别的东西了……",
+      "after": "明珠港的特奥说他的爱好是收集奇怪的东西。他让我去镇子附近狩猎绿水灵，带回 1 个绿水灵泡泡。他提醒我这东西可能不太好找！",
+      "selection": {
+        "startAt": "明珠港的特奥说",
+        "endBefore": "你把"
+      },
+      "oldSha256": "590B8809DDA550C9547D0876EE39A0FF2B00F05D1E4DBF335FFFD196E79499C1",
+      "newSha256": "9BA195C9896C4003991C29898F10C01C456559791BC760F3A1DE25678081BFF3"
+    },
+    {
+      "category": "怀旧服-任务说明#10011",
+      "english": "Teo from Lith Harbor is asking for even weirder items to complete his collection. He says he absolutely needs an intact Pig's Head... Why is he even collecting this kind of stuff?",
+      "before": "看起来明珠港的特奥还有更多奇怪的东西想收集。特奥又提出了更奇怪的收集要求。他说自己一定需要一个完整的猪头……他到底为什么要收集这种东西？你把猪头交给了明珠港的特奥。我想，他这个奇怪的爱好还是让我们两个人知道就好。",
+      "after": "特奥又提出了更奇怪的收集要求。他说自己一定需要一个完整的猪头……他到底为什么要收集这种东西？",
+      "selection": {
+        "startAt": "特奥又提出了",
+        "endBefore": "你把"
+      },
+      "oldSha256": "DD8C265FAA429E48576F47869341E63A6A022F4CD03BF4CF76534567F483BDFD",
+      "newSha256": "5392AE2CC52F312371C5542FBD6BD8C864DFF77624E740F563BE6414DDED895E"
+    },
+    {
+      "category": "怀旧服-任务说明#10100",
+      "english": "I ran into Mrs. Ming Ming in Henesys, who is overcome with concern. She says there aren't enough decorations for the village festival, and asks you to get 10 Slime Bubbles and 20 s.",
+      "before": "听说明明女士在射手村很担心什么事……我在射手村遇到了满脸忧虑的明明女士。她说村子祭典的装饰不够，拜托我带来 10 个绿水灵泡泡和 20 条猪的丝带。你把明明女士需要的东西都带回来了，不过我总觉得祭典需要的绝不只有这些装饰……",
+      "after": "我在射手村遇到了满脸忧虑的明明女士。她说村子祭典的装饰不够，拜托我带来 10 个绿水灵泡泡和 20 条猪的丝带。",
+      "selection": {
+        "startAt": "我在射手村遇到了",
+        "endBefore": "你把"
+      },
+      "oldSha256": "EDE48B02B009CC3AEC65DC33174792EFD7887994011F28CFBD0AAFD5539B6DDC",
+      "newSha256": "63181354060E9A2B7C937D2431766ABD40A3A111DD2347CF02C0BE65F297059E"
+    },
+    {
+      "category": "怀旧服-任务说明#10101",
+      "english": "I met Mrs. Ming Ming again in Henesys who was preparing for the village festival. She said she needs food to prepare for the festival, and asked me to collect 10 Pig's Heads, 30 Octopus Legs, and . To get the special sauce, I think I'll have to go find Estelle in The Field South of Ellinia.",
+      "before": "听说射手村的明明女士又有新的烦恼……我再次在射手村见到了正在准备村子祭典的明明女士。她说祭典需要食物，拜托我收集 10 个猪头、30 条章鱼脚和艾斯特尔的特制酱油。要拿到特制酱油，我想得去魔法密林南部森林找艾斯特尔。你在魔法密林南部森林见到了艾斯特尔，想拿她的特制酱油，但她显然不打算免费给你……",
+      "after": "我再次在射手村见到了正在准备村子祭典的明明女士。她说祭典需要食物，拜托我收集 10 个猪头、30 条章鱼脚和艾斯特尔的特制酱油。要拿到特制酱油，我想得去魔法密林南部森林找艾斯特尔。",
+      "selection": {
+        "startAt": "我再次在射手村",
+        "endBefore": "你在魔法密林"
+      },
+      "oldSha256": "7B3C11810E73C36F52EC50C0425947DA3C9508E425F0409DB9D61AB52153B14F",
+      "newSha256": "8D127B459D6E6CCEC7BEE86E136E5811DB15020227AE0C923B17E13048F07EC4"
+    },
+    {
+      "category": "怀旧服-任务说明#10102",
+      "english": "Estelle in The Hill East of Henesys wants Garnet in exchange for Special Sauce. She wants to buy a necklace for her mom's birthday.",
+      "before": "射手村东边山丘的艾斯特尔想用石榴石交换特制酱油。她想给妈妈生日买一条项链。你给在射手村东边山丘附近遇到的艾斯特尔带来了 1 个石榴石，用来制作她妈妈的生日礼物。她把艾斯特尔的特制酱油给了你。最好赶快收集其他材料，回去找明明女士。",
+      "after": "射手村东边山丘的艾斯特尔想用石榴石交换特制酱油。她想给妈妈生日买一条项链。",
+      "selection": {
+        "startAt": "",
+        "endBefore": "你给"
+      },
+      "oldSha256": "089E754F259DFB41E5BB89B60902511A433F4D1C1B9C4BD6C88E08CFFDA72D3E",
+      "newSha256": "6E3965A49860D901174F8A3491BCDE3DFB71F1A4152B46386233378C703697A1"
+    },
+    {
+      "category": "怀旧服-任务说明#10103",
+      "english": "I received the special sauce from Estelle in The Field South of Ellinia. Now, I should deliver it to Mrs. Ming Ming, along with 10 Pig's Heads and 30 Octopus Legs.",
+      "before": "你从魔法密林南部森林的艾斯特尔那里拿到了特制酱油。现在应该把它连同 10 个猪头和 30 条章鱼脚一起交给明明女士。你收集齐了明明女士要求的所有材料，并交给了她。真期待村子祭典！",
+      "after": "你从魔法密林南部森林的艾斯特尔那里拿到了特制酱油。现在应该把它连同 10 个猪头和 30 条章鱼脚一起交给明明女士。",
+      "selection": {
+        "startAt": "",
+        "endBefore": "你收集齐了"
+      },
+      "oldSha256": "A25BD841D4EF3DF05E7D1292A69F192856C495D180A1A2208F5780B913424C02",
+      "newSha256": "231A5A71AF4B60F6AAA4A7215DAFDE07805FBD1C855A6FCD93F03139CF3BB865"
+    },
+    {
+      "category": "怀旧服-任务说明#10104",
+      "english": "Under the watchtower in Henesys Park, you see Pia, wearing a teddy bear costume. How cute! She tells you that she ran into a bully Blue Mushroom on her way to Ellinia, and now she wants you to show the rude mushroom who's boss! Collect 20 Green Mushroom Caps and 20 Blue Mushroom Caps as proof. You contemplate telling Pia she's asking to be teased, walking around the forest in a bear costume, but you decide against it.",
+      "before": "去射手村公园找皮亚。在射手村公园的瞭望台下，你看见穿着泰迪熊服装的皮亚。真可爱！她说去魔法密林的路上被一只蛮横的蓝蘑菇欺负了，现在想让你给那只没礼貌的蘑菇一点颜色看看！收集 20 个绿蘑菇盖和 20 个蓝蘑菇盖作为证明。你本想告诉皮亚，穿着熊装在森林里走动本来就容易被捉弄，但最后还是忍住了。你把 20 个绿蘑菇盖和 20 个蓝蘑菇盖交给了射手村公园的皮亚。她因为报复了蘑菇而非常高兴，并送给你一张帽子卷轴。只要在道具栏的消耗栏点击它，再拖到装备栏的头盔上就可以使用……哦，还要祈祷卷轴不要失败。",
+      "after": "在射手村公园的瞭望台下，你看见穿着泰迪熊服装的皮亚。真可爱！她说去魔法密林的路上被一只蛮横的蓝蘑菇欺负了，现在想让你给那只没礼貌的蘑菇一点颜色看看！收集 20 个绿蘑菇盖和 20 个蓝蘑菇盖作为证明。你本想告诉皮亚，穿着熊装在森林里走动本来就容易被捉弄，但最后还是忍住了。",
+      "selection": {
+        "startAt": "在射手村公园的瞭望台下",
+        "endBefore": "你把"
+      },
+      "oldSha256": "1A5F7C6FDF6B6562C1F91798FDF8779DE469AD26AB91A06011730152E3C2B163",
+      "newSha256": "493CEF57D65EC4C10295F2FC5CE160A1F1884F27C905238ED26EE9C99AF51AE7"
+    },
+    {
+      "category": "怀旧服-任务说明#10105",
+      "english": "I met Camila in Henesys, and given her timid disposition, she asked me to deliver Sparkling Glass Marble to Utah for her. I heard that I can get to Utah's Pig Farm through The Forest East of Henesys.",
+      "before": "听说射手村的卡米拉在担心什么事……我在射手村遇到了卡米拉。她性格有些胆小，拜托我把闪亮的玻璃珠送给犹他。听说可以通过射手村东边森林前往犹他的猪场……你把卡米拉的礼物交给了犹他。能把最珍贵的东西送给对方，他们一定是很亲密的朋友吧。希望我在旅途中也能遇到这样的朋友……",
+      "after": "我在射手村遇到了卡米拉。她性格有些胆小，拜托我把闪亮的玻璃珠送给犹他。听说可以通过射手村东边森林前往犹他的猪场……",
+      "selection": {
+        "startAt": "我在射手村遇到了",
+        "endBefore": "你把"
+      },
+      "oldSha256": "C5BE48CD8F9DB20FCFD83B109CA1F47355E0B016C4A1D6912423B3FEFB4AE864",
+      "newSha256": "AA69D38453EB41C417CC63A502526C025442A6A7CF7C9E598E0E022D6A803A6D"
+    },
+    {
+      "category": "怀旧服-任务说明#10106",
+      "english": "A girl named Maya in Henesys Townstreet has been ill for a long time. It looks like she can't live a normal life at all. I agreed to help her. Weird Medicine... What a strange name! She says she'll get a little better by taking that... I should go to Lith Harbor and see this guy Teo.",
+      "before": "听说射手村的玛雅病得很重……射手村街道上有个叫玛雅的女孩长期生病。看起来她根本无法过正常生活。我答应帮助她。奇怪的药……名字真怪！她说吃了那个药会稍微好一点……我应该去明珠港找那个叫特奥的人……玛雅让我去找明珠港的特奥，于是我照做了。他答应只要我帮他拿到闪耀石头，就把奇怪的药给我。唉，他连给生病女孩的药都不肯免费给。",
+      "after": "射手村街道上有个叫玛雅的女孩长期生病。看起来她根本无法过正常生活。我答应帮助她。奇怪的药……名字真怪！她说吃了那个药会稍微好一点……我应该去明珠港找那个叫特奥的人……",
+      "selection": {
+        "startAt": "射手村街道上有个",
+        "endBefore": "玛雅让我去找"
+      },
+      "oldSha256": "FA445E59B8EAA2ED5794728BE129217A7F3D422169F6E2723732A81E5B2B5BAD",
+      "newSha256": "58EFE39E570F5DAF966D73B28D98F0D880C29CE1B5F4B02C6816812DBE670881"
+    },
+    {
+      "category": "怀旧服-任务说明#10107",
+      "english": "Near the ship The Victoria in Lith Harbor, I met a heavily bearded crewmember named Teo. He does have some Weird Medicine, but says that in order to use it properly, he needs a Sparkling Rock. He promised that if I bring it to him, he’ll gladly hand it over. To obtain the Sparkling Rock, I should head to Perion Department Store and speak with Sophia, the daughter of the inn’s owner.",
+      "before": "在明珠港维多利亚号船附近，我遇到了一位满脸胡子的船员特奥。他确实有奇怪的药，但他说为了正确使用药，需要一块闪耀石头。他答应只要我带来闪耀石头，就会爽快把药交给我。要得到闪耀石头，应该去勇士部落杂货店找旅馆老板的女儿索菲亚。我见到了索菲亚。她说要制作闪耀石头，需要阿尔孔之血。",
+      "after": "在明珠港维多利亚号船附近，我遇到了一位满脸胡子的船员特奥。他确实有奇怪的药，但他说为了正确使用药，需要一块闪耀石头。他答应只要我带来闪耀石头，就会爽快把药交给我。要得到闪耀石头，应该去勇士部落杂货店找旅馆老板的女儿索菲亚。",
+      "selection": {
+        "startAt": "",
+        "endBefore": "我见到了索菲亚"
+      },
+      "oldSha256": "007DF6A4B3E36BCD29CEFE4C2639219DF541B22786B37A129DED04AD9B78EFEA",
+      "newSha256": "62F362D213BD3B2220F481B64F2D4CE7EE55D93C90BF8C10B6D32949ECBB1ED6"
+    },
+    {
+      "category": "怀旧服-任务说明#10108",
+      "english": "I met Sophia in Perion Department Store. She's working on her dream of becoming an alchemist. To make the sparkling rock, she says she needs 30 Squishy Liquids, 30 Leafs, 30 Octopus Legs and 1 Arcon's Blood. Everything looks reasonable enough... wait, Arcon's Blood?! Fortunately, Sophia knows where to get some. She says to have a chat with Manji, who's somewhere around Perion.",
+      "before": "我在勇士部落杂货店见到了索菲亚。她正努力实现成为炼金术士的梦想。为了制作闪耀石头，她需要 30 个粘稠液体、30 片叶子、30 条章鱼脚和 1 个阿尔孔之血。看起来都还合理……等等，阿尔孔之血？！幸好索菲亚知道哪里可以弄到。她说去找勇士部落附近的麦吉谈谈。索菲亚告诉我，麦吉有制作闪耀石头的关键材料阿尔孔之血。",
+      "after": "我在勇士部落杂货店见到了索菲亚。她正努力实现成为炼金术士的梦想。为了制作闪耀石头，她需要 30 个粘稠液体、30 片叶子、30 条章鱼脚和 1 个阿尔孔之血。看起来都还合理……等等，阿尔孔之血？！幸好索菲亚知道哪里可以弄到。她说去找勇士部落附近的麦吉谈谈。",
+      "selection": {
+        "startAt": "",
+        "endBefore": "索菲亚告诉我"
+      },
+      "oldSha256": "D2487E259D4BABD9B3A03743471035A00B312E260E8D6456E0AFFEA82CAF220C",
+      "newSha256": "A2104E4BF40EF1DD2DE3D594ADB9F7D59DF21FA78ADF3A0C1B0F91416AC5F65D"
+    },
+    {
+      "category": "怀旧服-任务说明#10109",
+      "english": "I found Manji in Perion, and as expected, he was unwilling to give me any Arcon's Blood for free. He told me to go to the underground tunnel in the middle of the island, defeat 75 Zombie Mushrooms, and gather up 40 Charm of the Undead first. I practically shivered at how coldly Manji treated me... I almost regret agreeing to help Maya, but no one else seems willing to.",
+      "before": "我在勇士部落找到了麦吉，果然他不愿意免费给我阿尔孔之血。他让我先去岛中央的地下通道，打倒 75 只僵尸蘑菇，并收集 40 个亡灵护符。麦吉冷淡的态度让我几乎打了个寒战……我差点后悔答应帮助玛雅，但似乎也没有别人愿意帮她……麦吉要求我打倒僵尸蘑菇并收集亡灵护符，作为交换给我阿尔孔之血。",
+      "after": "我在勇士部落找到了麦吉，果然他不愿意免费给我阿尔孔之血。他让我先去岛中央的地下通道，打倒 75 只僵尸蘑菇，并收集 40 个亡灵护符。麦吉冷淡的态度让我几乎打了个寒战……我差点后悔答应帮助玛雅，但似乎也没有别人愿意帮她……",
+      "selection": {
+        "startAt": "",
+        "endBefore": "麦吉要求我"
+      },
+      "oldSha256": "972122E566D8EA480B089DCF090E8B0D0FA00DE0DFA2B8A34D875E78FD0E0050",
+      "newSha256": "B6EA8DF0E6A722F3D221217159FD9B3C7830F76F0EF42917B1831D90AEA113E6"
+    },
+    {
+      "category": "怀旧服-任务说明#10110",
+      "english": "I gathered up 40 Charm of the Undead from the Ant Tunnel and gave them to Manji of Perion. Still cocky, still arrogant, but following through on his promise, he handed over Arcon's Blood to me. Maybe he isn't so horrible after all. Anyway, now I need to gather up 30 Squishy Liquids, 30 Leafs, 30 Octopus Legs, and the Arcon's Blood for Sophia.",
+      "before": "我在蚂蚁洞收集了 40 个亡灵护符，并交给勇士部落的麦吉。他还是一副自大傲慢的样子，但总算遵守承诺，把阿尔孔之血交给了我。也许他并没有那么糟糕。总之，现在我需要收集 30 个粘稠液体、30 片叶子、30 条章鱼脚，再加上阿尔孔之血交给索菲亚。你把亡灵护符带给麦吉，终于得到了阿尔孔之血。应该赶快回去找索菲亚……",
+      "after": "我在蚂蚁洞收集了 40 个亡灵护符，并交给勇士部落的麦吉。他还是一副自大傲慢的样子，但总算遵守承诺，把阿尔孔之血交给了我。也许他并没有那么糟糕。总之，现在我需要收集 30 个粘稠液体、30 片叶子、30 条章鱼脚，再加上阿尔孔之血交给索菲亚。",
+      "selection": {
+        "startAt": "",
+        "endBefore": "你把"
+      },
+      "oldSha256": "628CB4B0530F8D41F803C2A8A3029A63A14C651AA27B1444F1B0E3424E21F2A8",
+      "newSha256": "654EAC8C6EFBAC908078D79E0D0B750EF07AAE583E32C8568D39CADF92D83180"
+    },
+    {
+      "category": "怀旧服-任务说明#10111",
+      "english": "Sophia looked genuinely surprised when I handed her all the materials needed for the Sparkling Rock. Well, it wasn't easy! Anyway, she hands over a Sparkling Rock made of the materials I gathered. Hmm, the Sparkling Rock...gives off a strange light and then... starts glittering, and... whoa, I understand why people want this! It's mesmerizing! Well, now I just have to trade it with Teo in Lith Harbor.",
+      "before": "当我把制作闪耀石头所需的所有材料交给索菲亚时，她真的很惊讶。毕竟这可不容易！总之，她把用我收集的材料制成的闪耀石头交给了我。嗯，闪耀石头……散发出奇妙的光芒，然后开始闪闪发亮……哇，我明白为什么大家想要它了！真让人着迷！现在只要拿它去和明珠港的特奥交换就行了。索菲亚看到阿尔孔之血时吓了一跳，并为我做出了闪耀石头。那么，现在该回明珠港找特奥了吧？",
+      "after": "当我把制作闪耀石头所需的所有材料交给索菲亚时，她真的很惊讶。毕竟这可不容易！总之，她把用我收集的材料制成的闪耀石头交给了我。嗯，闪耀石头……散发出奇妙的光芒，然后开始闪闪发亮……哇，我明白为什么大家想要它了！真让人着迷！现在只要拿它去和明珠港的特奥交换就行了。",
+      "selection": {
+        "startAt": "",
+        "endBefore": "索菲亚看到"
+      },
+      "oldSha256": "6404A60C9820E18A13524D4D9AF2109843121EBA0A35C44985FCB26DE7C2D13C",
+      "newSha256": "4AAABF98028C2FBDAB98E4C9B3BCEAB6D21959BA07BD4B0C42D7E9AFE3690E8F"
+    },
+    {
+      "category": "怀旧服-任务说明#10112",
+      "english": "I gave the Sparkling Rock to Teo in Lith Harbor and received the Weird Medicine in return. Now, all I need to do is get this to Maya, and I'm done, but the more I think about it, the more I regret saying yes. Anyway, this medicine looks quite tasty. If I ever find myself thirsty and without any water, maybe I should just drink it myself. Hahaha.",
+      "before": "我把闪耀石头交给明珠港的特奥，换来了奇怪的药。现在只要把它交给玛雅就完成了，但越想越后悔自己答应了这件事。话说这药看起来还挺好喝的。如果哪天我口渴又没有水，也许可以自己喝掉。哈哈哈……我回到射手村，把奇怪的药交给了玛雅。希望她喝下后能好起来。作为谢礼，玛雅给了我 5000 金币和一顶褐色竹帽。这顶帽子……看起来在烈日下走路时能派上用场，但实在又旧又破……戴上去还会发出奇怪的声音，感觉里面有虫子在爬……我真的没问题吧……",
+      "after": "我把闪耀石头交给明珠港的特奥，换来了奇怪的药。现在只要把它交给玛雅就完成了，但越想越后悔自己答应了这件事。话说这药看起来还挺好喝的。如果哪天我口渴又没有水，也许可以自己喝掉。哈哈哈……",
+      "selection": {
+        "startAt": "",
+        "endBefore": "我回到射手村"
+      },
+      "oldSha256": "8276D4E5330009AE55DDE99760B795773803FFD7C852D95643590E8B6832EFE4",
+      "newSha256": "B68205DC5A9FA86D0C4E9D4F47DD9A28F9BB98869F0BC372C3BDA350ACA29E3E"
+    },
+    {
+      "category": "怀旧服-任务说明#10113",
+      "english": "At the dungeon entrance, I met Luke, the guard. He said he wanted to make a nourishing meal for his mother and asked me to hunt 20 Jr. Neckis and 20 Stirges, then bring back 10 Jr. Necki Skins, 10 Stirge Wings, and 1 Salad. He said he’s too busy with his guard duties... but honestly, he just looks like he’s about to fall asleep...?!",
+      "before": "去射手村迷宫入口见警卫鲁克吧。在迷宫入口，我遇到了守卫鲁克。他说想给母亲做一顿滋补餐，拜托我狩猎 20 只小青蛇和 20 只蝙蝠魔，并带回 10 张小青蛇皮、10 个蝙蝠魔翅膀和 1 份沙拉。他说自己忙着站岗……但老实说，他看起来都快睡着了……！你把鲁克要求的材料带给了守在迷宫入口的他。既然他要做“蛇饮”……我自己也想尝尝！作为回报，鲁克给了我一颗在附近发现的精炼宝石。精炼宝石又不会从天上掉下来……是不是有旅人弄丢的？总之，等“蛇饮”做好后我应该再来看看……",
+      "after": "在迷宫入口，我遇到了守卫鲁克。他说想给母亲做一顿滋补餐，拜托我狩猎 20 只小青蛇和 20 只蝙蝠魔，并带回 10 张小青蛇皮、10 个蝙蝠魔翅膀和 1 份沙拉。他说自己忙着站岗……但老实说，他看起来都快睡着了……！",
+      "selection": {
+        "startAt": "在迷宫入口",
+        "endBefore": "你把"
+      },
+      "oldSha256": "4225D0D737306828036B1A2CDF66ABB3FE691C804CF48E43547DAEB32F932506",
+      "newSha256": "319C0F2ECA4145AA955540C5EB36D17F9574E5AEFBB546CFB5FDD20276B83536"
+    },
+    {
+      "category": "怀旧服-任务说明#10114",
+      "english": "I met Luke at the entrance of the dungeon again. The Snake Drink from back then is gone now because he and his mom drank it all... Anyway, Luke said he’s done with the boring life of a security guard and has decided to go on an adventure. To make a glove fit for the journey, Silas Irons of Perion asked for 1 Black Feather, 10 Orihalcon Ingots, 30 Drake Skulls, 20 Dragon Skins, and 20 Screws! I’m guessing he wants me to gather them for him... Oh, and apparently, the fairies of Ellinia might know something about Black Feather~",
+      "before": "听说警卫鲁克下定了某个决心……我再次在迷宫入口见到了鲁克。之前的蛇饮已经没了，因为他和妈妈全喝完了……总之，鲁克说他厌倦了无聊的守卫生活，决定踏上冒险。为了制作适合旅途的手套，勇士部落的西拉斯·艾恩斯需要 1 根黑羽毛、10 个锂矿锭、30 个飞龙头骨、20 张龙皮和 20 个螺丝！我猜他是想让我帮忙收集……哦，听说魔法密林的妖精也许知道黑羽毛的事。我把鲁克制作手套所需的材料带给他，并收到了他家传的宝物头盔青铜十字军头盔作为回报。感觉我好像有点吃亏……不过既然是代代相传的传家宝，也不好抱怨……",
+      "after": "我再次在迷宫入口见到了鲁克。之前的蛇饮已经没了，因为他和妈妈全喝完了……总之，鲁克说他厌倦了无聊的守卫生活，决定踏上冒险。为了制作适合旅途的手套，勇士部落的西拉斯·艾恩斯需要 1 根黑羽毛、10 个锂矿锭、30 个飞龙头骨、20 张龙皮和 20 个螺丝！我猜他是想让我帮忙收集……哦，听说魔法密林的妖精也许知道黑羽毛的事。",
+      "selection": {
+        "startAt": "我再次在迷宫入口",
+        "endBefore": "我把"
+      },
+      "oldSha256": "3F8F9583F5207734B420397C22B0C3D46CF0318ED8CF9D2148BD447399489D39",
+      "newSha256": "F3BC8446FBAED7D60CCD787703BC12C11EB53AF46D8F62D561AED5FCB1833E30"
+    },
+    {
+      "category": "怀旧服-任务说明#10115",
+      "english": "I got a request from Maya of Henesys, who has been collecting various items. She wanted 20 each of Orange Mushroom Cap, Green Mushroom Cap, Blue Mushroom Cap, and Horny Mushroom Cap. Maybe... well it looks like I can get these from the monsters around the prairie.",
+      "before": "去射手村找玛雅。我接到了射手村玛雅的请求，她一直在收集各种东西。她想要绿蘑菇盖、刺蘑菇盖、蓝蘑菇盖和绿蘑菇盖各 20 个。也许……看起来可以从草原附近的怪物身上获得。你收集齐了玛雅要求的所有东西，但什么时候才能拿到报酬？什么？还要做多少次？",
+      "after": "我接到了射手村玛亚的请求，她喜欢收集各种物品。她想要橙蘑菇盖、绿蘑菇盖、蓝蘑菇盖和刺蘑菇盖各20个。看来可以从草原附近的怪物身上收集到这些东西。",
+      "selection": {
+        "startAt": "我接到了",
+        "endBefore": "你收集齐了"
+      },
+      "oldSha256": "F574FF433EBA3286B627211126E781C411DDDF42E12B2AE2FD3624463831665A",
+      "newSha256": "84FCF496241D9950566F836BEF65E58196078741F5F991315C917AC4BFB3C46E"
+    },
+    {
+      "category": "怀旧服-任务说明#10116",
+      "english": "This time Maya wanted 20 each of Pig's Ribbon, Bubbling's Huge Bubble, Fire Boar's Tooth, and Tablecloth. Apparently, I can get those by hunting monsters around the plateau, subway station, and prairies... well, that's easy!",
+      "before": "这次玛雅想要猪的丝带、大幽灵泡泡、火野猪的牙和桌布各 20 个。据说可以通过狩猎高原、地铁站和草原一带的怪物获得……嗯，这很简单！你收集齐了玛雅要求的所有东西。拜托别告诉我她想免费拿走这些……",
+      "after": "这次玛雅想要猪的丝带、蓝水灵大水珠、火野猪的牙和桌布各 20 个。据说可以通过狩猎高原、地铁站和草原一带的怪物获得……嗯，这很简单！",
+      "selection": {
+        "startAt": "",
+        "endBefore": "你收集齐了"
+      },
+      "oldSha256": "09C6B7DB71CEB624C6965D81EC78E9BF3329BE72ADBC37067469C6FB4CE550E1",
+      "newSha256": "25F5CADC80D977B671115D6012D2BA07CDFEF0A90C9C7F6367CA61FFA5C9B78D"
+    },
+    {
+      "category": "怀旧服-任务说明#10117",
+      "english": "Maya requested 30 each of Iron Hog's Metal Hoof, Lupin Doll, Cold Eye Tail, and Tortie Shell. Apparently, I can get those through monsters in the highland, beach, and prairie. This is getting harder now.",
+      "before": "玛雅要求铁甲猪的金属蹄、猴子娃娃、冰独眼兽尾巴和龟壳各 30 个。据说可以从高地、海滩和草原的怪物身上获得。现在开始变难了……你收集齐了玛雅要求的所有东西。还是没有报酬？到底还要做多少次？",
+      "after": "玛雅要求铁甲猪的金属蹄、猴子娃娃、冰独眼兽尾巴和龟壳各 30 个。据说可以从高地、海滩和草原的怪物身上获得。现在开始变难了……",
+      "selection": {
+        "startAt": "",
+        "endBefore": "你收集齐了"
+      },
+      "oldSha256": "038A68764ADA53491DB4B07F308E408FE7566574BEFAE3C9959AF65789BA35B2",
+      "newSha256": "90CAF6050A2C9F847DD52DB5FEE0DA3467953E61265C0621FA5FFA69528C2909"
+    },
+    {
+      "category": "怀旧服-任务说明#10118",
+      "english": "Maya asked me to gather some items: 1 Diamond, and 50 each of Stone Golem Rubble and Dark Stone Golem Rubble. Apparently, I can get them by defeating monsters at the Golem’s Temple on the way from Henesys to the Dungeon... but this is way too tough!",
+      "before": "去射手村找玛雅。玛雅让我收集一些物品：1 个钻石，以及石头人碎片和黑石头人碎片各 50 个。据说可以在从射手村前往迷宫路上的石头人寺院击败怪物获得……但这也太难了！你终于收集齐玛雅最后一次要求的所有物品……真的是最后一次吗？作为谢礼，她给了你一件她奶奶为这个村子的长老赫丽娜做的披风。虽然年代久远，但看起来仍然像新的一样！",
+      "after": "玛雅让我收集一些物品：1 个钻石，以及石头人碎片和黑石头人碎片各 50 个。据说可以在从射手村前往迷宫路上的石头人寺院击败怪物获得……但这也太难了！",
+      "selection": {
+        "startAt": "玛雅让我收集",
+        "endBefore": "你终于收集齐"
+      },
+      "oldSha256": "31190102E034281C475B6FC155844341EE50BB61DC5668DA43A3F015AA19FC1A",
+      "newSha256": "17C6490C1A84D9C7B74C97A98307ECC143250E7E14BDA3A9808E818F71934F77"
+    },
+    {
+      "category": "怀旧服-任务说明#10119",
+      "english": "I ran into that same teddy-bear-costume-wearing Pia at the Henesys Park. I did her a favor and took care of the Blue Mushrooms before. This time, she wants to make a claw as a present for a friend in Ellinia who wants to go out on a journey. The claw she wants to make requires 15 Silver Ingots, 30 Dragon Skins, and 30 Screws... If I get her all these... am I going to be richly rewarded?",
+      "before": "去射手村找皮亚吧。我在射手村公园再次遇到了那个穿泰迪熊服装的皮亚。之前我帮她教训过蓝蘑菇。这次，她想为魔法密林一位准备踏上旅途的朋友制作拳套。制作她想要的拳套需要 15 个银锭、30 张龙皮和 30 个螺丝……如果我帮她收集这些……会不会有丰厚奖励？皮亚拜托我给她那位准备出发冒险的朋友准备礼物，我也帮她带回来了。但看来光这样还不够。",
+      "after": "我在射手村公园再次遇到了那个穿泰迪熊服装的皮亚。之前我帮她教训过蓝蘑菇。这次，她想为魔法密林一位准备踏上旅途的朋友制作拳套。制作她想要的拳套需要 15 个银锭、30 张龙皮和 30 个螺丝……如果我帮她收集这些……会不会有丰厚奖励？",
+      "selection": {
+        "startAt": "我在射手村公园再次",
+        "endBefore": "皮亚拜托我"
+      },
+      "oldSha256": "3E8236B2E6FA35827131543086E5F27244A6FD42958B801A048AA43BD52E0117",
+      "newSha256": "ACB1CD39BDC073FE9BDD3185F0272D25E0CADB8278D3E01E50EDFA395C714A4F"
+    },
+    {
+      "category": "怀旧服-任务说明#10120",
+      "english": "Pia also asked me to retrieve the Red Cape that Rina in Henesys borrowed for her friend. I’ll probably get something nice if I bring it back to her.",
+      "before": "去射手村找皮亚吧。皮亚还拜托我把丽娜借给她朋友的红披风取回来。如果我拿回来，她大概会给我不错的东西。我去找丽娜要皮亚的披风，但丽娜说，在皮亚归还从她那里借走的东西之前，她会一直保管这件披风。她说只要拿回皮亚借走的东西，就会把披风还给我。",
+      "after": "皮亚还拜托我把丽娜借给她朋友的红披风取回来。如果我拿回来，她大概会给我不错的东西。",
+      "selection": {
+        "startAt": "皮亚还拜托我",
+        "endBefore": "我去找丽娜"
+      },
+      "oldSha256": "8E23F0088381566DC674B03A1E6BB9E9AB22E50797F9B6DF5D9738A3BC5B6E2B",
+      "newSha256": "10B6531441D1E63FD2B5D566F54609253F564EB3F9FE61A571FF454CF6F9E303"
+    },
+    {
+      "category": "怀旧服-任务说明#10121",
+      "english": "I went to see Rina in Henesys, and instead, she tells me she took that red cape because Pia didn't return the items she borrowed from her. She said that she would return the cape if she gets her items back... the items are 1 Black Crystal, 1 Ancient Scroll, and 30 Medicine With Weird Vibes.",
+      "before": "看来丽娜不归还皮亚借走的东西也有自己的理由。我去射手村找丽娜，她反而告诉我，是因为皮亚没有归还从她那里借走的物品，她才拿走了红披风。她说如果把那些物品还给她，就会归还披风……物品是 1 个黑水晶、1 张古代卷轴和 30 个奇怪感觉的药。我替皮亚偿还了欠丽娜的东西，并拿回了红披风。现在只要把它带回给皮亚就行了吧？",
+      "after": "我去射手村找丽娜，她反而告诉我，是因为皮亚没有归还从她那里借走的物品，她才拿走了红披风。她说如果把那些物品还给她，就会归还披风……物品是 1 个黑水晶、1 张古代卷轴和 30 个奇怪感觉的药。",
+      "selection": {
+        "startAt": "我去射手村找丽娜",
+        "endBefore": "我替皮亚"
+      },
+      "oldSha256": "302714398B07402C178C91B2C9C50E2A4E779BBBED22B40D377A4AC723F1C97E",
+      "newSha256": "85BA73DB519BBE5FD6CB37F21FD15FE6821D73B20D15E9991EDF11C351D91E0D"
+    },
+    {
+      "category": "怀旧服-任务说明#10122",
+      "english": "I got my hands on the Red Cape that Pia asked for. Now I just need to bring it back to her.",
+      "before": "看来丽娜准备归还借走的红披风了。我拿到了皮亚要求的红披风。现在只要把它带回给她就可以了。我把制作拳套所需的材料交给射手村公园的皮亚，并收到了卷轴。不知道皮亚的朋友现在是否已经踏上旅途。谁知道呢——也许我在旅途中还会遇见对方！",
+      "after": "我拿到了皮亚要求的红披风。现在只要把它带回给她就可以了。",
+      "selection": {
+        "startAt": "我拿到了",
+        "endBefore": "我把制作"
+      },
+      "oldSha256": "B7C11F2FA350ACA3C3DDFEFA8ABD6D6C2113B0502F977EA8152332DEB4134F63",
+      "newSha256": "5CBEFF2518DD33942314B3927C1CC001B4219C4E2FEA50E1B1F65B532FA6B4F1"
+    },
+    {
+      "category": "怀旧服-任务说明#10123",
+      "english": "I got to meet Bruce, who has been studying monsters and animals in Henesys. His bright smile and the easygoing demeanor belies the painful fact that his daughter has been missing for some time, and that he's been studying the mushroom monsters for the sake of finding clues of his daughter's whereabouts. He asks me if I can help him out, and I just can't say no to a worthy cause like this.",
+      "before": "我应该去射手村找布鲁斯……我见到了在射手村研究怪物和动物的布鲁斯。他灿烂的笑容和随和的态度背后，隐藏着女儿失踪已久的痛苦事实。他研究蘑菇怪物，也是为了寻找女儿下落的线索。他问我能不能帮忙。面对这样值得帮助的事，我实在无法拒绝……你帮布鲁斯收集到了研究所需的材料。这些能帮助他找到女儿吗？",
+      "after": "我见到了在射手村研究怪物和动物的布鲁斯。他灿烂的笑容和随和的态度背后，隐藏着女儿失踪已久的痛苦事实。他研究蘑菇怪物，也是为了寻找女儿下落的线索。他问我能不能帮忙。面对这样值得帮助的事，我实在无法拒绝……",
+      "selection": {
+        "startAt": "我见到了在射手村",
+        "endBefore": "你帮布鲁斯"
+      },
+      "oldSha256": "98154F371CDC4E18F52B6DD4EAEEEE1E19B2333971DBB0CF67F8C7D0AB4DF921",
+      "newSha256": "883840B4F4A624BE86F3A9F0861BFE4E7E42B89B3097EB6F408404CE1C90CF3C"
+    },
+    {
+      "category": "怀旧服-任务说明#10124",
+      "english": "I met up with Bruce in Henesys, and he had great news: He finally found his daughter!!! There was one problem, however... She seems to be suffering from amnesia. Bruce gave me a toy that his daughter played with while growing up, and asked me to give it to her.",
+      "before": "不知道射手村的布鲁斯最近怎么样……我去见了布鲁斯，他带来了好消息：他终于找到女儿了！！！不过还有一个问题……她似乎患上了失忆症。布鲁斯给了我一个女儿小时候玩过的玩具，让我交给她。我找到了阿燕，并把阿燕的玩具剑交给了她。",
+      "after": "我去见了布鲁斯，他带来了好消息：他终于找到女儿了！！！不过还有一个问题……她似乎患上了失忆症。布鲁斯给了我一个女儿小时候玩过的玩具，让我交给她。",
+      "selection": {
+        "startAt": "我去见了布鲁斯",
+        "endBefore": "我找到了阿燕"
+      },
+      "oldSha256": "E38B67EC551E04FAE08146D9658B607016E1C9A0751BA097DA93C96304F4445D",
+      "newSha256": "DBA5FED1F4FCA24B240BCFBD00E3B2442AEE626EC57FB0521FCAB6D4AAD8B56D"
+    },
+    {
+      "category": "怀旧服-任务说明#10125",
+      "english": "Amazingly, Ayan recovered from her amnesia with the help of Ayan's Toy Sword. That's just amazing! The only thing left now is for Ayan and Bruce to finally meet again. But first, I have to get this letter from Ayan to Bruce.",
+      "before": "阿燕恢复了过去的记忆，似乎急着把这个消息告诉父亲。令人惊讶的是，阿燕借助阿燕的玩具剑恢复了记忆。真是太神奇了！现在只剩下让阿燕和布鲁斯重逢了。但首先，我得把阿燕的信交给布鲁斯。阿燕能恢复记忆，我真的很高兴；布鲁斯终于见到女儿，我更高兴！真是令人感动的一刻……",
+      "after": "令人惊讶的是，阿燕借助阿燕的玩具剑恢复了记忆。真是太神奇了！现在只剩下让阿燕和布鲁斯重逢了。但首先，我得把阿燕的信交给布鲁斯。",
+      "selection": {
+        "startAt": "令人惊讶的是",
+        "endBefore": "阿燕能恢复"
+      },
+      "oldSha256": "E24B357074B3FBF3D337174FC16D8D9692472EC96489F1980856638AB3C4E4CD",
+      "newSha256": "485E4FB6A5DB37873B3D3A14E6C1B88F93E1D5A40CF92F73A02F6BE6680EFC9F"
+    },
+    {
+      "category": "怀旧服-任务说明#10200",
+      "english": "Arwen the Fairy from Ellinia says she lost Arwen's Glass Shoes a couple of days ago, on her way to Perion. A monster covered in flame stole it! Fairies obsess over glimmering, shiny objects so she obviously wants it back... Time to hunt some monsters near Perion.",
+      "before": "魔法密林的妖精艾温丢了东西……妖精艾温说几天前她在前往勇士部落的路上弄丢了自己的玻璃鞋。一个浑身冒火的怪物偷走了它！妖精们很执着于闪亮发光的东西，所以她当然想拿回来……该去勇士部落附近狩猎怪物了。你把艾温的玻璃鞋还给了魔法密林的妖精艾温。你很幸运，从一只讨厌的火野猪身上找到了它。作为谢礼，她给了你一件妖精道具。它像星星一样美丽闪耀。哇，也许可以用它做出特别的东西。",
+      "after": "魔法密林的妖精艾温说，几天前她在前往勇士部落的路上丢了艾温的玻璃鞋。一个浑身冒火的怪物偷走了它！妖精们很执着于闪亮的东西，她当然想把鞋找回来……该去勇士部落附近狩猎怪物了。",
+      "selection": {
+        "startAt": "妖精艾温说",
+        "endBefore": "你把"
+      },
+      "oldSha256": "808CFE42868A42B645FE685CB13AA538CC46BE08A087DB7BB7327014EFAC8466",
+      "newSha256": "8D4C8288D8C79C254C9E3A3017275817507A43795B2918A0CCBAB853DE516790"
+    },
+    {
+      "category": "怀旧服-任务说明#10201",
+      "english": "I ran into Rowen the Fairy again, who gave me Fresh Milk for Ronnie, Mr. Wetbottom's son. Back then, she seemed to be keeping her guard up against humans, but now, it looks like she accepts me as Ronnie's friend... Rowen the Fairy is assistant to the head magician of Ellinia, Grendel the Really Old, and she tells me that he is concerned about the Cursed Dolls that he made with his black magic a long, long time ago. The dolls had been sealed up for a while, until a bunch of Lupins took them and ran away. The Lupins have since become zombies and have been destroying the forest. To return the forest to how it was before, someone needs to take down the Zombie Lupins and take the Cursed Dolls away from them... So, I readily accepted the request to collect 50 cursed dolls, but I fear those crazy monkeys may be too much to handle.",
+      "before": "我觉得魔法密林的妖精罗雯有事要拜托我……我再次遇到了妖精罗雯，她之前给我新鲜牛奶让我带给沃特巴顿先生的儿子罗尼。那时她似乎还对人类保持戒心，但现在看来，她已经把我当作罗尼的朋友了……罗雯是魔法密林大魔法师汉斯的助手。她告诉我，汉斯很担心很久以前用黑魔法制作的诅咒娃娃。那些娃娃曾被封印，但后来一群猴子把它们偷走并逃跑了。之后这些猴子变成了僵尸，在森林里到处破坏。为了让森林恢复原样，需要有人打倒僵尸猴，并从它们身上取回诅咒娃娃……于是我答应收集 50 个诅咒娃娃，但有点担心这些疯狂猴子不好对付。你在魔法密林附近的森林里消灭了许多僵尸猴，为罗雯收集齐了 50 个诅咒娃娃。作为回报，她给了你 7 个矿石。希望森林能恢复正常……",
+      "after": "我再次遇到了妖精罗雯，她之前给我新鲜牛奶让我带给沃特巴顿先生的儿子罗尼。那时她似乎还对人类保持戒心，但现在看来，她已经把我当作罗尼的朋友了……罗雯是魔法密林大魔法师汉斯的助手。她告诉我，汉斯很担心很久以前用黑魔法制作的诅咒娃娃。那些娃娃曾被封印，但后来一群猴子把它们偷走并逃跑了。之后这些猴子变成了僵尸，在森林里到处破坏。为了让森林恢复原样，需要有人打倒僵尸猴，并从它们身上取回诅咒娃娃……于是我答应收集 50 个诅咒娃娃，但有点担心这些疯狂猴子不好对付。",
+      "selection": {
+        "startAt": "我再次遇到了妖精罗雯",
+        "endBefore": "你在魔法密林"
+      },
+      "oldSha256": "33641325FC538AF4D58E204DE859565DA4093968AB03121662A567C60606F561",
+      "newSha256": "3B5F7AF59199CCF6F36B803D7C48970A07D344CF7B06393D1D4A2BDED29F3561"
+    },
+    {
+      "category": "怀旧服-任务说明#10202",
+      "english": "70? Well, that shouldn't be too hard.",
+      "before": "70 个？嗯，应该不会太难……你在魔法密林附近的森林里消灭了许多僵尸猴，为罗雯收集齐了 70 个诅咒娃娃。作为回报，她给了你 10 个矿石。希望森林能恢复正常……",
+      "after": "70 个？嗯，应该不会太难……",
+      "selection": {
+        "startAt": "",
+        "endBefore": "你在魔法密林"
+      },
+      "oldSha256": "3BCDC1A30924F55D8607EA19D27CD9B8F8C1A39C362A2606E47F97FBC644090C",
+      "newSha256": "5E07AA9FDCAB8CFFA71ED9DD4D1FE4CCFB95805FDB2C18A6E54E8112B1CC27B4"
+    },
+    {
+      "category": "怀旧服-任务说明#10203",
+      "english": "Rowen the Fairy asked for my help again, this time to hunt 100 Zombie Lupins and collect 100 Cursed Dolls. It's getting quite serious now.",
+      "before": "妖精罗雯再次请求我帮忙，这次要狩猎 100 只僵尸猴并收集 100 个诅咒娃娃。事情变得相当严重了……你在魔法密林附近的森林里消灭了许多僵尸猴，为罗雯收集齐了 100 个诅咒娃娃。作为回报，她给了你 5 个非常稀有的矿石。希望森林能恢复正常……",
+      "after": "妖精罗雯再次请求我帮忙，这次要狩猎 100 只僵尸猴并收集 100 个诅咒娃娃。事情变得相当严重了……",
+      "selection": {
+        "startAt": "",
+        "endBefore": "你在魔法密林"
+      },
+      "oldSha256": "CA62B4905C259C2CF2397083937F1FB2BF857E60658C88404200AEC2D3780663",
+      "newSha256": "9AC8398023519E655EE34E440418CA072CC0028EDAAA42A0A11467C8AE3F2EE4"
+    },
+    {
+      "category": "怀旧服-任务说明#10204",
+      "english": "Rowen the Fairy asked for my help again, this time to hunt 150 Zombie Lupins and collect 150 Cursed Dolls. Now that's a lot of Cursed Dolls!",
+      "before": "妖精罗雯再次请求我帮忙，这次要狩猎 150 只僵尸猴并收集 150 个诅咒娃娃。这可真是很多诅咒娃娃！你在魔法密林附近的森林里消灭了许多僵尸猴，为罗雯收集齐了 150 个诅咒娃娃。作为回报，她给了你一张手套卷轴。希望森林能恢复正常……",
+      "after": "妖精罗雯再次请求我帮忙，这次要狩猎 150 只僵尸猴并收集 150 个诅咒娃娃。这可真是很多诅咒娃娃！",
+      "selection": {
+        "startAt": "",
+        "endBefore": "你在魔法密林"
+      },
+      "oldSha256": "37DA5672DC9D1882E90671AF137F01B6CE5FA8B86910A669277E82D9A0A3F025",
+      "newSha256": "3F12809AC728771063B5184E737881A30FAE83E971FE30FAA852C43956CA6F45"
+    },
+    {
+      "category": "怀旧服-任务说明#10205",
+      "english": "Rowen the Fairy asked for my help one last time, this time to hunt 200 Zombie Lupins and collect 200 Cursed Dolls. I wonder why she needs so many... Is she trying to sell them or something?",
+      "before": "妖精罗雯最后一次请求我帮忙，这次要狩猎 200 只僵尸猴并收集 200 个诅咒娃娃。她要这么多到底做什么……难道是想拿去卖？你在魔法密林附近的森林里消灭了许多僵尸猴，为妖精罗雯收集齐了 200 个诅咒娃娃。作为回报，她给了你一顶不错的帽子。我已经帮她收集了这么多娃娃，但僵尸猴似乎完全没有减少……到底是怎么回事？不过，妖精们似乎已经没那么敌视人类了……至少这是件好事。",
+      "after": "妖精罗雯最后一次请求我帮忙，这次要狩猎 200 只僵尸猴并收集 200 个诅咒娃娃。她要这么多到底做什么……难道是想拿去卖？",
+      "selection": {
+        "startAt": "",
+        "endBefore": "你在魔法密林"
+      },
+      "oldSha256": "C7A268E347A6F0E23D7D492D4A88E245ABA6EE23C9575681BA640A8C0E66C1DC",
+      "newSha256": "6687667B89BFB7330DE494086B5D6ABA594103E9921F7ACD4387854DEA2BFC9D"
+    },
+    {
+      "category": "怀旧服-任务说明#10206",
+      "english": "Ronnie from the forest of Ellinia asked me a favor of gathering up materials to build a house for the newborn fairies that are to come down the road. By hunting Horny Mushrooms and Curse Eyes, I’ll need to collect 30 Horny Mushroom Caps and 30 Curse Eye Tails... I guess I can get most of these from the monsters scattered around Ellinia.",
+      "before": "去魔法密林的树林里见罗尼吧。魔法密林森林里的罗尼拜托我收集材料，用来给将来出生的小妖精建房子。通过狩猎刺蘑菇和风独眼兽，我需要收集 30 个刺蘑菇盖和 30 条风独眼兽尾巴……大概可以从魔法密林一带的怪物身上获得。你收集齐了罗尼要求的所有物品，但什么时候才能拿到报酬？什么？还要做多少次？",
+      "after": "魔法密林森林里的罗尼拜托我收集材料，用来给将来出生的小妖精建房子。通过狩猎刺蘑菇和风独眼兽，我需要收集 30 个刺蘑菇盖和 30 条风独眼兽尾巴……大概可以从魔法密林一带的怪物身上获得。",
+      "selection": {
+        "startAt": "魔法密林森林里的罗尼",
+        "endBefore": "你收集齐了"
+      },
+      "oldSha256": "6C60C189E14FAE1B9F9795BEF3A82F08FCDA1862F8E019FA0575EE8AEA872FF3",
+      "newSha256": "FFEA807C2FF310F3D690CF16D12F9358FA13C5761D820F51ED242157D1018A5F"
+    },
+    {
+      "category": "怀旧服-任务说明#10207",
+      "english": "Ronnie has now asked me to collect 30 Bubbling's Huge Bubbles and Tablecloths by taking down Bubblings and Jr. Wraiths. I should be able to get them from the monsters living in the Kerning City subway. This should be no problem~",
+      "before": "在 Unknown Map(105010000) 见罗尼。罗尼现在让我去打倒大幽灵和小幽灵，收集 30 个大幽灵泡泡和 30 块桌布。应该可以从废弃都市地铁里的怪物身上获得。这应该没问题～你为罗尼收集齐了所有东西。拜托别告诉我他想免费拿走这些……！",
+      "after": "罗尼现在让我去打倒蓝水灵和小幽灵，收集 30 个蓝水灵大水珠和 30 块桌布。应该可以从废弃都市地铁里的怪物身上获得。这应该没问题～",
+      "selection": {
+        "startAt": "罗尼现在让我",
+        "endBefore": "你为罗尼"
+      },
+      "oldSha256": "F3C626559A279C2762B05C6DFC11696E99E4B9A4BF394178D171AE15BBAD01C7",
+      "newSha256": "F3863B0927DF6B411A264BADF9FFC2F3EF1136297C48C202A78C65B3D3816066"
+    },
+    {
+      "category": "怀旧服-任务说明#10208",
+      "english": "Ronnie has now asked me to hunt Fire Boars and Copper Drakes and collect 30 each of Fire Boar's Tooths and Drake Skulls. I should be able to get them from the monsters around Perion. Things are starting to get a bit tricky…",
+      "before": "在 Unknown Map(105010000) 见罗尼。罗尼现在让我狩猎火野猪和青龙，收集火野猪牙和飞龙头骨各 30 个。应该可以从勇士部落周围的怪物身上获得。事情开始变得有点麻烦了……你为罗尼收集齐了所有东西。还是没有报酬？到底还要做多少次？",
+      "after": "罗尼现在让我狩猎火野猪和青龙，收集火野猪牙和飞龙头骨各 30 个。应该可以从勇士部落周围的怪物身上获得。事情开始变得有点麻烦了……",
+      "selection": {
+        "startAt": "罗尼现在让我",
+        "endBefore": "你为罗尼"
+      },
+      "oldSha256": "D2358B4AC49611FDE6F68A27FEA88F49202DC685FE22919B2BCEB107BA9636D0",
+      "newSha256": "4853064CAF228093CD1841AA33837DFD87C072853C3AE892DC6B0F83EBB3A311"
+    },
+    {
+      "category": "怀旧服-任务说明#10209",
+      "english": "Ronnie asked for the last time. This time he wanted 30 Cold Eye Tails, 10 Dragon Skins, and 1 Diamond by taking down Cold Eyes and Drakes. I can sort of get this, but for me to hunt at the deep parts of the Ant Tunnel… this is way too hard!!",
+      "before": "在 Unknown Map(105010000) 见罗尼。罗尼最后一次开口了。这次他想让我打倒冰独眼兽和飞龙，收集 30 条冰独眼兽尾巴、10 张龙皮和 1 个钻石。我大概能理解，但要去蚂蚁洞深处狩猎……这也太难了！！你终于收集齐罗尼最后一次需要的材料。就这样了吗？作为奖励，他给了你一张从妖精那里收到的鞋子卷轴，那是妖精们在森林附近捡到的。他不知道怎么使用卷轴，所以就给了你……希望它能成功……哈哈……",
+      "after": "罗尼最后一次开口了。这次他想让我打倒冰独眼兽和飞龙，收集 30 条冰独眼兽尾巴、10 张龙皮和 1 个钻石。我大概能理解，但要去蚂蚁洞深处狩猎……这也太难了！！",
+      "selection": {
+        "startAt": "罗尼最后一次开口了",
+        "endBefore": "你终于收集齐"
+      },
+      "oldSha256": "253DD271C26D193FB6FC755AD9B15C9B215B3BB4CC45930179E04B31D1D610DA",
+      "newSha256": "61A6499E8043D2E9D9886412FA3948241DE827531C93FE92400B01673178A693"
+    },
+    {
+      "category": "怀旧服-任务说明#10210",
+      "english": "Wing the Fairy of Ellinia seems to have a general disdain for humans. Definitely not the kind of attitude I expect from someone in need of help. He asked me if I can get him 10 Leafs, 10 Squishy Liquids, and 3 Slime Bubbles. He needs them so he can make a potion for his homework.",
+      "before": "每次路过魔法密林的妖精维英，他看起来都像是需要帮助。到底为什么呢……魔法密林的妖精维英似乎普遍瞧不起人类。这可不是我期待从求助者身上看到的态度。他问我能不能帮他拿 10 片叶子、10 个粘稠液体和 3 个绿水灵泡泡。他需要这些材料来做作业用的药水。你帮魔法密林的妖精维英完成了作业。不过我完全不知道那药水是怎么运作的。",
+      "after": "魔法密林的妖精维英似乎普遍瞧不起人类。这可不是我期待从求助者身上看到的态度。他问我能不能帮他拿 10 片叶子、10 个粘稠液体和 3 个绿水灵泡泡。他需要这些材料来做作业用的药水。",
+      "selection": {
+        "startAt": "魔法密林的妖精维英似乎",
+        "endBefore": "你帮魔法密林"
+      },
+      "oldSha256": "C19B66D64399054E1DAC0B3741642890274A38071BDD7BCE4A741752721BFFEA",
+      "newSha256": "A76FBDBA43BA0A741BC7D734B191B719BC3BA1A3F3C9DB3778CD260F71EE58FC"
+    },
+    {
+      "category": "怀旧服-任务说明#10211",
+      "english": "Shane in Ellinia mentioned wanting to eat a delicious mushroom dish and asked me to find some ingredients. He said Green Mushroom Caps taste especially good, so I should head out and hunt Green Mushrooms near the forest.",
+      "before": "看起来魔法密林的谢恩正在找能帮忙的冒险家。魔法密林的谢恩说想吃一道美味的蘑菇料理，拜托我找些食材。他说绿蘑菇盖特别好吃，所以我应该去森林附近狩猎绿蘑菇。你把绿蘑菇盖交给了魔法密林的谢恩。他真的能用这个做出美味料理吗？",
+      "after": "魔法密林的谢恩说想吃一道美味的蘑菇料理，拜托我找些食材。他说绿蘑菇盖特别好吃，所以我应该去森林附近狩猎绿蘑菇。",
+      "selection": {
+        "startAt": "魔法密林的谢恩说",
+        "endBefore": "你把"
+      },
+      "oldSha256": "5BF4540727A4877D1FA04D68B09F8C19762A1953F83BBE5E37CF53753444F27E",
+      "newSha256": "998272EE93B1BCF07B63081F25E1A23FFB3CD50AB688DFB0F724454827456E03"
+    },
+    {
+      "category": "怀旧服-任务说明#10212",
+      "english": "Shane in Ellinia says he learned an even better way to cook Green Mushroom Caps and asked me to bring some Green Mushroom Caps, as well as a Lemon.",
+      "before": "看起来魔法密林的谢恩还有事相求。谢恩说他学会了更好地烹调绿蘑菇盖的方法，拜托我带来一些绿蘑菇盖和一个柠檬。你把绿蘑菇盖和柠檬交给了魔法密林的谢恩。感觉这道菜可能真的比上次更好吃，不是吗？",
+      "after": "谢恩说他学会了更好地烹调绿蘑菇盖的方法，拜托我带来一些绿蘑菇盖和一个柠檬。",
+      "selection": {
+        "startAt": "谢恩说他学会了",
+        "endBefore": "你把"
+      },
+      "oldSha256": "9F10CA927F8B054D5CB341A7AC1C991CF960446A258DC4E33CB56BBBEEB2FB43",
+      "newSha256": "825EFB6A75411B64AE0ABC42097560170D8ED1A7F0C4249020FB0644C27D56D0"
+    },
+    {
+      "category": "怀旧服-任务说明#10300",
+      "english": "On a lonely building rooftop in Kerning City, I met a boy named Alex who ran away from home because of a disagreement with his father, Chief Stan in Henesys. But Alex has become exhausted from being on the run with no money. Now he wants to return home and try to work things out with his strict, but loving, father. But he wants me to persuade his father not to punish him when he returns home. He also says he wants me to bring the k his mother left him when she died as proof that I successfully persuaded his father.",
+      "before": "废弃都市有个离家出走的孩子叫阿勒斯……在废弃都市一栋孤零零的楼顶上，我遇到了一个叫阿勒斯的少年。他因为和父亲——射手村长老斯坦意见不合而离家出走。但身无分文的逃亡生活让他疲惫不堪。现在他想回家，试着和严厉但爱他的父亲和解。不过他希望我说服父亲，让他回家后不要惩罚他。他还让我带回母亲去世前留给他的旧金表，作为成功说服父亲的证明。按照阿勒斯的请求，我去射手村找他的父亲，想拿到阿勒斯母亲的旧金表。",
+      "after": "在废弃都市一栋孤零零的楼顶上，我遇到了一个叫阿勒斯的少年。他因为和父亲——射手村长老斯坦意见不合而离家出走。但身无分文的逃亡生活让他疲惫不堪。现在他想回家，试着和严厉但爱他的父亲和解。不过他希望我说服父亲，让他回家后不要惩罚他。他还让我带回母亲去世前留给他的旧金表，作为成功说服父亲的证明。",
+      "selection": {
+        "startAt": "在废弃都市一栋",
+        "endBefore": "按照阿勒斯的请求"
+      },
+      "oldSha256": "512ECD43359CB91DB7D765711EBA6061FB2A46910616F0DAA9EFD237DF9541B7",
+      "newSha256": "0928A08A0CA6BDC485530E779A295B1A6B33FAC0194052AB0972F8A7A6A46590"
+    },
+    {
+      "category": "怀旧服-任务说明#10301",
+      "english": "At the entrance of Henesys, I meet Alex's father, Chief Stan, the chief of Henesys. Before I can even start a conversation, he asks for 15 Green Mushroom Caps and 15 Blue Mushroom Caps.",
+      "before": "在射手村入口，我见到了阿勒斯的父亲——射手村长老斯坦。我还没来得及开口，他就让我先带来 15 个绿蘑菇盖和 15 个蓝蘑菇盖。等我带来了绿蘑菇盖和刺蘑菇盖后，斯坦长老才开始和我说话。",
+      "after": "在射手村入口，我见到了阿勒斯的父亲——射手村长老斯坦。我还没来得及开口，他就让我先带来 15 个绿蘑菇盖和 15 个蓝蘑菇盖。",
+      "selection": {
+        "startAt": "",
+        "endBefore": "等我带来了"
+      },
+      "oldSha256": "79BA137BB2DD73DB7EF438712C4DF4FBAD1D7488603F779B54AE2E695BF67F50",
+      "newSha256": "C2F0F04FDDE9682D6DE10DF90CFC08C4DBAE388C0C04C5876594D8C3A4F2EF12"
+    },
+    {
+      "category": "怀旧服-任务说明#10302",
+      "english": "At the entrance of Henesys, I met Alex's father Chief Stan, the chief of Henesys. He was even more blunt and difficult to talk to than I'd anticipated, but I finally convinced him to accept Alex back with open arms. I also got Alex's late mother's k as proof. Now, all I need to do is get this watch to Alex in Kerning City.",
+      "before": "在射手村入口，我见到了阿勒斯的父亲——射手村长老斯坦。他比我想象中还要直率，也更难沟通，但我终于说服他敞开心胸接纳阿勒斯回家。我也拿到了阿勒斯已故母亲的旧金表作为证明。现在只要把这块表交给废弃都市的阿勒斯就行了。你把他已故母亲的旧金表交给了阿勒斯。作为谢礼，他送给你一只旅途中朋友赠送的耳环。嗯，斯坦长老原谅了阿勒斯，但阿勒斯似乎并不打算马上回家。下次去射手村时，也许该留意一下。",
+      "after": "在射手村入口，我见到了阿勒斯的父亲——射手村长老斯坦。他比我想象中还要直率，也更难沟通，但我终于说服他敞开心胸接纳阿勒斯回家。我也拿到了阿勒斯已故母亲的旧金表作为证明。现在只要把这块表交给废弃都市的阿勒斯就行了。",
+      "selection": {
+        "startAt": "",
+        "endBefore": "你把"
+      },
+      "oldSha256": "0EF5878570F931678E134DCFF35A7919DFAFF7F9F69B071A5CFC8D9BF48D3C85",
+      "newSha256": "483DC04ADD3FAE7C7997E222E6F428023983F2D3E8E91D1B6D7B2779E2B754B7"
+    },
+    {
+      "category": "怀旧服-任务说明#10303",
+      "english": "I gave Nella 1000 mesos as commission for telling me about various requests from the citizens of Kerning City. The first request is from Don Hwang, the owner of the armor shop, who needs materials to craft new armor. I need to defeat 20 Orange Mushrooms and 20 Ribbon Pigs and collect 10 Orange Mushroom Caps and 10 Pig's Ribbons. It shouldn't be too hard, since Orange Mushrooms and Ribbon Pigs are commonly found near Kerning City.",
+      "before": "听说在废弃都市想找工作就该去找内拉……我给了内拉 1000 金币作为介绍各种委托的手续费。第一个委托来自防具店老板黄老板，他需要制作新防具的材料。我需要打倒 20 只绿蘑菇和 20 只漂漂猪，并收集 10 个绿蘑菇盖和 10 条猪的丝带。绿蘑菇和漂漂猪在废弃都市附近很常见，应该不难。你把黄老板要求的东西交给了他，并收到了许多柠檬作为回报。不知道黄老板会做出什么样的防具。内拉说还有很多委托可以做，我应该时不时去找她看看。",
+      "after": "我给了内拉 1000 金币作为介绍各种委托的手续费。第一个委托来自防具店老板黄老板，他需要制作新防具的材料。我需要打倒 20 只花蘑菇和 20 只漂漂猪，并收集 10 个花蘑菇盖和 10 条猪的丝带。花蘑菇和漂漂猪在废弃都市附近很常见，应该不难。",
+      "selection": {
+        "startAt": "我给了内拉",
+        "endBefore": "你把"
+      },
+      "oldSha256": "016CD5045B58CEF7DF42B5A1B29D14295DA4F56289F7E3155E3BE5BF968BDEDF",
+      "newSha256": "6DA045FB443182E575F61315513E7E74A9A91735516A58F41A5669877C97DE62"
+    },
+    {
+      "category": "怀旧服-任务说明#10304",
+      "english": "I received the second request from Nella. Shumi, who sits in front of the Subway, wants to build a house for the puppy she received from her friend. I should defeat 25 Dark Stumps and bring 15 Leafs to Nella for the puppy house.",
+      "before": "我从内拉那里接到了第二个委托。坐在地铁前的休咪想给朋友送她的小狗建一个房子。我应该打倒 25 个黑木妖，并把 15 片叶子交给内拉，用来制作小狗屋。你把休咪要求的东西交了上去，并收到了许多蛋糕作为回报。现在，休咪的小狗有了自己的房子。回去找内拉接下一个活吧。",
+      "after": "我从内拉那里接到了第二个委托。坐在地铁前的休咪想给朋友送她的小狗建一个房子。我应该打倒 25 个黑木妖，并把 15 片叶子交给内拉，用来制作小狗屋。",
+      "selection": {
+        "startAt": "",
+        "endBefore": "你把"
+      },
+      "oldSha256": "EA39EA210CA68126FD5002E2BC758102CD88C33B4A5BB8B732C816F87C908B50",
+      "newSha256": "392589CC73489D29FA4771E6EABAB44E0ECD931697BFB5187A1EADFD7DD7FC9F"
+    },
+    {
+      "category": "怀旧服-任务说明#10305",
+      "english": "I got a third request from Nella. Andre, an assistant at the Hair Salon, is apparently struggling with meals as a lifelong bachelor and wants to make some tasty Seafood Soup. I'll need to defeat 30 Octopuses and collect 20 Octopus Legs. I'll also need 1 Pure Water. Once I've gathered everything, I should bring it to Nella.",
+      "before": "我从内拉那里接到了第三个委托。美发店助手安德里亚似乎因为一直单身而吃饭成了问题，他想做一份美味的海鲜汤。我需要打倒 30 只章鱼并收集 20 条章鱼脚，还需要 1 个纯净水。收集齐后，应该交给内拉。你把安德里亚要求的东西交了上去，并收到了一只手套作为回报。希望他能享用这碗丰盛的海鲜汤。回去找内拉接下一个活吧。",
+      "after": "我从内拉那里接到了第三个委托。美发店助手安德里亚似乎因为一直单身而吃饭成了问题，他想做一份美味的海鲜汤。我需要打倒 30 只章鱼并收集 20 条章鱼脚，还需要 1 个纯净水。收集齐后，应该交给内拉。",
+      "selection": {
+        "startAt": "",
+        "endBefore": "你把"
+      },
+      "oldSha256": "06FAAC703B4AC53CD92D4BB4EFD2161F0EC52008CC9F7901198356AF0BB93D4F",
+      "newSha256": "17216763E5E877FF9A2AF8289C450F4C447F3BB7CF20BC8DFD90E6D18FB41C0F"
+    },
+    {
+      "category": "怀旧服-任务说明#10306",
+      "english": "Nella says that I’ve grown a lot since my last visit. She’s starting to give me slightly tougher tasks than before. First, she mentions that Dr. Faymus, the owner of the potion shop, has run out of ingredients while working on a new potion. He needs me to hunt 40 Jr. Neckis and 40 Horny Mushrooms, and collect 20 Jr. Necki Skins and 20 Horny Mushroom Caps. Taking on Jr. Necki might be a bit tricky, but it shouldn’t be too much trouble for me!",
+      "before": "内拉说我比上次成长了很多。她开始给我一些比以前更难的任务。首先，她提到药店老板费穆斯博士在研究新药水时用完了材料。他需要我狩猎 40 只小青蛇和 40 只刺蘑菇，并收集 20 张小青蛇皮和 20 个刺蘑菇盖。对付小青蛇可能有点麻烦，但应该不会太难！你把费穆斯博士要求的东西交了上去，并收到了许多白色药水作为回报。不知道费穆斯博士会用这些材料做出什么药水。回去找内拉接下一个活吧。",
+      "after": "内拉说我比上次成长了很多。她开始给我一些比以前更难的任务。首先，她提到药店老板费穆斯博士在研究新药水时用完了材料。他需要我狩猎 40 只小青蛇和 40 只刺蘑菇，并收集 20 张小青蛇皮和 20 个刺蘑菇盖。对付小青蛇可能有点麻烦，但应该不会太难！",
+      "selection": {
+        "startAt": "",
+        "endBefore": "你把"
+      },
+      "oldSha256": "D9CA65BA61889AC7B982719A1F017849B109E667D9A0263B49CEA1B5F0A66A31",
+      "newSha256": "7B40DC04638E7335C817DBBEDCB7AAB2D77EF953F513C5D67C08D3EDC5A2699B"
+    },
+    {
+      "category": "怀旧服-任务说明#10307",
+      "english": "I got another request from Nella. Chris's pillow was stolen a few days ago and now he can't sleep. To make a new pillow, he needs 20 Stiff Feathers and 20 Leathers. I should get them as soon as possible, so Chris can get some sleep!",
+      "before": "我从内拉那里接到了另一个委托。克利思的枕头几天前被偷了，现在睡不着。为了制作新的枕头，他需要 20 根坚硬羽毛和 20 张皮革。我应该尽快收集，让克利思能好好睡一觉！你把克利思要求的东西交了上去，并收到了一些精炼铁和青铜。克利思终于能用新枕头睡个好觉了。回去找内拉接下一个活吧。",
+      "after": "我从内拉那里接到了另一个委托。克利思的枕头几天前被偷了，现在睡不着。为了制作新的枕头，他需要 20 根坚硬羽毛和 20 张皮革。我应该尽快收集，让克利思能好好睡一觉！",
+      "selection": {
+        "startAt": "",
+        "endBefore": "你把"
+      },
+      "oldSha256": "859012EDFEDC939C45DED42ADCB337410FACCB602860F71D8C33B55834C45736",
+      "newSha256": "B04CF0872D618C1EA64E5EA7A11C1F04529C020819BD03EE76409F35008F87CE"
+    },
+    {
+      "category": "怀旧服-任务说明#10308",
+      "english": "I got a third request from Nella. Cutthroat Manny, the owner of the weapon shop, is quite the unusual foodie—he wants to cook up a special dish of Evil Eye Stir-Fry. He needs me to hunt 50 Evil Eyes and bring back 30 Evil Eye Tails. Sounds like he’ll be eating well for a while! Once I've gotten everything, bring it back to Nella.",
+      "before": "我从内拉那里接到了第三个委托。武器店老板曼斯塔是个相当特别的美食家——他想做一道独眼兽尾巴炒菜。他需要我狩猎 50 只独眼兽，并带回 30 条独眼兽尾巴。看来他一段时间内都不用担心吃什么了！收集齐后，把东西交回给内拉。你把曼斯塔要求的东西交了上去，并收到了一双鞋作为回报。现在……曼斯塔暂时不用担心晚餐菜单了。帮了这个镇上的人之后，我感觉自己真的和他们亲近了不少！",
+      "after": "我从内拉那里接到了第三个委托。武器店老板曼斯塔是个相当特别的美食家——他想做一道独眼兽尾巴炒菜。他需要我狩猎 50 只独眼兽，并带回 30 条独眼兽尾巴。看来他一段时间内都不用担心吃什么了！收集齐后，把东西交回给内拉。",
+      "selection": {
+        "startAt": "",
+        "endBefore": "你把"
+      },
+      "oldSha256": "95E31CEA1884BC73FB3C46C23DD33F42FD436449FBE51465FB71BB7970925C63",
+      "newSha256": "5F25B0754D886A918BD3C049563EA2BA6E346CF198417EE701EE44FABA0EF37F"
+    },
+    {
+      "category": "怀旧服-任务说明#10309",
+      "english": "I met Jane Doe in Niora Hospital in Kerning City. Jane Doe needed to take off the bandages to see the surgery result, but there was no mirror. Jane Doe asked me to defeat 40 Stirges and collect 20 Broken Mirror Glasss.",
+      "before": "听说废弃都市的尼奥拉医院里有个人……我在废弃都市尼奥拉医院遇到了无名女子。她需要拆下绷带看看手术结果，却没有镜子。她拜托我打倒 40 只蝙蝠魔，并收集 20 块破碎镜片……为了在尼奥拉医院遇到的陌生人，我真的收集了破碎镜片并带给了她。",
+      "after": "我在废弃都市尼奥拉医院遇到了无名女子。她需要拆下绷带看看手术结果，却没有镜子。她拜托我打倒 40 只蝙蝠魔，并收集 20 块破碎镜片……",
+      "selection": {
+        "startAt": "我在废弃都市尼奥拉医院",
+        "endBefore": "为了在尼奥拉"
+      },
+      "oldSha256": "0A23208A2F3700D65C8F5153F92B16C01922131718F4F2DA33DC0BC0DEBCE1A4",
+      "newSha256": "16C5B6092EF855E449A4CBAAD8519C9EFC3848038D05DFFDE3660043B0E4CD85"
+    },
+    {
+      "category": "怀旧服-任务说明#10310",
+      "english": "The Stranger I met in Niora Hospital is, surprisingly, a ghost! She remained in the hospital, unaware that she had died, waiting for Naora to return... Now unwilling to accept her death, she told me that in order to live again, she needs me to defeat 50 Zombie Mushrooms and collect 25 Charm of the Undeads. She asked for my help one last time. I wonder if that’s really all it takes to bring her back.",
+      "before": "在尼奥拉医院遇到的陌生人，竟然是幽灵！她一直留在医院里，不知道自己已经死去，只是在等娜奥拉回来……如今她不愿接受自己的死亡，告诉我如果想重新活过来，就需要我打倒 50 只僵尸蘑菇，并收集 25 个亡灵护符。她最后一次请求我帮忙。不知道这样真的能让她回来吗……我在尼奥拉医院遇到的无名女子是幽灵。她留在医院里，却不知道自己已经死去。亡灵护符并不能让她复活。看来她其实早就知道自己不可能成功……真希望她能得到安息。",
+      "after": "在尼奥拉医院遇到的陌生人，竟然是幽灵！她一直留在医院里，不知道自己已经死去，只是在等娜奥拉回来……如今她不愿接受自己的死亡，告诉我如果想重新活过来，就需要我打倒 50 只僵尸蘑菇，并收集 25 个亡灵护符。她最后一次请求我帮忙。不知道这样真的能让她回来吗……",
+      "selection": {
+        "startAt": "",
+        "endBefore": "我在尼奥拉医院遇到"
+      },
+      "oldSha256": "757309698D02F12918F3BAB36C6227E8A5F89001AC1665D4B14926FFB50198F1",
+      "newSha256": "F322F5972451F42A681376DE3A4EADF8FBFB6446246766F46E95E119625634B6"
+    },
+    {
+      "category": "怀旧服-任务说明#10311",
+      "english": "\"Lakelis in Kerning City asked me to challenge the party quest \"\"First Time Together” and defeat the King Slime inside. The party quest must be attempted by a party of four adventurers, all level 21 or higher. Once the party is ready, the party leader should speak to Lakelis. Better start looking for some friends to join me.\"",
+      "before": "废弃都市的拉克莉丝似乎在寻找能一起挑战组队任务的队伍，这个任务需要多名冒险家合作完成。拉克莉丝让我挑战组队任务“第一次同行”，并打倒里面的绿水灵王。这个组队任务必须由 4 名等级 21 以上的冒险家组成队伍才能挑战。队伍准备好后，队长应该和拉克莉丝对话。看来该开始找朋友一起加入了。按照拉克莉丝的请求，我和朋友们挑战了组队任务“第一次同行”，并打倒了绿水灵王。只要大家齐心协力，就没有做不到的事！",
+      "after": "拉克莉丝让我挑战组队任务“第一次同行”，并打倒里面的绿水灵王。这个组队任务必须由 4 名等级 21 以上的冒险家组成队伍才能挑战。队伍准备好后，队长应该和拉克莉丝对话。看来该开始找朋友一起加入了。",
+      "selection": {
+        "startAt": "拉克莉丝让我挑战",
+        "endBefore": "按照拉克莉丝的请求"
+      },
+      "oldSha256": "541C5988493401AFAA790D7A4BE7F1C4C2BAAE0C0F3154DB0FEF579CDEB371E4",
+      "newSha256": "BEE1A361B50779D25A5F321EA53635BF5C397D0CF2C1317B2D020CE7EFD02B1A"
+    },
+    {
+      "category": "怀旧服-任务说明#10312",
+      "english": "I met this girl named Shumi in Kerning City. She was devastated about losing the lucky coin that she borrowed from a friend, and she asked me to find it for her. She also told me that a bunch of guys draped in white cloth took it from her in the subway, and that I might find them at the Construction Site B1, deep in the station... I should go there first.",
+      "before": "去废弃都市找休咪吧。我在废弃都市遇到了一个叫休咪的女孩。她因为弄丢了从朋友那里借来的幸运硬币而非常沮丧，拜托我帮她找回来。她还说，有一群披着白布的家伙在地铁里抢走了硬币，也许能在地铁深处的工地 B1 找到它们……我应该先去那里看看。你找到了废弃都市休咪丢失的硬币，并还给了她。从朋友那里借来的珍贵硬币啊……作为奖励，她给了你一堆回城卷轴……还不错！！她还说工地 B1 里能找到其他道具……以后应该去看看……",
+      "after": "我在废弃都市遇到了一个叫休咪的女孩。她因为弄丢了从朋友那里借来的幸运硬币而非常沮丧，拜托我帮她找回来。她还说，有一群披着白布的家伙在地铁里抢走了硬币，也许能在地铁深处的工地 B1 找到它们……我应该先去那里看看。",
+      "selection": {
+        "startAt": "我在废弃都市遇到了",
+        "endBefore": "你找到了"
+      },
+      "oldSha256": "364F9FFCD401F968D27BAF2A910AA57E807CA0BF38480C6804C2C1BF65E9D246",
+      "newSha256": "B6A000D5EE76D1C42EA9F774A1B9CA00556A196389B88DE1CCFD9972B771F9FF"
+    },
+    {
+      "category": "怀旧服-任务说明#10313",
+      "english": "I ran into Shumi again in Kerning City. She seemed really worried about how she lost her rent money because a Stirge flew over and snatched a bundle of money away from her. Man... do I have to walk back in there again... can I just pay the rent for her? Anyway like last time, I need to go back in there, this time to Construction Site B2 and find the bundle of money she lost. Aye, better go in there now.",
+      "before": "去废弃都市找休咪吧。我又在废弃都市遇到了休咪。她看起来很担心，因为一只蝙蝠魔飞过来，把她的房租钱整捆抢走了。唉……我还得再走进去一次吗……能不能干脆替她付房租？总之像上次一样，我需要回到里面，这次去工地 B2 找回她丢失的一卷现金。唉，还是赶紧进去吧……你帮废弃都市的休咪找回了丢失的一卷现金。这样她应该能付房租了……作为奖励，她给了你 30 个蓝色药水。她还说工地 B2 能找到其他道具……有空应该去看看……",
+      "after": "我又在废弃都市遇到了休咪。她看起来很担心，因为一只蝙蝠魔飞过来，把她的房租钱整捆抢走了。唉……我还得再走进去一次吗……能不能干脆替她付房租？总之像上次一样，我需要回到里面，这次去工地 B2 找回她丢失的一卷现金。唉，还是赶紧进去吧……",
+      "selection": {
+        "startAt": "我又在废弃都市",
+        "endBefore": "你帮"
+      },
+      "oldSha256": "A3E8A8C452B805E573675B6944ADACB558F2E7B07216B8479C9EB619334BCBC2",
+      "newSha256": "FE7D9E4A41A6EF2DB9151F539F048943DDE440481CBD7B16E8F41D0FD7220837"
+    },
+    {
+      "category": "怀旧服-任务说明#10314",
+      "english": "I ran into Shumi again at Kerning City. A while ago, she got a favor from JM From tha Streetz to get some Screws for him, only to have the sack of money fall down and lose everything in the process. I guess I can find the sack of money in the deep part of the subway station, the Construction Site B3, again.",
+      "before": "去废弃都市找休咪吧。我又在废弃都市遇到了休咪。之前，街头的 JM 拜托她去买螺丝，结果她的钱袋掉了，钱全丢了。我想这次也能在地铁站深处的工地 B3 找到那个钱袋。你在废弃都市地铁里找到了休咪丢失的钱袋。休咪现在可以买街头的 JM 要的东西了。你收到金币和一些药水作为礼物。以后应该去地铁的工地 B3 找找更多东西。",
+      "after": "我又在废弃都市遇到了休咪。之前，街头的 JM 拜托她去买螺丝，结果她的钱袋掉了，钱全丢了。我想这次也能在地铁站深处的工地 B3 找到那个钱袋。",
+      "selection": {
+        "startAt": "我又在废弃都市",
+        "endBefore": "你在废弃都市"
+      },
+      "oldSha256": "D4B997345B5C4348B5FB8014A6B69E72DFC3D12480356A131C1FB0A116C3CDAF",
+      "newSha256": "B26F8BD7D344E82262A72C94D74C5C83D9C7A1F8EB30FEAC400D4D3E3DCD8B58"
+    },
+    {
+      "category": "怀旧服-任务说明#10315",
+      "english": "I got to talk to Icarus in Kerning City. Just what exactly is he doing staring aimlessly at the sky anyway? He seemed to be really bored, and asked me if I can answer his questions.",
+      "before": "我应该去见站在废弃都市楼顶的伊卡路斯。他看起来无聊透了。我在废弃都市和伊卡路斯聊了聊。他到底为什么一直茫然地盯着天空呢？他似乎真的无聊到不行，问我能不能回答他的问题。你回答了废弃都市伊卡路斯提出的所有问题。很简单。",
+      "after": "我在废弃都市和伊卡路斯聊过了。他到底为什么一直茫然地盯着天空呢？他看起来无聊透了，问我能不能回答他的问题。",
+      "selection": {
+        "startAt": "我在废弃都市和伊卡路斯聊了聊",
+        "endBefore": "你回答了"
+      },
+      "oldSha256": "01639D8C85A2388CE6BD5370B2B14EA7401FFBA9152876E5FB9E2A5C786AB4C8",
+      "newSha256": "AA760F604440CFF4D290F5392DD161706E2BB3E7D589B1570DB29E820D49C95B"
+    },
+    {
+      "category": "怀旧服-任务说明#10316",
+      "english": "I answered all of Icarus's questions, but he still seemed bored out of his mind. He asked me if I could get him a toy that he could play around with.",
+      "before": "你回答了废弃都市伊卡路斯提出的所有问题。很简单。你答完了伊卡路斯的所有问题，但他还是无聊透了。他问你能不能给他找个可以玩的玩具。你和伊卡路斯一起玩得很开心。",
+      "after": "我答完了伊卡路斯的所有问题，但他仍然无聊得发慌。他问我能不能找个玩具给他解闷。",
+      "selection": {
+        "startAt": "你答完了",
+        "endBefore": "你和伊卡路斯"
+      },
+      "oldSha256": "E90A3E3CDADE6F863BD90AB94A3B21B5DF4CB74F833338F8D687C7E0AFFDCF38",
+      "newSha256": "B5ED7FD3A9DEE0B927A724A406CA59A750DAD86805DF0077A277576A81B5F37B"
+    },
+    {
+      "category": "怀旧服-任务说明#10317",
+      "english": "I got to meet Icarus on top of a building at Kerning City. He seems like a nice guy who has an unquenchable thirst for flying, and he wants to create a hang glider to fulfill his dream of flying. He asks me if I can gather up the materials for the hang glider, and even though the process of making the hang glider seems dubious at best, I can't say no to his sincere desire to fly. I'll need to get him 30 Stirge Wings, 10 Processed Woods, and 15 Stiff Feathers.",
+      "before": "据说废弃都市有个叫伊卡路斯的人，整天站在楼顶盯着天空看。我在废弃都市的楼顶见到了伊卡路斯。他看起来是个不错的人，对飞行有着无法满足的渴望，并想制作一架滑翔翼来实现飞翔的梦想。他问我能不能帮他收集制作滑翔翼的材料。虽然制作过程看起来相当可疑，但面对他真诚想飞的愿望，我无法拒绝。我需要给他收集 30 个蝙蝠魔翅膀、10 个加工木材和 15 根坚硬羽毛。你收集到了伊卡路斯制作滑翔翼并实现飞行梦想所需的材料。我只是好奇，蝙蝠魔翅膀真的足够做滑翔翼吗？不知道这是否真的能成功，但也许他会成功，所以等滑翔翼差不多准备起飞时，我应该再去看看他。",
+      "after": "我在废弃都市的一栋楼顶见到了伊卡路斯。他人不错，对飞行充满渴望，想制作滑翔翼来实现梦想。他问我能不能帮忙收集材料。虽然制作方法怎么看都让人怀疑，但我无法拒绝他真诚的飞行愿望。我需要给他带去30个蝙蝠翅膀、10个加工好的木材和15根粗羽毛。",
+      "selection": {
+        "startAt": "我在废弃都市的楼顶",
+        "endBefore": "你收集到了"
+      },
+      "oldSha256": "62B2D9EB2FED6593D77A7AF66C08DC6FD037D7E3116D14953EC1582ABB7C746F",
+      "newSha256": "899132351F83AAC2C153278CAC75B101CBD7DD0665C7342768C130E8E2DAAA9B"
+    },
+    {
+      "category": "怀旧服-任务说明#10318",
+      "english": "Icarus failed to create a working hang glider, and is now attempting to create a flying balloon on his never-ending quest for flight. This looks just as preposterous as his last attempt, but I don't think I can stop him. To make the flying balloon, he needs 50 Tablecloths and 10 Alligator Skin Pouchs. Hope this works.",
+      "before": "不知道伊卡路斯的滑翔翼做得怎么样了……也许我该去废弃都市看看他。伊卡路斯没能做出可以飞的滑翔翼，现在又在永无止境的飞行追求中尝试制作飞天气球。这看起来和上一次一样离谱，但我想我阻止不了他。为了制作飞天气球，他需要 50 块桌布和 10 个鳄鱼皮袋。希望这次能成功……你收集到了伊卡路斯制作飞天气球并实现飞行梦想所需的材料。不知道他的“飞天气球”到底能不能飞，但也许有成功的可能。等飞天气球差不多准备起飞时，我会再去看看他这次是不是认真的。",
+      "after": "伊卡路斯没能做出能飞的滑翔翼，现在又为了飞行梦想尝试制作飞天气球。这看起来和上次一样荒唐，但我大概劝不住他。制作飞天气球需要50块桌布和10个鳄鱼皮革袋。希望这次能成功。",
+      "selection": {
+        "startAt": "伊卡路斯没能做出",
+        "endBefore": "你收集到了"
+      },
+      "oldSha256": "C0FAD2CD926C78CA5CE09D296188FBB44C1AEA65E415FE76A4363294F0558838",
+      "newSha256": "0D82DC1F53DCD1EEEE43F70D24E9ACF16127DDA9F043BEE855F6A35ADAC51E6D"
+    },
+    {
+      "category": "怀旧服-任务说明#10319",
+      "english": "Icarus failed to make the flying balloon, but his never-ending quest for flight continues. This time he wants to deviate from a scientific approach to flight and opt for a magical approach, and asks me to see his best friend Wing the Fairy in Ellinia, the town of fairies. Apparently Wing the Fairy knows how to make Flying Medicine... I'll need to see that fairy in Ellinia for Icarus's sake.",
+      "before": "不知道伊卡路斯的飞天气球做得怎么样了……也许我该去废弃都市看看他。伊卡路斯没能做出飞天气球，但他永无止境的飞行追求还在继续。这次他想放弃科学的飞行方式，改用魔法，并让我去妖精之镇魔法密林找他最好的朋友——妖精维英。听说妖精维英知道如何制作飞天药水……为了伊卡路斯，我得去魔法密林找那位妖精。魔法密林的妖精维英似乎非常讨厌人类，甚至不愿意听我说话。",
+      "after": "伊卡路斯没能做成飞天气球，但他仍然没有放弃飞行。这次他想放弃科学方法，改用魔法，让我去妖精之镇魔法密林找他最好的朋友——妖精维英。据说维英知道飞翔秘药的制作方法……为了伊卡路斯，我得去见见那位妖精。",
+      "selection": {
+        "startAt": "伊卡路斯没能做出",
+        "endBefore": "魔法密林的妖精维英似乎"
+      },
+      "oldSha256": "8D2AF60A7703E31C39BD4E6BE0D4C830AD47C4CBF2A8DD59B76CBE672AF05453",
+      "newSha256": "2782C0AD269F8F3B6B59751DCED923E5E452E7BB03BCAFEAAF10C580C129D67A"
+    },
+    {
+      "category": "怀旧服-任务说明#10320",
+      "english": "I met Wing the Fairy in Ellinia, and he doesn't seem to like people in general. How is he best friends with Icarus in the first place? Anyway, he says in order to make the Flying Medicine, he's going to need 50 Medicine With Weird Vibes and 20 Witchgrass Leafs. So that's all it takes?",
+      "before": "想和妖精维英说上话似乎并不容易。我在魔法密林见到了妖精维英，他似乎一点也不喜欢人类。这样的人到底怎么会和伊卡路斯成为好朋友？总之，他说要制作飞天药水，需要 50 个奇怪感觉的药和 20 片魔草叶。就这些？按照妖精维英的要求，你收集了奇怪感觉的药和魔草叶。这样他就能做出飞天药水吗？",
+      "after": "我在魔法密林见到了妖精维英，他似乎不怎么喜欢人类。他究竟怎么会和伊卡路斯成为好朋友？总之，他说制作飞翔秘药需要50个奇怪的药和20片魔女草叶子。这样就够了吗？",
+      "selection": {
+        "startAt": "我在魔法密林见到了",
+        "endBefore": "按照妖精维英的要求"
+      },
+      "oldSha256": "19BA4E27C3D00019360D68242D7CA719E0436DFEB102A0E19873BCAEA8F4D4B5",
+      "newSha256": "4FA598D28FF52F86AC8CAECBF6913F119523FB668DFD7DD03B5F43438B3420AB"
+    },
+    {
+      "category": "怀旧服-任务说明#10321",
+      "english": "Wing the Fairy of Ellinia asked me to take the Flying Medicine to Icarus. So this little pill is all it takes to fly? I need to get this to Icarus ASAP.",
+      "before": "看来能实现伊卡路斯梦想的飞天药水终于完成了。魔法密林的妖精维英让我把飞天药水带给伊卡路斯。只靠这么一小颗药丸就能飞？我得立刻把它交给伊卡路斯。你把魔法密林妖精维英制作的飞天药水交给了伊卡路斯。希望它对他有用。",
+      "after": "魔法密林的妖精维英让我把飞翔秘药带给伊卡路斯。只靠这么一小颗药丸就能飞？我得尽快把它交给伊卡路斯。",
+      "selection": {
+        "startAt": "魔法密林的妖精维英让我",
+        "endBefore": "你把"
+      },
+      "oldSha256": "C58AF2404DDD533B04805DD7D745EB689BE50D88776FB4F781871CF491F345C5",
+      "newSha256": "9A45C4C07CEC92BBFAD25A31C6F6360714E401DB5C447735CC62D0ED4A66679B"
+    },
+    {
+      "category": "怀旧服-任务说明#10400",
+      "english": "\"Right here, in this dusty town of Perion, I ran into an oddly-dressed man named \"\"Blackbull.\"\" He told me he needs to fix his house and wondered if I could help him out by defeating 20 Stumps and 20 Dark Stumps and getting him 10 Tree Branches and 10 Leafs. If I do him a favor, I'll get a nice shield from him, but what if I say no? I wouldn't... be... EATEN BY HIM... no?? I really hope not.\"",
+      "before": "听说勇士部落的“黑牛”正在修房子。就在这个尘土飞扬的勇士部落，我遇到了一个打扮奇怪、名叫“黑牛”的男人。他说自己需要修理房子，问我能不能帮他打倒 20 个木妖和 20 个黑木妖，并带来 10 根树枝和 10 片叶子。如果帮他，他会给我一个不错的盾牌，但如果我拒绝呢？我不会……被他……吃掉吧……不，希望不会……你帮勇士部落的“黑牛”打倒了 20 个木妖和 20 个黑木妖，并带回 10 根树枝和 10 片叶子。有了这些，他终于能修好房子了。你得到了这个盾牌作为奖励……不过……到处都是刮痕，看起来也很旧……这真的还能用吗？",
+      "after": "就在这个尘土飞扬的勇士部落，我遇到了一个打扮奇怪、名叫“黑牛”的男人。他说自己需要修理房子，问我能不能帮他打倒 20 个木妖和 20 个黑木妖，并带来 10 根树枝和 10 片叶子。如果帮他，他会给我一个不错的盾牌，但如果我拒绝呢？我不会……被他……吃掉吧……不，希望不会……",
+      "selection": {
+        "startAt": "就在这个尘土飞扬",
+        "endBefore": "你帮"
+      },
+      "oldSha256": "66F2C3C917D1FC5B78D940F2B6DC27204E35789F772F48486EEFE0A4108F5259",
+      "newSha256": "56CFD6086AAF0BD8315FFE383BF11DBB5C04B7528B0B6128D849BF247FFA5CE9"
+    },
+    {
+      "category": "怀旧服-任务说明#10401",
+      "english": "\"I ran into \"\"Blackbull\"\" again, the guy whose house I helped fix. He was surprised at how strong I looked and asked me for a much harder favor. His cousins from Henesys are all trying to move to Perion, so he needs to build a new house! To build a new house, he said he needed 100 Stone Golem Rubbles, 30 Screws, 30 Processed Wood, and \"\"Blackbull's\"\" deed to the land. His son had the deed to the land, but it was stolen by Curse Eyes near Sleepywood... hmmm... I should be looking for those wandering around the deep forest.\"",
+      "before": "听说勇士部落的“黑牛”正在建新房子……我再次遇到了“黑牛”，也就是之前我帮忙修房子的那个人。他惊讶于我看起来变强了很多，于是拜托我一个更困难的忙。他在射手村的亲戚们都想搬到勇士部落，所以他需要建一栋新房子！他说要建新房子，需要 100 个石头人碎片、30 个螺丝、30 个加工木材和“黑牛”的地契。他儿子原本拿着地契，但被林中之城附近的风独眼兽偷走了……嗯……我应该去森林深处找那些游荡的怪物。为了让“黑牛”的亲戚们都能搬到勇士部落，你帮他收集了所需物品。真的很辛苦，希望他下次不要让我亲手给他盖房子……",
+      "after": "我再次遇到了“黑牛”，也就是之前我帮忙修房子的那个人。他惊讶于我看起来变强了很多，于是拜托我一个更困难的忙。他在射手村的亲戚们都想搬到勇士部落，所以他需要建一栋新房子！他说要建新房子，需要 100 个石头人碎片、30 个螺丝、30 个加工木材和“黑牛”的地契。他儿子原本拿着地契，但被林中之城附近的风独眼兽偷走了……嗯……我应该去森林深处找那些游荡的怪物。",
+      "selection": {
+        "startAt": "我再次遇到了",
+        "endBefore": "为了让"
+      },
+      "oldSha256": "1A1F14533C9F7657F3521E220AC8CAB24720872BD1D81F7DD709229CCDB23A1F",
+      "newSha256": "2C7576C8EB91E60D48D671D55A83D19F26CBFF2A29710D2DAEF7AC3F8B2A5B45"
+    },
+    {
+      "category": "怀旧服-任务说明#10402",
+      "english": "I came across Manji again, whom I had first met in Perion when making the medicine for Maya, the little girl in Henesys. Surprised at how much stronger I had become, Manji asked me for a favor. Long ago, when he was in danger of being struck down by Balrog, he was saved by the legendary hero Tristan, who died in his place. Ever since then, Manji had held onto Tristan’s sword. But the blade, corrupted by Balrog’s evil aura, has become so worn down that it can hardly even be called a sword anymore… Manji handed me the k he had been keeping and asked me to awaken it back to its true form. Once fully awakened, it is said to become the k. Just as Manji said, I should seek out Chrishrama in Sleepywood.",
+      "before": "去勇士部落找麦吉。我再次遇到了麦吉，之前为了给射手村的小女孩玛雅制作药时，我曾在勇士部落见过他。他惊讶于我变强了这么多，于是拜托我一件事。很久以前，他差点被蝙蝠魔击倒时，被传说中的英雄特里斯坦所救，而特里斯坦也因此代他死去。从那之后，麦吉一直保存着特里斯坦的剑。但这把剑被蝙蝠魔的邪恶气息侵蚀，已经破损到几乎不能称为剑了……麦吉把一直保管的旧战剑交给我，请我将它唤醒成真正的形态。据说完全觉醒后，它会成为英雄战剑。按照麦吉所说，我应该去林中之城找克里斯拉玛。我在林中之城见到了克里斯拉玛，并询问了唤醒旧战剑的方法。",
+      "after": "我再次遇到了麦吉，之前为了给射手村的小女孩玛雅制作药时，我曾在勇士部落见过他。他惊讶于我变强了这么多，于是拜托我一件事。很久以前，他差点被蝙蝠魔击倒时，被传说中的英雄特里斯坦所救，而特里斯坦也因此代他死去。从那之后，麦吉一直保存着特里斯坦的剑。但这把剑被蝙蝠魔的邪恶气息侵蚀，已经破损到几乎不能称为剑了……麦吉把一直保管的旧战剑交给我，请我将它唤醒成真正的形态。据说完全觉醒后，它会成为英雄战剑。按照麦吉所说，我应该去林中之城找克里斯拉玛。",
+      "selection": {
+        "startAt": "我再次遇到了",
+        "endBefore": "我在林中之城见到了"
+      },
+      "oldSha256": "94BD953C34C0705524B1FCD9FA9E816A145980F59CEC8134EF85CC349FD655FC",
+      "newSha256": "94374436FD16C9A6BFA9F4B57DE15EBDDADB0D1979028817BB1A8392B28C155B"
+    },
+    {
+      "category": "怀旧服-任务说明#10403",
+      "english": "I showed Chrishrama Manji's k, and he claimed to have made it himself. He said he needs 1 Star Rock, 1 Piece of Ice, 1 Ancient Scroll, and 1 Flaming Feather to awaken it. Unfortunately, I've never heard of any of those items... He recommended talking to Mike in Perion Dungeon Entrance to find them.",
+      "before": "去林中之城找克里斯拉玛唤醒旧战剑。我把麦吉的旧战剑拿给克里斯拉玛看，他说这把剑是他亲手打造的。他说需要 1 个星石、1 个冰块、1 张古代卷轴和 1 根火焰羽毛才能将它唤醒。遗憾的是，这些东西我一个都没听说过……他建议我去勇士部落迷宫入口找麦克打听。我收集到了觉醒所需的材料，并带给了克里斯拉玛。克里斯拉玛用这些材料把旧战剑重新唤醒成英雄战剑。这是一把散发神秘光芒的好剑……可惜我得把它交给麦吉。",
+      "after": "我把麦吉的旧战剑拿给克里斯拉玛看，他说这把剑是他亲手打造的。他说需要 1 个星石、1 个冰块、1 张古代卷轴和 1 根火焰羽毛才能将它唤醒。遗憾的是，这些东西我一个都没听说过……他建议我去勇士部落迷宫入口找麦克打听。",
+      "selection": {
+        "startAt": "我把麦吉的旧战剑",
+        "endBefore": "我收集到了"
+      },
+      "oldSha256": "95D8941DE7CFAB5CFC9D14160C93A3B84939906030C3D4F15DBF61ADA015DBE2",
+      "newSha256": "3266E4948D5CB52FE06664510AB75120F5DB1D0F723354ACF2D20F8646A352A3"
+    },
+    {
+      "category": "怀旧服-任务说明#10404",
+      "english": "With Chrishrama’s help, I was able to awaken the entrusted by Manji into the . All that remains is to return the sword to Manji.",
+      "before": "经历许多困难后，我终于收集齐了克里斯拉玛要求的所有材料。现在只能相信他的力量了。在克里斯拉玛的帮助下，我把麦吉托付给我的旧战剑唤醒成了英雄战剑。剩下的就是把剑还给麦吉。看来麦吉所说的这把英雄战剑确实是一把好剑。面对英雄战剑和麦吉给出的骷髅耳环，我不得不做出艰难选择，但我不会后悔自己的决定。",
+      "after": "在克里斯拉玛的帮助下，我把麦吉托付给我的旧战剑唤醒成了英雄战剑。剩下的就是把剑还给麦吉。",
+      "selection": {
+        "startAt": "在克里斯拉玛的帮助下",
+        "endBefore": "看来麦吉所说"
+      },
+      "oldSha256": "B8EB1071DEA3D749DC56BF92C358F2A85121A414E87F7F322A15F28F2123293C",
+      "newSha256": "8F41250468FB0E387F92602290BB33AC08160F4E212E866B1913A8788823174F"
+    },
+    {
+      "category": "怀旧服-任务说明#10406",
+      "english": "Winston the Archeologist said that it is not safe to leave the valuable fossils in the tent. He asked me to take the fossils and deliver them to Dr. Betty in Ellinia. He also wrote a letter of introduction for me to show her.",
+      "before": "看来勇士部落东侧岩石山脉的考古学家温斯顿还有另一个请求。考古学家温斯顿说，把珍贵化石放在帐篷里不安全。他让我把化石带去魔法密林交给贝蒂博士。他还写了一封介绍信让我给她看。勇士部落的考古学家温斯顿说，把珍贵化石留在帐篷里不安全，让我把它们送到魔法密林的贝蒂博士那里。贝蒂博士说接下来会很忙，让我之后再来帮她。化石啊……我要不要试试呢？",
+      "after": "考古学家温斯顿说，把珍贵化石放在帐篷里不安全。他让我把化石带去魔法密林交给贝蒂博士。他还写了一封介绍信让我给她看。",
+      "selection": {
+        "startAt": "考古学家温斯顿说",
+        "endBefore": "勇士部落的考古学家温斯顿说"
+      },
+      "oldSha256": "EE106D70A8C2F2B23F7ABFFEB39755F78FFCEC6952594D3A20F4F74153F6D99E",
+      "newSha256": "C311B0B6115158404DAF80638605411DAD7D8A1071E1EFE0356C6F151F0D5A7D"
+    },
+    {
+      "category": "怀旧服-任务说明#10407",
+      "english": "Dr. Betty asked me to work as an assistant for a while. My first task from her is to collect 20 Plant Samples. I can see various plants covering the woods in Ellinia.",
+      "before": "魔法密林附近的生物学家贝蒂博士正在寻找助手。贝蒂博士让我暂时做她的助手。她交给我的第一项任务是收集 20 个植物样本。魔法密林的树林里到处都是各种植物。作为贝蒂博士助手的第一份工作，我在魔法密林的树林里收集了一些植物并取样。感觉也不算太难。",
+      "after": "贝蒂博士让我暂时做她的助手。她交给我的第一项任务是收集 20 个植物样本。魔法密林的树林里到处都是各种植物。",
+      "selection": {
+        "startAt": "贝蒂博士让我",
+        "endBefore": "作为贝蒂博士助手"
+      },
+      "oldSha256": "C7D22CFA1CAF310A07031303355DEE0A08C57EE56C6CB6196A48A4B82A02654E",
+      "newSha256": "0D5E6D896C3D95B2379523D7F716A3099820277E7FD947F6A2985D2F0E2AD519"
+    },
+    {
+      "category": "怀旧服-任务说明#10408",
+      "english": "Dr. Betty in Ellinia told me that she needs 1 Stuffed Drake Skull for her research. She asked me to find her daughter near Henesys, and bring it back to her. Where would Anne be?",
+      "before": "看来魔法密林附近的生物学家贝蒂博士还有另一个请求。魔法密林的贝蒂博士告诉我，她的研究需要 1 个填充飞龙头骨。她让我去射手村附近找她的女儿，并把东西带回来。安妮会在哪里呢？我在射手村附近遇到了独自玩耍的贝蒂博士的女儿安妮。",
+      "after": "魔法密林的贝蒂博士告诉我，她的研究需要 1 个填充飞龙头骨。她让我去射手村附近找她的女儿，并把东西带回来。安妮会在哪里呢？",
+      "selection": {
+        "startAt": "魔法密林的贝蒂博士告诉我",
+        "endBefore": "我在射手村附近遇到了"
+      },
+      "oldSha256": "9C8BAD3359C66BAA4AAACB44A5AD71B1B232284DC6DFBBD9D4FCADDAB13B7FFB",
+      "newSha256": "D959B230210472035E4EA1E3A0822888120C83D3834FF2B2B356AA617A83861B"
+    },
+    {
+      "category": "怀旧服-任务说明#10409",
+      "english": "I received the Stuffed Drake Skull from Anne, Dr. Betty's daughter. Now I have to deliver this carefully to Dr. Betty.",
+      "before": "看来安妮手里有贝蒂博士需要的东西。我从贝蒂博士的女儿安妮那里收到了填充飞龙头骨。现在必须小心地把它交给贝蒂博士……你收集了一些植物样本和填充飞龙头骨，帮助贝蒂博士研究化石。我真期待研究结果……我应该去见贝蒂博士，因为她说回去后会告诉我结果。",
+      "after": "我从贝蒂博士的女儿安妮那里收到了填充飞龙头骨。现在必须小心地把它交给贝蒂博士……",
+      "selection": {
+        "startAt": "我从贝蒂博士的女儿",
+        "endBefore": "你收集了一些"
+      },
+      "oldSha256": "8B54A66639EB0CCD41C207A2B97AE791742A6A804864125EA2C3C211AC5C0172",
+      "newSha256": "C95D5C2EDC1F53E278C70A1028B70F72F388E5735734CF05029A5C3D152BB7F9"
+    },
+    {
+      "category": "怀旧服-任务说明#10410",
+      "english": "I met Dr. Betty again. She told me the research was finished and explained it to me, then asked me to take the research report and deliver it to Dr. Winston in Perion. Dr. Betty also informed me that if I take 20 Leafs, 15 Firewoods, 1 Stump's Teardrop, and 1 pair of Weighted Earrings, Dr. Winston would be really happy.",
+      "before": "听说贝蒂博士已经完成了化石研究。也许我该去看看结果。我再次见到了贝蒂博士。她告诉我研究已经完成，并向我说明了内容，然后让我把研究报告交给勇士部落的温斯顿博士。贝蒂博士还告诉我，如果带上 20 片叶子、15 个木柴、1 个木妖的眼泪和 1 对重力耳环，温斯顿博士会非常高兴。你把贝蒂博士的化石报告交给了勇士部落的温斯顿博士。连同报告一起，你还给了他叶子、木柴、木妖的眼泪和重力耳环。作为回报，温斯顿博士给了你树叶耳环。",
+      "after": "我再次见到了贝蒂博士。她告诉我研究已经完成，并向我说明了内容，然后让我把研究报告交给勇士部落的温斯顿博士。贝蒂博士还告诉我，如果带上 20 片叶子、15 个木柴、1 个木妖的眼泪和 1 对重力耳环，温斯顿博士会非常高兴。",
+      "selection": {
+        "startAt": "我再次见到了贝蒂博士",
+        "endBefore": "你把"
+      },
+      "oldSha256": "E97A83ACA97D377B8BE6BB3E89F965C800A4FA5CEE2A00CC7697FD205130BC0B",
+      "newSha256": "F6239DCD9CC285FDB18F2C4EBE4D2097EAA4585BDF5CCCA73DEF4F2D6E3BDB32"
+    },
+    {
+      "category": "怀旧服-任务说明#10411",
+      "english": "I met Ayan in Perion. Apparently, she cannot remember anything about her childhood, and she lives everyday in fear of Stumps. She's so scared that she can't even dare to look at them. Due to this paralyzing fear of Stumps, she cannot take one step out of Perion, and asks me to take them out for her sake. Are they really THAT scary?",
+      "before": "勇士部落的阿燕说她一步都不敢离开镇子。为什么呢……我在勇士部落见到了阿燕。她似乎完全不记得自己的童年，而且每天都生活在对木妖的恐惧中。她怕到连看都不敢看它们一眼。因为这种对木妖的强烈恐惧，她一步都不敢离开勇士部落，所以拜托我替她清理木妖。它们真的有那么可怕吗？你为了勇士部落的阿燕打倒了木妖。她终于可以放心走出镇子，不用再害怕它们了！",
+      "after": "我在勇士部落见到了阿燕。她似乎完全不记得自己的童年，而且每天都生活在对木妖的恐惧中。她怕到连看都不敢看它们一眼。因为这种对木妖的强烈恐惧，她一步都不敢离开勇士部落，所以拜托我替她清理木妖。它们真的有那么可怕吗？",
+      "selection": {
+        "startAt": "我在勇士部落见到了",
+        "endBefore": "你为了"
+      },
+      "oldSha256": "9290D2068B13670A72F211CAA2FDF6B4E9E44AB9CA306E42F2941887805CC011",
+      "newSha256": "5F51FDD65F002B3467E6C6ADC89C2729CEE4E1C127FC87F482DCF968E43655B2"
+    },
+    {
+      "category": "怀旧服-任务说明#10412",
+      "english": "I met up with Ayan in Perion. She told me that a few days ago, a group of tribespeople went hunting in the swamp and wound up being ambushed by a group of alligators. She was worried about the sudden surge of alligators taking over the swamp and asked me to reduce their numbers before they spawn out of control. I'll have to kill 100 Ligators and 40 Jr. Neckis and pick up 20 Jr. Necki Skins along the way.",
+      "before": "听说勇士部落的族人出了事。我应该去问问阿燕。我在勇士部落见到了阿燕。她告诉我，几天前一群族人去沼泽打猎时，被一群鳄鱼伏击。她担心突然增多的鳄鱼会占领沼泽，拜托我在它们失控繁殖前减少数量。我需要打倒 100 只鳄鱼和 40 只小青蛇，并顺路收集 20 张小青蛇皮。勇士部落的族人在沼泽被鳄鱼群伏击，所以阿燕请求我帮忙清理鳄鱼。你打倒了 100 只鳄鱼和 40 只小青蛇。希望这样能让沼泽恢复一些平静。",
+      "after": "我在勇士部落见到了阿燕。她告诉我，几天前一群族人去沼泽打猎时，被一群鳄鱼伏击。她担心突然增多的鳄鱼会占领沼泽，拜托我在它们失控繁殖前减少数量。我需要打倒 100 只鳄鱼和 40 只小青蛇，并顺路收集 20 张小青蛇皮。",
+      "selection": {
+        "startAt": "我在勇士部落见到了",
+        "endBefore": "勇士部落的族人在沼泽"
+      },
+      "oldSha256": "5D2C177DCBEB3B19A87AB723BADFEEEED7E088A9D5B30FF487D9C901CB6F33F2",
+      "newSha256": "D43CBE24F9B53BE07FA224FA140027D6A297DFB38A33FE407310757ADBC19629"
+    },
+    {
+      "category": "怀旧服-任务说明#10413",
+      "english": "I found Ayan, and she seemed to be panicking. She was walking around the swamp when she ran into a bigger, stronger, and more dangerous group of alligators than the previous one. She ran back to Perion and has been looking for me to ask me for help ever since. This time, I'll need to kill 120 Crocos and bring back 50 Croco Skins along the way.",
+      "before": "勇士部落的阿燕正在急切地找我。出了什么事吗？我找到了阿燕，她看起来非常慌张。她在沼泽附近走动时，遇到了一群比之前更大、更强也更危险的鳄鱼。她逃回勇士部落后就一直在找我求助。这次，我需要打倒 120 只青鳄鱼，并顺路带回 50 张青鳄鱼皮。按照阿燕的请求，你在沼泽里打倒了 120 只青鳄鱼。以后得时不时回到那个地方，在鳄鱼失控繁殖前清理它们。",
+      "after": "我找到了阿燕，她看起来非常慌张。她在沼泽附近走动时，遇到了一群比之前更大、更强也更危险的鳄鱼。她逃回勇士部落后就一直在找我求助。这次，我需要打倒 120 只青鳄鱼，并顺路带回 50 张青鳄鱼皮。",
+      "selection": {
+        "startAt": "我找到了阿燕",
+        "endBefore": "按照阿燕的请求"
+      },
+      "oldSha256": "6281B69CD57CE01A7C40AD1340CBB3854F8F9038AF5D0D0D6B59EDBD1E073261",
+      "newSha256": "EADB5D05797F711FE0056762034E8E43E90311535448DFA065C44ECEF24114D6"
+    },
+    {
+      "category": "怀旧服-任务说明#10500",
+      "english": "At the VIP sauna in Sleepywood, I met this bald man called Mr. Wetbottom. He has a son, and apparently he ran away from home one day with a book that he cares deeply for. He requested that I find his son and get the book back from him. For a reward, he's offering me a nice sauna robe. He also told me his son Ronnie hangs out at a tree tunnel around Ellinia, so maybe I can find him there. Anyway, is that book more important to him than his son?? What kind of a book is it anyway...????",
+      "before": "听说林中之城的沃特巴顿先生最近很不顺……我应该去看看他。在林中之城高级桑拿房，我遇到了一位名叫沃特巴顿先生的秃头男子。他有个儿子，据说某天带着他非常重视的一本书离家出走了。他请求我找到儿子，并把那本书拿回来。作为报酬，他愿意给我一件不错的桑拿服。他还说儿子罗尼常在魔法密林附近的树洞一带活动，也许能在那里找到他。话说，那本书比他儿子还重要吗？到底是什么书啊……按照在高级桑拿房遇到的沃特巴顿先生的请求，我在魔法密林的树洞里找到了罗尼。",
+      "after": "在林中之城高级桑拿房，我遇到了一位名叫沃特巴顿先生的秃头男子。他有个儿子，据说某天带着他非常重视的一本书离家出走了。他请求我找到儿子，并把那本书拿回来。作为报酬，他愿意给我一件不错的桑拿服。他还说儿子罗尼常在魔法密林附近的树洞一带活动，也许能在那里找到他。话说，那本书比他儿子还重要吗？到底是什么书啊……",
+      "selection": {
+        "startAt": "在林中之城高级桑拿房",
+        "endBefore": "按照在高级桑拿房"
+      },
+      "oldSha256": "644C30C8C2131333BA31ED056847672966762FCE4EBF32AF9B948CDD129B1859",
+      "newSha256": "E481A3A99791AEBF978806AA029EE588E508F4CB9B5E2322001067C150E5371D"
+    },
+    {
+      "category": "怀旧服-任务说明#10501",
+      "english": "Inside a tree tunnel around Ellinia, I found Ronnie, the son of Mr. Wetbottom. He said he could never hand over the red book, but he looked pretty hungry. Ronnie asked me to defeat Lupins in the western area of Ellinia and bring back 30 Lupin's Bananas.",
+      "before": "在魔法密林附近的树洞里，我找到了沃特巴顿先生的儿子罗尼。他说绝不会把红色的书交出来，但看起来相当饿。罗尼让我去魔法密林西部打倒猴子，带回 30 个猴子香蕉。你给饥饿的罗尼带来了许多猴子香蕉。但看起来他还想吃更多……",
+      "after": "在魔法密林附近的树洞里，我找到了沃特巴顿先生的儿子罗尼。他说绝不会把红色的书交出来，但看起来相当饿。罗尼让我去魔法密林西部打倒猴子，带回 30 个猴子香蕉。",
+      "selection": {
+        "startAt": "",
+        "endBefore": "你给"
+      },
+      "oldSha256": "2FF8211347A048A6265CD0837FE94484B524A42B8CF87C47FBBF7DF112A44F12",
+      "newSha256": "8ED0379A18482C8085F405D38A127A9CD9CBA02DEA21860DA7E729B37FD43AB1"
+    },
+    {
+      "category": "怀旧服-任务说明#10502",
+      "english": "Ronnie said the Lupin's Bananas weren’t enough and asked me to go see Rina at Henesys to get.",
+      "before": "罗尼说猴子香蕉还不够，让我去射手村找丽娜，拿丽娜的鳗鱼特餐。为了喂饱饥饿的罗尼，我先去找了射手村的丽娜。",
+      "after": "罗尼说猴子香蕉还不够，让我去射手村找丽娜，拿丽娜的鳗鱼特餐。",
+      "selection": {
+        "startAt": "",
+        "endBefore": "为了喂饱"
+      },
+      "oldSha256": "B8791A516C1D2F80FF4431E622BD66007AFF4EC80AE96A6C1DE2AF0E47173FAC",
+      "newSha256": "54EF0331EFC7A0F45B72818668A60A4A84EEF6C2020E59B77E92A314D0CF9795"
+    },
+    {
+      "category": "怀旧服-任务说明#10503",
+      "english": "Rina of Henesys requested 50 Curse Eye Tails and 10 Pig's Heads for the.",
+      "before": "射手村的丽娜要求 50 条风独眼兽尾巴和 10 个猪头，用来制作丽娜的鳗鱼特餐。你把制作丽娜的鳗鱼特餐所需的东西全都带给了她。",
+      "after": "射手村的丽娜要求 50 条风独眼兽尾巴和 10 个猪头，用来制作丽娜的鳗鱼特餐。",
+      "selection": {
+        "startAt": "",
+        "endBefore": "你把"
+      },
+      "oldSha256": "78FAF862BF46CB34631063856764AA801BD14B25D4C9EFB05248EDDC9166B263",
+      "newSha256": "E93C3A55D6BE976641108039AF0AE287FDF898766A908E6A31C995D88BD65816"
+    },
+    {
+      "category": "怀旧服-任务说明#10504",
+      "english": "I brought everything Rina asked for and received . I just hope Ronnie will be satisfied with this.",
+      "before": "你带齐了丽娜要求的东西，并收到了丽娜的鳗鱼特餐。希望罗尼这次会满意……你把丽娜的鳗鱼特餐带给了罗尼。那孩子看起来吃得很开心！",
+      "after": "你带齐了丽娜要求的东西，并收到了丽娜的鳗鱼特餐。希望罗尼这次会满意……",
+      "selection": {
+        "startAt": "",
+        "endBefore": "你把"
+      },
+      "oldSha256": "2F186C58DDE22C333AFF393ACBE0955D53E6C5338DAB57257A188B4FC38A5C3E",
+      "newSha256": "50022B5DA807898872F118703371BE59FCBA9C49D0A7C47D8745EEA12C75F0E3"
+    },
+    {
+      "category": "怀旧服-任务说明#10505",
+      "english": "While eating , Ronnie said he needed something to drink and asked me to go see Rowen the Fairy of Ellinia to get Fresh Milk.",
+      "before": "罗尼一边吃丽娜的鳗鱼特餐，一边说自己需要喝点东西，让我去魔法密林找妖精罗雯拿新鲜牛奶。为了给罗尼解渴，我去见了魔法密林的妖精罗雯。",
+      "after": "罗尼一边吃丽娜的鳗鱼特餐，一边说自己需要喝点东西，让我去魔法密林找妖精罗雯拿新鲜牛奶。",
+      "selection": {
+        "startAt": "",
+        "endBefore": "为了给罗尼"
+      },
+      "oldSha256": "2697B11773607C43EE7F59750990ACCF127CDD22C0DABB5D21649760F544A3A1",
+      "newSha256": "065D49BDB398D91893CA41B8E56CD1D2C3323A1958311FE7EB335B79C5D27815"
+    },
+    {
+      "category": "怀旧服-任务说明#10506",
+      "english": "Rowen the Fairy of Ellinia asked for a refined piece of glittering Diamond for a Fresh Milk. A Diamond, huh... how am I supposed to get that rare, expensive item?",
+      "before": "魔法密林的妖精罗雯要求用一颗精炼后的闪亮钻石来交换新鲜牛奶。钻石啊……我要怎么弄到这种稀有又昂贵的东西？你把钻石带给了妖精罗雯。",
+      "after": "魔法密林的妖精罗雯要求用一颗精炼后的闪亮钻石来交换新鲜牛奶。钻石啊……我要怎么弄到这种稀有又昂贵的东西？",
+      "selection": {
+        "startAt": "",
+        "endBefore": "你把"
+      },
+      "oldSha256": "587F2E3B2624B7EE8ABE965E919A90C50D7A90A1C27D709C704FD200E5AACA89",
+      "newSha256": "37251D999DD07C8186985FCFE7ABDBCCA916B5BFDA49B4990F85DF0855BD44F9"
+    },
+    {
+      "category": "怀旧服-任务说明#10507",
+      "english": "I brought a Diamond to Rowen the Fairy and received Fresh Milk in return. I just hope Ronnie will be satisfied with this.",
+      "before": "你把钻石带给妖精罗雯，并换来了新鲜牛奶。希望罗尼这次会满意……你把新鲜牛奶带给了罗尼。呼，看来他终于吃饱喝足，不会再吃了！",
+      "after": "你把钻石带给妖精罗雯，并换来了新鲜牛奶。希望罗尼这次会满意……",
+      "selection": {
+        "startAt": "",
+        "endBefore": "你把新鲜牛奶"
+      },
+      "oldSha256": "1F72CDC12E27932AC7B266375EE4F827B36F5ED9750A3550C70B9A5BE83B5CAF",
+      "newSha256": "19242F2080A0093E140A25195138BAF87E2A12B28274879EDBEDF550229C1F0B"
+    },
+    {
+      "category": "怀旧服-任务说明#10508",
+      "english": "I got Ronnie some yummy food in exchange for the Secret Book. I want to peek inside.",
+      "before": "你用美味的食物从罗尼那里换来了秘密之书。真想偷偷看一眼……你把沃特巴顿先生苦苦寻找的珍贵秘密之书交给了他。你问他是否担心罗尼，却听他说罗尼和妖精们在一起会被照顾得很好……嗯，罗尼和妖精们在一起也许最好吧。总之，你用这本书换来了桑拿服……穿着笨重的铠甲泡桑拿确实很荒唐。既然来了，不如趁现在在桑拿房里好好放松一下……",
+      "after": "你用美味的食物从罗尼那里换来了秘密之书。真想偷偷看一眼……",
+      "selection": {
+        "startAt": "",
+        "endBefore": "你把沃特巴顿"
+      },
+      "oldSha256": "1E6D8DA535892A4A13F4F0C123FF8C59D82689A92008C2B80F6844D2A2D3E057",
+      "newSha256": "45F3FF58D0DF19587E8F8B16B39B4F12B2033AA06833B8C07B1FE220348370E5"
+    },
+    {
+      "category": "怀旧服-任务说明#10509",
+      "english": "In front of the Sleepywood Hotel, I met Sabitrama, a medicinal herb trader who seems to be the younger brother of Chrishrama. He said he found a place where he can finally find the herb that he needed for this medicine he's working on... and he asked if I could go in that forest and grab an herb called Pink Anthurium. It consists of green grass and a small pink flower... I should remember this well and get him the exact same one. I heard the place is near Ellinia... I should go there and talk to this guy Shane.",
+      "before": "去林中之城找萨比特拉玛吧。在林中之城旅馆前，我遇到了药草商人萨比特拉玛，他似乎是克里斯拉玛的弟弟。他说自己终于找到了能取得制作药物所需药草的地方……并问我能不能进那片森林，帮他采来一种叫粉色火鹤花的药草。它由绿色草叶和一朵小粉花组成……我应该牢牢记住样子，采到一模一样的。听说那个地方在魔法密林附近……我应该去那里找谢恩。幸好你从忍耐之林拿到了萨比特拉玛想要的花。作为谢礼，他给了你一张套服卷轴。哦，他还说从今以后你进入忍耐之林不用再付钱给魔法密林的谢恩。听说萨比特拉玛正在制作的减肥药是给谢恩未婚妻的……有空我应该再去忍耐之林看看……",
+      "after": "在林中之城旅馆前，我遇到了药草商人萨比特拉玛，他似乎是克里斯拉玛的弟弟。他说终于找到了制作药物所需药草生长的地方……并问我能不能进入那片森林，帮他采来一种叫粉红花束的药草。它由绿色草叶和一朵小粉花组成……我得记住它的样子，采到一模一样的。听说那个地方在魔法密林附近……我应该去那里找谢恩。",
+      "selection": {
+        "startAt": "在林中之城旅馆前",
+        "endBefore": "幸好你"
+      },
+      "oldSha256": "77BB920FD16A9EA546C03E5096704F6EB88FEFA3E9B999DF80C29C0048AF1AF4",
+      "newSha256": "6C353A95064437AB785A6295496DB4DE7E29AADB110B2D2E48B0E7D671BE1A83"
+    },
+    {
+      "category": "怀旧服-任务说明#10510",
+      "english": "I ran into Sabitrama again in front of the Sleepywood Hotel, the same one I helped get herbs before. This time, he said he found a place where I can get an important herb that he needed for his new medicine. He asked me if I could go into that forest and grab Double-Rooted Red Ginseng for him. It was a reddish root split in two... I should remember it well and find the same one once I get to the top. The herb is in the forest owned by Shane of Ellinia, whom I visited last time.",
+      "before": "听说林中之城的萨比特拉玛正在制作新药……我再次在林中之城旅馆前遇到了萨比特拉玛，也就是之前我帮忙采药的那个人。这次他说自己找到了一个地方，可以取得新药所需的重要药草。他问我能不能进入那片森林，帮他采来双根红参。那是一根分成两叉的红色根茎……我应该好好记住样子，到达顶部后找到同样的药草。药草在上次去过的魔法密林谢恩拥有的森林里……幸好你拿到了萨比特拉玛要的药草，并因此得到了一块神秘的石头作为奖励。从今以后，你每次进入忍耐之林都不用再付谢恩费用。听说萨比特拉玛正在制作的不老药也许正是谢恩需要的东西……有空的话，应该再进去看看……",
+      "after": "我再次在林中之城旅馆前遇到了萨比特拉玛，也就是之前我帮忙采药的那个人。这次他说自己找到了一个地方，可以取得新药所需的重要药草。他问我能不能进入那片森林，帮他采来双根红参。那是一根分成两叉的红色根茎……我应该好好记住样子，到达顶部后找到同样的药草。药草在上次去过的魔法密林谢恩拥有的森林里……",
+      "selection": {
+        "startAt": "我再次在林中之城",
+        "endBefore": "幸好你"
+      },
+      "oldSha256": "F656F63B1E449F563952E387103DD6468081C2AC2453CFF1969B25B6CAD0EF22",
+      "newSha256": "BD3D1F98E1C6EF77ED0816F049D3F0FB5C459F3D9BD41180C1BFE1E78D3F394E"
+    },
+    {
+      "category": "怀旧服-任务说明#10600",
+      "english": "The cave fairy Zelya in the Forgotten Hollow explained that she once lived much deeper inside the cave. She longs to return to her old home, but while out on a walk she was attacked by Glowshrooms and dropped the map she had drawn to find her way back. The monsters may have already torn it to pieces, but if I defeat the Glowshrooms east of Forgotten Hollow and gather the fragments, she might be able to figure something out.",
+      "before": "遗忘山谷的洞穴妖精泽莉娅似乎有请求。但要找到遗忘山谷的位置本身可能就是个挑战……遗忘山谷的洞穴妖精泽莉娅解释说，她曾经住在洞穴更深处。她很想回到从前的家，但有次外出散步时遭到发光蘑菇袭击，弄丢了自己画好的回家地图。地图也许已经被怪物撕碎了，但如果我打倒遗忘山谷东边的发光蘑菇并收集碎片，她也许还能想出办法。按照洞穴妖精泽莉娅的请求，你打倒怪物并把通往她原本家园的地图碎片带了回来。希望里面还能找到一些线索……",
+      "after": "遗忘山谷的洞穴妖精泽莉娅解释说，她曾经住在洞穴更深处。她很想回到从前的家，但有次外出散步时遭到发光蘑菇袭击，弄丢了自己画好的回家地图。地图也许已经被怪物撕碎了，但如果我打倒遗忘山谷东边的发光蘑菇并收集碎片，她也许还能想出办法。",
+      "selection": {
+        "startAt": "遗忘山谷的洞穴妖精泽莉娅解释说",
+        "endBefore": "按照洞穴妖精泽莉娅"
+      },
+      "oldSha256": "C8FFE69B38FCD84223E4243538AD16EEEA3B81187079AEC1B0AB03C8A1F35196",
+      "newSha256": "47F8825C5CF875F7B3C421B00F731B94FE34B869112AD1F46E4BDD8B7E06A326"
+    },
+    {
+      "category": "怀旧服-任务说明#10601",
+      "english": "The cave fairy Zelya in the Forgotten Hollow was struggling to piece together the fragments of her map. To restore it, she asked me to bring her Raffle Petals, which can be obtained by defeating Raffles east of the village. Looks like that’s where I'll need to go.",
+      "before": "遗忘山谷的洞穴妖精泽莉娅似乎有新的请求。洞穴妖精泽莉娅正在努力拼回地图碎片。为了修复地图，她让我带来莱佛花瓣，这些可以从村子东边的莱佛身上获得。看来我得去那里了。按照泽莉娅的请求，你打倒了莱佛，并收集了足够的莱佛花瓣带回给她。",
+      "after": "洞穴妖精泽莉娅正在努力拼回地图碎片。为了修复地图，她让我带来莱佛花瓣，这些可以从村子东边的莱佛身上获得。看来我得去那里了。",
+      "selection": {
+        "startAt": "洞穴妖精泽莉娅正在",
+        "endBefore": "按照泽莉娅"
+      },
+      "oldSha256": "38E6DFB77025E8246FB86DEB04B8055596302B700B14BFBCF3CE0B6C2DFD9588",
+      "newSha256": "954A54FB0D46225555BC542221D45616D5CEE57E86D3FABB05C14ED1AE83C0FF"
+    },
+    {
+      "category": "怀旧服-任务说明#10602",
+      "english": "Zelya restored her precious map and tried to follow it back to her old home, but she could not make it past the fierce monsters blocking the way. She asked me to defeat the monsters west of the Forgotten Hollow to help her get home safely.",
+      "before": "遗忘山谷的洞穴妖精泽莉娅似乎又有请求。泽莉娅修复了珍贵的地图，并试着按照地图回到从前的家，但路上被凶猛的怪物挡住，无法通过。她拜托我打倒遗忘山谷西边的怪物，帮她安全回家。按照泽莉娅的请求，你打倒了水蜥和回声章鱼。可感觉怪物仍不断从洞穴深处涌出。里面到底发生了什么？",
+      "after": "泽莉娅修复了珍贵的地图，并试着按照地图回到从前的家，但路上被凶猛的怪物挡住，无法通过。她拜托我打倒遗忘山谷西边的怪物，帮她安全回家。",
+      "selection": {
+        "startAt": "泽莉娅修复了",
+        "endBefore": "按照泽莉娅"
+      },
+      "oldSha256": "AAD9BBD32E61F9CD8FB7697DCEC539635452F39627B57058535B155170F4EA66",
+      "newSha256": "689D381528B22D7A5A717BCAB62194EE5712D03C9D1BFFDBA223CF8951352C88"
+    },
+    {
+      "category": "怀旧服-任务说明#10603",
+      "english": "Myra in Perilous Descent I wants her changed companions to rest in peace. At her request, I must put down the nearby Myewood, as well as the Sporewood deeper in the cave.",
+      "before": "危险下降地 I 的米拉似乎沉浸在悲伤之中。米拉希望那些已经改变的同伴能够安息。按照她的请求，我必须解决附近的树喵木，以及洞穴更深处的孢木。听从米拉的恳求，我别无选择，只能砍倒那些曾经是她同伴的生物。它们到底为什么会变成这样……",
+      "after": "米拉希望那些已经改变的同伴能够安息。按照她的请求，我必须解决附近的树喵木，以及洞穴更深处的孢木。",
+      "selection": {
+        "startAt": "米拉希望",
+        "endBefore": "听从米拉"
+      },
+      "oldSha256": "188D10AE1314A8A64C023042FC1B8F33E9DF9B128A5F844F73A860BF4F28DC4B",
+      "newSha256": "0D287A8CD6ED9C5AE916FECF81AABBD4B8C0E57FFCB02EF8B189B0B19775222F"
+    },
+    {
+      "category": "怀旧服-任务说明#10604",
+      "english": "Myra in Perilous Descent I asked me to deliver news of this place to another of her old friends, Grendel the Really Old. I should be able to find Grendel the Really Old atop Ellinia, at the Magic Library.",
+      "before": "危险下降地 I 的米拉似乎还有另一个请求。米拉让我把这个地方的消息带给她的另一位老朋友——汉斯。应该可以在魔法密林顶部的魔法图书馆找到汉斯。当我在魔法密林见到汉斯时，他听说遗忘洞穴重新被发现后非常震惊，也对那里发生的事深感不安。",
+      "after": "米拉让我把这个地方的消息带给她的另一位老朋友——汉斯。应该可以在魔法密林顶部的魔法图书馆找到汉斯。",
+      "selection": {
+        "startAt": "米拉让我",
+        "endBefore": "当我在魔法密林"
+      },
+      "oldSha256": "31C99D1E282537CB18496D3800CF6EEA74A3BF95D5BC41FF23D4713963FC0F15",
+      "newSha256": "A3D4BBB36C5693AA2DA8516288404FA3B05C587C7B35E8D30B144DB64DCCC1E2"
+    },
+    {
+      "category": "怀旧服-任务说明#10700",
+      "english": "Riel introduced me to a part time job, where I have to collect 10 Coconuts. Why don't I start collecting those delicious looking Coconuts over there on the right?",
+      "before": "黄金海滩有位名叫丽尔的美丽女孩似乎需要帮助……丽尔给我介绍了一份兼职，需要收集 10 个椰子。不如先去右边收集那些看起来很好吃的椰子吧。你按照丽尔的要求带回了新鲜椰子。丽尔说我随时都可以回来工作。看来在黄金海滩不会饿肚子了。",
+      "after": "丽尔给我介绍了一份兼职，需要收集 10 个椰子。不如先去右边收集那些看起来很好吃的椰子吧。",
+      "selection": {
+        "startAt": "丽尔给我介绍了",
+        "endBefore": "你按照"
+      },
+      "oldSha256": "BAA06184FD5A359A532E3C39D8479294783B020D3EED20B2B7B4FA115E8D81E6",
+      "newSha256": "5DB76E8AC6EED12B7632FCEABE8514515F4F85DC2E856B43D80636D4C904022E"
+    },
+    {
+      "category": "怀旧服-任务说明#10701",
+      "english": "I have to prepare enough ingredients for 15 people, and bring them to Riel in Florina Beach.",
+      "before": "黄金海滩的丽尔问了我一个关于黄金海滩的问题。小菜一碟～开始工作前我就能回答。我需要准备 15 人份的食材，并交给黄金海滩的丽尔。你回答了丽尔提出的所有问题并通过测试，然后去收集了 15 人份的食材。",
+      "after": "我需要准备 15 人份的食材，并交给黄金海滩的丽尔。",
+      "selection": {
+        "startAt": "我需要准备",
+        "endBefore": "你回答了"
+      },
+      "oldSha256": "762A9E1749092D90901BAF6306DB03D6B7FF146BC31519E328308C1BB8F0E27B",
+      "newSha256": "49601C87DE00C81207E63C3F68217F2CCED1FEDB13109D3AFF7536AFA9100ACD"
+    },
+    {
+      "category": "怀旧服-任务说明#10702",
+      "english": "I have to bring ingredients for 30 people to Riel in Florina Beach.",
+      "before": "看来黄金海滩的丽尔还有别的请求。我需要把 30 人份的食材带给黄金海滩的丽尔。我通过兼职，为来到黄金海滩的游客收集了制作料理的食材。",
+      "after": "我需要把 30 人份的食材带给黄金海滩的丽尔。",
+      "selection": {
+        "startAt": "我需要把",
+        "endBefore": "我通过兼职"
+      },
+      "oldSha256": "E6449A4DA7FF1458D83CB212FB9C5F0CCF9382931E5AEBDE0C9F486CCC7F05BF",
+      "newSha256": "7F4D6BF6AB09E4E6C96A80981BCDF582FE5A626E0C83E9C80834C69A461C69CC"
+    },
+    {
+      "category": "怀旧服-任务说明#10703",
+      "english": "I need to collect some ingredients to develop the Special Taste of Florina Beach. I heard that 10 Coconuts, 10 Lorang Claws, 10 Clang Claws, and 10 Lupin's Bananas are necessary. Will Valen's new recipe succeed~?",
+      "before": "丽尔正在黄金海滩开发一道特色料理。我需要收集一些食材，用来研发黄金海滩的特别风味。听说需要 10 个椰子、10 个洛朗爪、10 个螃蟹爪和 10 个猴子香蕉。瓦伦的新食谱会成功吗～我已经很熟悉黄金海滩的工作了。我又去找了丽尔一次，并帮了她的忙。她为什么这么拼命地想帮瓦伦呢？",
+      "after": "我需要收集一些食材，用来研发黄金海滩的特别风味。听说需要 10 个椰子、10 个洛朗爪、10 个螃蟹爪和 10 个猴子香蕉。瓦伦的新食谱会成功吗～",
+      "selection": {
+        "startAt": "我需要收集",
+        "endBefore": "我已经很熟悉"
+      },
+      "oldSha256": "19836C0BB00DD7477D9F33B1931DDFA34A5AD042B046760D65EA2D18E62ACDC4",
+      "newSha256": "436C671B22BDA629706048257DCFAB738742F1AE773ECD30DACE5B86EA0B82A7"
+    },
+    {
+      "category": "怀旧服-任务说明#20000",
+      "english": "Perhaps Dances with Balrog of Perion could teach me greater lessons.",
+      "before": "达到 30 级并掌握剑士之道后，我产生了想继续学习的冲动。也许勇士部落的武术教练可以教我更高深的课程。勇士部落的武术教练看到我比以前强大了许多，似乎有些惊讶。",
+      "after": "也许勇士部落的武术教练可以教我更高深的课程。",
+      "selection": {
+        "startAt": "也许勇士部落",
+        "endBefore": "勇士部落的武术教练看到"
+      },
+      "oldSha256": "9EDE245A8E6E154833A0A9184460E75925B0714760922B4F7542AF82D4801F14",
+      "newSha256": "02A5B1A018E9A3FAC6EEDA0CF04A0B09F3361FCFDAB1F0820C14AA97C4EBD721"
+    },
+    {
+      "category": "怀旧服-任务说明#20001",
+      "english": "Perion’s Dances with Balrog handed me a letter and told me to deliver it to Warrior Job Instructor, who can be found somewhere in West Rocky Mountain IV. He said I’d be able to learn more details there.",
+      "before": "勇士部落的武术教练似乎想测试我是否值得接受他的教导。勇士部落的武术教练交给我一封信，让我送给可以在西部岩山 IV 某处找到的战士转职教官。他说在那里能了解更多细节。我在西部岩山 IV 见到了战士转职教官。他说会测试我是否有资格进行二转。太好了！我告诉他我已经准备好面对一切！",
+      "after": "勇士部落的武术教练交给我一封信，让我送给可以在西部岩山 IV 某处找到的战士转职教官。他说在那里能了解更多细节。",
+      "selection": {
+        "startAt": "勇士部落的武术教练交给我",
+        "endBefore": "我在西部岩山"
+      },
+      "oldSha256": "81CDA940A6AACDEFB3E848D354031DC880478EECE6C8D4428B7A68BD9736D582",
+      "newSha256": "91B4546C960BA083179456A8CFD0FC1999F0E6B5E86CE04C774F19AFA00BCDB2"
+    },
+    {
+      "category": "怀旧服-任务说明#20002",
+      "english": "West Rocky Mountain IV’s Warrior Job Instructor gave me a mission to enter a hidden area, defeat the monsters there, and collect a certain item.",
+      "before": "西部岩山 IV 的战士转职教官似乎准备好给我测试，证明我是否值得变得更强。西部岩山 IV 的战士转职教官给了我一个任务：进入隐藏区域，打倒里面的怪物，并收集指定道具。你通过了西部岩山 IV 战士转职教官的测试！",
+      "after": "西部岩山 IV 的战士转职教官给了我一个任务：进入隐藏区域，打倒里面的怪物，并收集指定道具。",
+      "selection": {
+        "startAt": "西部岩山 IV 的战士转职教官给了我",
+        "endBefore": "你通过了"
+      },
+      "oldSha256": "BCE71314C44054CB0812E994142B50D299B9C6F2E4564CA64D88096CD990F4BF",
+      "newSha256": "76189B91E36BAF2C21A9D1F9F44ED88D71BCA29D4067E6F0E31536FB5EE33043"
+    },
+    {
+      "category": "怀旧服-任务说明#20003",
+      "english": "I received The Proof of a Hero for successfully passing the Warrior Job Instructor’s test. I should return to Dances with Balrog in Perion.",
+      "before": "既然我通过了战士转职教官的测试，应该已经证明了自己的实力！成功通过战士转职教官测试后，我获得了英雄的证明。现在应该回勇士部落找武术教练。勇士部落的武术教练热情地欢迎了我，我完成了新的转职，获得了更强大的力量！",
+      "after": "成功通过战士转职教官测试后，我获得了英雄的证明。现在应该回勇士部落找武术教练。",
+      "selection": {
+        "startAt": "成功通过战士转职教官",
+        "endBefore": "勇士部落的武术教练热情"
+      },
+      "oldSha256": "FC5E5D2C517491D47CBA514DCD4D12BF46DE61989C395529CC4264511B7FD80B",
+      "newSha256": "5028B961FF789F0EDF119A1C0AB1C6B3BD9244CC481E48A2516E406F4757A5FB"
+    },
+    {
+      "category": "怀旧服-任务说明#20100",
+      "english": "Perhaps Grendel the Really Old of Ellinia could teach me greater lessons.",
+      "before": "达到 30 级并掌握魔法师之道后，我产生了想继续学习的冲动。也许魔法密林的汉斯可以教我更高深的课程。汉斯说，如果我能通过他给出的测试，他会很乐意继续教导我。我已经不再是从前那个弱小的人了，但听说还要面对试炼，还是有点紧张。",
+      "after": "也许魔法密林的汉斯可以教我更高深的课程。",
+      "selection": {
+        "startAt": "也许魔法密林",
+        "endBefore": "汉斯说"
+      },
+      "oldSha256": "FF79B266BDB34BBF657156A3B3E951F1735CACAD0A20074075300C5CC0A0BC77",
+      "newSha256": "89557344A185B6988B7A0B7E8B80AAD0126B7E3312FE2FEED92D6F1E7AFE3C0F"
+    },
+    {
+      "category": "怀旧服-任务说明#20101",
+      "english": "Ellinia’s Grendel the Really Old handed me a letter and told me to deliver it to Magician Job Instructor, who can be found somewhere in The Forest North of Ellinia. He said I’d be able to learn more details there.",
+      "before": "魔法密林的汉斯似乎想测试我是否值得接受他的教导。魔法密林的汉斯交给我一封信，让我送给可以在魔法密林北部森林某处找到的魔法师转职教官。他说在那里能了解更多细节。我在魔法密林北部森林见到了魔法师转职教官。他说会测试我是否有资格进行二转。太好了！我告诉他我已经准备好面对一切！",
+      "after": "魔法密林的汉斯交给我一封信，让我送给可以在魔法密林北部森林某处找到的魔法师转职教官。他说在那里能了解更多细节。",
+      "selection": {
+        "startAt": "魔法密林的汉斯交给我",
+        "endBefore": "我在魔法密林北部森林"
+      },
+      "oldSha256": "4691925A980CA93B05A89E59A344994B46D2079A33352DC786BB1F694FEC9102",
+      "newSha256": "6DD8E7314AE051783B6F722B7CB6854D187811DDC5B35783ED7904ADC6DDAF31"
+    },
+    {
+      "category": "怀旧服-任务说明#20102",
+      "english": "The Forest North of Ellinia’s Magician Job Instructor gave me a mission to enter a hidden area, defeat the monsters there, and collect a certain item.",
+      "before": "魔法密林北部森林的魔法师转职教官似乎准备好给我测试，证明我是否值得变得更强。魔法密林北部森林的魔法师转职教官给了我一个任务：进入隐藏区域，打倒里面的怪物，并收集指定道具。你通过了魔法密林北部森林魔法师转职教官的测试！",
+      "after": "魔法密林北部森林的魔法师转职教官给了我一个任务：进入隐藏区域，打倒里面的怪物，并收集指定道具。",
+      "selection": {
+        "startAt": "魔法密林北部森林的魔法师转职教官给了我",
+        "endBefore": "你通过了"
+      },
+      "oldSha256": "BC3BA486DF450DB2307D1561618964D386E5B6E082A8278D7A49D9D463BF09AD",
+      "newSha256": "8CBE9CD5B90E0F4F74390439215D0B44172B7010F849C725214276E247FB5449"
+    },
+    {
+      "category": "怀旧服-任务说明#20103",
+      "english": "After successfully passing Magician Job Instructor’s test, I received k as proof. Now, I should return to Grendel the Really Old in Ellinia, right?",
+      "before": "既然我通过了魔法师转职教官的测试，应该已经证明了自己的实力！成功通过魔法师转职教官测试后，我获得了英雄的证明。现在应该回魔法密林找汉斯了吧？魔法密林的汉斯热情地欢迎了我，我完成了新的转职，获得了更强大的力量！",
+      "after": "成功通过魔法师转职教官测试后，我获得了英雄的证明。现在应该回魔法密林找汉斯了吧？",
+      "selection": {
+        "startAt": "成功通过魔法师转职教官",
+        "endBefore": "魔法密林的汉斯热情"
+      },
+      "oldSha256": "656E9648477168A677852AF19E77292BCB583BCCFFDAAF2D79138C84343A7B08",
+      "newSha256": "79CFA11A5CFEAC5278F32EA91BC90D5D3385802BDED33B5935C841883EA0A7CE"
+    },
+    {
+      "category": "怀旧服-任务说明#20200",
+      "english": "Perhaps Athena Pierce of Henesys could teach me greater lessons.",
+      "before": "达到 30 级并掌握弓箭手之道后，我产生了想继续学习的冲动。也许射手村的赫丽娜可以教我更高深的课程。赫丽娜说，如果我能通过她给出的测试，她会很乐意继续教导我。我已经不再是从前那个弱小的人了，但听说还要面对试炼，还是有点紧张。",
+      "after": "也许射手村的赫丽娜可以教我更高深的课程。",
+      "selection": {
+        "startAt": "也许射手村",
+        "endBefore": "赫丽娜说"
+      },
+      "oldSha256": "6B089D16E8B418A31B948E352222FE395EDC5677AB52BB39BD757DE5F217E2AA",
+      "newSha256": "86F5C405269682050FBC88C3E2A83761558F9E7B02F1DD2932589D21F6427A02"
+    },
+    {
+      "category": "怀旧服-任务说明#20201",
+      "english": "Henesys’s Athena Pierce handed me a letter and told me to deliver it to Bowman Job Instructor, who can be found somewhere in The Road to the Dungeon. He said I’d be able to learn more details there.",
+      "before": "射手村的赫丽娜似乎想测试我是否值得接受她的教导。射手村的赫丽娜交给我一封信，让我送给可以在通往迷宫之路某处找到的弓箭手转职教官。她说在那里能了解更多细节。我在通往迷宫之路见到了弓箭手转职教官。她说会测试我是否有资格进行二转。太好了！我告诉她我已经准备好面对一切！",
+      "after": "射手村的赫丽娜交给我一封信，让我送给可以在通往迷宫之路某处找到的弓箭手转职教官。她说在那里能了解更多细节。",
+      "selection": {
+        "startAt": "射手村的赫丽娜交给我",
+        "endBefore": "我在通往迷宫之路"
+      },
+      "oldSha256": "A8022F3880B922B2049D5BB0C1B5320373A4A719FA95FDBEB2A58230953ACF3F",
+      "newSha256": "000DBD0F708456CF32EB92C2AD93387EEF5B80B492AAF426C6C0496E8F4EDDB8"
+    },
+    {
+      "category": "怀旧服-任务说明#20202",
+      "english": "The Road to the Dungeon’s Bowman Job Instructor gave me a mission to enter a hidden area, defeat the monsters there, and collect a certain item.",
+      "before": "通往迷宫之路的弓箭手转职教官似乎准备好给我测试，证明我是否值得变得更强。通往迷宫之路的弓箭手转职教官给了我一个任务：进入隐藏区域，打倒里面的怪物，并收集指定道具。你通过了通往迷宫之路弓箭手转职教官的测试！",
+      "after": "通往迷宫之路的弓箭手转职教官给了我一个任务：进入隐藏区域，打倒里面的怪物，并收集指定道具。",
+      "selection": {
+        "startAt": "通往迷宫之路的弓箭手转职教官给了我",
+        "endBefore": "你通过了"
+      },
+      "oldSha256": "136649699C1A6DF9C3544F94842ED7A796C976D0F2BC0E0A501C629B7130397D",
+      "newSha256": "B94E4C714B0B19AB45F2580804BC9CB70C1916EF2CF609D41D1592EE9E709FBC"
+    },
+    {
+      "category": "怀旧服-任务说明#20203",
+      "english": "After successfully passing Bowman Job Instructor’s test, I received k as proof. Now, I should return to Athena Pierce in Henesys, right?",
+      "before": "既然我通过了弓箭手转职教官的测试，应该已经证明了自己的实力！成功通过弓箭手转职教官测试后，我获得了英雄的证明。现在应该回射手村找赫丽娜了吧？射手村的赫丽娜热情地欢迎了我，我完成了新的转职，获得了更强大的力量！",
+      "after": "成功通过弓箭手转职教官测试后，我获得了英雄的证明。现在应该回射手村找赫丽娜了吧？",
+      "selection": {
+        "startAt": "成功通过弓箭手转职教官",
+        "endBefore": "射手村的赫丽娜热情"
+      },
+      "oldSha256": "7E3A2A4CF8A0BF8AD276604817E84BA66C5FDCE8973AD31F284B027F8E8437BB",
+      "newSha256": "41FCD7966C3560A3D3D380F0D677073B2A9691AFA066AE3CFCE00B742552BA30"
+    },
+    {
+      "category": "怀旧服-任务说明#20300",
+      "english": "Perhaps Dark Lord of Kerning City could teach me greater lessons.",
+      "before": "达到 30 级并掌握飞侠之道后，我产生了想继续学习的冲动。也许废弃都市的达克鲁可以教我更高深的课程。达克鲁说，如果我能通过他给出的测试，他会很乐意继续教导我。我已经不再是从前那个弱小的人了，但听说还要面对试炼，还是有点紧张。",
+      "after": "也许废弃都市的达克鲁可以教我更高深的课程。",
+      "selection": {
+        "startAt": "也许废弃都市",
+        "endBefore": "达克鲁说"
+      },
+      "oldSha256": "3B6A4215C5E7F9E49B2C90545B0692C41B8722A480CF8D0DAC374114F1D86F04",
+      "newSha256": "31E3E9277E825221911F3CB05E03524679F59F8D2B2BF2267F5FA2E6D5C8D046"
+    },
+    {
+      "category": "怀旧服-任务说明#20301",
+      "english": "Kerning City’s Dark Lord handed me a letter and told me to deliver it to Thief Job Instructor, who can be found somewhere in Construction Site North of Kerning City. He said I’d be able to learn more details there.",
+      "before": "废弃都市的达克鲁似乎想测试我是否值得接受他的教导。废弃都市的达克鲁交给我一封信，让我送给可以在废弃都市北方工地某处找到的飞侠转职教官。他说在那里能了解更多细节。我在废弃都市北方工地见到了飞侠转职教官。他说会测试我是否有资格进行二转。太好了！我告诉他我已经准备好面对一切！",
+      "after": "废弃都市的达克鲁交给我一封信，让我送给可以在废弃都市北方工地某处找到的飞侠转职教官。他说在那里能了解更多细节。",
+      "selection": {
+        "startAt": "废弃都市的达克鲁交给我",
+        "endBefore": "我在废弃都市北方工地"
+      },
+      "oldSha256": "F6BECB950CD19CECBFA7003EE71DDE6AC03DC839B161F286CD23E81C828C78D9",
+      "newSha256": "22802F2F9FEEB178BE3D77ABC2C4330A26B2F0E9BDFC52E0A95EEFF9205675D3"
+    },
+    {
+      "category": "怀旧服-任务说明#20302",
+      "english": "Construction Site North of Kerning City’s Thief Job Instructor gave me a mission to enter a hidden area, defeat the monsters there, and collect a certain item.",
+      "before": "废弃都市北方工地的飞侠转职教官似乎准备好给我测试，证明我是否值得变得更强。废弃都市北方工地的飞侠转职教官给了我一个任务：进入隐藏区域，打倒里面的怪物，并收集指定道具。你通过了废弃都市北方工地飞侠转职教官的测试！",
+      "after": "废弃都市北方工地的飞侠转职教官给了我一个任务：进入隐藏区域，打倒里面的怪物，并收集指定道具。",
+      "selection": {
+        "startAt": "废弃都市北方工地的飞侠转职教官给了我",
+        "endBefore": "你通过了"
+      },
+      "oldSha256": "1670C39491173DF127F17E9F67CE896CBF4320DBB34273E51B561A564646D0F2",
+      "newSha256": "C54476A32663DDB59953CD0A4E454F1BC654EC8E6CEA50407EBDE61A7A001660"
+    },
+    {
+      "category": "怀旧服-任务说明#20303",
+      "english": "After successfully passing Thief Job Instructor’s test, I received k as proof. Now, I should return to Dark Lord in Kerning City, right?",
+      "before": "既然我通过了飞侠转职教官的测试，应该已经证明了自己的实力！成功通过飞侠转职教官测试后，我获得了英雄的证明。现在应该回废弃都市找达克鲁了吧？废弃都市的达克鲁热情地欢迎了我，我完成了新的转职，获得了更强大的力量！",
+      "after": "成功通过飞侠转职教官测试后，我获得了英雄的证明。现在应该回废弃都市找达克鲁了吧？",
+      "selection": {
+        "startAt": "成功通过飞侠转职教官",
+        "endBefore": "废弃都市的达克鲁热情"
+      },
+      "oldSha256": "DF10A578C4BCCEF8354DAD57348D68288F34ECC5FFB1A9F2B114791354236B70",
+      "newSha256": "A49707A0F2F25D0EBDC6434CD221B8A71DDB88210CFF9F8A347F457B02EC4AF8"
+    },
+    {
+      "category": "怀旧服-任务说明#80000",
+      "english": "\"At Ellinia, I ran into a fairy that's been busily studying the magic of life. Her name is \"\"Mar\"\" and after taking a look at my pet that's been turned into a doll, she told me she can make it come back alive with Water of Life and Life Scroll. I heard that she knows Cloy of ... since it looks like a pet trainer named Trainer Bartos of knows something about the scroll of life, I should head over there.\"",
+      "before": "在魔法密林，我遇到了一位忙着研究生命魔法的妖精。她名叫“玛尔”。她看了我变成玩偶的宠物后告诉我，只要有生命水和生命卷轴，就能让宠物重新活过来。听说她认识射手村的克洛伊……既然射手村的宠物训练师巴特斯似乎知道生命卷轴的事，我应该去那里看看……我轻松通过了射手村宠物训练师巴特斯的测试，拿到了生命水和生命卷轴，并把它们交给了妖精玛尔。凭借她的魔力和我带来的道具，她把玩偶变回了活生生的宠物。现在我还能和它再相处一段时间了……太好了……",
+      "after": "在魔法密林，我遇到了一位忙着研究生命魔法的妖精。她名叫“玛尔”。她看了我变成玩偶的宠物后告诉我，只要有生命水和生命卷轴，就能让宠物重新活过来。听说她认识射手村的克洛伊……既然射手村的宠物训练师巴特斯似乎知道生命卷轴的事，我应该去那里看看……",
+      "selection": {
+        "startAt": "",
+        "endBefore": "我轻松通过了"
+      },
+      "oldSha256": "80C644AC0A32F6C0EE3185043C892A4B8FA4A394EF754B3AC4DFA1E4C3FEDB61",
+      "newSha256": "E948795B6571E3B6BDB7AEFADEE466BA5E945D3936104987F16E31DC81A4A1F3"
+    },
+    {
+      "category": "怀旧服-任务说明#80001",
+      "english": "Casey, whom I met in , said he knows a way to enjoy myself when I get tired of hunting, and asked me to collect Monster Cards. He said I could easily get them by defeating any of these monsters scattered across Maple World: Blue Snail, Pig, Ribbon Pig, Octopus, Blue Mushroom, Horny Mushroom, Evil Eye, Curse Eye, Lupin, Cold Eye, Lorang, Tortie, Wraith, Drake, Wild Kargo. I should try to gather them when I have the time.",
+      "before": "射手村公园的凯西似乎知道在冒险岛世界寻找另一种乐趣的方法。我在射手村公园遇到凯西，他说当我打猎累了时，可以用另一种方式享受冒险，于是让我收集怪物卡片。他说只要打倒散布在冒险岛世界各处的蓝蜗牛、猪、漂漂猪、章鱼、蓝蘑菇、刺蘑菇、独眼兽、风独眼兽、猴子、冰独眼兽、洛朗、乌龟、小幽灵、飞龙、野生卡格等怪物，就能比较容易获得。以后有空应该试着收集。我把要求的道具交给射手村公园的凯西，并收到了记忆卡套组！有了它，就可以随时随地和其他冒险家玩记忆卡小游戏！如果想了解小游戏的更多内容，记得去问凯西。",
+      "after": "我在射手村公园遇到凯西，他说当我打猎累了时，可以用另一种方式享受冒险，于是让我收集怪物卡片。他说只要打倒散布在冒险岛世界各处的蓝蜗牛、猪、漂漂猪、章鱼、蓝蘑菇、刺蘑菇、独眼兽、风独眼兽、猴子、冰独眼兽、洛朗、乌龟、小幽灵、飞龙、野生卡格等怪物，就能比较容易获得。以后有空应该试着收集。",
+      "selection": {
+        "startAt": "我在射手村公园遇到",
+        "endBefore": "我把"
+      },
+      "oldSha256": "4C71A08ACC1619C2FDA54522209FEBFC84BF5475C1FB6F5018E48E0BD12C9AFB",
+      "newSha256": "DF93159DA718E05772865A165EFF57BAA9FA73B3EAB002DA82D6639B464B6494"
+    },
+    {
+      "category": "怀旧服-任务说明#80002",
+      "english": "Casey, whom I met in , said he knows a way to enjoy myself when I get tired of hunting, and asked me to collect a few items. He said I could get them by defeating Stump, Slime, and Orange Mushroom found around Henesys. I should try to gather them when I have the time.",
+      "before": "射手村公园的凯西似乎知道在冒险岛世界寻找另一种乐趣的方法。我在射手村公园遇到凯西，他说当我打猎累了时，可以用另一种方式享受冒险，于是让我收集一些道具。他说可以通过打倒射手村附近的木妖、绿水灵和绿蘑菇获得。以后有空应该试着收集。我把要求的道具交给射手村公园的凯西，并收到了绿水灵与蘑菇五子棋套组！有了它，就可以随时随地和其他冒险家玩五子棋小游戏！如果想了解小游戏的更多内容，记得去问凯西。",
+      "after": "我在射手村公园遇到凯西，他说当我打猎累了时，可以用另一种方式享受冒险，于是让我收集一些道具。他说可以通过打倒射手村附近的木妖、绿水灵和花蘑菇获得。以后有空应该试着收集。",
+      "selection": {
+        "startAt": "我在射手村公园遇到",
+        "endBefore": "我把"
+      },
+      "oldSha256": "E13BC052F8E38E341973E619F590A66E60992D03DAEF2192432DB766A82D1C09",
+      "newSha256": "7ECC3FBFCC2EA11EF58B13EE505526C95CEE65825520D045052F6BECCFD28136"
+    },
+    {
+      "category": "怀旧服-任务说明#80003",
+      "english": "Casey, whom I met in , said he could make a new type of Omok Set, and asked me to collect a few items. He said I could easily get them by defeating Stump, Slime, and Pig found around Henesys. I should try to gather them when I have the time.",
+      "before": "看来射手村公园的凯西可以制作另一种五子棋套组。我在射手村公园遇到凯西，他说可以制作新的五子棋套组，并让我收集一些道具。他说可以通过打倒射手村附近的木妖、绿水灵和猪轻松获得。以后有空应该试着收集。我把要求的道具交给射手村公园的凯西，并收到了绿水灵与猪五子棋套组！有了它，就可以随时随地和其他冒险家玩五子棋小游戏！如果想了解小游戏的更多内容，记得去问凯西。",
+      "after": "我在射手村公园遇到凯西，他说可以制作新的五子棋套组，并让我收集一些道具。他说可以通过打倒射手村附近的木妖、绿水灵和猪轻松获得。以后有空应该试着收集。",
+      "selection": {
+        "startAt": "我在射手村公园遇到",
+        "endBefore": "我把"
+      },
+      "oldSha256": "6D6FA7E90FFA03812B5906ED790E27F9F81A63B7F35BE3129BC1972B5173BD06",
+      "newSha256": "2132D68D8CE19C3C2AB584AD59C75D79CB88CDAA86809AEE08E959FECBFEFCB2"
+    },
+    {
+      "category": "怀旧服-任务说明#80004",
+      "english": "Casey, whom I met in , said he could make a new type of Omok Set, and asked me to collect a few items. He said I could get them by defeating Stump, Slime, and Octopus found around Henesys and Kerning City. I should try to gather them when I have the time.",
+      "before": "看来射手村公园的凯西可以制作另一种五子棋套组。我在射手村公园遇到凯西，他说可以制作新的五子棋套组，并让我收集一些道具。他说可以通过打倒射手村和废弃都市附近的木妖、绿水灵和章鱼获得。以后有空应该试着收集。我把要求的道具交给射手村公园的凯西，并收到了绿水灵与章鱼五子棋套组！有了它，就可以随时随地和其他冒险家玩五子棋小游戏！如果想了解小游戏的更多内容，记得去问凯西。",
+      "after": "我在射手村公园遇到凯西，他说可以制作新的五子棋套组，并让我收集一些道具。他说可以通过打倒射手村和废弃都市附近的木妖、绿水灵和章鱼获得。以后有空应该试着收集。",
+      "selection": {
+        "startAt": "我在射手村公园遇到",
+        "endBefore": "我把"
+      },
+      "oldSha256": "2086B9F4AE547FB8AB818610D2CC79552703FA8B154B37C9A5510A3790980635",
+      "newSha256": "DE8BCCD6C76D0B2DDCF3C7502E2963326F990209E78063D7C410F5D86636D39A"
+    },
+    {
+      "category": "怀旧服-任务说明#80005",
+      "english": "Casey, whom I met in , said he could make a new type of Omok Set, and asked me to collect a few items. He said I could get them by defeating Stump, Pig, and Orange Mushroom found around Henesys. I should try to gather them when I have the time.",
+      "before": "看来射手村公园的凯西可以制作另一种五子棋套组。我在射手村公园遇到凯西，他说可以制作新的五子棋套组，并让我收集一些道具。他说可以通过打倒射手村附近的木妖、猪和绿蘑菇获得。以后有空应该试着收集。我把要求的道具交给射手村公园的凯西，并收到了猪与蘑菇五子棋套组！有了它，就可以随时随地和其他冒险家玩五子棋小游戏！如果想了解小游戏的更多内容，记得去问凯西。",
+      "after": "我遇到的凯茜说，他可以制作一种新的五子棋套组，让我收集一些道具。他说，打倒射手村附近的木妖、猪和橙蘑菇就能得到这些材料。有空时我应该去收集。",
+      "selection": {
+        "startAt": "我在射手村公园遇到",
+        "endBefore": "我把"
+      },
+      "oldSha256": "B3A1798E9AD9E4E0968C910AA08BA4B39EC005348A0118319C9C196BEDEBEC49",
+      "newSha256": "741D112E75D3605D84583CA68A734E0BC4746B994462AB5C6E6301CC039246E9"
+    },
+    {
+      "category": "怀旧服-任务说明#80006",
+      "english": "Casey, whom I met in , said he could make a new type of Omok Set, and asked me to collect a few items. He said I could get them by defeating Stump, Orange Mushroom, and Octopus found around Henesys and Kerning City. I should try to gather them when I have the time.",
+      "before": "看来射手村公园的凯西可以制作另一种五子棋套组。我在射手村公园遇到凯西，他说可以制作新的五子棋套组，并让我收集一些道具。他说可以通过打倒射手村和废弃都市附近的木妖、绿蘑菇和章鱼获得。以后有空应该试着收集。我把要求的道具交给射手村公园的凯西，并收到了章鱼与蘑菇五子棋套组！有了它，就可以随时随地和其他冒险家玩五子棋小游戏！如果想了解小游戏的更多内容，记得去问凯西。",
+      "after": "我在射手村公园遇到凯西，他说可以制作新的五子棋套组，并让我收集一些道具。他说可以通过打倒射手村和废弃都市附近的木妖、花蘑菇和章鱼获得。以后有空应该试着收集。",
+      "selection": {
+        "startAt": "我在射手村公园遇到",
+        "endBefore": "我把"
+      },
+      "oldSha256": "D4FB86C38A022BE0B45FD508CEA80BA372E9659C9828D87789689C8764A71727",
+      "newSha256": "5CBBEF3B0A0976758F05D838C2DDC61AAF3C6B1A1ACDBC36BBC61136A9D6A83B"
+    },
+    {
+      "category": "怀旧服-任务说明#80007",
+      "english": "Casey, whom I met in , said he could make a new type of Omok Set, and asked me to collect a few items. He said I could get them by defeating Stump, Pig, and Octopus found around Henesys and Kerning City. I should try to gather them when I have the time.",
+      "before": "看来射手村公园的凯西可以制作另一种五子棋套组。我在射手村公园遇到凯西，他说可以制作新的五子棋套组，并让我收集一些道具。他说可以通过打倒射手村和废弃都市附近的木妖、猪和章鱼获得。以后有空应该试着收集。我把要求的道具交给射手村公园的凯西，并收到了猪与章鱼五子棋套组！有了它，就可以随时随地和其他冒险家玩五子棋小游戏！如果想了解小游戏的更多内容，记得去问凯西。",
+      "after": "我在射手村公园遇到凯西，他说可以制作新的五子棋套组，并让我收集一些道具。他说可以通过打倒射手村和废弃都市附近的木妖、猪和章鱼获得。以后有空应该试着收集。",
+      "selection": {
+        "startAt": "我在射手村公园遇到",
+        "endBefore": "我把"
+      },
+      "oldSha256": "4874DE2B96D41F67E397F7F098EE8F1B4C7060CCF7C31C42C6460207886FDBF1",
+      "newSha256": "E0751D753F5BA9D676C18127AA02562DCB1F327A2D4EDA0A641E3D7447EF8CB4"
+    },
+    {
+      "category": "怀旧服-任务说明#80008",
+      "english": "The master blacksmith of Perion, Silas Irons, has given me a test to see if I’m fit to become his apprentice. He says a blacksmith needs proper strength and knowledge, and told me to defeat monsters around Perion and bring back raw ore. It looks like raw ore can be obtained from monsters.",
+      "before": "勇士部落的铁匠大师西拉斯·艾恩斯似乎正在寻找值得收为学徒的人。勇士部落的铁匠大师西拉斯·艾恩斯给了我一项测试，看看我是否适合成为他的学徒。他说铁匠需要足够的力量和知识，并让我打倒勇士部落周围的怪物，带回原矿。看来原矿可以从怪物身上获得。你通过了勇士部落铁匠大师西拉斯·艾恩斯给出的测试。这是否意味着我能在冒险岛世界成为真正的铁匠？",
+      "after": "勇士部落的铁匠大师西拉斯·艾恩斯给了我一项测试，看看我是否适合成为他的学徒。他说铁匠需要足够的力量和知识，并让我打倒勇士部落周围的怪物，带回原矿。看来原矿可以从怪物身上获得。",
+      "selection": {
+        "startAt": "勇士部落的铁匠大师西拉斯·艾恩斯给了我",
+        "endBefore": "你通过了"
+      },
+      "oldSha256": "FE5164C4319B6288F5B3C7F64AEF593E76C5BEBEEF9E22A1C8A74157310ED04D",
+      "newSha256": "A141C04B024BF16844412F30DA47912A13072E0F173937327BD722909C8BE64D"
+    },
+    {
+      "category": "怀旧服-任务说明#80009",
+      "english": "Silas Irons, the master blacksmith of Perion, was impressed by how much I’ve grown and suggested I show off my abilities. I need to defeat Dark Axe Stumps and Zombie Mushrooms, then create an Orihalcon Ingot and a Gold Ingot, and bring them back to him.",
+      "before": "看来勇士部落的铁匠大师西拉斯·艾恩斯终于准备认可我的技术了。勇士部落的铁匠大师西拉斯·艾恩斯对我的成长印象深刻，建议我展示自己的能力。我需要打倒黑斧木妖和僵尸蘑菇，然后制作一个锂矿锭和一个黄金锭，并把它们交给他。勇士部落的工匠大师西拉斯·艾恩斯惊叹于我的成果，并交给我一个装备制作促进剂。它似乎是一种特殊道具，可以在制作装备时改变装备属性。也许我该试试看。",
+      "after": "勇士部落的铁匠大师西拉斯·艾恩斯对我的成长印象深刻，建议我展示自己的能力。我需要打倒黑斧木妖和僵尸蘑菇，然后制作一个锂矿锭和一个黄金锭，并把它们交给他。",
+      "selection": {
+        "startAt": "勇士部落的铁匠大师西拉斯·艾恩斯对我的成长印象",
+        "endBefore": "勇士部落的工匠大师西拉斯·艾恩斯惊叹"
+      },
+      "oldSha256": "D745D86BC960A5A09BC66A1F92468D0B37C7CC7B5F3B1FDE7A67D79B2299B28D",
+      "newSha256": "8F957CE5B50575229554EBF5630193F896D1628F7D58800FA81A50852A3EADFA"
+    },
+    {
+      "category": "怀旧服-任务说明#80010",
+      "english": "Silas Irons, the master blacksmith of Perion, received an important request but is struggling because he’s short on materials. To help him, I need to defeat Bubblings and bring back Mithril Ingot.",
+      "before": "看来勇士部落的铁匠大师西拉斯·艾恩斯需要帮助。也许我该去看看他。勇士部落的铁匠大师西拉斯·艾恩斯接到了一项重要委托，但因为材料不足而陷入困境。为了帮他，我需要打倒大幽灵，并带回秘银锭。你顺利交付了西拉斯·艾恩斯要求的道具。照这样下去，我也许真的能被称为优秀的学徒。",
+      "after": "勇士部落的铁匠大师西拉斯·艾恩斯接到了一项重要委托，但因为材料不足而陷入困境。为了帮他，我需要打倒蓝水灵，并带回秘银锭。",
+      "selection": {
+        "startAt": "勇士部落的铁匠大师西拉斯·艾恩斯接到了",
+        "endBefore": "你顺利"
+      },
+      "oldSha256": "B25CE2FDA4B141BC17C01B36D65BEA17D8300A34A67E97A016ECBB8DDDB2FEC7",
+      "newSha256": "E599057758F81FCF26CD2BCC9E475FF79123F30E654E581BD38654D1E05D9C43"
+    },
+    {
+      "category": "怀旧服-任务说明#80011",
+      "english": "Mr. Thunder, the master weapon craftsman of Perion, gave me a test when I asked to become his apprentice. He said that weaponcrafting requires proper strength and knowledge, and told me to use my Smithing skill to craft one Bronze Ingot and one Iron Ingot. As long as I have the materials, it shouldn’t be too difficult.",
+      "before": "勇士部落的武器制作大师雷先生似乎正在寻找值得收为学徒的人。当我请求成为他的学徒时，勇士部落的武器制作大师雷先生给了我一项测试。他说武器制作需要足够的力量和知识，并让我使用锻造技能制作一个青铜锭和一个钢铁锭。只要有材料，应该不会太难。你通过了勇士部落武器制作大师雷先生给出的测试。这是否意味着我现在能成为冒险岛世界真正的武器制作专家？",
+      "after": "当我请求成为他的学徒时，勇士部落的武器制作大师雷先生给了我一项测试。他说武器制作需要足够的力量和知识，并让我使用锻造技能制作一个青铜锭和一个钢铁锭。只要有材料，应该不会太难。",
+      "selection": {
+        "startAt": "当我请求成为",
+        "endBefore": "你通过了"
+      },
+      "oldSha256": "7B8DD55FDEDDBA340DDE70FC16110FD6E8799CB58CC32F67AC23CD76A9301993",
+      "newSha256": "4028D284F0CFE2666C00FBAA301501FD82C65B1C31D3235739B4997818DA78D2"
+    },
+    {
+      "category": "怀旧服-任务说明#80012",
+      "english": "Mr. Thunder, the master weaponcrafter of Perion, was amazed by my growth and suggested that I show off my skills. I need to defeat Iron Hogs and craft one Monkey Wrench to bring back to him.",
+      "before": "看来勇士部落的武器制作大师雷先生终于准备认可我的武器制作技术了。勇士部落的武器制作大师雷先生对我的成长感到惊讶，并建议我展示自己的技术。我需要打倒铁甲猪，并制作一个猴子扳手带回给他。勇士部落的武器制作大师雷先生对我的手艺印象深刻，并交给我一个装备制作促进剂。它看起来是一种特殊道具，可以在制作装备时改变装备属性。也许我该试试看。",
+      "after": "勇士部落的武器制作大师雷先生对我的成长感到惊讶，并建议我展示自己的技术。我需要打倒铁甲猪，并制作一个猴子扳手带回给他。",
+      "selection": {
+        "startAt": "勇士部落的武器制作大师雷先生对我的成长感到惊讶",
+        "endBefore": "勇士部落的武器制作大师雷先生对我的手艺"
+      },
+      "oldSha256": "3622CC12C1858215294E65611483B322BAC62E333E76C1431CCAEB763518E09F",
+      "newSha256": "5D4A7EC7998D3470E7B2366965FA07271E552CC503B63538D5E630733B127347"
+    },
+    {
+      "category": "怀旧服-任务说明#80013",
+      "english": "Mr. Thunder, the master weaponcrafter of Perion, received an important request but is having trouble because he’s short on materials. To help him, I’ll need to defeat some Axe Stumps and craft 10 Screws.",
+      "before": "看来勇士部落的武器制作大师雷先生需要帮助。也许我该去看看他。勇士部落的武器制作大师雷先生接到了一项重要委托，但因为材料不足而遇到麻烦。为了帮他，我需要打倒一些斧木妖，并制作 10 个螺丝。你顺利交付了雷先生要求的道具。照这样下去，我也许真的能被称为优秀的学徒。",
+      "after": "勇士部落的武器制作大师雷先生接到了一项重要委托，但因为材料不足而遇到麻烦。为了帮他，我需要打倒一些斧木妖，并制作 10 个螺丝。",
+      "selection": {
+        "startAt": "勇士部落的武器制作大师雷先生接到了",
+        "endBefore": "你顺利"
+      },
+      "oldSha256": "55887673452FBC10D7F7CE8971739EB1B57A69AA29F8BEE6DAB19074D9020371",
+      "newSha256": "E2C0BE1AD3BBAF489BB71F782ABA589654B3738FBE06BECFFBFFB44C7F4DFE26"
+    },
+    {
+      "category": "怀旧服-任务说明#80014",
+      "english": "When I told Francois, the tailor of Ellinia, that I wanted to become his apprentice, he gave me a test. He said tailoring requires the right balance of skill and knowledge, and asked me to defeat monsters near Henesys and collect Leafs.",
+      "before": "魔法密林的裁缝弗朗索瓦似乎正在寻找值得收为学徒的人。当我告诉魔法密林的裁缝弗朗索瓦想成为他的学徒时，他给了我一项测试。他说裁缝需要技巧和知识的平衡，并让我打倒射手村附近的怪物，收集叶子。你通过了魔法密林裁缝弗朗索瓦给出的测试。这是否意味着我现在能成为冒险岛世界真正的裁缝？",
+      "after": "当我告诉魔法密林的裁缝弗朗索瓦想成为他的学徒时，他给了我一项测试。他说裁缝需要技巧和知识的平衡，并让我打倒射手村附近的怪物，收集叶子。",
+      "selection": {
+        "startAt": "当我告诉",
+        "endBefore": "你通过了"
+      },
+      "oldSha256": "0C60A1397B38B4A667872C0CF51D6763164E3BFBD2A73A3CD0A2C29C5380038C",
+      "newSha256": "66E3361B6C17A0F45CE2ADFFD3C0F731B8B7B260DBF026651A740F1C4F4F6C43"
+    },
+    {
+      "category": "怀旧服-任务说明#80015",
+      "english": "Francois, the tailor of Ellinia, was impressed by how much I’ve grown and suggested I show off my abilities. I need to defeat Wild Boars and craft a Red Starry Bandana to bring back.",
+      "before": "看来魔法密林的裁缝弗朗索瓦终于准备认可我的裁缝技术了。魔法密林的裁缝弗朗索瓦对我的成长印象深刻，建议我展示自己的能力。我需要打倒野猪，并制作一条红色星星头巾带回去。魔法密林的裁缝弗朗索瓦赞赏了我的手艺，并交给我一个装备制作促进剂。它似乎是一种特殊道具，可以在制作装备时改变装备属性。也许我该试试看。",
+      "after": "魔法密林的裁缝弗朗索瓦对我的成长印象深刻，建议我展示自己的能力。我需要打倒野猪，并制作一条红色星星头巾带回去。",
+      "selection": {
+        "startAt": "魔法密林的裁缝弗朗索瓦对我的成长印象",
+        "endBefore": "魔法密林的裁缝弗朗索瓦赞赏"
+      },
+      "oldSha256": "D3BF19D6698E96753EBC4333D7AF3B9BAEF2ECFD65BD1011A96575A3A9F3FA85",
+      "newSha256": "B7A807D726524B8B3E0C34FA75465404C6154493D869B9035043208F17DDEE1C"
+    },
+    {
+      "category": "怀旧服-任务说明#80016",
+      "english": "Francois, the tailor of Ellinia, received an important request but is struggling due to a lack of materials. To help him out, I need to defeat Green Mushrooms and craft 10 Spool of Thread to bring back.",
+      "before": "看来魔法密林的裁缝弗朗索瓦需要帮助。也许过一阵子我该去看看。魔法密林的裁缝弗朗索瓦接到了一项重要委托，但因缺少材料而困扰。为了帮他，我需要打倒绿蘑菇，并制作 10 个线轴带回去。你安全交付了弗朗索瓦要求的道具。到这个程度，我应该算是相当可靠的学徒了。",
+      "after": "魔法密林的裁缝弗朗索瓦接到了一项重要委托，但因缺少材料而困扰。为了帮他，我需要打倒绿蘑菇，并制作 10 个线轴带回去。",
+      "selection": {
+        "startAt": "魔法密林的裁缝弗朗索瓦接到了",
+        "endBefore": "你安全"
+      },
+      "oldSha256": "A479954AAFDFB59C7E9BD85C1F2880C1CD384A48CD2676B9F5E3105685E617B4",
+      "newSha256": "DD61BFFA2DCC98D34B8B154986AEF56F38C3B52B1321FA1D6B2F58CEA97BDE88"
+    },
+    {
+      "category": "怀旧服-任务说明#80017",
+      "english": "When I told Vicious, the carpenter of Henesys, that I wanted to become his apprentice, he gave me a test. He said woodworking requires proper strength and knowledge, and asked me to defeat monsters near Henesys and collect Tree Branches.",
+      "before": "射手村的木匠维西似乎正在寻找值得收为学徒的人。当我告诉射手村的木匠维西想成为他的学徒时，他给了我一项测试。他说木工需要足够的力量和知识，并让我打倒射手村附近的怪物，收集树枝。你通过了射手村木匠维西给出的测试。这是否意味着我现在能成为冒险岛世界真正的木匠？",
+      "after": "当我告诉射手村的木匠维西想成为他的学徒时，他给了我一项测试。他说木工需要足够的力量和知识，并让我打倒射手村附近的怪物，收集树枝。",
+      "selection": {
+        "startAt": "当我告诉",
+        "endBefore": "你通过了"
+      },
+      "oldSha256": "62981F45AAAE5AC9F9892A0713841AA474E979A52FB47939DE55DC03E998C642",
+      "newSha256": "49ABD70596723AA090A4A8C30660FBEFEA147BFBBFCDA832D63AF6469BC74821"
+    },
+    {
+      "category": "怀旧服-任务说明#80018",
+      "english": "Vicious, the carpenter of Henesys, was impressed by how much I’ve grown and suggested I show off my abilities. I need to defeat Dark Axe Stumps and craft The Red Relaxer to bring back.",
+      "before": "看来射手村的木匠维西终于准备认可我的木工技术了。射手村的木匠维西对我的成长印象深刻，建议我展示自己的能力。我需要打倒黑斧木妖，并制作一把红色休闲椅带回去。射手村的木匠维西赞赏了我的手艺，并交给我一个装备制作促进剂。它似乎是一种特殊道具，可以在制作装备时改变装备属性。也许我该试试看。",
+      "after": "射手村的木匠维西对我的成长印象深刻，建议我展示自己的能力。我需要打倒黑斧木妖，并制作一把红色休闲椅带回去。",
+      "selection": {
+        "startAt": "射手村的木匠维西对我的成长印象",
+        "endBefore": "射手村的木匠维西赞赏"
+      },
+      "oldSha256": "A8B4AB02E1865CA895C0BAEE65DF7156E3821944C3F043C96AAC39752BA9E015",
+      "newSha256": "601C4E09D852AB6BF101430B6225C17CDE88B572BA2D8821C3216530AF74C8F3"
+    },
+    {
+      "category": "怀旧服-任务说明#80019",
+      "english": "Vicious, the carpenter of Henesys, received an important request but is struggling due to a lack of materials. To help him out, I need to defeat Axe Stumps and craft one Processed Wood.",
+      "before": "看来射手村的木匠维西需要帮助。也许过一阵子我该去看看他。射手村的木匠维西接到了一项重要委托，但因缺少材料而困扰。为了帮他，我需要打倒斧木妖，并制作一个加工木材。你安全交付了维西要求的道具。到这个程度，我应该算是合格的学徒了。",
+      "after": "射手村的木匠维西接到了一项重要委托，但因缺少材料而困扰。为了帮他，我需要打倒斧木妖，并制作一个加工木材。",
+      "selection": {
+        "startAt": "射手村的木匠维西接到了",
+        "endBefore": "你安全"
+      },
+      "oldSha256": "DD2FA8C1978A587E9A3AACFA06A83743AEEAAB828B0A160EA4F291A13DB4F665",
+      "newSha256": "B01016A0DC7463599FCC82AB1980BDC64E52B259724C87699D43AFDC807363F0"
+    },
+    {
+      "category": "怀旧服-任务说明#80020",
+      "english": "The leatherworking master JM From tha Streetz of Kerning City gave me a test to see if I’m worthy of becoming a partner. He said that proper strength and knowledge are required for leatherworking, and asked me to defeat monsters around Kerning City and Henesys to collect Leather.",
+      "before": "废弃都市的皮革工艺大师街头的 JM 似乎正在寻找能成为生意伙伴的人。废弃都市的皮革工艺大师街头的 JM 给了我一项测试，看看我是否有资格成为伙伴。他说皮革制作需要足够的力量和知识，并让我打倒废弃都市和射手村周围的怪物，收集皮革。你通过了废弃都市皮革工艺大师街头的 JM 给出的测试。这是否意味着我也能在冒险岛世界堂堂正正地成为皮革工匠？",
+      "after": "废弃都市的皮革工艺大师街头的 JM 给了我一项测试，看看我是否有资格成为伙伴。他说皮革制作需要足够的力量和知识，并让我打倒废弃都市和射手村周围的怪物，收集皮革。",
+      "selection": {
+        "startAt": "废弃都市的皮革工艺大师街头的 JM 给了我",
+        "endBefore": "你通过了"
+      },
+      "oldSha256": "00F5A209CD24ADC5C3D424270611954BBB6359A2E2BB8DD0A95F510EF0449C18",
+      "newSha256": "C9A15B7F5FAB253F72A4D0B76F6E92CC904A02BAD5DC42761594B4D913385E2B"
+    },
+    {
+      "category": "怀旧服-任务说明#80021",
+      "english": "Impressed by my growth, the leatherworking master JM From tha Streetz of Kerning City suggested that I show what I’m capable of. I must defeat Wild Boars and craft 1 Red Chair, then bring it back.",
+      "before": "看来废弃都市的皮革工艺大师街头的 JM 终于准备认可我的皮革制作技术了。废弃都市的皮革工艺大师街头的 JM 对我的成长印象深刻，建议我展示自己的能力。我必须打倒野猪，并制作 1 把红色椅子带回去。废弃都市的皮革工艺大师街头的 JM 惊叹于我的手艺，并交给我一个装备制作促进剂。它似乎是一种特殊道具，可以在制作时改变装备属性。要不要试着用用看？",
+      "after": "废弃都市的皮革工艺大师街头的 JM 对我的成长印象深刻，建议我展示自己的能力。我必须打倒野猪，并制作 1 把红色椅子带回去。",
+      "selection": {
+        "startAt": "废弃都市的皮革工艺大师街头的 JM 对我的成长印象",
+        "endBefore": "废弃都市的皮革工艺大师街头的 JM 惊叹"
+      },
+      "oldSha256": "56ABF42A26B1390EB7E230A4AD73555D830378530C89C1ECD8DAEC455B60E2E5",
+      "newSha256": "01C39BEF5A82532560D8AF71FFBE8065E6C50C32C0511F3F84F76E3D31FFF01C"
+    },
+    {
+      "category": "怀旧服-任务说明#80022",
+      "english": "The leatherworking master JM From tha Streetz of Kerning City has received an important request but is struggling due to a lack of materials. To help him, I’ll need to defeat Jr. Neckis and gather Jr. Necki Skins.",
+      "before": "看来废弃都市的皮革工艺大师街头的 JM 又需要帮助了。已经有一阵子没见，也许我该去拜访他。废弃都市的皮革工艺大师街头的 JM 接到了一项重要委托，但因材料不足而陷入困境。为了帮他，我需要打倒小青蛇并收集小青蛇皮。你安全交付了废弃都市皮革工艺大师街头的 JM 要求的道具。到这个程度，我是不是已经算可靠的伙伴了？",
+      "after": "废弃都市的皮革工艺大师街头的 JM 接到了一项重要委托，但因材料不足而陷入困境。为了帮他，我需要打倒小青蛇并收集小青蛇皮。",
+      "selection": {
+        "startAt": "废弃都市的皮革工艺大师街头的 JM 接到了",
+        "endBefore": "你安全"
+      },
+      "oldSha256": "48530136A6E3640E0245CF2589C81658978C7E097BB72BB963F163D95A887BBE",
+      "newSha256": "69DD7DBB38EF0FB6C12F7F7C409A4FC53EE8633631C336B33FB099DE96ADD743"
+    },
+    {
+      "category": "怀旧服-任务说明#80023",
+      "english": "The Arcforger master Chrishrama of Sleepywood gave me a test when I asked to become his apprentice. He said true Arcforgers must possess great wisdom, and instructed me to defeat monsters around Sleepywood and gather a Garnet Ore.",
+      "before": "林中之城的秘法锻造大师克里斯拉玛似乎正在寻找能成为他学徒的人。当我请求成为学徒时，林中之城的秘法锻造大师克里斯拉玛给了我一项测试。他说真正的秘法锻造师必须拥有高深的智慧，并让我打倒林中之城周围的怪物，收集石榴石母矿。你通过了林中之城秘法锻造大师克里斯拉玛给出的测试。这是否意味着我终于能在冒险岛世界成为真正的秘法锻造师？",
+      "after": "当我请求成为学徒时，林中之城的秘法锻造大师克里斯拉玛给了我一项测试。他说真正的秘法锻造师必须拥有高深的智慧，并让我打倒林中之城周围的怪物，收集石榴石母矿。",
+      "selection": {
+        "startAt": "当我请求成为",
+        "endBefore": "你通过了"
+      },
+      "oldSha256": "B1B87215908A08D5469DF971E8187EA46D2590AA89FE2182E3CFED42AD6DCF8E",
+      "newSha256": "6A409C342A67072C120C135C18E6C4E8B7E3F2F1FAD1FFC0E585753AE839AB1F"
+    },
+    {
+      "category": "怀旧服-任务说明#80024",
+      "english": "The Arcforger master Chrishrama of Sleepywood was impressed with my growth and challenged me to prove my skill. I must defeat Horny Mushrooms and craft 1 Topaz to bring back.",
+      "before": "看来林中之城的秘法锻造大师克里斯拉玛终于准备认可我的秘法锻造技术了。林中之城的秘法锻造大师克里斯拉玛对我的成长印象深刻，并挑战我证明自己的技术。我必须打倒刺蘑菇，并制作 1 个黄晶带回去。林中之城的秘法锻造大师克里斯拉玛惊叹于我的手艺，并交给我一个卷轴制作促进剂。它似乎是一种特殊道具，可以在制作时创造出更强的卷轴。要不要试试看？",
+      "after": "林中之城的秘法锻造大师克里斯拉玛对我的成长印象深刻，并挑战我证明自己的技术。我必须打倒刺蘑菇，并制作 1 个黄晶带回去。",
+      "selection": {
+        "startAt": "林中之城的秘法锻造大师克里斯拉玛对我的成长印象",
+        "endBefore": "林中之城的秘法锻造大师克里斯拉玛惊叹"
+      },
+      "oldSha256": "C418748FF1D5CADE7A893385B26778A94EEECD4245E2B735CE2918F3BA707F3C",
+      "newSha256": "32E68BC522301A79813D55BE8D31EC825E2C9F14F878F426148C71BEC1957D69"
+    },
+    {
+      "category": "怀旧服-任务说明#80025",
+      "english": "The Arcforger master Chrishrama of Sleepywood has received an important research request, but he is struggling due to a lack of materials. To help him, I’ll need to defeat Green Mushrooms and gather 10 Fragment of Magic.",
+      "before": "林中之城的秘法锻造大师克里斯拉玛似乎需要帮助。也许我应该再去拜访他。林中之城的秘法锻造大师克里斯拉玛接到了一项重要研究委托，但因材料不足而陷入困境。为了帮他，我需要打倒绿蘑菇，并收集 10 个魔法碎片。你安全交付了林中之城秘法锻造大师克里斯拉玛要求的道具。这是否意味着我现在可以被称为他的学徒了？",
+      "after": "林中之城的秘法锻造大师克里斯拉玛接到了一项重要研究委托，但因材料不足而陷入困境。为了帮他，我需要打倒绿蘑菇，并收集 10 个魔法碎片。",
+      "selection": {
+        "startAt": "林中之城的秘法锻造大师克里斯拉玛接到了",
+        "endBefore": "你安全"
+      },
+      "oldSha256": "41753BF0C147EEF9DBABEF70A0EB7B303213806D43BA441ACBE26ED38FE2179E",
+      "newSha256": "218342EC0530779B36555D7575928F06DB151A5D99775F0DDDFED89820659209"
+    },
+    {
+      "category": "怀旧服-任务说明#500000",
+      "english": "Let's take the i4031080# Strange Mushroom Spore given by Arwen the Fairy to Grendel the Really Old for analysis. Then talk to Arwen the Fairy again.",
+      "before": "去魔法密林找妖精艾温。她似乎有事要拜托我。把妖精艾温交给你的奇怪蘑菇孢子带给汉斯进行分析，然后再和妖精艾温说话。你把汉斯对奇怪蘑菇孢子的分析结果告诉了妖精艾温。",
+      "after": "把妖精艾温交给你的奇怪蘑菇孢子带给汉斯进行分析，然后再和妖精艾温说话。",
+      "selection": {
+        "startAt": "把妖精艾温交给你的",
+        "endBefore": "你把汉斯"
+      },
+      "oldSha256": "0DAF9A670C672651E6BC93F388F4AFC2542A10831DDA9F6524B34064CE12D29B",
+      "newSha256": "5760ACF2E1AFA63CD627C4D479D00D7C95955C3A038CECEB3855E5ED59E65E95"
+    },
+    {
+      "category": "怀旧服-任务说明#500001",
+      "english": "As requested by Arwen the Fairy, let's head to The Tree Tunnel At the Forest Up North to find the strange cave entrance and investigate the surroundings.",
+      "before": "魔法密林的妖精艾温想再次和我谈谈上次发现的奇怪蘑菇孢子。按照妖精艾温的请求，前往北部森林的树洞，寻找奇怪的洞穴入口并调查周围。你把在洞穴入口找到的发光蘑菇交给了妖精艾温。",
+      "after": "按照妖精艾温的请求，前往北部森林的树洞，寻找奇怪的洞穴入口并调查周围。",
+      "selection": {
+        "startAt": "按照妖精艾温的请求",
+        "endBefore": "你把在洞穴入口"
+      },
+      "oldSha256": "7E6019B4B51F736821B0AA788B30ECBE5E2AA8F6723596B36FFA3D1185089D1E",
+      "newSha256": "68CC6094528C34FA309D79D246A38B9C982E3B32FA92DE9C1047FD6CFD4B4614"
+    },
+    {
+      "category": "怀旧服-任务说明#500002",
+      "english": "Grendel the Really Old is worried that there might be a problem with the World Tree and told me to go ask Manji in Perion.",
+      "before": "汉斯似乎想谈谈新发现的奇异洞穴入口……汉斯担心世界树可能出了问题，让我去勇士部落询问麦吉。我没能从麦吉那里得到答案……但我看见了他在世界树下经历的那场战斗。",
+      "after": "汉斯担心世界树可能出了问题，让我去勇士部落询问麦吉。",
+      "selection": {
+        "startAt": "汉斯担心",
+        "endBefore": "我没能"
+      },
+      "oldSha256": "E8F8F458AD89F11B739FB8AC68C48532C8D1447246CC13FECEDF93E914F0B460",
+      "newSha256": "44E645ED635DF0CC70673A39D66FC1393C3E9877321E9987F0C8ECE0075CC773"
+    },
+    {
+      "category": "怀旧服-任务说明#500005",
+      "english": "I need to collect the mysterious letters dropped by monsters Lv. 10 and above such as Ribbon Pig, Dark Stump, Octopus and Green Mushroom.. k in Henesys will exchange them for a helpful gift for my adventure.",
+      "before": "射手村的冒险岛管理员似乎要说说最近从怪物身上掉落的神秘字母。我需要收集漂漂猪、黑木妖、章鱼、绿蘑菇等 10 级以上怪物掉落的神秘字母。射手村的冒险岛管理员会用它们交换对冒险有帮助的礼物……你今天已经收集齐所有神秘字母，并换取了礼物。明天再去射手村拜访冒险岛管理员吧。",
+      "after": "我需要收集漂漂猪、黑木妖、章鱼、绿蘑菇等 10 级以上怪物掉落的神秘字母。射手村的冒险岛管理员会用它们交换对冒险有帮助的礼物……",
+      "selection": {
+        "startAt": "我需要收集",
+        "endBefore": "你今天已经"
+      },
+      "oldSha256": "82F805854A906B2409BE338F7C74C1DD836F5FDEA29E8B78DB0462113545FB55",
+      "newSha256": "22E5FFEC3D26503BAF75C67720AA22166C11A669E39B8F5C5BC1C71B4EF6EB8F"
+    },
+    {
+      "category": "怀旧服-任务说明#500006",
+      "english": "There is a gift prepared for those setting off on a new adventure in Classic World.",
+      "before": "经典世界为即将踏上新冒险的人准备了一份礼物……你获得了新旅程礼物。它应该会在今后的冒险中派上用场。",
+      "after": "经典世界为即将踏上新冒险的人准备了一份礼物……",
+      "selection": {
+        "startAt": "经典世界为即将",
+        "endBefore": "你获得了"
+      },
+      "oldSha256": "F1C18BCE42C926AC9CFF582FAA62CB3682DAA0D865D62D1B5E903A4037161C32",
+      "newSha256": "4DB97E568545FC82D685F7CDD2A1FAFF8A6BBEB83164F3D2652D196B3A5089CC"
+    }
+  ]
+}

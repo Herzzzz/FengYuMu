@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "annotation": "Visible English fields transcribed from original fixture pixels. Not copied from OCR output. Rectangles are source-image coordinates. This is stage evidence, not physical F8 or Windows rendering acceptance.",
+  "cases": [
+    {"id":"character-stats-warrior","method":"FindCharacterStatMatches","fields":[
+      ["NAME","名称",[222,176,52,20]], ["JOB","职业",[222,196,52,20]],
+      ["LEVEL","等级",[222,220,52,20]], ["GUILD","家族",[222,239,52,20]],
+      ["HP","生命值",[222,257,52,20]], ["MP","魔法值",[222,275,52,20]],
+      ["EXP","经验",[222,293,52,20]], ["FAME","人气",[222,311,52,20]],
+      ["STR","力量",[222,335,52,20]], ["DEX","敏捷",[222,353,52,20]],
+      ["INT","智力",[222,371,52,20]], ["LUK","运气",[222,390,52,20]],
+      ["ATTACK","攻击力",[397,247,61,20]], ["WEAPON DEF","物理防御力",[397,265,61,20]],
+      ["MAGIC","魔法攻击力",[397,283,61,20]], ["MAGIC DEF","魔法防御力",[397,301,61,20]],
+      ["ACCURACY","命中率",[397,319,61,20]], ["AVOIDABILITY","回避率",[397,337,61,20]],
+      ["HANDS","手技",[397,355,61,20]], ["SPEED","移动速度",[397,373,61,20]],
+      ["JUMP","跳跃力",[397,391,61,20]], ["ABILITY POINT","能力值点数",[222,420,88,22]]
+    ]},
+    {"id":"equipment-rat-mouth","method":"FindMatches","fields":[
+      ["Rat Mouth","老鼠嘴",[15,40,145,23]],
+      ["REQ LEV","需要等级",[100,60,95,14]], ["REQ STR","需要力量",[100,72,95,14]],
+      ["REQ DEX","需要敏捷",[100,84,95,14]], ["REQ INT","需要智力",[100,96,95,14]],
+      ["REQ LUK","需要运气",[100,108,95,14]],
+      ["INT","智力",[15,202,150,16]], ["WEAPON DEF","物理防御力",[15,215,175,17]],
+      ["AVOIDABILITY","回避率",[15,228,175,17]],
+      ["NUMBER OF UPGRADES AVAILABLE","剩余强化次数",[15,240,225,17]]
+    ]},
+    {"id":"equipment-crimsonheart-cloak","method":"FindMatches","fields":[
+      ["Crimsonheart Cloak","绯红",[22,37,220,23]],
+      ["REQ LEV","需要等级",[106,57,100,16]], ["REQ STR","需要力量",[106,70,100,16]],
+      ["REQ DEX","需要敏捷",[106,82,100,16]], ["REQ INT","需要智力",[106,94,100,16]],
+      ["REQ LUK","需要运气",[106,106,100,16]],
+      ["STR","力量",[22,198,160,17]], ["DEX","敏捷",[22,211,160,17]],
+      ["INT","智力",[22,224,160,17]], ["LUK","运气",[22,237,160,17]],
+      ["WEAPON DEF","物理防御力",[22,250,190,17]], ["MAGIC DEF","魔法防御力",[22,263,190,17]],
+      ["NUMBER OF UPGRADES AVAILABLE","剩余强化次数",[22,277,230,17]]
+    ]},
+    {"id":"skill-tab-triple-throw","method":"FindSkillNameMatches","fields":[
+      ["Maple Warrior","冒险岛勇士",[42,360,125,26]],
+      ["Shadow Stars","暗器伤人",[42,400,125,26]],
+      ["Shadow Shifter","假动作",[42,440,125,26]],
+      ["Venomous Star","武器用毒液",[42,480,125,26]]
+    ]},
+    {"id":"npc-jack-dialogue","method":"FindInterfaceTextMatches","fields":[
+      ["Oh, don't worry - you're just going crazy!","快疯了",[409,377,230,27]],
+      ["Put your game face on, ace!","打起精神",[596,540,94,38]]
+    ]},
+    {"id":"quest-dr-kim","method":"FindInterfaceTextMatches","fields":[
+      ["Ohh... the greatest masterpiece of all time, by me! With this blueprint, I can make the most indestructable robot ever!","蓝图",[297,223,340,43]]
+    ]}
+  ],
+  "unscored": {
+    "inventory-sorting":"Too few visible words; retained for background/HUD false-positive review.",
+    "quest-dr-kim-gyazo":"Duplicate scene; not counted twice.",
+    "character-equipment-dark-knight":"Coexisting panels retained for review; independent full field annotation pending.",
+    "character-info-pet-item-list-20260909":"Already contains translated overlays; not a clean original-language acceptance frame."
+  },
+  "missingScenes":["CW current task detail with objectives","CW skill tooltip detail","World map","Game settings","Sound settings","Crafted item tooltip"]
+}

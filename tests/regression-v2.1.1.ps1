@@ -1,4 +1,4 @@
-param(
+﻿param(
     [Parameter(Mandatory=$true)][string]$SkillImage,
     [Parameter(Mandatory=$true)][string]$ItemImage,
     [Parameter(Mandatory=$true)][string]$ShopImage,
@@ -12,7 +12,8 @@ $exe = Join-Path $repoRoot '枫语幕.exe'
 function Test-Panel([string]$name, [string]$image, [string]$cursor,
     [string[]]$expected, [int]$budgetMs) {
     if (-not (Test-Path -LiteralPath $image)) { throw "缺少测试图片：$image" }
-    Start-Process -FilePath $exe -ArgumentList @('--benchmark',
+if (-not (Get-Command Start-ProductExe -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Start-ProductExe.ps1') }
+    Start-ProductExe -FilePath $exe -ArgumentList @('--benchmark',
         "--benchmark-image=$image", "--benchmark-cursor=$cursor") `
         -WorkingDirectory $repoRoot -Wait
     $result = Get-Content (Join-Path $repoRoot 'last_run.txt') -Raw -Encoding UTF8
@@ -35,7 +36,7 @@ $results += Test-Panel '玩家商店与装备详情' $ShopImage '621,432' `
       '需要等级@','剩余强化次数：7@') 1300
 $results += Test-Panel '任务窗口、任务列表与按钮' $QuestImage '806,641' `
     @('可接取@','进行中@','已完成@','详情@','任务助手@','放弃任务@',
-      '麦加的锻炼@','比格斯的物品收集@') 1700
+      '麦加的锻炼@','比格斯的收集品@') 1700
 
 $results | Format-Table -AutoSize
 Write-Output 'v2.1.1 实图回归：4/4 通过'

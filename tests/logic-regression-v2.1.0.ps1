@@ -1,6 +1,7 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
-$assembly = [Reflection.Assembly]::LoadFile((Join-Path $repoRoot '枫语幕.exe'))
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly (Join-Path $repoRoot '枫语幕.exe')
 $storeType = $assembly.GetType('MapleOverlay.TranslationStore', $true)
 $constructor = $storeType.GetConstructor(
     [Reflection.BindingFlags]'Instance,NonPublic,Public', $null,
@@ -42,6 +43,8 @@ $rush = 'Rushes forward a certain distance in the direction you are facing. If t
 Assert-Translation '突进说明' (Invoke-Store 'FindSkillTextMatches' @($rush, '1321003')) '最多可攻击4只'
 $quest = 'I arn now under the tutelage of the famous sword master Mai in A Split Road For my first lesson she told me to hunt Blue Snails Shroorns and Fed Snails Mai also said to meet up with Biggs in Southperrv tor a useful quest'
 Assert-Translation '任务整段' (Invoke-Store 'FindTaskMatches' @($quest, '1009')) '岔路口'
+$questWithTitleAndNoise = "Mai's Training Blue Snail Red Snail I am now under the tutelage of the famous sword master Mai in A Split Road For my first lesson she told me to hunt Blue Snails Shtoorns and Fed Snails Mai also said to meet up with Biggs stores lande Cugine Lila in Southperry for a useful quest"
+Assert-Translation '任务标题不得压住长说明' (Invoke-Store 'FindTaskMatches' @($questWithTitleAndNoise, '1009')) '岔路口'
 
 # 通用人物/装备面板词条必须完整，且 OCR 常见形变仍能容错。
 Assert-Translation '人物名称' (Invoke-Store 'FindCharacterStatMatches' @('NAME')) '名称'
@@ -77,6 +80,26 @@ if ($wobble.Count -ne 0) { throw 'OCR微小抖动被当成新消息' }
 $duplicate = Invoke-NewChat -previous @('Alice: hello','Bob: hi') -current @('Bob: hi','Bob: hi')
 $duplicateItems = @($duplicate)
 if ($duplicateItems.Count -ne 1 -or $duplicateItems[0] -ne 'Bob: hi') { throw '玩家连续发送相同真消息被吞掉' }
+$suppressRecent = $chatType.GetMethod('SuppressRecentOcrReappearances', $flags)
+$recentType = [Collections.Generic.List``1].MakeGenericType([Collections.Generic.List[string]])
+$recentFrames = [Activator]::CreateInstance($recentType)
+$olderFrame = [Collections.Generic.List[string]]::new()
+$olderFrame.Add('Alice: hello')
+$recentFrames.Add($olderFrame)
+$previousFrame = [Collections.Generic.List[string]]::new()
+$previousFrame.Add('Bob: hi')
+$reappearedFrame = [Collections.Generic.List[string]]::new()
+$reappearedFrame.Add('Alice: hello')
+$candidateFrame = [Collections.Generic.List[string]]::new()
+$candidateFrame.Add('Alice: hello')
+$recentArgs = [object[]]@($recentFrames, $previousFrame, $reappearedFrame, $candidateFrame)
+$suppressed = @($suppressRecent.Invoke($null, $recentArgs))
+if ($suppressed.Count -ne 0) { throw '一次OCR漏行后又识别到的旧消息被重复翻译' }
+$repeatedFrame = [Collections.Generic.List[string]]::new()
+$repeatedFrame.Add('Alice: hello'); $repeatedFrame.Add('Alice: hello')
+$repeatArgs = [object[]]@($recentFrames, $previousFrame, $repeatedFrame, $candidateFrame)
+$preservedRepeat = @($suppressRecent.Invoke($null, $repeatArgs))
+if ($preservedRepeat.Count -ne 1) { throw '同一句真实新增消息被近期帧防抖误吞' }
 $parsed = Invoke-ParseChat "Chadson CH01: hello TugaStyle CH02: hi`n[Notice] Money lost through cash transactions cannot be recovered."
 if ($parsed.Count -ne 3 -or $parsed[0] -notlike 'Chadson:*' -or $parsed[1] -notlike 'TugaStyle:*' -or $parsed[2] -notlike '系统公告:*') {
     throw "玩家行或系统公告分隔失败：$($parsed -join ' | ')"
@@ -91,4 +114,4 @@ if (@($skills.skills | Where-Object {-not ($_.nameZh -match '[\u4e00-\u9fff]') -
 $rows = Get-Content $dictionaryPath -Encoding UTF8 | Where-Object {$_ -and -not $_.StartsWith('#')}
 if (@($rows | Where-Object {$_.Split("`t").Count -lt 3}).Count -ne 0) { throw '词库存在损坏行' }
 
-Write-Output '逻辑回归：20/20 通过'
+Write-Output '逻辑回归：22/22 通过'

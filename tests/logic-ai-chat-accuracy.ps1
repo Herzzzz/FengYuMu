@@ -1,0 +1,331 @@
+﻿param([string]$ExePath)
+$ErrorActionPreference = 'Stop'
+Add-Type -AssemblyName System.Drawing
+$repoRoot = Split-Path -Parent $PSScriptRoot
+$exe = if($ExePath){$ExePath}else{Join-Path $repoRoot 'bin/candidate-r3/枫语幕.exe'}
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly $exe
+$chatType = $assembly.GetType('MapleOverlay.OfflineChatForm', $true)
+$flags = [Reflection.BindingFlags]'Static,NonPublic,Public'
+$parse = $chatType.GetMethod('ParseChatLines', $flags)
+
+function Invoke-Parse([string]$text) {
+    $invokeArgs = [object[]]::new(1)
+    $invokeArgs[0] = $text
+    @($parse.Invoke($null, $invokeArgs))
+}
+
+$broadcast = Invoke-Parse "Friehd MisoSMELLS has0öq ed in`nCupidKillsNL O : Madpeset is scamming people mass defarne this game!`nMad eset O : SYBUA ou said that eo le farneu I eo le and ou look 0k"
+if ($broadcast.Count -ne 3 -or $broadcast[0] -notlike 'MisoSMELLS:*' -or
+    $broadcast[1] -notlike 'CupidKillsNL:*' -or $broadcast[2] -notlike 'Madeset:*' -or
+    @($broadcast | Where-Object { $_ -like 'SYBUA:*' }).Count -ne 0) {
+    throw "喇叭/好友行的人名边界错误：$($broadcast -join ' | ')"
+}
+
+$history = Invoke-Parse "'y'0Pl() thxs`n[Friendl Arrowshot has logged in.`nKEI-PYG"
+if ($history.Count -ne 2 -or $history[0] -notlike 'y0Pl:*' -or
+    $history[1] -notlike 'Arrowshot:*') {
+    throw "聊天图标或好友上线行恢复失败：$($history -join ' | ')"
+}
+
+$overlap = Invoke-Parse "Levl`n• Weapon Def.: +48`nAccuracy: +14 (4+10)`n• Remaining Enhancements: O`nPobe() '\hit`n_lhiend) MisoSMELLS has loqaed In.`nAll`npearman`nHPaossh`ncnat`nMP(S629892'"
+if ($overlap.Count -ne 2 -or $overlap[0] -notlike 'Pobe:*' -or
+    $overlap[1] -notlike 'MisoSMELLS:*' -or
+    @($overlap | Where-Object { $_ -match 'Weapon Def|Accuracy|Enhancements' }).Count -ne 0) {
+    throw "装备面板文字混入AI聊天：$($overlap -join ' | ')"
+}
+
+$internalColon = @(Invoke-Parse 'Raea CH01: 3 words: Suck my D')
+if ($internalColon.Count -ne 1 -or $internalColon[0] -ne 'Raea: 3 words: Suck my D') {
+    throw "消息正文中的words冒号被误当成第二名玩家：$($internalColon -join ' | ')"
+}
+$itemNoise = @(Invoke-Parse "Lunar Pixie:s Moonpiece`nStar Pixie's Starpiece")
+if ($itemNoise.Count -ne 0) {
+    throw "物品名中的Pixie's被误当成玩家：$($itemNoise -join ' | ')"
+}
+$flattened = @(Invoke-Parse 'Chadson CH01: hello TugaStyle CH02: hi')
+if ($flattened.Count -ne 2 -or $flattened[0] -notlike 'Chadson:*' -or
+    $flattened[1] -notlike 'TugaStyle:*') {
+    throw "同一OCR行里的两个带频道聊天没有拆开：$($flattened -join ' | ')"
+}
+$lowResolutionWrap = @(Invoke-Parse "Obliterate CH02: selective`ncoupons 6: 9k each")
+if ($lowResolutionWrap.Count -ne 1 -or
+    $lowResolutionWrap[0] -ne 'Obliterate: selective coupons 6: 9k each') {
+    throw "低分辨率续行被误当成新玩家：$($lowResolutionWrap -join ' | ')"
+}
+$damagedWrap = @(Invoke-Parse "Obliterate CH02: selective`nons: 9k each")
+if ($damagedWrap.Count -ne 1 -or $damagedWrap[0] -ne 'Obliterate: selective ons: 9k each') {
+    throw "续行首词被OCR截断后仍误当成新玩家：$($damagedWrap -join ' | ')"
+}
+$flattenedWrap = @(Invoke-Parse 'Obliterate CH02: selective coupons 6: 9k each')
+if ($flattenedWrap.Count -ne 1 -or
+    $flattenedWrap[0] -ne 'Obliterate: selective coupons 6: 9k each') {
+    throw "同一OCR行里的续行词被误当成第二位玩家：$($flattenedWrap -join ' | ')"
+}
+$flattenedDamagedWrap = @(Invoke-Parse 'Obliterate CH02: selective cou ons 6: 9k each')
+if ($flattenedDamagedWrap.Count -ne 1 -or
+    $flattenedDamagedWrap[0] -ne 'Obliterate: selective cou ons 6: 9k each') {
+    throw "同一OCR行的残缺续行词被误拆：$($flattenedDamagedWrap -join ' | ')"
+}
+$letterBadge = @(Invoke-Parse 'RawrbY Di: S>2h Axe 60%, PM offer')
+if ($letterBadge.Count -ne 1 -or $letterBadge[0] -notlike 'RawrbY:*') {
+    throw "频道徽标被OCR成字母后没有保住玩家边界：$($letterBadge -join ' | ')"
+}
+
+$detectLanguage = $chatType.GetMethod('DetectChatSourceLanguage', $flags)
+if ([string]$detectLanguage.Invoke($null, @('first it was the JR wraiths')) -ne '英语' -or
+    [string]$detectLanguage.Invoke($null, @('今天组队吗')) -ne '中文') {
+    throw 'AI聊天源语言快速判定失败'
+}
+$plausible = $chatType.GetMethod('IsPlausibleChatTranslation', $flags)
+$aiType = $assembly.GetType('MapleOverlay.ChatTextRules', $true)
+$toSimplified = $aiType.GetMethod('ToSimplifiedChinese', $flags)
+$instructionLeak = $aiType.GetMethod('LooksLikeInstructionLeak', $flags)
+$multiLine = '第一行' + [Environment]::NewLine + '第二行'
+if ([bool]$plausible.Invoke($null, @('forsen', '玩家0')) -or
+    [bool]$plausible.Invoke($null, @('short line', $multiLine)) -or
+    [bool]$plausible.Invoke($null, @('Tevin', '只输出中文译文。')) -or
+    [bool]$plausible.Invoke($null, @('Tevin', '/no_think')) -or
+    [bool]$plausible.Invoke($null, @('offer', ('无关内容' * 30))) -or
+    -not [bool]$plausible.Invoke($null, @('So much anger just like the good old days',
+        '这么生气，真像过去的美好时光！'))) {
+    throw 'AI聊天译文防乱猜/防长段幻觉边界错误'
+}
+if ([string]$toSimplified.Invoke($null, @('請報價，這是測試。')) -ne '请报价，这是测试。' -or
+    -not [bool]$instructionLeak.Invoke($null, @('只输出中文译文。')) -or
+    [bool]$instructionLeak.Invoke($null, @('请报价。'))) {
+    throw 'AI聊天简体转换或提示词泄漏检测失败'
+}
+$normalizeOcr = $chatType.GetMethod('NormalizeCommonChatOcr', $flags)
+foreach ($case in @(
+    @{ Source='ima go chec* now'; Target="I'm going to check now" },
+    @{ Source='S>60Ö/0 Ear LI-JK, 100/0 OA STR'; Target='S>60% Ear LUK, 10% OA STR' },
+    @{ Source='S>600/0 Ear LUKS, 100/0 OA STR'; Target='S>60% Ear LUK, 10% OA STR' },
+    @{ Source='8>Random Hair Cupom and one Scrol'; Target='B>Random Hair coupon and one scroll' },
+    @{ Source='S>BROWN JESTER PWOFFER'; Target='S>BROWN JESTER PM OFFER' },
+    @{ Source='S>Bunny Éars, randorn nx, matkæ'; Target='S>Bunny Ears, random nx, matk' },
+    @{ Source='S> S ear attk 60 - E anded Auto Move'; Target='S> Spear attk 60 - Expanded Auto Move' })) {
+    $actual = [string]$normalizeOcr.Invoke($null, @($case.Source))
+    if ($actual -ne $case.Target) { throw "聊天OCR通用纠错失败：$($case.Source) => $actual" }
+}
+$knownIntent = $chatType.GetMethod('TryKnownChatIntentTranslation', $flags)
+foreach ($sourceText in @(
+    'How do you whisper back someone?',
+    'How can I reply to a whisper?',
+    'How do I respond to whispers?')) {
+    $intentArgs = [object[]]@($sourceText, '')
+    if (-not [bool]$knownIntent.Invoke($null, $intentArgs) -or
+        $intentArgs[1] -ne '怎么回复别人的悄悄话？') {
+        throw "悄悄话回复意图没有覆盖常见问法：$sourceText => $($intentArgs[1])"
+    }
+}
+$sendIntentArgs = [object[]]@('How do I whisper someone?', '')
+if ([bool]$knownIntent.Invoke($null, $sendIntentArgs)) {
+    throw '发送悄悄话被错误归为回复悄悄话'
+}
+$naturalCases = @(
+    @{ Source="I'm going to check now"; Target='我现在去看看。' },
+    @{ Source='need 2 more for KPQ'; Target='废弃都市组队任务还缺2人。' },
+    @{ Source='anyone doing the GM event rn?'; Target='现在有人做GM活动吗？' },
+    @{ Source='im farming em rn'; Target='我现在在刷这些。' },
+    @{ Source='selling clean gear, offer'; Target='出售未砸卷装备，请报价。' },
+    @{ Source='Ya Omok players scared?'; Target='怎么，玩五子棋的都怕了？' },
+    @{ Source='S>Kumbi, 200k or best offer!'; Target='出售雪花镖，20万，价高者得！' },
+    @{ Source='S>Kumbi 15k'; Target='出售雪花镖，15千！' },
+    @{ Source='S>60% Ear LUK, 10% OA STR'; Target='出售60%耳环运气卷、10%套服力量卷，请报价。' },
+    @{ Source='S>30% Ear LUK, 70% OA STR'; Target='出售30%耳环运气卷、70%套服力量卷，请报价。' },
+    @{ Source='B>Claw 60% With Good Luck, 1 more for 7/7'; Target='收一张60%拳套攻击卷，求好运，7张全成就差这一张了。' })
+foreach ($case in $naturalCases) {
+    $intentArgs = [object[]]@($case.Source, '')
+    if (-not [bool]$knownIntent.Invoke($null, $intentArgs) -or $intentArgs[1] -ne $case.Target) {
+        throw "玩家口语意图回归失败：$($case.Source) => $($intentArgs[1])"
+    }
+}
+$usefulLine = $chatType.GetMethod('IsUsefulChatLine', $flags)
+if ([bool]$usefulLine.Invoke($null, @('wolfly: u t')) -or
+    -not [bool]$usefulLine.Invoke($null, @('Player: gg')) -or
+    -not [bool]$usefulLine.Invoke($null, @('WOIffy: first it was the JR wraiths'))) {
+    throw '短OCR碎片过滤误伤有效聊天或放过无效碎片'
+}
+$sameSource = $chatType.GetMethod('IsSameTranslationSource', $flags)
+if (-not [bool]$sameSource.Invoke($null, @('tor: ima go chec* now', 'tor: Ima go r, ec')) -or
+    [bool]$sameSource.Invoke($null, @('tor: ima go check now', 'Tevin: ima go check now')) -or
+    [bool]$sameSource.Invoke($null, @('tor: ima go check now', 'tor: selling some scrolls'))) {
+    throw '同一OCR消息变体防重复边界错误'
+}
+$partialNotice = @(Invoke-Parse "[Notice] Money lost")
+if ($partialNotice.Count -ne 0) { throw "残缺系统公告不应送入AI：$($partialNotice -join ' | ')" }
+$commaPresence = @(Invoke-Parse '[Friend] Arrowshot has logged in,')
+if ($commaPresence.Count -ne 1 -or $commaPresence[0] -ne 'Arrowshot: [Friend] has logged in.') {
+    throw "好友上线句末逗号没有按系统句解析：$($commaPresence -join ' | ')"
+}
+$damagedChannelBadge = @(Invoke-Parse 'BeelsFad«HÖl 0 : T> Int Bamboo Hat for Dex Bamboo Hat')
+if ($damagedChannelBadge.Count -ne 1 -or $damagedChannelBadge[0] -notlike 'BeelsFad:*') {
+    throw "低清频道徽标损坏后没有保住玩家名：$($damagedChannelBadge -join ' | ')"
+}
+$apostropheBadgeRows = @(Invoke-Parse "bumbaloe : S> Archer Glove, 5k`nRawrby O': S>2h Axe 60%, PM offer")
+if ($apostropheBadgeRows.Count -ne 2 -or $apostropheBadgeRows[1] -notlike 'Rawrby:*') {
+    throw "频道徽标被识成O'后相邻两条消息被合并：$($apostropheBadgeRows -join ' | ')"
+}
+$strongBadgeRows = @(Invoke-Parse "Obliterate cwoa: B> Selective coupons`nMookie cwo : online now`nUwugi c11: B>STR scrolls`nBattleScars cHo6 [Ink Ring] T> offer")
+if ($strongBadgeRows.Count -ne 4 -or $strongBadgeRows[0] -notlike 'Obliterate:*' -or
+    $strongBadgeRows[1] -notlike 'Mookie:*' -or $strongBadgeRows[2] -notlike 'Uwugi:*' -or
+    $strongBadgeRows[3] -notlike 'BattleScars:*') {
+    throw "增强OCR频道徽标变体未逐条拆开：$($strongBadgeRows -join ' | ')"
+}
+$damagedLetterBadgeRows = @(Invoke-Parse "itskbb cis : S> bow scroll`nGo6go7 cm1s : B> Stolen Fence")
+if ($damagedLetterBadgeRows.Count -ne 2 -or $damagedLetterBadgeRows[0] -notlike 'itskbb:*' -or
+    $damagedLetterBadgeRows[1] -notlike 'Go6go7:*') {
+    throw "频道徽标被识成cis/cm1s后没有保住两条玩家消息"
+}
+$sameSpeakerOcr = $chatType.GetMethod('IsSameChatSpeakerOcr', $flags)
+if (-not [bool]$sameSpeakerOcr.Invoke($null, @('DarkMa', 'DarkMage')) -or
+    [bool]$sameSpeakerOcr.Invoke($null, @('DarkMa', 'Warpath'))) {
+    throw '增强OCR玩家名保守同一性判断边界错误'
+}
+
+$styleType = $assembly.GetType('MapleOverlay.ChatVisualStylePolicy', $true)
+$fromSample = $styleType.GetMethod('FromSample', $flags)
+$systemStyle = $fromSample.Invoke($null, @('[Notice] warning',
+    [Drawing.Color]::Empty, [Drawing.Color]::Empty, $false))
+$chatStyle = $fromSample.Invoke($null, @('Arthur: low mp, need to repot',
+    [Drawing.Color]::White, [Drawing.Color]::Empty, $false))
+$ignoreSystem = $chatType.GetMethod('IsIgnoredSystemBroadcast', $flags)
+foreach ($warning in @(
+    '系统公告: You cannot use that skill yet.',
+    "系统公告: You don't have enough MP to use this skill.",
+    'System: Your HP is too low.',
+    'System: Your MP is running low.')) {
+    if (-not [bool]$ignoreSystem.Invoke($null, @($warning, $systemStyle))) {
+        throw "游戏系统技能/HP/MP播报未被过滤：$warning"
+    }
+}
+if ([bool]$ignoreSystem.Invoke($null, @('Arthur: low mp, need to repot', $chatStyle)) -or
+    [bool]$ignoreSystem.Invoke($null, @('系统公告: Channel 3 is now open.', $systemStyle))) {
+    throw '系统播报过滤误伤玩家聊天或普通服务器公告'
+}
+
+$fixtures = @(
+    @{ Name='broadcast'; File='ai-chat-cloudpark-broadcast.png'; Required='PARSED \| CupidKillsNL:'; Forbidden='PARSED \| SYBUA:' },
+    @{ Name='history'; File='ai-chat-cloudpark-history.png'; Required='PARSED \| Arrowshot:'; Forbidden='PARSED \| Arrow:' },
+    @{ Name='equipment-overlap'; File='ai-chat-cloudpark-equipment-overlap.png'; Required='PARSED \| MisoSMELLS:'; Forbidden='PARSED \| (?:Accuracy|Enhancements|Remaining|Weapon Def):' },
+    @{ Name='user-feedback-20260908'; File='ai-chat-user-feedback-20260908.png'; Required='PARSED \| WOIffy:'; Forbidden='PARSED \| (?:Pixie|words):' },
+    @{ Name='f8-conflict-20260909'; File='ai-chat-f8-conflict-20260909.png'; Required='PARSED \| (?:TwoBows: forsen|Kuniv: S> Wooden Tops offer)'; Forbidden='PARSED \| (?:forsen|Woonst3r):' }
+)
+foreach ($fixture in $fixtures) {
+    $image = Join-Path $repoRoot (Join-Path 'tests\fixtures' $fixture.File)
+    if (-not (Test-Path -LiteralPath $image)) { throw "缺少AI聊天实图：$image" }
+if (-not (Get-Command Start-ProductExe -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Start-ProductExe.ps1') }
+    Start-ProductExe -FilePath $exe -ArgumentList "--chat-style-benchmark=$image" `
+        -WorkingDirectory $repoRoot -Wait
+    $report = Get-Content (Join-Path $repoRoot 'chat_style_benchmark.txt') -Raw -Encoding UTF8
+    if ($report -notmatch $fixture.Required) { throw "$($fixture.Name) 实图未识别关键聊天行：$report" }
+    if ($report -match $fixture.Forbidden) { throw "$($fixture.Name) 实图仍有错误聊天行：$report" }
+}
+
+$dictionaryRows = Get-Content (Join-Path $repoRoot '枫语幕词库.tsv') -Encoding UTF8
+foreach ($entry in @(
+    @{ Source='forsen'; Target='forsen' },
+    @{ Source='Wooden Tops'; Target='木制陀螺' },
+    @{ Source='S> Wooden Tops offer'; Target='出售木制陀螺，请报价' },
+    @{ Source='How do you whisper back someone?'; Target='怎么回复别人的悄悄话？' },
+    @{ Source='Omok'; Target='五子棋' },
+    @{ Source='Kumbi'; Target='雪花镖' },
+    @{ Source='Ear LUK'; Target='耳环运气卷轴' },
+    @{ Source='OA STR'; Target='套服力量卷轴' },
+    @{ Source='GFA'; Target='手套攻击卷轴' },
+    @{ Source='CFA'; Target='拳套攻击卷轴' },
+    @{ Source='best offer'; Target='价高者得' })) {
+    $prefix = $entry.Source + [char]9 + $entry.Target + [char]9
+    $matches = @($dictionaryRows | Where-Object { $_.StartsWith($prefix, [StringComparison]::OrdinalIgnoreCase) })
+    if ($matches.Count -ne 1) {
+        throw "用户实图聊天词条不是唯一精确命中：$($entry.Source) => $($matches.Count)"
+    }
+}
+
+$instanceFlags = [Reflection.BindingFlags]'Instance,NonPublic,Public'
+$overlayType = $assembly.GetType('MapleOverlay.OverlayForm', $true)
+$constructor = $chatType.GetConstructor($instanceFlags, $null,
+    [Type[]]@($overlayType, [string]), $null)
+$chatForm = $constructor.Invoke([object[]]@($null, [string]$repoRoot))
+try {
+    $exact = $chatType.GetMethod('TryExactGlossaryTranslation', $instanceFlags)
+    foreach ($entry in @(
+        @{ Source='forsen'; Target='forsen' },
+        @{ Source='S> Wooden Tops offer'; Target='出售木制陀螺，请报价' },
+        @{ Source='How do you whisper back someone?'; Target='怎么回复别人的悄悄话？' })) {
+        $invoke = [object[]]@([string]$entry.Source, '')
+        if (-not [bool]$exact.Invoke($chatForm, $invoke) -or $invoke[1] -ne $entry.Target) {
+            throw "用户实图聊天短语未绕过模型精确翻译：$($entry.Source) => $($invoke[1])"
+        }
+    }
+} finally {
+    $chatForm.Dispose()
+}
+
+$sweepFolder = Join-Path $repoRoot 'tests\fixtures\ai-chat-sweep'
+$sweepImages = @(Get-ChildItem -LiteralPath $sweepFolder -Filter '*.png' | Sort-Object Name)
+if ($sweepImages.Count -lt 17) { throw "AI聊天广覆盖实图不足：$($sweepImages.Count)/17" }
+$sweepParsedFrames = 0
+$sweepParsedLines = 0
+$sweepResults = @{}
+foreach ($image in $sweepImages) {
+    Start-ProductExe -FilePath $exe -ArgumentList "--chat-style-benchmark=$($image.FullName)" `
+        -WorkingDirectory $repoRoot -Wait
+    $report = Get-Content (Join-Path $repoRoot 'chat_style_benchmark.txt') -Encoding UTF8
+    $parsedLines = @($report | Where-Object { $_ -like 'PARSED | *' })
+    $parsedValues = [Collections.Generic.List[string]]::new()
+    foreach ($parsedLine in $parsedLines) { $parsedValues.Add($parsedLine.Substring(9)) }
+    $sweepResults[$image.BaseName] = $parsedValues
+    if ($parsedLines.Count -gt 0) { $sweepParsedFrames++; $sweepParsedLines += $parsedLines.Count }
+    if (@($parsedLines | Where-Object {
+        $_ -match '^PARSED \| (?:Attack|Weapon Def|Magic Def|Accuracy|Enhancements|Remaining Enhancements|Type|Level|Job|STR|DEX|INT|LUK):'
+    }).Count -ne 0) {
+        throw "$($image.Name) 广覆盖实图混入结构化面板字段：$($parsedLines -join ' | ')"
+    }
+}
+if ($sweepParsedFrames -lt 15 -or $sweepParsedLines -lt 30) {
+    throw "AI聊天广覆盖识别量异常：帧=$sweepParsedFrames 行=$sweepParsedLines"
+}
+if (-not @($sweepResults['qq-180.0'] | Where-Object { $_ -like 'Kena:*' }).Count -or
+    -not @($sweepResults['qq-220.0'] | Where-Object { $_ -like 'XxAzNKiDxX:*' }).Count) {
+    throw '连续视频帧没有识别后来真实出现的Kena或XxAzNKiDxX消息'
+}
+
+$getNew = $chatType.GetMethod('GetNewChatLines', $flags)
+$suppressRecent = $chatType.GetMethod('SuppressRecentOcrReappearances', $flags)
+$recentType = [Collections.Generic.List``1].MakeGenericType([Collections.Generic.List[string]])
+$recent = [Activator]::CreateInstance($recentType)
+$previous = [Collections.Generic.List[string]]::new()
+$sequenceAdded = 0
+foreach ($stamp in @('140.0','150.0','160.0','170.0','180.0','190.0','200.0','210.0','220.0','230.0','240.0')) {
+    $current = $sweepResults["qq-$stamp"]
+    $newArgs = [object[]]@($previous, $current)
+    $candidates = $getNew.Invoke($null, $newArgs)
+    $filterArgs = [object[]]@($recent, $previous, $current, $candidates)
+    $filtered = @($suppressRecent.Invoke($null, $filterArgs))
+    $sequenceAdded += $filtered.Count
+    $recent.Add([Collections.Generic.List[string]]::new($current))
+    while ($recent.Count -gt 3) { $recent.RemoveAt(0) }
+    $previous = $current
+}
+if ($sequenceAdded -ne 7) {
+    throw "连续视频帧防重复失效：11帧应产生7条真正新增，实际${sequenceAdded}条"
+}
+
+$repeatPrevious = [Collections.Generic.List[string]]::new()
+$repeatPrevious.Add('Arthur: need hs')
+$repeatCurrent = [Collections.Generic.List[string]]::new()
+$repeatCurrent.Add('Arthur: need hs')
+$repeatCurrent.Add('Arthur: need hs')
+$repeatCandidates = @($getNew.Invoke($null, @($repeatPrevious, $repeatCurrent)))
+$repeatRecent = [Activator]::CreateInstance($recentType)
+$repeatRecent.Add([Collections.Generic.List[string]]::new($repeatPrevious))
+$repeatFilterArgs = [object[]]@($repeatRecent, $repeatPrevious, $repeatCurrent,
+    [Collections.Generic.List[string]]::new([string[]]$repeatCandidates))
+$repeatFiltered = @($suppressRecent.Invoke($null, $repeatFilterArgs))
+if ($repeatFiltered.Count -ne 1) {
+    throw "同一玩家真实重复发言被误吞或重复刷屏：应新增1条，实际$($repeatFiltered.Count)条"
+}
+
+Write-Output "AI聊天准确性：系统技能/HP/MP播报过滤、真实重复消息保留、5张问题实图 + $($sweepImages.Count)张跨视频实图通过，连续11帧仅保留${sequenceAdded}条真正新增"

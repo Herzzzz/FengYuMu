@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$Source = (Join-Path $PSScriptRoot '..\data\henesys-skills-2026-08-17.json'),
     [string]$Dictionary = (Join-Path $PSScriptRoot '..\枫语幕词库.tsv'),
     [string]$Cache = (Join-Path $PSScriptRoot '..\data\henesys-skills-zh.json'),
@@ -54,7 +54,7 @@ function Convert-ToNumberTemplate([string]$Text) {
 }
 
 function Expand-NumberTemplate([string]$English, [string]$ChineseTemplate) {
-    $values = [regex]::Matches($English, '\d+(?:\.\d+)?') | ForEach-Object { $_.Value }
+    $values = @([regex]::Matches($English, '\d+(?:\.\d+)?') | ForEach-Object { $_.Value })
     $expanded = $ChineseTemplate
     for ($i = $values.Count; $i -ge 1; $i--) {
         $expanded = $expanded.Replace('{n' + $i + '}', $values[$i - 1])

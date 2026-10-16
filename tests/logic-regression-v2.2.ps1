@@ -1,10 +1,19 @@
+﻿param(
+    # Explicit current expectation, deliberately NOT derived from the assembly under test: a
+    # version check that reads its own expectation from the artefact can never fail. Release-time
+    # callers (regression-v3.0.ps1) may still pin a different release explicitly.
+    [string]$ExpectedVersion = '4.0.0.0',
+    [string]$ExpectedDisplayVersion = 'v4.0 测试版'
+)
+
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 
 # v2.1.2 is the frozen accuracy baseline. Every v2.2 run must pass it first.
 & (Join-Path $PSScriptRoot 'logic-regression-v2.1.2.ps1')
 
-$assembly = [Reflection.Assembly]::LoadFile((Join-Path $repoRoot '枫语幕.exe'))
+if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1') }
+$assembly = Load-TestAssembly (Join-Path $repoRoot '枫语幕.exe')
 $storeType = $assembly.GetType('MapleOverlay.TranslationStore', $true)
 $ctor = $storeType.GetConstructor(
     [Reflection.BindingFlags]'Instance,NonPublic,Public', $null,
@@ -39,7 +48,8 @@ Assert-Structured '7/lO Blue Snail' '7/10 蓝蜗牛'
 $source = Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -Encoding UTF8
 foreach ($required in @(
     'BeginSafeWarmup',
-    'AI知识将在打开AI功能时按需同步',
+    '截屏与AI实时翻译已立即更新',
+    'AI仍保留上一次的稳定索引',
     '已继续使用上一次的稳定索引',
     'F8词库翻译仍可继续使用',
     'MainPanelForm',
@@ -50,9 +60,9 @@ foreach ($required in @(
     'tray.Icon = Program.AppIcon')) {
     if (-not $source.Contains($required)) { throw "v2.2 稳定性基线缺少：$required" }
 }
-if (-not $source.Contains('枫语幕 v2.2.0') -or
-    -not $source.Contains('AssemblyFileVersion("2.2.0.0")')) {
-    throw '正式版程序版本号不是 v2.2.0'
+if (-not $source.Contains("枫语幕 $ExpectedDisplayVersion") -or
+    -not $source.Contains("AssemblyFileVersion(`"$ExpectedVersion`")")) {
+    throw "正式版程序版本号不是 $ExpectedDisplayVersion"
 }
 if ($source -match 'Shown\s*\+=?[\s\S]{0,900}SyncAiKnowledge\(false\)') {
     throw '启动链路仍在主动同步AI知识，AI懒加载未生效'
@@ -63,7 +73,7 @@ if (-not $formsSource.Contains('Icon = Program.AppIcon')) {
     throw '主界面没有使用枫语幕应用图标'
 }
 if ($formsSource.Contains('MakeButton("隐藏当前翻译"')) {
-    throw '主界面仍保留与 F9 重复的隐藏翻译大按钮'
+    throw '主界面仍保留多余的隐藏翻译大按钮'
 }
 
 $buildSource = Get-Content (Join-Path $repoRoot 'src\build.ps1') -Raw -Encoding UTF8
@@ -76,4 +86,4 @@ foreach ($iconAsset in @('src\MapleLeafIcon.png', 'src\FengYuMu.ico')) {
     }
 }
 
-Write-Output 'v2.2.0 冻结基线：装备/物品/技能/任务/角色/长短句/动态数字/同名词条/聊天排除逻辑通过'
+Write-Output "$ExpectedDisplayVersion 版本一致性 + v2.2 行为冻结基线：装备/物品/技能/任务/角色/长短句/动态数字/同名词条/聊天排除逻辑通过"
