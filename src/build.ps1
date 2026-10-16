@@ -5,11 +5,22 @@ $repoRoot = Split-Path -Parent $scriptDir
 if ([string]::IsNullOrWhiteSpace($OutputPath)) { $OutputPath = Join-Path $repoRoot '枫语幕.exe' }
 $OutputPath = [IO.Path]::GetFullPath($OutputPath)
 New-Item -ItemType Directory -Force -Path (Split-Path -Parent $OutputPath) | Out-Null
-$csc = 'C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe'
+# The Framework compiler predates WinRT event projections and cannot compile
+# Graphics Capture's FrameArrived event. Use the installed Visual Studio Roslyn
+# compiler while retaining the .NET Framework runtime/reference contract.
+$vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer\vswhere.exe'
+$csc = $null
+if (Test-Path -LiteralPath $vswhere) {
+    $csc = @(& $vswhere -latest -products '*' -find 'MSBuild\**\Bin\Roslyn\csc.exe' |
+        Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1)[0]
+}
+if ([string]::IsNullOrWhiteSpace($csc)) {
+    throw '需要 Visual Studio 2022 / Build Tools 的 Roslyn C# 编译器（.NET 桌面生成工具）'
+}
 $framework = 'C:\Windows\Microsoft.NET\Framework64\v4.0.30319'
 $winmd = 'C:\Windows\System32\WinMetadata'
 
-& $csc /nologo /target:winexe /optimize+ /platform:anycpu /win32manifest:"$scriptDir\app.manifest" `
+& $csc /nologo /langversion:5 /target:winexe /optimize+ /platform:anycpu /win32manifest:"$scriptDir\app.manifest" `
   /win32icon:"$scriptDir\FengYuMu.ico" /out:"$OutputPath" `
   /reference:System.dll /reference:System.Core.dll /reference:System.Drawing.dll `
   /reference:System.Windows.Forms.dll `
