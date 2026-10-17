@@ -39,6 +39,39 @@ namespace MapleOverlay {
    var rows=new List<OverlayLabel>();for(int i=0;i<count;i++)rows.Add(FontJournal(new Rectangle(400,320,400,260),i==0?"任务":"",text,18));return rows;
   }
   static string LongBody(int paragraphs){var b=new StringBuilder();for(int i=0;i<paragraphs;i++){if(i>0)b.Append("\n\n");b.Append("第").Append(i+1).Append("段：这是一段用于验证任务正文排版、自动换行和分页的完整中文内容，不能静默截断。");}return b.ToString();}
+  static bool HasLoneSurrogate(string value){
+   for(int i=0;i<value.Length;i++){
+    if(Char.IsHighSurrogate(value[i])){if(i+1>=value.Length||!Char.IsLowSurrogate(value[i+1]))return true;i++;}
+    else if(Char.IsLowSurrogate(value[i]))return true;
+   }
+   return false;
+  }
+  static void FontTimeout(Action action,string name){
+   Exception error=null;
+   Thread thread=new Thread(delegate(){try{action();}catch(Exception e){error=e;}});
+   thread.IsBackground=true;thread.Start();
+   if(!thread.Join(8000))throw new Exception(name+" timed out");
+   if(error!=null)throw new Exception(name,error);
+  }
+  static void EmojiCase(string name,string title,string body,bool expectPages){
+   FontTimeout(delegate(){
+    using(var frame=new Bitmap(1000,700)){
+     var p=FontForm(new Rectangle(0,0,1000,700));
+     var journal=FontJournal(new Rectangle(400,300,410,290),title,body,20);
+     FontCheck(p.PrepareSimpleFusionAsync(frame,Rectangle.Empty,new List<OverlayLabel>{journal}).GetAwaiter().GetResult(),name+" composes within 8s");
+     var view=p.journalPageView;
+     FontCheck(view!=null,name+" has a plan");
+     FontCheck(String.Concat(view.Pages)==body,name+" pagination preserves every character");
+     FontCheck(!HasLoneSurrogate(String.Concat(view.Pages)),name+" pages contain no lone surrogates");
+     if(expectPages)FontCheck(view.Pages.Count>1,name+" long supplementary body paginates");
+     if(!String.IsNullOrEmpty(title)){
+      FontCheck(String.Concat(view.TitleLines)==title,name+" title preserves every character");
+      FontCheck(!HasLoneSurrogate(String.Concat(view.TitleLines)),name+" title contains no lone surrogates");
+     }
+     p.ClearSimpleFusion();
+    }
+   },name);
+  }
   public static int RunFontLayout(){
    fontCheckCount=0;
    int first,right,summary,neighbour;
@@ -86,6 +119,17 @@ namespace MapleOverlay {
     FontCheck(p.journalPageView.TitleLines.Count==0&&p.journalPageView.FontSize>=15,"scrolled body keeps the shared body base size without inventing a title");
     p.ClearSimpleFusion();
    }
+   // QUEST-R2: every wrap is bounded by an 8s watchdog. The old boundary search
+   // could loop forever on a high surrogate ("A😀"); these cases must finish and
+   // every page/title must preserve complete UTF-16 code points.
+   EmojiCase("emoji A😀 title and body","A\uD83D\uDE00","A\uD83D\uDE00",false);
+   EmojiCase("CJK long pagination","",LongBody(30),true);
+   var supplementary=new StringBuilder();
+   for(int i=0;i<30;i++){
+    if(i>0)supplementary.Append("\n\n");
+    supplementary.Append("第").Append(i+1).Append("段：汉字😀🚀𠀋与补充平面字符必须完整换行，不能丢字，也不能把代理对拆开。");
+   }
+   EmojiCase("supplementary title and long pagination","标题😀𠀋",supplementary.ToString(),true);
    // Scale matrix: 100/125/150/200%.
    float previous=0.0f;
    foreach(float factor in new float[]{1.0f,1.25f,1.5f,2.0f}){
@@ -104,7 +148,7 @@ namespace MapleOverlay {
      p.ClearSimpleFusion();
     }
    }
-   Console.WriteLine("Quest font/layout composition: "+fontCheckCount+" checks passed; synthetic GDI metrics, Windows game unverified.");return fontCheckCount;
+   Console.WriteLine("Quest font/layout composition: "+fontCheckCount+" checks passed; generated-source substitute Font/Graphics harness, not native GDI acceptance; Windows game unverified.");return fontCheckCount;
   }
  }
  public static class FontLayoutRunner{public static int Run(){return OverlayForm.RunFontLayout();}}

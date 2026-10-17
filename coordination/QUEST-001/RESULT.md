@@ -4,10 +4,11 @@
 - Tool: DeepSeek Harness (DSH) on Windows, PowerShell 7.6.5, .NET SDK 6.0.410 Roslyn.
 - Branch: `dsh/quest-font-001`.
 - Base commit: `dff639b828542d0bcad94fc9eb50a816f3f9bfd3`.
-- Implementation commit: `eba0d4d131f56fdeac88c7464b17f07a88162ed7`.
+- Previous implementation commit: `eba0d4d131f56fdeac88c7464b17f07a88162ed7`.
+- Review-fix implementation commit: **PENDING**.
 - Result files commit: reported in the final relay message.
-- EXE: `D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe`; SHA-256 `916A68E2D620B309681DC1D5C174CB9C13FEBDE8D0C8C81A4BCB020417A72683`.
-- Build evidence: `枫语幕.exe.build.json`; SHA-256 `7EC92B16B26022AFBA2E71F3B087761D802E7C7A4CD0D63AB9467F9162438F59`; head `eba0d4d`, 64 inputs, clean worktree at build.
+- EXE: `D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe`; SHA-256 **PENDING**.
+- Build evidence: `枫语幕.exe.build.json`; SHA-256 **PENDING**; head **PENDING**, 64 inputs, clean worktree required.
 
 ## What changed
 
@@ -52,9 +53,25 @@
 - The journal branch uses the plan/title font and caches the plan for page changes.
 - The generic single-label path keeps its behavior, but `task-body`/`task-journal` labels now have a 14px floor instead of being squeezed to 8px. If the complete text cannot fit at the floor, the original is preserved rather than truncated.
 
+## Cloud review fix round
+
+### QUEST-R1 — counter detection false positives
+
+The previous local counter regex could match the suffix `of 50` / `of 20` in ordinary prose because `o` was accepted as a zero substitute and `f` as a slash substitute. Counter detection now uses three signals:
+
+- **target-column location**: objective card/list rectangles measured by `QuestObjectiveSurface.Find` (with a scale-tolerant edge) are passed into the region planner; a line inside that column is treated as objective chrome;
+- **true counter structure**: a numeric suffix pair at the end of the line, with a strong `/`/`\` separator or an OCR-confused `f`/`t` separator;
+- **word boundaries and real digits**: the pair must start at a word boundary. The weak `f`/`t` form requires a real ASCII digit on both sides, so `Please take care of 50` and `Please collect a total of 20` are never counters. A strong slash pair may be accepted in the target column even when OCR rendered both digits as confusable letters (`O / O`), but never outside it without a real digit.
+
+Real objective counters/icons/summary remain protected, including `stump 30 f 30`. The integration regression keeps a body containing both prose examples non-empty and covers the first/last prose rows.
+
+### QUEST-R2 — Unicode wrapping progress
+
+`WrapText` no longer binary-searches arbitrary UTF-16 code units. It builds a list of complete code-point boundaries (surrogate pairs advance together), searches only those boundaries, and has defensive advance checks at both the line end and the position update. `A😀` now returns immediately; CJK, emoji and supplementary-plane characters preserve every character across titles, bodies and full pagination. The substitute Font/Graphics regression wraps every R2 case in an 8-second watchdog, and the actual-GDI+ panel regression also builds `A😀` and a long supplementary title/body.
+
 ## Typography / overflow evidence
 
-Actual GDI+ metrics are recorded in `evidence/layout-metrics.json`. Representative values:
+Actual GDI+ metrics are recorded in `evidence/layout-metrics.json` (90 panel checks, measured with the built EXE's real `Graphics` and `Font`). Representative values:
 
 | Case | Body | Title | Unit | Pages | Overflow |
 |---|---:|---:|---|---:|---|
@@ -71,12 +88,12 @@ Across all recorded cases the measured maximum line width is <= the measured con
 
 ## Tests
 
-See `evidence/test-results.json` and the individual logs in `evidence/`. The final run was against the clean-build EXE `916A68E2...` (implementation head `eba0d4d`, build worktree clean).
+See `evidence/test-results.json` and the individual logs in `evidence/`. The logs below are pre-clean-build PASS runs; the final clean-build rerun is recorded after the clean build.
 
 Passing on this host/build:
 
-- new `tests/logic-quest-panel-layout.ps1` — 64 checks (real GDI+ selection/region/typography/pagination/repeat F8/scale metrics);
-- new `tests/logic-quest-font-layout.ps1` — 33 checks (full composition, summary coexistence, first-line/right-edge markers, long/short body, scroll, page turn, repeated composition, scales);
+- new `tests/logic-quest-panel-layout.ps1` — **90 checks** (the original 64 actual-GDI+ panel checks plus 26 R1/R2 checks) using real GDI+ measurement on the built EXE (selection/region/typography/pagination/repeat F8/scale, R1 counter policy and integration, R2 actual-GDI+ emoji/supplementary plans);
+- new `tests/logic-quest-font-layout.ps1` — **51 checks** (the original 33 plus 18 R2 checks) using the generated-source **substitute Font/Graphics harness**, not native GDI acceptance (full composition, summary coexistence, first-line/right-edge markers, long/short body, scroll, page turn, repeated composition, scales, and 8-second-watchdog CJK/emoji/supplementary wrapping with character preservation);
 - `tests/logic-simple-flow-r11.ps1` — 33 checks;
 - `tests/logic-journal-and-item-r6.ps1 -ExePath .\枫语幕.exe` — 23/23;
 - `tests/logic-quest-text-scope-r12.ps1` — 17 checks;
@@ -107,6 +124,6 @@ Tests with hard-coded `/workspace` or `bin/windows-v4.0` paths (`logic-quest-par
 - No chat classification, OCR model/protocol or AI request logic changes.
 - No additional OCR or AI rounds. The journal plan is built from the already-selected OCR text and cached; page turns use the cached layout and pixels.
 - The existing conservative paper measurement and fallback preservation remain; if the plan/region cannot safely fit, English is preserved rather than partially erased.
-- Synthetic quest shell run on the final EXE: `quest-journal selected=true reason=stage-and-state-anchor`, region `818,482,796x669`, body `15px`, title `19px`, `pages=1`, composition `committed=True candidates=12 ready=12 localFill=0`. The test's separate scene-classification assertion still reports an empty scene on this host; that failure also reproduces on the untouched baseline.
-- Real in-game visual acceptance (physical F8, actual quest UI at 100/125/150/200%, real Game window) is **UNVERIFIED**. All evidence above is synthetic GDI+/generated-source evidence, not a real-game screenshot acceptance.
+- Synthetic quest shell run on the previous round's EXE: `quest-journal selected=true reason=stage-and-state-anchor`, body `15px`, title `19px`, `pages=1`, composition `committed=True candidates=12 ready=12 localFill=0`. The test's separate scene-classification assertion still reports an empty scene on this host; that failure also reproduces on the untouched baseline. The current round's synthetic unit/integration tests are in the two dedicated layout regressions above.
+- Real in-game visual acceptance (physical F8, actual quest UI at 100/125/150/200%, real Game window) is **UNVERIFIED**. The 90 panel checks use synthetic pixels with actual GDI+; the 51 font checks use a substitute Font/Graphics harness. Neither is a real-game visual acceptance.
 - No raw user screenshots, chat text, keys or private logs were committed. Evidence contains only synthetic panel geometry and public dictionary text.

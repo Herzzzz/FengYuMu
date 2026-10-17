@@ -50,13 +50,14 @@ namespace MapleOverlay
             int[] pixels=ReadSimplePixels(prepared);
             List<OcrLine> sorted=all.FindAll(delegate(OcrLine line){RectangleF raw=GetOcrLineBounds(line);return owner.Contains(new PointF(raw.Left+raw.Width/2,raw.Top+raw.Height/2));});
             sorted.Sort(delegate(OcrLine a,OcrLine b){return GetOcrLineBounds(a).Top.CompareTo(GetOcrLineBounds(b).Top);});
+            List<RectangleF> objectiveCards=QuestObjectiveSurface.Find(pixels,prepared.Width,prepared.Height,owner,scale);
             OcrLine heading=null;string stage="",reason="no-measured-stage";
             Rectangle area=Rectangle.Empty;Color background=Color.Empty;QuestJournalRecord record=null;
             foreach(OcrLine line in sorted) {
                 string resolved=translations.ResolveJournalStage(line.Text);if(resolved.Length==0)continue;
                 Rectangle candidate;Color paper;
                 if(!QuestJournalGeometry.Measure(pixels,prepared.Width,prepared.Height,GetOcrLineBounds(line),owner,scale,out candidate,out paper)||!JournalPaper(paper))continue;
-                candidate=QuestJournalGeometry.ExpandReplacementRegion(candidate,sorted,GetOcrLineBounds(line),owner,prepared.Size,scale);
+                candidate=QuestJournalGeometry.ExpandReplacementRegion(candidate,sorted,GetOcrLineBounds(line),owner,prepared.Size,scale,objectiveCards);
                 if(candidate.IsEmpty)continue;
                 if(heading!=null&&TranslationStore.Normalize(stage)!=TranslationStore.Normalize(resolved)) {
                     Program.LogRuntimeEvent("quest-journal","selected=false reason=multiple-stage-headings");return false;
@@ -71,10 +72,11 @@ namespace MapleOverlay
                 // journals. No quest name or quantity is encoded in this procedure.
                 foreach(OcrLine line in sorted) {
                     string key=TranslationStore.Normalize(line.Text);
-                    if(key.Length<5||key.StartsWith("level ",StringComparison.Ordinal)||QuestDetailGeometry.IsSummaryKey(key)||Regex.IsMatch(line.Text,@"[0-9IlOo]+\s*(?:/|[fFtT])\s*[0-9IlOo]+"))continue;
+                    if(key.Length<5||key.StartsWith("level ",StringComparison.Ordinal)||QuestDetailGeometry.IsSummaryKey(key)||
+                        QuestJournalLayout.IsCounterLine(line.Text,GetOcrLineBounds(line),objectiveCards,scale))continue;
                     Rectangle candidate;Color paper;
                     if(!QuestJournalGeometry.Measure(pixels,prepared.Width,prepared.Height,GetOcrLineBounds(line),owner,scale,out candidate,out paper)||!JournalPaper(paper))continue;
-                    candidate=QuestJournalGeometry.ExpandReplacementRegion(candidate,sorted,GetOcrLineBounds(line),owner,prepared.Size,scale);
+                    candidate=QuestJournalGeometry.ExpandReplacementRegion(candidate,sorted,GetOcrLineBounds(line),owner,prepared.Size,scale,objectiveCards);
                     if(candidate.IsEmpty)continue;
                     heading=line;area=candidate;background=paper;break;
                 }
@@ -101,7 +103,7 @@ namespace MapleOverlay
                 Rectangle measuredArea=area;
                 Rectangle body=ExpandRegionToConfirmedBody(area,record,sorted,owner,prepared.Size,scale);
                 if(!body.IsEmpty)area=body;
-                Rectangle expanded=QuestJournalGeometry.ExpandReplacementRegion(area,sorted,GetOcrLineBounds(heading),owner,prepared.Size,scale);
+                Rectangle expanded=QuestJournalGeometry.ExpandReplacementRegion(area,sorted,GetOcrLineBounds(heading),owner,prepared.Size,scale,objectiveCards);
                 Program.LogRuntimeEvent("quest-journal-region","measured="+measuredArea.Left+","+measuredArea.Top+","+
                     measuredArea.Width+"x"+measuredArea.Height+" body="+body.Left+","+body.Top+","+body.Width+"x"+body.Height+
                     " expanded="+expanded.Left+","+expanded.Top+","+expanded.Width+"x"+expanded.Height);
@@ -110,7 +112,7 @@ namespace MapleOverlay
                 // Objective icons/counters are live game surfaces. If one still sits
                 // in the replacement region, trim the region below it when it is a
                 // top card; anything deeper means the measured body is unsafe.
-                foreach(RectangleF card in QuestObjectiveSurface.Find(pixels,prepared.Width,prepared.Height,owner,scale)) {
+                foreach(RectangleF card in objectiveCards) {
                     if(!card.IntersectsWith(area))continue;
                     bool topCard=card.Bottom<=area.Top+area.Height*0.40f;
                     if(!topCard){Program.LogRuntimeEvent("quest-journal","selected=false reason=objective-surface-inside-body");return false;}
@@ -123,7 +125,8 @@ namespace MapleOverlay
                     if(raw.IsEmpty||!raw.IntersectsWith(area))continue;
                     string key=TranslationStore.Normalize(line.Text);
                     if(QuestDetailGeometry.IsSummaryKey(key)||key.StartsWith("level ",StringComparison.Ordinal)||
-                        key=="quest helper"||key=="forfeit"||key=="details"||QuestJournalLayout.IsCounterLike(line.Text))continue;
+                        key=="quest helper"||key=="forfeit"||key=="details"||
+                        QuestJournalLayout.IsCounterLine(line.Text,raw,objectiveCards,scale))continue;
                     if(!area.Contains(Rectangle.Ceiling(raw))) {
                         Program.LogRuntimeEvent("quest-journal","selected=false reason=partial-body-row-after-protection");
                         return false;
@@ -131,7 +134,7 @@ namespace MapleOverlay
                 }
             }
             string header=JournalHeader(sorted,pixels,prepared.Width,prepared.Height,area);
-            string objectives=JournalObjectiveSignature(sorted,pixels,prepared.Width,prepared.Height,owner,scale,area.Top);
+            string objectives=JournalObjectiveSignature(sorted,objectiveCards,area.Top);
             if(record==null&&stage.Length==0&&rememberedJournal!=null&&header.Length>0&&header==rememberedJournalHeader&&
                 objectives==rememberedJournalObjectives&&captureBounds==rememberedJournalCapture&&
                 (Stopwatch.GetTimestamp()-rememberedJournalAt)/(double)Stopwatch.Frequency<600&&
@@ -399,9 +402,9 @@ namespace MapleOverlay
             }
             return result.ToString();
         }
-        private static string JournalObjectiveSignature(List<OcrLine> lines,int[] pixels,int width,int height,RectangleF owner,float scale,int bodyTop)
+        private static string JournalObjectiveSignature(List<OcrLine> lines,IList<RectangleF> cards,int bodyTop)
         {
-            List<RectangleF> cards=QuestObjectiveSurface.Find(pixels,width,height,owner,scale);List<string> values=new List<string>();
+            List<string> values=new List<string>();
             foreach(OcrLine line in lines) {
                 RectangleF raw=GetOcrLineBounds(line);if(raw.Bottom>bodyTop)continue;
                 bool inside=false;foreach(RectangleF card in cards)if(card.Contains(new PointF(raw.Left+raw.Width/2,raw.Top+raw.Height/2))){inside=true;break;}

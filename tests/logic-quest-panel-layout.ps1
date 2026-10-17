@@ -55,7 +55,7 @@ SetField $form 'translations' $store
 $formType.GetProperty('Bounds', $flags).SetValue($form, [Drawing.Rectangle]::Empty, $null)
 SetField $form 'captureBounds' ([Drawing.Rectangle]::new(0, 0, 1000, 700))
 
-function NewFrame([single]$factor, [bool]$summary, [int]$objectiveCount) {
+function NewFrame([single]$factor, [bool]$summary, [int]$objectiveCount, [string[]]$ProseLines = @()) {
     $w = [int][Math]::Ceiling(1000 * $factor)
     $h = [int][Math]::Ceiling(700 * $factor)
     $bmp = [Drawing.Bitmap]::new($w, $h)
@@ -83,6 +83,9 @@ function NewFrame([single]$factor, [bool]$summary, [int]$objectiveCount) {
     for ($i = 0; $i -lt $rows.Count; $i++) {
         $g.DrawString($rows[$i], $font, [Drawing.Brushes]::Black, 410 * $factor, (346 + $i * 26) * $factor)
     }
+    for ($i = 0; $i -lt $ProseLines.Count; $i++) {
+        $g.DrawString($ProseLines[$i], $font, [Drawing.Brushes]::Black, 410 * $factor, (346 + ($rows.Count + $i) * 26) * $factor)
+    }
     if ($summary) { $g.DrawString('Quest Summary', $font, [Drawing.Brushes]::Black, 410 * $factor, 160 * $factor) }
     for ($i = 0; $i -lt $objectiveCount; $i++) {
         $g.DrawString(('Objective item ' + ($i + 1) + ' 0 / 1'), $font, [Drawing.Brushes]::Black,
@@ -95,10 +98,13 @@ function NewFrame([single]$factor, [bool]$summary, [int]$objectiveCount) {
     for ($i = 0; $i -lt $rows.Count; $i++) {
         $lines.Add((NewLine $rows[$i] (410 * $factor) ((346 + $i * 26) * $factor) (380 * $factor) (20 * $factor)))
     }
+    for ($i = 0; $i -lt $ProseLines.Count; $i++) {
+        $lines.Add((NewLine $ProseLines[$i] (410 * $factor) ((346 + ($rows.Count + $i) * 26) * $factor) (380 * $factor) (20 * $factor)))
+    }
     for ($i = 0; $i -lt $objectiveCount; $i++) {
         $lines.Add((NewLine ('Objective item ' + ($i + 1) + ' 0 / 1') (420 * $factor) ((205 + $i * 26) * $factor) (300 * $factor) (20 * $factor)))
     }
-    return [pscustomobject]@{ Bitmap = $bmp; Lines = $lines; Factor = $factor; Rows = $rows; Paper = $paper; FirstBodyTop = (346 * $factor); LastBodyBottom = ((346 + ($rows.Count - 1) * 26 + 20) * $factor) }
+    return [pscustomobject]@{ Bitmap = $bmp; Lines = $lines; Factor = $factor; Rows = $rows; Paper = $paper; FirstBodyTop = (346 * $factor); LastBodyBottom = ((346 + ($rows.Count + $ProseLines.Count - 1) * 26 + 20) * $factor); ProseLines = $ProseLines }
 }
 
 function Invoke-JournalBuilder($scene) {
@@ -211,6 +217,85 @@ foreach ($case in $cases) {
             summaryProtected = (-not $case.Summary) -or $source.Top -ge 180 * $case.Factor
         })
     } finally { $scene.Bitmap.Dispose() }
+}
+
+# 1b. QUEST-R1: prose ending in "of 50"/"of 20" is not an objective counter.
+$layoutType = TypeOf 'QuestJournalLayout'
+$isCounterLike = $layoutType.GetMethod('IsCounterLike', $flags)
+$isCounterLine = $layoutType.GetMethod('IsCounterLine', $flags)
+foreach ($phrase in @('Please take care of 50', 'Please collect a total of 20', 'care of 20')) {
+    Check (-not [bool]$isCounterLike.Invoke($null, @([string]$phrase))) ('R1 prose is not a counter: ' + $phrase)
+}
+foreach ($phrase in @('stump 30 f 30', 'Pink Anthurium 0 / 1', 'O / 2O', '30 / 30')) {
+    Check ([bool]$isCounterLike.Invoke($null, @([string]$phrase))) ('R1 real counter structure recognized: ' + $phrase)
+}
+Check (-not [bool]$isCounterLike.Invoke($null, @('A30 f 30'))) 'R1 counter pair needs a word boundary'
+$targetCard = [Drawing.RectangleF]::new(400, 190, 310, 70)
+$targetLine = [Drawing.RectangleF]::new(420, 205, 150, 20)
+$outsideLine = [Drawing.RectangleF]::new(100, 500, 150, 20)
+$targetCards = [System.Collections.Generic.List[Drawing.RectangleF]]::new()
+$targetCards.Add($targetCard)
+$noCards = [System.Collections.Generic.List[Drawing.RectangleF]]::new()
+Check ([bool]$isCounterLine.Invoke($null, @('O / O', $targetLine, $targetCards, [single]1))) 'R1 target-column location allows an all-confusable slash count'
+Check (-not [bool]$isCounterLine.Invoke($null, @('O / O', $outsideLine, $noCards, [single]1))) 'R1 all-confusable slash count outside the target column is rejected'
+Check (-not [bool]$isCounterLine.Invoke($null, @('Please take care of 50', $targetLine, $targetCards, [single]1))) 'R1 prose is not a counter even in a misleading target column'
+
+$proseLines = @('Please take care of 50', 'Please collect a total of 20')
+$scene = NewFrame 1.0 $true 1 $proseLines
+try {
+    $label = Invoke-JournalBuilder $scene
+    Check ($null -ne $label) 'R1 prose body with "of 50"/"of 20" still builds a journal label'
+    $source = GetField $label 'SourceBounds'
+    $lastProseBottom = 346 + ($scene.Rows.Count + 1) * 26 + 20
+    Check ($source.Top -le $scene.FirstBodyTop) 'R1 prose body replacement region still covers the first body row'
+    Check ($source.Bottom -ge $lastProseBottom) 'R1 prose body replacement region is not emptied by counter detection'
+    Check ((GetField (GetField $label 'Journal') 'Layout') -ne $null) 'R1 prose body still receives the shared typography plan'
+    $evidence.Add([pscustomobject]@{
+        case = 'r1-prose-not-counter'; scale = 1.0
+        source = @($source.X, $source.Y, $source.Width, $source.Height)
+        firstBodyTop = $scene.FirstBodyTop; lastProseBottom = $lastProseBottom
+        sourceCoversFirst = $source.Top -le $scene.FirstBodyTop
+        sourceCoversLastProse = $source.Bottom -ge $lastProseBottom
+        counterExamples = @('Please take care of 50', 'Please collect a total of 20')
+    })
+} finally { $scene.Bitmap.Dispose() }
+
+# 1c. QUEST-R2: actual-GDI+ emoji/supplementary plan, no hang and no character loss.
+function Test-LoneSurrogate([string]$value) {
+    for ($i = 0; $i -lt $value.Length; $i++) {
+        if ([char]::IsHighSurrogate($value[$i])) {
+            if ($i + 1 -ge $value.Length -or -not [char]::IsLowSurrogate($value[$i + 1])) { return $true }
+            $i++
+        } elseif ([char]::IsLowSurrogate($value[$i])) { return $true }
+    }
+    return $false
+}
+$emoji = [char]::ConvertFromUtf32(0x1F600)
+$rocket = [char]::ConvertFromUtf32(0x1F680)
+$supplementary = [char]::ConvertFromUtf32(0x2000B)
+foreach ($case in @(
+    @{ Name = 'emoji-a'; Title = ('A' + $emoji); Body = ('A' + $emoji); ExpectPages = $false },
+    @{ Name = 'supplementary-long'; Title = ('标题' + $emoji + $supplementary); Body = ((1..24 | ForEach-Object { '第' + $_ + '段：汉字' + $emoji + $rocket + $supplementary + '与补充平面字符必须完整换行，不能丢字，也不能拆开代理对。' }) -join "`n`n"); ExpectPages = $true }
+)) {
+    $label = NewJournalLabel ([Drawing.Rectangle]::new(400, 300, 410, 290)) $case.Title $case.Body 20
+    $plan = Invoke-JournalPlan $label
+    Check ($null -ne $plan) ('R2 actual-GDI+ plan returns for ' + $case.Name)
+    $layout = $plan.Layout
+    $m = LayoutMetrics $layout
+    Check ((($m.Pages -join '') -eq $case.Body)) ('R2 ' + $case.Name + ' preserves every character')
+    Check (-not (Test-LoneSurrogate (($m.Pages -join '')))) ('R2 ' + $case.Name + ' pages contain no lone surrogates')
+    $titleLines = GetField $layout 'TitleLines'
+    Check ((($titleLines -join '') -eq $case.Title)) ('R2 ' + $case.Name + ' title preserves every character')
+    Check (-not (Test-LoneSurrogate (($titleLines -join '')))) ('R2 ' + $case.Name + ' title contains no lone surrogates')
+    if ($case.ExpectPages) { Check ($m.PageCount -gt 1) ('R2 ' + $case.Name + ' paginates') }
+    $evidence.Add([pscustomobject]@{
+        case = ('r2-' + $case.Name); scale = 1.0
+        bodyFontSize = $m.BodySize; titleFontSize = $m.TitleSize
+        fontUnit = [string]$m.Unit
+        pageCount = $m.PageCount; overflow = $m.Overflow
+        titleCharacters = $case.Title.Length; bodyCharacters = $case.Body.Length
+        pagesNoLoneSurrogates = $true
+    })
 }
 
 # 2. Real GDI+ plan for long and short manual bodies (pagination, no truncation).

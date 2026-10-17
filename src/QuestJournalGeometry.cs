@@ -313,20 +313,29 @@ namespace MapleOverlay
                     position++;
                     continue;
                 }
-                int best = 0, low = 1, high = hardEnd - position;
+                // Search over complete UTF-16 code points, not arbitrary code units.
+                // The old binary search could decrement itself forever on "A😀" when
+                // the midpoint landed on the high surrogate. A boundary list makes
+                // every probe a valid substring and every accepted advance >= 1.
+                List<int> boundaries = new List<int>();
+                boundaries.Add(0);
+                for (int scan = lineStart; scan < hardEnd; )
+                {
+                    scan += (scan + 1 < hardEnd && Char.IsHighSurrogate(text[scan]) &&
+                        Char.IsLowSurrogate(text[scan + 1])) ? 2 : 1;
+                    boundaries.Add(scan - lineStart);
+                }
+                int best = 0, low = 1, high = boundaries.Count - 1;
                 while (low <= high)
                 {
                     int middle = low + (high - low) / 2;
-                    // Never end a measured probe on half of a surrogate pair.
-                    if (middle < high && Char.IsHighSurrogate(text[position + middle - 1]))
-                        middle--;
-                    if (middle <= 0) break;
-                    string probe = text.Substring(position, middle).TrimEnd();
+                    int length = boundaries[middle];
+                    string probe = text.Substring(position, length).TrimEnd();
                     float measured = probe.Length == 0 ? 0.0f :
                         MeasureWidth(graphics, probe, font, format);
                     if (measured <= width - 0.01f)
                     {
-                        best = middle;
+                        best = length;
                         low = middle + 1;
                     }
                     else high = middle - 1;
@@ -337,11 +346,23 @@ namespace MapleOverlay
                 // CJK text simply breaks between measured characters.
                 for (int i = end - 1; i > position + best / 2; i--)
                     if (Char.IsWhiteSpace(text[i])) { end = i + 1; break; }
-                if (end > position + 1 && Char.IsHighSurrogate(text[end - 1])) end--;
-                if (end < text.Length && Char.IsLowSurrogate(text[end])) end--;
-                if (end <= position) end = position + 1;
+                // Never end on a dangling high surrogate.
+                if (end > position && Char.IsHighSurrogate(text[end - 1])) end--;
+                if (end <= position)
+                {
+                    // Defensive safety net: consume exactly one complete code point.
+                    end = position + 1;
+                    if (end < text.Length && Char.IsHighSurrogate(text[position]) &&
+                        Char.IsLowSurrogate(text[end])) end++;
+                }
                 int next = end;
                 if (next < text.Length && text[next] == '\n') next++;
+                if (next <= position)
+                {
+                    next = position + 1;
+                    if (next < text.Length && Char.IsHighSurrogate(text[position]) &&
+                        Char.IsLowSurrogate(text[next])) next++;
+                }
                 string line = text.Substring(position, end - position).TrimEnd();
                 lines.Add(new JournalLine { Text = line,
                     Width = MeasureWidth(graphics, line, font, format),
@@ -355,7 +376,8 @@ namespace MapleOverlay
         // away from partially covered chrome rows. This is what prevents a first line
         // or a "Quest Summary" caption from being half-erased and left as residue.
         internal static Rectangle ExpandReplacementRegion(Rectangle area, IList<OcrLine> lines,
-            RectangleF heading, RectangleF owner, Size frame, float scale)
+            RectangleF heading, RectangleF owner, Size frame, float scale,
+            IList<RectangleF> targetCards)
         {
             if (lines == null || area.Width <= 0 || area.Height <= 0 || scale <= 0.0f) return Rectangle.Empty;
             Rectangle bounds = Rectangle.Intersect(Rectangle.Ceiling(owner), new Rectangle(Point.Empty, frame));
@@ -366,7 +388,7 @@ namespace MapleOverlay
             // footer button inside the replacement rectangle.
             for (int pass = 0; pass < 2; pass++)
             {
-                region = SnapRegionToChrome(region, lines, padding);
+                region = SnapRegionToChrome(region, lines, targetCards, scale, padding);
                 if (region.Width <= 0 || region.Height <= 0) return Rectangle.Empty;
                 // Grow to every confirmed non-chrome row that belongs to this body.
                 // A row that lies partly outside is either fully included here or the
@@ -381,7 +403,7 @@ namespace MapleOverlay
                         region.Contains(new Point((int)(raw.Left + raw.Width / 2),
                             (int)(raw.Top + raw.Height / 2)));
                     if (!near) continue;
-                    if (IsJournalChrome(line.Text)) continue;
+                    if (IsJournalChrome(line.Text, raw, targetCards, scale)) continue;
                     row.Inflate(padding, padding);
                     region = Rectangle.Union(region, row);
                     region = Rectangle.Intersect(region, bounds);
@@ -389,14 +411,14 @@ namespace MapleOverlay
                 }
             }
             // Final snap: growth must not leave a sliver of a chrome row inside.
-            region = SnapRegionToChrome(region, lines, padding);
+            region = SnapRegionToChrome(region, lines, targetCards, scale, padding);
             if (region.Width <= 0 || region.Height <= 0) return Rectangle.Empty;
             // Every non-chrome row that touches the region must be fully covered.
             foreach (OcrLine line in lines)
             {
                 if (line == null) continue;
                 RectangleF raw = GetJournalLineBounds(line);
-                if (raw.IsEmpty || IsJournalChrome(line.Text)) continue;
+                if (raw.IsEmpty || IsJournalChrome(line.Text, raw, targetCards, scale)) continue;
                 if (!raw.IntersectsWith(region)) continue;
                 if (!region.Contains(Rectangle.Ceiling(raw))) return Rectangle.Empty;
             }
@@ -406,14 +428,15 @@ namespace MapleOverlay
         }
 
         private static Rectangle SnapRegionToChrome(Rectangle region, IList<OcrLine> lines,
-            int padding)
+            IList<RectangleF> targetCards, float scale, int padding)
         {
             if (lines == null) return region;
             foreach (OcrLine line in lines)
             {
                 if (line == null) continue;
                 RectangleF raw = GetJournalLineBounds(line);
-                if (raw.IsEmpty || !raw.IntersectsWith(region) || !IsJournalChrome(line.Text)) continue;
+                if (raw.IsEmpty || !raw.IntersectsWith(region) ||
+                    !IsJournalChrome(line.Text, raw, targetCards, scale)) continue;
                 Rectangle row = Rectangle.Ceiling(raw);
                 int overlapX = Math.Min(region.Right, row.Right) - Math.Max(region.Left, row.Left);
                 int overlapY = Math.Min(region.Bottom, row.Bottom) - Math.Max(region.Top, row.Top);
@@ -443,7 +466,8 @@ namespace MapleOverlay
             return region;
         }
 
-        private static bool IsJournalChrome(string text)
+        private static bool IsJournalChrome(string text, RectangleF bounds,
+            IList<RectangleF> targetCards, float scale)
         {
             string key = TranslationStore.Normalize(text);
             if (QuestDetailGeometry.IsSummaryKey(key)) return true;
@@ -451,16 +475,82 @@ namespace MapleOverlay
             if (key.StartsWith("level ", StringComparison.Ordinal)) return true;
             if (key == "forfeit" || key == "quest helper" || key == "details" ||
                 key == "available" || key == "in progress" || key == "completed") return true;
-            return IsCounterLike(text);
+            return IsCounterLine(text, bounds, targetCards, scale);
         }
 
-        // Objective counters are live game values. Windows OCR commonly reads the
-        // slash as f/t or drops it to whitespace ("stump 30 f 30"). Recognize those
-        // shapes locally so the body region is trimmed before the counter row.
+        // Objective counters are live game values. A real pair (name + "x / y" or
+        // the OCR-confused "x f y") is only a counter when the numeric tokens are
+        // genuine tokens: the ambiguous f/t separator requires real digits on both
+        // sides, and the pair must end at a word boundary. This prevents prose such
+        // as "Please take care of 50" / "Please collect a total of 20" from being
+        // treated as a counter just because "o" and "f" look like 0 and "/".
         internal static bool IsCounterLike(string text)
         {
-            if (QuestObjectiveSurface.Counter(text).Success) return true;
-            return Regex.IsMatch(text ?? "", @"[0-9IlOo]+\s*[fFtT]\s*[0-9IlOo]+\s*$");
+            bool strong, leftDigit, rightDigit, boundary;
+            if (!TryParseCounter(text, out strong, out leftDigit, out rightDigit, out boundary))
+                return false;
+            if (!boundary) return false;
+            if (strong) return leftDigit || rightDigit;
+            return leftDigit && rightDigit;
+        }
+
+        // Target-column-aware form used by the replacement-region geometry. A line
+        // inside the measured objective card/list column may accept a strong slash
+        // pair even when OCR substituted both digits with confusable letters; the
+        // weak f/t form still requires a real digit on both sides. Location never
+        // waives the word-boundary requirement.
+        internal static bool IsCounterLine(string text, RectangleF bounds,
+            IList<RectangleF> targetCards, float scale)
+        {
+            bool strong, leftDigit, rightDigit, boundary;
+            if (!TryParseCounter(text, out strong, out leftDigit, out rightDigit, out boundary))
+                return false;
+            bool inTarget = false;
+            if (targetCards != null && !bounds.IsEmpty)
+            {
+                PointF center = new PointF(bounds.Left + bounds.Width / 2.0f,
+                    bounds.Top + bounds.Height / 2.0f);
+                foreach (RectangleF card in targetCards)
+                {
+                    if (card.IsEmpty) continue;
+                    RectangleF hit = card;
+                    hit.Inflate(Math.Max(0.0f, scale), Math.Max(0.0f, scale));
+                    if (hit.Contains(center)) { inTarget = true; break; }
+                }
+            }
+            if (!boundary) return false;
+            if (strong) return inTarget || leftDigit || rightDigit;
+            // The f/t slash confusion is too weak to overcome the absence of a
+            // real digit on either side, even inside the target column. Otherwise
+            // "care of 50" in a misleading column would still be blacklisted.
+            return leftDigit && rightDigit;
+        }
+
+        // Returns the suffix pair and whether both tokens contain a real ASCII digit.
+        internal static bool TryParseCounter(string text, out bool strongSeparator,
+            out bool leftRealDigit, out bool rightRealDigit, out bool startsAtWordBoundary)
+        {
+            strongSeparator = false;
+            leftRealDigit = false;
+            rightRealDigit = false;
+            startsAtWordBoundary = false;
+            if (String.IsNullOrEmpty(text)) return false;
+            string value = text.TrimEnd();
+            Match match = Regex.Match(value,
+                @"(?<left>[0-9IlOo]+)[ \t]*(?<sep>[/\\]|[fFtT])[ \t]*(?<right>[0-9IlOo]+)$");
+            if (!match.Success) return false;
+            string separator = match.Groups["sep"].Value;
+            strongSeparator = separator == "/" || separator == "\\";
+            leftRealDigit = Regex.IsMatch(match.Groups["left"].Value, "[0-9]");
+            rightRealDigit = Regex.IsMatch(match.Groups["right"].Value, "[0-9]");
+            int start = match.Groups["left"].Index;
+            startsAtWordBoundary = start == 0 || !IsCounterWordChar(value[start - 1]);
+            return true;
+        }
+
+        private static bool IsCounterWordChar(char value)
+        {
+            return Char.IsLetterOrDigit(value) || value == '_';
         }
 
         private static RectangleF GetJournalLineBounds(OcrLine line)
@@ -541,9 +631,9 @@ namespace MapleOverlay
         }
 
         internal static Rectangle ExpandReplacementRegion(Rectangle area,IList<OcrLine> lines,
-            RectangleF heading,RectangleF owner,Size frame,float scale)
+            RectangleF heading,RectangleF owner,Size frame,float scale,IList<RectangleF> targetCards)
         {
-            return QuestJournalLayout.ExpandReplacementRegion(area,lines,heading,owner,frame,scale);
+            return QuestJournalLayout.ExpandReplacementRegion(area,lines,heading,owner,frame,scale,targetCards);
         }
     }
 }
