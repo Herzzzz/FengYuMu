@@ -1,14 +1,164 @@
 {
   "taskId": "CHAT-001",
-  "state": "AWAITING_EXISTING_BRIDGE_DISCOVERY",
+  "state": "IMPLEMENTED_PENDING_CLOUD_REVIEW",
   "baseCommit": "c4dc19ea26e6a5611786ae7a6bd80acf33d6e858",
+  "implementationBranch": "dsh/chat-001",
+  "implementationCommit": "51f22ae867f8bd3fa785e7f8704800ca96953e31",
+  "resultFilesCommit": "reported in the final relay message; this file is committed with the result files",
   "dshTool": "DeepSeek Harness",
   "existingBridgeReportedByUser": true,
   "communicationEstablished": false,
-  "deliveryToDSHConfirmed": false,
+  "deliveryToDSHConfirmed": true,
   "cloudPixelReproduction": {
     "tested": 5,
-    "failedOnV40": 5
+    "failedOnV40": 5,
+    "fixedByImplementation": 5
   },
-  "implementationStarted": false
+  "implementationStarted": true,
+  "build": {
+    "command": "pwsh -NoProfile -File src/build.ps1",
+    "exitCode": 0,
+    "exePath": "枫语幕.exe",
+    "exeSha256": "5BBA332CED4D0B7143D726E73237632CFD5380891E1D2749E3CE89509A444296",
+    "exeBytes": 663040,
+    "buildEvidencePath": "枫语幕.exe.build.json",
+    "buildEvidenceSha256": "615E46447464066D2DC9D618A8E896146562A39EAF3A16B47010A44CD16BD841",
+    "buildInputs": 64,
+    "buildHead": "51f22ae867f8bd3fa785e7f8704800ca96953e31",
+    "worktreeCleanAtBuild": true,
+    "compiler": "dotnet SDK 6.0.410 Roslyn csc.dll with .NET Framework 4.8 reference assemblies",
+    "vs2022FallbackAdded": true
+  },
+  "tests": {
+    "chatMegaphonePixels": {
+      "command": "pwsh -NoProfile -File tests/logic-chat-megaphone-pixels.ps1",
+      "exitCode": 0,
+      "checks": 161,
+      "evidence": ".bench/evidence-commit/megaphone-pixels.log"
+    },
+    "chatMegaphonePipeline": {
+      "command": "pwsh -NoProfile -File tests/logic-chat-megaphone-pipeline.ps1",
+      "exitCode": 0,
+      "checks": 33,
+      "evidence": ".bench/evidence-commit/megaphone-pipeline.log"
+    },
+    "chatMegaphoneOcr": {
+      "command": "pwsh -NoProfile -File tests/logic-chat-megaphone-ocr.ps1",
+      "exitCode": 0,
+      "checks": 14,
+      "repeatRuns": 4,
+      "evidence": ".bench/evidence-commit/megaphone-ocr*.log"
+    },
+    "chatCategoryFiltering": {
+      "command": "pwsh -NoProfile -File tests/logic-chat-category-filtering.ps1",
+      "exitCode": 0,
+      "evidence": ".bench/evidence-commit/chat-category-filtering.log"
+    },
+    "chatContinuity": {
+      "command": "pwsh -NoProfile -File tests/logic-chat-continuity.ps1",
+      "exitCode": 0,
+      "checks": 9,
+      "evidence": ".bench/evidence-commit/chat-continuity.log"
+    },
+    "chatFeedbackCorrectness": {
+      "command": "pwsh -NoProfile -File tests/logic-chat-feedback-correctness.ps1",
+      "exitCode": 0,
+      "checks": 39,
+      "evidence": ".bench/evidence-commit/chat-feedback-correctness.log"
+    },
+    "independentWindow": {
+      "command": "pwsh -NoProfile -File tests/logic-independent-window.ps1",
+      "exitCode": 0,
+      "evidence": ".bench/evidence-commit/independent-window.log"
+    },
+    "chatUiR15": {
+      "command": "pwsh -NoProfile -File tests/logic-chat-ui-r15.ps1",
+      "exitCode": 0,
+      "checks": 20,
+      "evidence": ".bench/evidence-commit/chat-ui-r15.log"
+    },
+    "videoChat": {
+      "command": "pwsh -NoProfile -File tests/logic-video-bv1l8yc67et4-chat.ps1 -ExePath .\\枫语幕.exe",
+      "exitCode": 0,
+      "phrases": 32,
+      "evidence": ".bench/evidence-commit/video-chat.log"
+    },
+    "aiChatPerformance": {
+      "command": "pwsh -NoProfile -File tests/logic-ai-chat-performance.ps1 -ExePath .\\枫语幕.exe",
+      "exitCode": 0,
+      "evidence": ".bench/evidence-commit/ai-chat-performance.log"
+    },
+    "regionMouseLifecycle": {
+      "command": "pwsh -NoProfile -File tests/logic-chat-region-mouse-lifecycle.ps1 -ExePath .\\枫语幕.exe",
+      "exitCode": 0,
+      "evidence": ".bench/evidence-commit/region-mouse-lifecycle.log"
+    }
+  },
+  "preExistingEnvironmentFailures": [
+    {
+      "test": "tests/logic-ai-chat-accuracy.ps1",
+      "exitCode": 1,
+      "area": "qq-220.0 sweep assertion",
+      "reason": "This host's Windows OCR reads the first row without a colon (Xx.AzNKiDxX bullet repot); ParseChatLines is unchanged by this task",
+      "evidence": ".bench/evidence/ai-chat-accuracy.log"
+    },
+    {
+      "test": "tests/logic-chat-region-first-use.ps1",
+      "exitCode": 1,
+      "area": "stale source string",
+      "reason": "The asserted RecognitionWasCancelled(automatic, requestId, generation) text is absent on the baseline too; unrelated to CHAT-001",
+      "evidence": ".bench/evidence/logic-chat-region-first-use.log"
+    }
+  ],
+  "pixelEvidence": {
+    "pinkFixtureSha256": "B22E63FFE2DB4E1CFC7141E2E70A33395180F22F95CEFAA2FC3C26A509CCEF27",
+    "blueFixtureSha256": "C868C4425F021B9A297BC46D1ACD6664C9AC705283DB418CC9EFB3901AA3E32C",
+    "pinkRows": "3 consecutive pink rows + adjacent blue row, each first/middle/last checked",
+    "pinkV40Categories": [
+      "System",
+      "System",
+      "System",
+      "Whisper"
+    ],
+    "newCategories": [
+      "Megaphone",
+      "Megaphone",
+      "Megaphone",
+      "Megaphone"
+    ],
+    "blueV40Category": "Normal",
+    "blueNewCategory": "Megaphone",
+    "scalesTested": [
+      0.75,
+      1.0,
+      1.25,
+      1.5
+    ],
+    "colorShiftsTested": true,
+    "partialCropsTested": true,
+    "translucentTextureTested": true,
+    "userLatestInterleavedImage": "UNVERIFIED"
+  },
+  "runtime": {
+    "ocrRoundsAdded": false,
+    "fastOcrCallsPerCapture": 1,
+    "strongOcrCallsPerCapture": 1,
+    "aiTranslateCallSites": 2,
+    "windowsOcrElapsedMsRange": [
+      84,
+      98
+    ],
+    "pixelEvidenceMsPerLineRange": [
+      2.16,
+      2.46
+    ]
+  },
+  "unverified": [
+    "User's latest pink/blue interleaved screenshot was not present in this workspace; desktop private replay required",
+    "Real in-game filter clicks and unavailable channels",
+    "Physical mouse/DPI acceptance for the region selector",
+    "Full AI chat sweep on this host's Windows OCR build"
+  ],
+  "cloudAcceptance": "PENDING",
+  "notes": "No raw user image, chat log, key or private screenshot was committed. The Windows EXE and build evidence are local artifacts referenced by SHA-256."
 }
