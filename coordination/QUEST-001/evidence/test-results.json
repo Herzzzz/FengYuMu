@@ -118,6 +118,11 @@
     "tests/logic-quest-title-groups.ps1",
     "tests/logic-quest-shell-resilience.ps1"
   ],
+  "safetyRegressionRun": {
+    "build": "final EXE 1A29EA825DDC7C2DAF157E998C75217DD77E43C201695FE258FE594225FCC2F0, head eea67ce",
+    "result": "All seven pre-existing safety/legacy failures reproduced unchanged; no new R1/R2 failure.",
+    "evidence": "evidence/safety-regressions-pre-existing.txt"
+  },
   "baselineConfirmation": {
     "worktree": "detached at dff639b (temporary .bench worktree, removed after confirmation)",
     "exeSha256": "6E618DF248FBBDB3AC0A25F1B9E4A3E4A5E1BBB02A15CEBF1ADB69A8563C1737",

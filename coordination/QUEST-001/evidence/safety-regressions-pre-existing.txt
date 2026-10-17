@@ -1,0 +1,15 @@
+Safety/legacy regression run on final EXE 1A29EA825DDC7C2DAF157E998C75217DD77E43C201695FE258FE594225FCC2F0 (head eea67ce).
+These failures are pre-existing and reproduce on the untouched baseline EXE 6E618DF248FBBDB3AC0A25F1B9E4A3E4A5E1BBB02A15CEBF1ADB69A8563C1737.
+
+logic-quest-body-and-summary.ps1       exit 1  stale source-guard string: results.RemoveAll(...TaskId...)
+logic-panel-context-isolation.ps1      exit 1  stale source-guard string: normalized.Contains("quest summary")
+logic-overlay-label-layout.ps1         exit 1  pre-existing cross-screen geometry assertion
+logic-overlay-paint-safety.ps1         exit 1  stale source-guard string: OverlayLabel[] snapshot = labels.ToArray()
+logic-overlay-dual-rendering.ps1       exit 1  stale source-guard string: label.RenderMode == LabelRenderMode.Seamless
+logic-quest-title-groups.ps1           exit 1  pre-existing dictionary/index assertion
+logic-quest-shell-resilience.ps1       exit 1  clean synthetic scene reports empty 识别场景 on this host; journal itself selects/composes
+
+The actual R1/R2 safety tests (counter false-positive policy, 8-second Unicode watchdog,
+character preservation, first-line/right-edge/summary protection) pass in:
+- tests/logic-quest-panel-layout.ps1  (90 checks, actual GDI+)
+- tests/logic-quest-font-layout.ps1   (51 checks, substitute Font/Graphics harness)

@@ -107,7 +107,7 @@ Passing on this host/build:
 
 ## Pre-existing failures (confirmed on baseline `dff639b` EXE `6E618DF2...`)
 
-These fail identically on the untouched baseline worktree; they are not caused by QUEST-001:
+These fail identically on the untouched baseline worktree and were re-confirmed on the final R1/R2 EXE (`evidence/safety-regressions-pre-existing.txt`); they are not caused by QUEST-001:
 
 - `tests/logic-quest-body-and-summary.ps1` — source guard still expects the old `results.RemoveAll(...TaskId...)` string; current source has the `||` continuation.
 - `tests/logic-panel-context-isolation.ps1` — source guard still looks for literal `normalized.Contains("quest summary")`; current code uses `QuestDetailGeometry.IsSummaryKey`.
