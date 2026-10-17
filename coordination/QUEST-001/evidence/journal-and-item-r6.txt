@@ -1,0 +1,30 @@
+
+An error has occurred that was not properly handled. Additional information is shown below. The PowerShell process will exit.
+Unhandled exception. System.IO.FileLoadException: The given assembly name was invalid.
+File name: 'ﾫg￭ﾋU^,'
+   at System.Reflection.AssemblyNameParser.Parse(ReadOnlySpan`1 name)
+   at System.Reflection.AssemblyName.ParseAsAssemblySpec(Char* pAssemblyName, Void* pAssemblySpec)
+PASS: journal translation contains only its observed stage: 10200
+PASS: journal translation contains only its observed stage: 10315
+PASS: journal translation contains only its observed stage: 10316
+PASS: journal translation contains only its observed stage: 10317
+PASS: journal translation contains only its observed stage: 10318
+PASS: journal translation contains only its observed stage: 10319
+PASS: journal translation contains only its observed stage: 10320
+PASS: journal translation contains only its observed stage: 10321
+PASS: journal translation contains only its observed stage: 10509
+PASS: default-value correction never rewrites the TSV
+PASS: explicit custom Chinese always wins over the shipped correction
+PASS: matching English cannot rewrite another quest ID
+PASS: changed source wording cannot trigger a shipped-default correction
+PASS: observed CW title is independently translatable
+PASS: server title alone does not invent an original quest ID
+PASS: custom server-title wording is retained
+PASS: loading the custom dictionary leaves every input byte unchanged
+PASS: short Screw name can be corroborated by its complete same-ID description
+PASS: partial prose cannot waive icon evidence for a short item name
+PASS: another item description cannot corroborate Screw
+PASS: wrong name cannot borrow an unrelated item description
+PASS: the observed quantity does not suppress its exact item-name prefix
+PASS: reloading does not accumulate synthetic aliases or corrections
+R6 journal/item: 23/23 passed; actual candidate 3CF6851C9FE88A7DDC181E715F60B027973ABBD8884E3F4AF3FE709478361D33; Windows/CW OCR pixels unverified.

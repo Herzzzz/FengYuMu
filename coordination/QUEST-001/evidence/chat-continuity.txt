@@ -1,0 +1,16 @@
+
+An error has occurred that was not properly handled. Additional information is shown below. The PowerShell process will exit.
+Unhandled exception. System.IO.FileLoadException: The given assembly name was invalid.
+File name: 'ﾫg￭ﾋU^,'
+   at System.Reflection.AssemblyNameParser.Parse(ReadOnlySpan`1 name)
+   at System.Reflection.AssemblyName.ParseAsAssemblySpec(Char* pAssemblyName, Void* pAssemblySpec)
+PASS: first nonempty frame advances
+PASS: unanchored single-row replacement waits for evidence
+PASS: stable same-size replacement is delivered
+PASS: static frame is not delivered again
+PASS: empty OCR frame cannot erase last stable anchor
+PASS: full viewport replacement waits
+PASS: scrolling new viewport confirms through shared new row
+PASS: anchored append preserves original diff
+PASS: stop or region change clears pending evidence
+Chat continuity: 9/9 passed; actual policy state, capture/OCR/HTTP unverified.

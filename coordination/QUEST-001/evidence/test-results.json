@@ -1,0 +1,110 @@
+{
+  "schema": 1,
+  "annotation": "Commands run on this host against the built 枫语幕.exe. Evidence logs are committed next to this file. The final clean-build rerun updates the PENDING fields.",
+  "build": {
+    "command": "pwsh -NoProfile -File src/build.ps1",
+    "exitCode": "PENDING",
+    "exeSha256": "PENDING"
+  },
+  "tests": [
+    {
+      "name": "quest-panel-layout",
+      "command": "pwsh -NoProfile -File tests/logic-quest-panel-layout.ps1",
+      "exitCode": 0,
+      "checks": 64,
+      "evidence": "evidence/quest-panel-layout.txt"
+    },
+    {
+      "name": "quest-font-layout",
+      "command": "pwsh -NoProfile -File tests/logic-quest-font-layout.ps1",
+      "exitCode": 0,
+      "checks": 33,
+      "evidence": "evidence/quest-font-layout.txt"
+    },
+    {
+      "name": "simple-flow-r11",
+      "command": "pwsh -NoProfile -File tests/logic-simple-flow-r11.ps1",
+      "exitCode": 0,
+      "checks": 33,
+      "evidence": "evidence/simple-flow-r11.txt"
+    },
+    {
+      "name": "journal-and-item-r6",
+      "command": "pwsh -NoProfile -File tests/logic-journal-and-item-r6.ps1 -ExePath .\\枫语幕.exe",
+      "exitCode": 0,
+      "checks": 23,
+      "evidence": "evidence/journal-and-item-r6.txt"
+    },
+    {
+      "name": "quest-text-scope-r12",
+      "command": "pwsh -NoProfile -File tests/logic-quest-text-scope-r12.ps1",
+      "exitCode": 0,
+      "checks": 17,
+      "evidence": "evidence/quest-text-scope-r12.txt"
+    },
+    {
+      "name": "quest-matching-r12",
+      "command": "pwsh -NoProfile -File tests/logic-quest-matching-r12.ps1 -ExePath .\\枫语幕.exe",
+      "exitCode": 0,
+      "checks": 28,
+      "evidence": "evidence/quest-matching-r12.txt"
+    },
+    {
+      "name": "observed-quest-wording",
+      "command": "pwsh -NoProfile -File tests/logic-observed-quest-wording.ps1 -ExePath .\\枫语幕.exe",
+      "exitCode": 0,
+      "checks": 12,
+      "evidence": "evidence/observed-quest-wording.txt"
+    },
+    {
+      "name": "ui-dpi-scaling",
+      "command": "pwsh -NoProfile -File tests/logic-ui-dpi-scaling.ps1",
+      "exitCode": 0,
+      "detail": "100/125/150/175/200%, mixed DPI",
+      "evidence": "evidence/ui-dpi-scaling.txt"
+    },
+    {
+      "name": "chat-category-filtering",
+      "command": "pwsh -NoProfile -File tests/logic-chat-category-filtering.ps1",
+      "exitCode": 0,
+      "evidence": "evidence/chat-category-filtering.txt"
+    },
+    {
+      "name": "chat-megaphone-pixels",
+      "command": "pwsh -NoProfile -File tests/logic-chat-megaphone-pixels.ps1",
+      "exitCode": 0,
+      "checks": 164,
+      "evidence": "evidence/chat-megaphone-pixels.txt"
+    },
+    {
+      "name": "chat-continuity",
+      "command": "pwsh -NoProfile -File tests/logic-chat-continuity.ps1",
+      "exitCode": 0,
+      "checks": 9,
+      "evidence": "evidence/chat-continuity.txt"
+    }
+  ],
+  "syntheticQuestShell": {
+    "command": "pwsh -NoProfile -File tests/logic-quest-shell-resilience.ps1",
+    "exitCode": 1,
+    "classification": "PRE_EXISTING_BASELINE_FAILURE",
+    "detail": "The test's clean synthetic scene still reports an empty 识别场景 on this host; the journal path itself selected and composed: region=818,482,796x669, body=15px, title=19px, pages=1, committed=12/12.",
+    "evidence": "evidence/quest-shell-synthetic.txt"
+  },
+  "preExistingFailures": [
+    "tests/logic-quest-body-and-summary.ps1",
+    "tests/logic-panel-context-isolation.ps1",
+    "tests/logic-overlay-label-layout.ps1",
+    "tests/logic-overlay-paint-safety.ps1",
+    "tests/logic-overlay-dual-rendering.ps1",
+    "tests/logic-quest-title-groups.ps1",
+    "tests/logic-quest-shell-resilience.ps1"
+  ],
+  "baselineConfirmation": {
+    "worktree": ".bench/baseline-dff639b (detached at dff639b)",
+    "exeSha256": "6E618DF248FBBDB3AC0A25F1B9E4A3E4A5E1BBB02A15CEBF1ADB69A8563C1737",
+    "result": "Every pre-existing failure above reproduced on the untouched baseline worktree."
+  },
+  "realGameVisual": "UNVERIFIED",
+  "extraOcrOrAiRounds": false
+}

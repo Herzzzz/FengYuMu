@@ -1,0 +1,35 @@
+PASS: two confirmed translations are prepared in a single composition
+PASS: both Chinese glyph positions survive all background writes
+PASS: unchanged background and inter-row gap are transparent
+PASS: one draw publishes all accepted translations without per-label pixel veto
+PASS: display counters refer to accepted plan labels
+PASS: stale generation cannot be drawn
+PASS: unverified fuzzy translation cannot erase source
+PASS: dynamic counter inside source remains protected
+PASS: same source cannot be replaced twice
+PASS: nonfinite source geometry is refused
+PASS: outside-frame source geometry is refused
+PASS: zero accepted translations cannot install an opaque frozen screenshot
+PASS: overlong text cannot allocate an unbounded replacement
+PASS: text is never silently truncated to increase display counts
+PASS: nearby live value remains transparent after bounded text layout
+PASS: misaligned erase and layout boxes cannot recolour unrelated game text
+PASS: invalid line evidence cannot fall back to erasing the entire source union
+PASS: source must stay inside its measured panel
+PASS: local fill handles measured text at the frame edge without outside sampling
+PASS: local multiline fill preserves original pixels between OCR rows
+PASS: background fallback rejects outside source geometry
+PASS: unsupported texture uses local background fill and retains confirmed translations
+PASS: approximate fill stays within measured text and translated glyphs
+PASS: pending composition cannot mutate the committed bitmap
+PASS: cancelled composition cannot replace or dispose the committed bitmap
+PASS: real request method captures, recognizes and matches exactly once
+PASS: real request method composes and publishes exactly once
+PASS: successful request releases busy and cancellation state
+PASS: late OCR completion cannot match or publish after F8 cancellation
+PASS: cancelled request releases busy and cancellation state
+PASS: OCR failure cannot leave stale output or busy state
+PASS: busy request cannot launch concurrent recognition
+PASS: disabled automatic mode cannot publish its late composition
+Simple flow: 33 checks passed; actual request/composition/background methods; GDI font/capture boundaries controlled; Windows game unverified.
+33

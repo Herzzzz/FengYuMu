@@ -1,0 +1,65 @@
+PASS: short-with-summary: production journal label built
+PASS: short-with-summary: replacement region covers the first body row
+PASS: short-with-summary: replacement region covers the measured right edge
+PASS: short-with-summary: replacement region stays inside the measured panel
+PASS: short-with-summary: Quest Summary row is outside the body region
+PASS: short-with-summary: objective counter 1 is protected
+PASS: short-with-summary: plan font unit is Pixel
+PASS: short-with-summary: body base size is at least 15px
+PASS: short-with-summary: title is larger than body
+PASS: short-with-summary: measured line width fits content width
+PASS: short-with-summary: full body has at least one page
+PASS: short-without-summary: production journal label built
+PASS: short-without-summary: replacement region covers the first body row
+PASS: short-without-summary: replacement region covers the measured right edge
+PASS: short-without-summary: replacement region stays inside the measured panel
+PASS: short-without-summary: plan font unit is Pixel
+PASS: short-without-summary: body base size is at least 15px
+PASS: short-without-summary: title is larger than body
+PASS: short-without-summary: measured line width fits content width
+PASS: short-without-summary: full body has at least one page
+PASS: three-objectives: production journal label built
+PASS: three-objectives: replacement region covers the first body row
+PASS: three-objectives: replacement region covers the measured right edge
+PASS: three-objectives: replacement region stays inside the measured panel
+PASS: three-objectives: Quest Summary row is outside the body region
+PASS: three-objectives: objective counter 1 is protected
+PASS: three-objectives: objective counter 2 is protected
+PASS: three-objectives: objective counter 3 is protected
+PASS: three-objectives: plan font unit is Pixel
+PASS: three-objectives: body base size is at least 15px
+PASS: three-objectives: title is larger than body
+PASS: three-objectives: measured line width fits content width
+PASS: three-objectives: full body has at least one page
+PASS: manual-short: composition plan built with actual GDI+ metrics
+PASS: manual-short: short body stays on one page
+PASS: manual-short: body base size stays readable
+PASS: manual-short: actual measured line width fits content
+PASS: manual-long: composition plan built with actual GDI+ metrics
+PASS: manual-long: long body paginates instead of shrinking
+PASS: manual-long: pagination preserves all characters
+PASS: manual-long: body base size stays readable
+PASS: manual-long: actual measured line width fits content
+PASS: scale 1: production journal label built
+PASS: scale 1: font unit is Pixel
+PASS: scale 1: body base size is readable
+PASS: scale 1: body base size does not shrink
+PASS: scale 1: measured width fits
+PASS: scale 1.25: production journal label built
+PASS: scale 1.25: font unit is Pixel
+PASS: scale 1.25: body base size is readable
+PASS: scale 1.25: body base size does not shrink
+PASS: scale 1.25: measured width fits
+PASS: scale 1.5: production journal label built
+PASS: scale 1.5: font unit is Pixel
+PASS: scale 1.5: body base size is readable
+PASS: scale 1.5: body base size does not shrink
+PASS: scale 1.5: measured width fits
+PASS: scale 2: production journal label built
+PASS: scale 2: font unit is Pixel
+PASS: scale 2: body base size is readable
+PASS: scale 2: body base size does not shrink
+PASS: scale 2: measured width fits
+PASS: repeated F8 planning is deterministic
+PASS: repeated F8 plan is reusable by the compositor
+Quest panel layout: 64 checks passed; metrics=D:\GPT\文件\枫语幕\work\dsh-chat-001\coordination\QUEST-001\evidence\layout-metrics.json

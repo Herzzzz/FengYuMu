@@ -8,13 +8,13 @@ function Method([string]$file,[string]$name){
  @($tree.DescendantNodes()|Where-Object{$_ -is [Microsoft.CodeAnalysis.CSharp.Syntax.MethodDeclarationSyntax] -and $_.Identifier.ValueText -eq $name})[0].ToFullString()
 }
 $stub=@'
-using System;using System.Collections.Generic;using System.Diagnostics;using System.Drawing;using System.Linq;using System.Runtime.InteropServices;using System.Threading;using System.Threading.Tasks;
+using System;using System.Collections.Generic;using System.Diagnostics;using System.Drawing;using System.Globalization;using System.Linq;using System.Runtime.InteropServices;using System.Text;using System.Text.RegularExpressions;using System.Threading;using System.Threading.Tasks;
 namespace MapleOverlay {
  enum PixelFormat{Format32bppArgb}enum ImageLockMode{ReadOnly,WriteOnly,ReadWrite}
- enum TextRenderingHint{AntiAliasGridFit}enum FontStyle{Regular}enum GraphicsUnit{Pixel}enum StringTrimming{None}
+ enum TextRenderingHint{AntiAliasGridFit}enum FontStyle{Regular,Bold}enum GraphicsUnit{Pixel}enum StringTrimming{None}
  [Flags]enum StringFormatFlags{None=0,NoWrap=1}
  class StringFormat:IDisposable {public static StringFormat GenericTypographic=new StringFormat();public StringFormatFlags FormatFlags;public StringTrimming Trimming;public StringFormat(){}public StringFormat(StringFormat f){}public void Dispose(){}}
- class Font:IDisposable{public float Size;public Font(string family,float size){Size=size;}public Font(string family,float size,FontStyle style,GraphicsUnit unit){Size=size;}public void Dispose(){}}
+ class Font:IDisposable{public float Size;public GraphicsUnit Unit;public Font(string family,float size){Size=size;}public Font(string family,float size,FontStyle style,GraphicsUnit unit){Size=size;Unit=unit;}public void Dispose(){}}
  class SolidBrush:IDisposable{public Color Color;public SolidBrush(Color c){Color=c;}public void Dispose(){}}
  static class Brushes{public static SolidBrush White=new SolidBrush(Color.White);}
  class Image:IDisposable{public virtual Size Size{get{return new Size(120,100);}}public static Image FromFile(string f){return new Bitmap(120,100);}public virtual void Dispose(){}}
@@ -33,6 +33,7 @@ namespace MapleOverlay {
   Bitmap target;RectangleF clip;public TextRenderingHint TextRenderingHint;public int Draws;
   public static bool Slow;public static Graphics FromImage(Bitmap b){return new Graphics{target=b,clip=new RectangleF(0,0,b.Width,b.Height)};}
   public SizeF MeasureString(string text,Font font,SizeF area,StringFormat format){int fitted,lines;return MeasureString(text,font,area,format,out fitted,out lines);}
+  public SizeF MeasureString(string text,Font font,PointF origin,StringFormat format){return new SizeF(text.Length*font.Size*.6f,font.Size);}
   public SizeF MeasureString(string text,Font font,SizeF area,StringFormat format,out int fitted,out int lines){
    if(Slow){Slow=false;Thread.Sleep(65);}float cw=font.Size*.6f,ch=font.Size;
    int cols=(int)(area.Width/cw),rows=(int)(area.Height/ch);fitted=Math.Min(text.Length,Math.Max(0,cols*rows));lines=cols==0?0:(text.Length+cols-1)/cols;
@@ -40,13 +41,20 @@ namespace MapleOverlay {
   }
   public void SetClip(RectangleF r){clip=r;}public void ResetClip(){clip=new RectangleF(0,0,target.Width,target.Height);}
   public void DrawString(string t,Font f,SolidBrush brush,RectangleF area,StringFormat format){int[] p=target.Pixels();int cols=Math.Max(1,(int)(area.Width/(f.Size*.6f)));for(int i=0;i<t.Length;i++){int x=(int)area.X+(i%cols)*(int)(f.Size*.6f),y=(int)area.Y+(i/cols)*(int)f.Size;if(clip.Contains(x,y)&&x>=0&&x<target.Width&&y>=0&&y<target.Height)p[y*target.Width+x]=brush.Color.ToArgb();}target.Set(p);}
+  public void DrawString(string t,Font f,SolidBrush brush,PointF origin,StringFormat format){DrawString(t,f,brush,new RectangleF(origin.X,origin.Y,100000,fontHeight(f)),format);}
+  static float fontHeight(Font f){return f.Size*1.4f;}
   public void DrawString(string t,Font f,SolidBrush b,float x,float y){DrawString(t,f,b,new RectangleF(x,y,80,20),StringFormat.GenericTypographic);}
   public void DrawImageUnscaled(Image image,int x,int y){DrawImageUnscaled((Bitmap)image,new Point(x,y));}
   public void DrawImageUnscaled(Bitmap b,Point at){Draws++;int[] a=b.Pixels(),p=target.Pixels();for(int y=0;y<b.Height;y++)for(int x=0;x<b.Width;x++)if((uint)a[y*b.Width+x]>>24!=0&&x+at.X>=0&&x+at.X<target.Width&&y+at.Y>=0&&y+at.Y<target.Height)p[(y+at.Y)*target.Width+x+at.X]=a[y*b.Width+x];target.Set(p);}
   public void Clear(Color c){target.Set(Enumerable.Repeat(c.ToArgb(),target.Width*target.Height).ToArray());}public void Dispose(){}
  }
  enum LabelConfidence{Low,Medium,High}enum LabelRenderMode{CardFallback,Seamless,PreserveOriginal}
- class OverlayLabel{public RectangleF Bounds,SourceBounds,KeepClearBounds,PanelBounds;public List<RectangleF> SourceLineBounds;public QuestJournalDocument Journal;public bool HasSourceBounds=true,PaintedLastPass;public string MatchSource="";public string Text="中文",SemanticRole="task-name",FusionFailureReason="";public LabelConfidence Confidence=LabelConfidence.High;public LabelRenderMode RenderMode;}
+ class OcrWord{public string Text;public RectangleF BoundingRect;}
+ class OcrLine{public string Text;public List<OcrWord> Words=new List<OcrWord>();}
+ static class TranslationStore{public static string Normalize(string s){return (s??"").Trim().ToLowerInvariant();}}
+ static class QuestDetailGeometry{public static bool IsSummaryKey(string s){return s=="quest summary"||s=="questsummary";}}
+ static class QuestObjectiveSurface{public static Match Counter(string s){return Regex.Match(s??"",@"[0-9IlOo]+(?:\s*/\s*|\s+)[0-9IlOo]+\s*$");}}
+ class OverlayLabel{public RectangleF Bounds,SourceBounds,KeepClearBounds,PanelBounds;public List<RectangleF> SourceLineBounds;public QuestJournalDocument Journal;public bool Wrap,HasSourceBounds=true,PaintedLastPass;public string MatchSource="";public string Text="中文",SemanticRole="task-name",FusionFailureReason="";public LabelConfidence Confidence=LabelConfidence.High;public LabelRenderMode RenderMode;}
  static class OverlayPaintSafety{
 '@
 $stub+=(Method 'MapleOverlay.cs' 'IsFinite')+(Method 'MapleOverlay.cs' 'IsFiniteRect')+(Method 'MapleOverlay.cs' 'IsSafeSeamlessGeometry')+@'

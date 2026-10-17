@@ -23,9 +23,11 @@ namespace MapleOverlay
             internal RectangleF Content;
             internal List<Rectangle> Rows;
             internal Font Font;
+            internal Font JournalTitleFont;
+            internal JournalLayoutPlan JournalLayout;
             internal List<string> JournalPages;
             internal RectangleF JournalFooter;
-            public void Dispose() { if (Font != null) Font.Dispose(); }
+            public void Dispose() { if (Font != null) Font.Dispose(); if (JournalTitleFont != null) JournalTitleFont.Dispose(); }
         }
 
         private void ClearSimpleFusion()
@@ -108,7 +110,7 @@ namespace MapleOverlay
                             if (TryPrepareJournalDraw(label, journalArea, extent, values, measure, out journalDraw, out reason))
                             {
                                 draws.Add(journalDraw);
-                                Program.LogRuntimeEvent("replacement-ready", "generation="+generation+" background=journal-paper role=task-journal pages="+journalDraw.JournalPages.Count);
+                                Program.LogRuntimeEvent("replacement-ready", "generation="+generation+" background=journal-paper role=task-journal pages="+journalDraw.JournalPages.Count+" "+(journalDraw.JournalLayout==null?"":journalDraw.JournalLayout.Describe()));
                             }
                             else failures[label] = reason;
                             continue;
@@ -174,7 +176,8 @@ namespace MapleOverlay
                             if (guard.Bottom > area.Top && guard.Top < area.Bottom && guard.Left >= area.Right)
                                 right = Math.Min(right, guard.Left - 1);
                         content.Width = Math.Max(area.Width, right - area.Left);
-                        Font font = FitSimpleFont(measure, label.Text, content.Size, surface.SourceHeight);
+                        Font font = FitSimpleFont(measure, label.Text, content.Size, surface.SourceHeight,
+                            IsQuestPanelRole(label.SemanticRole) ? 14.0f : 8.0f);
                         if (font == null) { failures[label] = "complete-text-does-not-fit"; continue; }
                         // Shrink the reservation to actual measured text width for single rows.
                         if (rows.Count == 1)
@@ -215,7 +218,7 @@ namespace MapleOverlay
                     using (SolidBrush ink = new SolidBrush(Color.FromArgb(draw.Surface.Ink)))
                     {
                         if (draw.JournalPages != null)
-                            DrawJournalPage(graphics, draw.JournalPages, 0, draw.Font, draw.Content, draw.JournalFooter);
+                            DrawJournalPage(graphics, draw.JournalLayout, 0, draw.Font, draw.JournalTitleFont);
                         else
                         {
                             graphics.SetClip(draw.Content);
@@ -240,8 +243,13 @@ namespace MapleOverlay
                     simpleReady.Add(draw.Label);
                     if (draw.JournalPages != null)
                         journalPageView = new JournalPageView {Area=draw.Surface.Region, Content=draw.Content,
-                            Footer=draw.JournalFooter, Pages=draw.JournalPages, FontSize=draw.Font.Size,
-                            Background=draw.Label.Journal.Background};
+                            Footer=draw.JournalFooter, Pages=draw.JournalPages,
+                            PageLines=draw.JournalLayout.PageLines, TitleLines=draw.JournalLayout.TitleLines,
+                            Title=draw.JournalLayout.Title, FontSize=draw.JournalLayout.Type.BodySize,
+                            TitleSize=draw.JournalLayout.TitleSize, FontUnit=draw.JournalLayout.Type.Unit,
+                            FontFamily=draw.JournalLayout.Type.Family,
+                            Layout=draw.JournalLayout, Background=draw.Label.Journal.Background.IsEmpty?
+                                Color.FromArgb(250,248,241):draw.Label.Journal.Background};
                 }
                 SetJournalPagingShortcuts(journalPageView != null && journalPageView.Pages.Count > 1);
                 foreach (OverlayLabel label in source)
@@ -273,8 +281,25 @@ namespace MapleOverlay
 
         private static Font FitSimpleFont(Graphics graphics, string text, SizeF area, float sourceHeight)
         {
+            return FitSimpleFont(graphics, text, area, sourceHeight, 8.0f);
+        }
+
+        // Quest panel prose keeps a shared readable floor. The journal path uses its
+        // own 15px+ panel typography; this floor covers the preserved/fragment path
+        // so a long task row is never squeezed to the historical 8px fallback. If it
+        // cannot fit at the floor the caller preserves the original, not a truncation.
+        private static bool IsQuestPanelRole(string role)
+        {
+            return role == "task-body" || role == "task-journal";
+        }
+
+        private static Font FitSimpleFont(Graphics graphics, string text, SizeF area, float sourceHeight,
+            float minimumSize)
+        {
+            if (minimumSize < 8.0f) minimumSize = 8.0f;
+            float start = Math.Max(minimumSize, Math.Min(26.0f, sourceHeight));
             using (StringFormat format = SimpleTextFormat())
-            for (float size = Math.Max(8, Math.Min(26, sourceHeight)); size >= 8; size -= 1)
+            for (float size = start; size >= minimumSize; size -= 1)
             {
                 Font font = new Font("SimSun", size, FontStyle.Regular, GraphicsUnit.Pixel);
                 int fitted, lines;

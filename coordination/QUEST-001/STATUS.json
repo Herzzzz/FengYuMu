@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "taskId": "QUEST-001",
+  "sharedTaskId": "FONT-001",
+  "state": "IMPLEMENTATION_COMMITTED_BUILD_PENDING",
+  "branch": "dsh/quest-font-001",
+  "baseCommit": "dff639b828542d0bcad94fc9eb50a816f3f9bfd3",
+  "implementationCommit": "PENDING",
+  "resultFilesCommit": "reported in the final relay message; this file is committed with the result",
+  "scope": {
+    "sourceFiles": [
+      "src/QuestJournalOverlay.cs",
+      "src/QuestJournalGeometry.cs",
+      "src/QuestJournalComposition.cs",
+      "src/SimpleFusionComposition.cs"
+    ],
+    "testFiles": [
+      "tests/logic-quest-panel-layout.ps1",
+      "tests/logic-quest-font-layout.ps1",
+      "tests/logic-simple-flow-r11.ps1"
+    ],
+    "notChanged": [
+      "chat classification",
+      "OCR model or protocol",
+      "AI request logic",
+      "task/objective dictionary content"
+    ]
+  },
+  "implementation": {
+    "oneReplacementRegion": true,
+    "titleBodyHierarchy": "title = body + 4px bold; body floor 15px, cap 28px",
+    "fontUnit": "Pixel",
+    "wrap": "measured content width; per-line PointF drawing",
+    "pagination": "up to 128 pages; page text stored as ordered substrings",
+    "protection": "summary/level/counters/footer/objective cards and live-value guards",
+    "titleGuessing": false,
+    "taskSpecificRuntimeBranches": false,
+    "extraOcrOrAiRounds": false
+  },
+  "build": {
+    "command": "pwsh -NoProfile -File src/build.ps1",
+    "status": "PENDING",
+    "exePath": "枫语幕.exe",
+    "exeSha256": "PENDING",
+    "buildEvidencePath": "枫语幕.exe.build.json",
+    "buildEvidenceSha256": "PENDING"
+  },
+  "tests": {
+    "questPanelLayout": "PASS 64 checks (pending final clean-build rerun)",
+    "questFontLayout": "PASS 33 checks (pending final clean-build rerun)",
+    "simpleFlow": "PASS 33 checks (pending final clean-build rerun)",
+    "journalAndItemR6": "PASS 23/23 (pending final clean-build rerun)",
+    "questTextScopeR12": "PASS 17 checks (pending final clean-build rerun)",
+    "questMatchingR12": "PASS 28 checks (pending final clean-build rerun)",
+    "observedQuestWording": "PASS 12/12 (pending final clean-build rerun)",
+    "uiDpiScaling": "PASS 100/125/150/175/200% (pending final clean-build rerun)",
+    "chatCategoryFiltering": "PASS (pending final clean-build rerun)",
+    "chatMegaphonePixels": "PASS 164 checks (pending final clean-build rerun)",
+    "chatContinuity": "PASS 9/9 (pending final clean-build rerun)",
+    "independentWindow": "PASS (pending final clean-build rerun)"
+  },
+  "preExistingFailuresConfirmedOnBaseline": [
+    "tests/logic-quest-body-and-summary.ps1 (stale source-guard string)",
+    "tests/logic-panel-context-isolation.ps1 (stale source-guard string)",
+    "tests/logic-overlay-label-layout.ps1 (cross-screen geometry assertion)",
+    "tests/logic-overlay-paint-safety.ps1 (stale source-guard string)",
+    "tests/logic-overlay-dual-rendering.ps1 (stale source-guard string)",
+    "tests/logic-quest-title-groups.ps1 (pre-existing dictionary/index assertion)",
+    "tests/logic-quest-shell-resilience.ps1 (clean synthetic scene reports empty scene on this host)"
+  ],
+  "runtimeEvidence": {
+    "syntheticJournalSelected": true,
+    "syntheticJournalLayout": "body=15px unit=Pixel title=19px wrap=342 content=371,219,342,294 pages=1 overflow=title-fit;body=single-page",
+    "syntheticComposition": "committed=True candidates=12 ready=12",
+    "ocrRoundsAdded": false,
+    "aiRoundsAdded": false
+  },
+  "unverified": [
+    "Real in-game visual acceptance (physical F8 on a live game client)",
+    "Real quest UI at 100/125/150/200% Windows DPI/scaling",
+    "User's private quest screenshot replay"
+  ],
+  "cloudAcceptance": "PENDING"
+}

@@ -1,0 +1,223 @@
+{
+  "schema": 1,
+  "annotation": "Actual GDI+ QuestJournalLayout metrics from synthetic panels; no OCR, AI, capture or in-game visual acceptance.",
+  "checks": 64,
+  "cases": [
+    {
+      "case": "short-with-summary",
+      "scale": 1.0,
+      "source": [
+        401.0,
+        292.0,
+        408.0,
+        292.0
+      ],
+      "bodyFontSize": 18.0,
+      "titleFontSize": 22.0,
+      "fontUnit": "Pixel",
+      "content": [
+        407.0,
+        296.0,
+        391.0,
+        284.0
+      ],
+      "pageCount": 1,
+      "maxLineWidth": 381.111328125,
+      "overflow": "title-fit;body=single-page",
+      "firstBodyTop": 346.0,
+      "sourceCoversFirst": true,
+      "summaryProtected": true
+    },
+    {
+      "case": "short-without-summary",
+      "scale": 1.0,
+      "source": [
+        401.0,
+        292.0,
+        408.0,
+        292.0
+      ],
+      "bodyFontSize": 18.0,
+      "titleFontSize": 22.0,
+      "fontUnit": "Pixel",
+      "content": [
+        407.0,
+        296.0,
+        391.0,
+        284.0
+      ],
+      "pageCount": 1,
+      "maxLineWidth": 381.111328125,
+      "overflow": "title-fit;body=single-page",
+      "firstBodyTop": 346.0,
+      "sourceCoversFirst": true,
+      "summaryProtected": true
+    },
+    {
+      "case": "three-objectives",
+      "scale": 1.0,
+      "source": [
+        401.0,
+        292.0,
+        408.0,
+        292.0
+      ],
+      "bodyFontSize": 18.0,
+      "titleFontSize": 22.0,
+      "fontUnit": "Pixel",
+      "content": [
+        407.0,
+        296.0,
+        391.0,
+        284.0
+      ],
+      "pageCount": 1,
+      "maxLineWidth": 381.111328125,
+      "overflow": "title-fit;body=single-page",
+      "firstBodyTop": 346.0,
+      "sourceCoversFirst": true,
+      "summaryProtected": true
+    },
+    {
+      "case": "manual-short",
+      "scale": 1.0,
+      "source": [
+        400.0,
+        300.0,
+        410.0,
+        290.0
+      ],
+      "bodyFontSize": 18.0,
+      "titleFontSize": 22.0,
+      "fontUnit": "Pixel",
+      "content": [
+        406.0,
+        304.0,
+        393.0,
+        282.0
+      ],
+      "pageCount": 1,
+      "maxLineWidth": 216.0,
+      "overflow": "title-fit;body=single-page"
+    },
+    {
+      "case": "manual-long",
+      "scale": 1.0,
+      "source": [
+        400.0,
+        300.0,
+        410.0,
+        290.0
+      ],
+      "bodyFontSize": 18.0,
+      "titleFontSize": 22.0,
+      "fontUnit": "Pixel",
+      "content": [
+        406.0,
+        304.0,
+        393.0,
+        282.0
+      ],
+      "pageCount": 8,
+      "maxLineWidth": 388.5556640625,
+      "overflow": "title-fit;body=pages:8"
+    },
+    {
+      "case": "scale-1",
+      "scale": 1.0,
+      "source": [
+        401.0,
+        292.0,
+        408.0,
+        292.0
+      ],
+      "bodyFontSize": 18.0,
+      "titleFontSize": 22.0,
+      "fontUnit": "Pixel",
+      "content": [
+        407.0,
+        296.0,
+        391.0,
+        284.0
+      ],
+      "pageCount": 1,
+      "maxLineWidth": 381.111328125,
+      "overflow": "title-fit;body=single-page"
+    },
+    {
+      "case": "scale-1.25",
+      "scale": 1.25,
+      "source": [
+        501.0,
+        363.0,
+        510.0,
+        368.0
+      ],
+      "bodyFontSize": 22.0,
+      "titleFontSize": 26.0,
+      "fontUnit": "Pixel",
+      "content": [
+        508.0,
+        367.0,
+        491.0,
+        360.0
+      ],
+      "pageCount": 1,
+      "maxLineWidth": 487.802734375,
+      "overflow": "title-fit;body=single-page"
+    },
+    {
+      "case": "scale-1.5",
+      "scale": 1.5,
+      "source": [
+        601.0,
+        435.0,
+        613.0,
+        442.0
+      ],
+      "bodyFontSize": 27.0,
+      "titleFontSize": 31.0,
+      "fontUnit": "Pixel",
+      "content": [
+        609.0,
+        440.0,
+        590.0,
+        432.0
+      ],
+      "pageCount": 1,
+      "maxLineWidth": 571.6669921875,
+      "overflow": "title-fit;body=single-page"
+    },
+    {
+      "case": "scale-2",
+      "scale": 2.0,
+      "source": [
+        801.0,
+        580.0,
+        818.0,
+        589.0
+      ],
+      "bodyFontSize": 28.0,
+      "titleFontSize": 32.0,
+      "fontUnit": "Pixel",
+      "content": [
+        809.0,
+        586.0,
+        795.0,
+        577.0
+      ],
+      "pageCount": 1,
+      "maxLineWidth": 788.83984375,
+      "overflow": "title-fit;body=single-page"
+    },
+    {
+      "case": "repeat-f8",
+      "scale": 1.0,
+      "pageCount": 1,
+      "bodyFontSize": 18.0,
+      "overflow": "title-fit;body=single-page",
+      "reused": true
+    }
+  ],
+  "realGameVisual": "UNVERIFIED"
+}
