@@ -2033,16 +2033,21 @@ namespace MapleOverlay
             List<int> result = new List<int>();
             if (current == null) return result;
             HashSet<int> resultSet = new HashSet<int>();
+            bool[] currentCandidates = new bool[current.Count];
             if (candidates != null)
                 foreach (int index in candidates)
-                    if (index >= 0 && index < current.Count) resultSet.Add(index);
+                    if (index >= 0 && index < current.Count)
+                    {
+                        resultSet.Add(index);
+                        currentCandidates[index] = true;
+                    }
             if (previous == null || previous.Count == 0 || current.Count == 0 ||
                 previousStyles == null || currentStyles == null ||
                 previousStyles.Count != previous.Count || currentStyles.Count != current.Count)
                 return BuildIndexList(resultSet);
 
             List<ChatRowPair> aligned = AlignChatRows(previous, previousStyles, current,
-                currentStyles);
+                currentStyles, currentCandidates);
             int[] currentToPrevious = new int[current.Count];
             for (int index = 0; index < currentToPrevious.Length; index++)
                 currentToPrevious[index] = -1;
@@ -2114,7 +2119,7 @@ namespace MapleOverlay
         // old row instead of pairing with an earlier duplicate of the same text.
         private static List<ChatRowPair> AlignChatRows(List<string> previous,
             List<ChatVisualStyle> previousStyles, List<string> current,
-            List<ChatVisualStyle> currentStyles)
+            List<ChatVisualStyle> currentStyles, bool[] currentCandidates)
         {
             List<ChatRowPair> pairs = new List<ChatRowPair>();
             if (previous == null || current == null || previous.Count == 0 ||
@@ -2136,12 +2141,19 @@ namespace MapleOverlay
                     if (SameChatRowText(previous[previousIndex - 1],
                         current[currentIndex - 1]))
                     {
+                        // Primary score is the row/source match. The small candidate
+                        // penalty only breaks ties in favour of leaving the existing
+                        // new-message row unpaired; combined with the ordered DP it
+                        // also keeps the older duplicate on the retained side.
                         int pairValue = best[previousIndex - 1, currentIndex - 1] +
                             ChatRowPairScore(previous[previousIndex - 1],
                                 current[currentIndex - 1],
                                 previousStyles[previousIndex - 1],
-                                currentStyles[currentIndex - 1]);
-                        if (pairValue >= value)
+                                currentStyles[currentIndex - 1]) * 1000;
+                        if (currentCandidates != null &&
+                            currentIndex - 1 < currentCandidates.Length &&
+                            currentCandidates[currentIndex - 1]) pairValue--;
+                        if (pairValue > value)
                         {
                             value = pairValue;
                             pick = 2;

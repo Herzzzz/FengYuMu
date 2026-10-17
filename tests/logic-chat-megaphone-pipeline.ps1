@@ -227,8 +227,8 @@ $changedIndices = $addSourceChangedIndices.Invoke($null, $changedIndexArgs)
 Assert-True ([bool]$changedIndexArgs[5]) 'index flow detects pink-to-blue same-text source change'
 Assert-True ($changedIndices.Count -eq 1 -and $changedIndices[0] -eq 0) 'index flow delivers the changed current row, not a prior occurrence'
 
-# R2 general previous/current alignment: the megaphone duplicate is retained and
-# moved up after scroll; only the new other row may be enqueued.
+# R2 group 3: a retained old row after scroll must not be re-enqueued, while the
+# new other row still is.
 $retainedArgs = Get-SourceChangeResult `
     (To-StringList @('Alice: hi', 'Alice: hi')) `
     (To-StyleList @((New-Style 'Normal' 'Chat' $false),
@@ -249,6 +249,8 @@ $retainedSingleArgs = Get-SourceChangeResult `
     (New-IntList @(0))
 Assert-True ($retainedSingleArgs.Indices.Count -eq 0 -and -not $retainedSingleArgs.Changed) 'a retained old duplicate alone is not re-enqueued after scroll'
 
+# R2 group 2: a genuinely new same-text copy in another channel must survive
+# alignment, whether the text diff already found it or missed it.
 $newSameTextArgs = Get-SourceChangeResult `
     (To-StringList @('Alice: hi')) `
     (To-StyleList @((New-Style 'Megaphone' 'Megaphone' $true))) `
@@ -277,6 +279,59 @@ $trueSourceChangeArgs = Get-SourceChangeResult `
     (New-IntList @())
 Assert-True ($trueSourceChangeArgs.Indices.Count -eq 1 -and
     $trueSourceChangeArgs.Indices[0] -eq 0 -and $trueSourceChangeArgs.Changed) 'same row with a true source change is still delivered'
+
+# R2 group 1: same-channel duplicate growth. A newly appended identical message
+# must be delivered for 1->2 and 2->3 in Normal, Party and Megaphone.
+$growthCases = @(
+    @{ name = 'Normal'; category = 'Normal'; kind = 'Chat'; background = $false },
+    @{ name = 'Party'; category = 'Party'; kind = 'Chat'; background = $false },
+    @{ name = 'Megaphone'; category = 'Megaphone'; kind = 'Megaphone'; background = $true }
+)
+foreach ($growth in $growthCases) {
+    $growthStyle = New-Style $growth.category $growth.kind $growth.background
+    foreach ($previousCount in @(1, 2)) {
+        $previousCountValue = [int]$previousCount
+        $currentCountValue = $previousCountValue + 1
+        $previousTextValues = @()
+        $previousStyleValues = @()
+        $currentTextValues = @()
+        $currentStyleValues = @()
+        for ($index = 0; $index -lt $previousCountValue; $index++) {
+            $previousTextValues += 'Alice: hi'
+            $previousStyleValues += $growthStyle
+        }
+        for ($index = 0; $index -lt $currentCountValue; $index++) {
+            $currentTextValues += 'Alice: hi'
+            $currentStyleValues += $growthStyle
+        }
+        $growthPrevious = To-StringList $previousTextValues
+        $growthCurrent = To-StringList $currentTextValues
+        $growthDiffArgs = [object[]]::new(2)
+        $growthDiffArgs[0] = $growthPrevious
+        $growthDiffArgs[1] = $growthCurrent
+        $growthCandidates = $getNewIndices.Invoke($null, $growthDiffArgs)
+        Assert-True ($growthCandidates.Count -eq 1 -and
+            $growthCandidates[0] -eq $previousCountValue) ("{0} {1}->{2}: diff identifies the appended duplicate" -f $growth.name, $previousCountValue, $currentCountValue)
+        $growthResult = Get-SourceChangeResult `
+            $growthPrevious `
+            (To-StyleList $previousStyleValues) `
+            $growthCurrent `
+            (To-StyleList $currentStyleValues) `
+            $growthCandidates
+        Assert-True ($growthResult.Indices.Count -eq 1 -and
+            $growthResult.Indices[0] -eq $previousCountValue -and
+            -not $growthResult.Changed) ("{0} {1}->{2}: newly appended duplicate is enqueued once" -f $growth.name, $previousCountValue, $currentCountValue)
+    }
+}
+
+# R2 group 4: a static frame must not publish a duplicate even when the
+# replacement path reports every current row as a candidate.
+$staticTexts = To-StringList @('Alice: hi')
+$staticStyles = To-StyleList @((New-Style 'Party' 'Chat' $false))
+$staticResult = Get-SourceChangeResult $staticTexts $staticStyles $staticTexts $staticStyles (New-IntList @())
+Assert-True ($staticResult.Indices.Count -eq 0 -and -not $staticResult.Changed) 'static frame without new-message evidence publishes no duplicate'
+$staticAllResult = Get-SourceChangeResult $staticTexts $staticStyles $staticTexts $staticStyles (New-IntList @(0))
+Assert-True ($staticAllResult.Indices.Count -eq 0 -and -not $staticAllResult.Changed) 'static frame with retained candidate publishes no duplicate'
 
 $firstMiddleLast = To-StringList @('Alice: hi', 'Alice: hi', 'Alice: hi')
 $firstMiddleStyles = To-StyleList @(
@@ -504,4 +559,4 @@ Assert-True (-not $chatSource.Contains('previousOccurrences')) 'no occurrence-fr
 Assert-True (-not $chatSource.Contains('priorOccurrence')) 'queue no longer re-finds duplicate text by prior-frame occurrence count'
 Assert-True (([regex]::Matches($chatSource, 'OnlineAiClient\.TranslateAsync\(').Count) -eq 2) 'AI translation request sites remain at the v4.0 count (2)'
 
-Write-Host ("Chat megaphone pipeline regression: {0} checks passed; exact-vs-fuzzy identity, exact Alicf nickname regression, ambiguous/missing nickname Unknown, physical-row association, first/middle/last duplicate sources, current-row carry, retained-row scroll alignment, false retained-duplicate suppression, new same-text cross-channel delivery, cache identity, parse→queue→publish→history, out-of-order async publication, main/floating filters, detection cost and OCR call count covered." -f $script:checks)
+Write-Host ("Chat megaphone pipeline regression: {0} checks passed; exact-vs-fuzzy identity, exact Alicf nickname regression, ambiguous/missing nickname Unknown, physical-row association, first/middle/last duplicate sources, current-row carry, candidate-aware retained-row scroll alignment, same-channel 1->2/2->3 duplicate growth across Normal/Party/Megaphone, cross-channel same-text addition, static-frame duplicate suppression, cache identity, parse→queue→publish→history, out-of-order async publication, main/floating filters, detection cost and OCR call count covered." -f $script:checks)
