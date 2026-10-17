@@ -24,7 +24,6 @@ $findStyle = $frameType.GetMethod('FindStyle', $all, $null, [Type[]]@([string], 
 $findStyleSingle = $frameType.GetMethod('FindStyle', $all, $null, [Type[]]@([string]), $null)
 $findStyles = $frameType.GetMethod('FindStyles', $all)
 $styleForRow = $frameType.GetMethod('StyleForRow', $all)
-$addSourceChanged = $chatType.GetMethod('AddSourceChangedChatLines', $all)
 $addSourceChangedIndices = $chatType.GetMethod('AddSourceChangedChatLineIndices', $all)
 $getNewIndices = $chatType.GetMethod('GetNewChatLineIndices', $all)
 $suppressIndices = $chatType.GetMethod('SuppressRecentOcrReappearanceIndices', $all)
@@ -90,6 +89,18 @@ function Invoke-TwoListMethod($method, $first, $second) {
     $arguments[1] = $second
     Write-Output -NoEnumerate $method.Invoke($null, $arguments)
 }
+function Get-SourceChangeResult($previousTexts, $previousStyles, $currentTexts,
+    $currentStyles, $candidates) {
+    $arguments = [object[]]::new(6)
+    $arguments[0] = $previousTexts
+    $arguments[1] = $previousStyles
+    $arguments[2] = $currentTexts
+    $arguments[3] = $currentStyles
+    $arguments[4] = $candidates
+    $arguments[5] = $false
+    $indices = $addSourceChangedIndices.Invoke($null, $arguments)
+    return [pscustomobject]@{ Indices = $indices; Changed = [bool]$arguments[5] }
+}
 function To-StringList([string[]]$values) {
     $list = [System.Collections.Generic.List[string]]::new()
     foreach ($value in $values) { $list.Add($value) }
@@ -132,6 +143,17 @@ Assert-True ((Get-FoundCategorySingle $frame 'hello') -eq 'Unknown') 'missing ni
 Assert-True ((Get-FoundCategorySingle $frame 'Alice: hello there') -eq 'Guild') 'exact identity outranks a contained fuzzy body'
 Assert-True ((Get-FoundCategorySingle $frame 'Alice: hello') -eq 'Unknown') 'text-only duplicate exact identities with different sources are ambiguous'
 Assert-True ((Get-FoundCategorySingle $frame 'Alice: hexlo') -eq 'Unknown') 'fuzzy body with two possible rows remains Unknown'
+
+# R1 exact nickname: Alice party vs Alicf guild. Only Alicf is an exact identity.
+$nameFrame = [Activator]::CreateInstance($frameType, $true)
+Add-CaptureLine $nameFrame 'Alice: hello' (New-Style 'Party' 'Chat' $false) 10
+Add-CaptureLine $nameFrame 'Alicf: hello' (New-Style 'Guild' 'Chat' $false) 40
+Assert-True ((Get-FoundCategorySingle $nameFrame 'Alicf: hello') -eq 'Guild') 'exact Alicf nickname+body selects Guild without a fuzzy Alice upgrade'
+Assert-True ((Get-FoundCategory $nameFrame 'Alicf: hello' 0) -eq 'Guild') 'occurrence API also selects Guild for exact Alicf'
+Assert-True ((Get-FoundCategorySingle $nameFrame 'Alice: hello') -eq 'Party') 'exact Alice nickname+body selects Party'
+Assert-True ((Get-FoundCategorySingle $nameFrame 'Alic: hello') -eq 'Unknown') 'ambiguous fuzzy nickname is Unknown in the single API'
+Assert-True ((Get-FoundCategory $nameFrame 'Alic: hello' 0) -eq 'Unknown') 'ambiguous fuzzy nickname is Unknown in the occurrence API'
+Assert-True ((Get-FoundCategorySingle $nameFrame 'hello') -eq 'Unknown') 'missing nickname is Unknown in the exact-nickname fixture'
 $duplicates = [System.Collections.Generic.List[string]]::new()
 $duplicates.Add('Alice: hello')
 $duplicates.Add('Alice: hello')
@@ -140,29 +162,28 @@ Assert-True (([string](Get-Field $duplicateStyles[0] 'Category') -eq 'Megaphone'
     ([string](Get-Field $duplicateStyles[1] 'Category') -eq 'Guild')) 'FindStyles assigns one physical row per duplicate'
 
 # B. Same text scrolled to another channel is a new source occurrence.
-$previous = To-StringList @('Alice: hi')
-$previousStyles = To-StyleList @((New-Style 'Megaphone' 'SuperMegaphone' $true))
-$current = To-StringList @('Alice: hi')
-$currentStyles = To-StyleList @((New-Style 'Megaphone' 'Megaphone' $true))
-$changedArgs = [object[]]@($previous, $previousStyles, $current, $currentStyles,
-    (To-StringList @()), $false)
-$changedResult = $addSourceChanged.Invoke($null, $changedArgs)
-Assert-True ([bool]$changedArgs[5]) 'pink-to-blue same text is detected as a source change'
-Assert-True ($changedResult.Count -eq 1 -and $changedResult[0] -eq 'Alice: hi') 'source change delivers the same text once'
-$noChangeArgs = [object[]]@((To-StringList @('Alice: hi')),
-    (To-StyleList @((New-Style 'Megaphone' 'Megaphone' $true))),
-    (To-StringList @('Alice: hi')),
-    (To-StyleList @((New-Style 'Megaphone' 'Megaphone' $true))),
-    (To-StringList @()), $false)
-[void]$addSourceChanged.Invoke($null, $noChangeArgs)
-Assert-True (-not [bool]$noChangeArgs[5]) 'identical same-source frame is not delivered twice'
-$unknownArgs = [object[]]@((To-StringList @('Alice: hi')),
-    (To-StyleList @((New-Style 'Normal' 'Chat' $false))),
-    (To-StringList @('Alice: hi')),
-    (To-StyleList @((New-Style 'Unknown' 'Chat' $false))),
-    (To-StringList @()), $false)
-[void]$addSourceChanged.Invoke($null, $unknownArgs)
-Assert-True (-not [bool]$unknownArgs[5]) 'Normal-to-Unknown jitter is not treated as another channel'
+$pinkBlue = Get-SourceChangeResult `
+    (To-StringList @('Alice: hi')) `
+    (To-StyleList @((New-Style 'Megaphone' 'SuperMegaphone' $true))) `
+    (To-StringList @('Alice: hi')) `
+    (To-StyleList @((New-Style 'Megaphone' 'Megaphone' $true))) `
+    (New-IntList @())
+Assert-True ($pinkBlue.Changed -and $pinkBlue.Indices.Count -eq 1 -and
+    $pinkBlue.Indices[0] -eq 0) 'pink-to-blue same text is detected as a source change'
+$sameSource = Get-SourceChangeResult `
+    (To-StringList @('Alice: hi')) `
+    (To-StyleList @((New-Style 'Megaphone' 'Megaphone' $true))) `
+    (To-StringList @('Alice: hi')) `
+    (To-StyleList @((New-Style 'Megaphone' 'Megaphone' $true))) `
+    (New-IntList @())
+Assert-True (-not $sameSource.Changed -and $sameSource.Indices.Count -eq 0) 'identical same-source frame is not delivered twice'
+$unknownJitter = Get-SourceChangeResult `
+    (To-StringList @('Alice: hi')) `
+    (To-StyleList @((New-Style 'Normal' 'Chat' $false))) `
+    (To-StringList @('Alice: hi')) `
+    (To-StyleList @((New-Style 'Unknown' 'Chat' $false))) `
+    (New-IntList @())
+Assert-True (-not $unknownJitter.Changed -and $unknownJitter.Indices.Count -eq 0) 'Normal-to-Unknown jitter is not treated as another channel'
 
 # B2. Current-row identity: parse rows, diff by index, resolve style by row and
 # deliver a changed source without re-finding duplicate text by prior count.
@@ -205,6 +226,57 @@ $changedIndexArgs[5] = $false
 $changedIndices = $addSourceChangedIndices.Invoke($null, $changedIndexArgs)
 Assert-True ([bool]$changedIndexArgs[5]) 'index flow detects pink-to-blue same-text source change'
 Assert-True ($changedIndices.Count -eq 1 -and $changedIndices[0] -eq 0) 'index flow delivers the changed current row, not a prior occurrence'
+
+# R2 general previous/current alignment: the megaphone duplicate is retained and
+# moved up after scroll; only the new other row may be enqueued.
+$retainedArgs = Get-SourceChangeResult `
+    (To-StringList @('Alice: hi', 'Alice: hi')) `
+    (To-StyleList @((New-Style 'Normal' 'Chat' $false),
+        (New-Style 'Megaphone' 'Megaphone' $true))) `
+    (To-StringList @('Alice: hi', 'Bob: new')) `
+    (To-StyleList @((New-Style 'Megaphone' 'Megaphone' $true),
+        (New-Style 'Party' 'Chat' $false))) `
+    (New-IntList @(0, 1))
+Assert-True ($retainedArgs.Indices.Count -eq 1 -and $retainedArgs.Indices[0] -eq 1 -and
+    -not $retainedArgs.Changed) 'scroll alignment filters the retained duplicate and keeps only the new row'
+
+$retainedSingleArgs = Get-SourceChangeResult `
+    (To-StringList @('Alice: hi', 'Alice: hi')) `
+    (To-StyleList @((New-Style 'Normal' 'Chat' $false),
+        (New-Style 'Megaphone' 'Megaphone' $true))) `
+    (To-StringList @('Alice: hi')) `
+    (To-StyleList @((New-Style 'Megaphone' 'Megaphone' $true))) `
+    (New-IntList @(0))
+Assert-True ($retainedSingleArgs.Indices.Count -eq 0 -and -not $retainedSingleArgs.Changed) 'a retained old duplicate alone is not re-enqueued after scroll'
+
+$newSameTextArgs = Get-SourceChangeResult `
+    (To-StringList @('Alice: hi')) `
+    (To-StyleList @((New-Style 'Megaphone' 'Megaphone' $true))) `
+    (To-StringList @('Alice: hi', 'Alice: hi')) `
+    (To-StyleList @((New-Style 'Megaphone' 'Megaphone' $true),
+        (New-Style 'Guild' 'Chat' $false))) `
+    (New-IntList @())
+Assert-True ($newSameTextArgs.Indices.Count -eq 1 -and $newSameTextArgs.Indices[0] -eq 1 -and
+    $newSameTextArgs.Changed) 'new same-text cross-channel message is not swallowed when diff misses it'
+
+$newSameTextCandidateArgs = Get-SourceChangeResult `
+    (To-StringList @('Alice: hi')) `
+    (To-StyleList @((New-Style 'Megaphone' 'Megaphone' $true))) `
+    (To-StringList @('Alice: hi', 'Alice: hi')) `
+    (To-StyleList @((New-Style 'Megaphone' 'Megaphone' $true),
+        (New-Style 'Guild' 'Chat' $false))) `
+    (New-IntList @(1))
+Assert-True ($newSameTextCandidateArgs.Indices.Count -eq 1 -and
+    $newSameTextCandidateArgs.Indices[0] -eq 1) 'new same-text cross-channel candidate survives alignment'
+
+$trueSourceChangeArgs = Get-SourceChangeResult `
+    (To-StringList @('Alice: hi')) `
+    (To-StyleList @((New-Style 'Normal' 'Chat' $false))) `
+    (To-StringList @('Alice: hi')) `
+    (To-StyleList @((New-Style 'Guild' 'Chat' $false))) `
+    (New-IntList @())
+Assert-True ($trueSourceChangeArgs.Indices.Count -eq 1 -and
+    $trueSourceChangeArgs.Indices[0] -eq 0 -and $trueSourceChangeArgs.Changed) 'same row with a true source change is still delivered'
 
 $firstMiddleLast = To-StringList @('Alice: hi', 'Alice: hi', 'Alice: hi')
 $firstMiddleStyles = To-StyleList @(
@@ -426,7 +498,10 @@ Assert-True ($chatSource.Contains('chatContinuity.ResolveIndices(priorFrame, lin
 Assert-True ($chatSource.Contains('AddSourceChangedChatLineIndices(priorFrame, priorStyles')) 'same-text source changes are fed by current row index'
 Assert-True ($chatSource.Contains('PublishPreparedChatLine') -and
     $chatSource.Contains('ChatVisualStyle style = prepared.Style')) 'publication uses the carried prepared style'
+Assert-True ($chatSource.Contains('AlignChatRows') -and
+    $chatSource.Contains('ChatRowPairScore')) 'previous/current chat rows use ordered alignment'
+Assert-True (-not $chatSource.Contains('previousOccurrences')) 'no occurrence-from-start source-change map remains'
 Assert-True (-not $chatSource.Contains('priorOccurrence')) 'queue no longer re-finds duplicate text by prior-frame occurrence count'
 Assert-True (([regex]::Matches($chatSource, 'OnlineAiClient\.TranslateAsync\(').Count) -eq 2) 'AI translation request sites remain at the v4.0 count (2)'
 
-Write-Host ("Chat megaphone pipeline regression: {0} checks passed; exact-vs-fuzzy identity, ambiguous/missing nickname Unknown, physical-row association, first/middle/last duplicate sources, current-row carry, scroll source change, cache identity, parse→queue→publish→history, out-of-order async publication, main/floating filters, detection cost and OCR call count covered." -f $script:checks)
+Write-Host ("Chat megaphone pipeline regression: {0} checks passed; exact-vs-fuzzy identity, exact Alicf nickname regression, ambiguous/missing nickname Unknown, physical-row association, first/middle/last duplicate sources, current-row carry, retained-row scroll alignment, false retained-duplicate suppression, new same-text cross-channel delivery, cache identity, parse→queue→publish→history, out-of-order async publication, main/floating filters, detection cost and OCR call count covered." -f $script:checks)

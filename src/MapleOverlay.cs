@@ -2584,6 +2584,10 @@ namespace MapleOverlay
                 ChatVisualStyle only = pool[0].Line.Style;
                 return only == null ? ChatVisualStyle.Default : only;
             }
+            // Without an exact nickname+body identity, several equally good fuzzy
+            // rows are ambiguous in the occurrence API too.
+            if (exactMatches.Count == 0 && pool.Count != 1)
+                return ChatVisualStyle.Default;
             if (occurrence >= pool.Count) occurrence = pool.Count - 1;
             ChatVisualStyle style = pool[occurrence].Line.Style;
             return style == null ? ChatVisualStyle.Default : style;
@@ -2624,6 +2628,7 @@ namespace MapleOverlay
                 candidateSpeaker = "";
             if (parsedSpeaker.Length > 0 && IsNoticeSpeaker(parsedSpeaker))
                 parsedSpeaker = "";
+            bool exactSpeaker = false;
             if (parsedSpeaker.Length > 0)
             {
                 // The source row must contain the same speaker. A shared sentence
@@ -2631,6 +2636,9 @@ namespace MapleOverlay
                 if (candidateSpeaker.Length == 0) return 0;
                 if (!SameSpeaker(SpeakerCore(parsedSpeaker), SpeakerCore(candidateSpeaker)))
                     return 0;
+                // SameSpeaker is deliberately OCR-tolerant. Exact identity is only
+                // claimed when the normalised nickname is identical as well.
+                exactSpeaker = ExactSpeaker(parsedSpeaker, candidateSpeaker);
             }
             else if (candidateSpeaker.Length > 0)
             {
@@ -2646,8 +2654,8 @@ namespace MapleOverlay
             if (parsedBody.Length == 0 || candidateBody.Length == 0) return 0;
             if (parsedBody == candidateBody)
             {
-                exact = true;
-                return 10000 + parsedBody.Length;
+                exact = exactSpeaker;
+                return (exact ? 10000 : 8000) + parsedBody.Length;
             }
             int shortest = Math.Min(parsedBody.Length, candidateBody.Length);
             if (shortest >= 6 &&
@@ -2662,6 +2670,13 @@ namespace MapleOverlay
             if (parsedSpeaker.Length > 0 && SameOcrMessage(parsedLine, candidate.Text))
                 return 3000 + shortest;
             return 0;
+        }
+
+        private static bool ExactSpeaker(string left, string right)
+        {
+            string a = SpeakerIdentity(SpeakerCore(left));
+            string b = SpeakerIdentity(SpeakerCore(right));
+            return a.Length > 0 && String.Equals(a, b, StringComparison.Ordinal);
         }
 
         private static bool SameOcrMessage(string left, string right)

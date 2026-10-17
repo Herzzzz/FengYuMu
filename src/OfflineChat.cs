@@ -2010,69 +2010,6 @@ namespace MapleOverlay
             return count;
         }
 
-        // A scroll can replace one channel's copy of a sentence with the same
-        // sentence from another channel. Text differencing alone sees no change;
-        // compare the per-row source evidence as well and deliver that occurrence.
-        internal static List<string> AddSourceChangedChatLines(List<string> previous,
-            List<ChatVisualStyle> previousStyles, List<string> current,
-            List<ChatVisualStyle> currentStyles, List<string> candidates, out bool changed)
-        {
-            changed = false;
-            List<string> result = new List<string>();
-            if (candidates != null) result.AddRange(candidates);
-            if (previous == null || current == null || previous.Count == 0 || current.Count == 0 ||
-                previousStyles == null || currentStyles == null ||
-                previousStyles.Count != previous.Count || currentStyles.Count != current.Count)
-                return result;
-
-            bool[] baseline = new bool[current.Count];
-            foreach (string candidate in result)
-            {
-                string identity = ChatIdentity(candidate);
-                for (int index = 0; index < current.Count; index++)
-                {
-                    if (baseline[index]) continue;
-                    if (ChatIdentity(current[index]) != identity) continue;
-                    baseline[index] = true;
-                    break;
-                }
-            }
-            // Occurrence order follows the physical row order, so duplicate posts
-            // keep one style each instead of inheriting the first occurrence.
-            Dictionary<string, List<int>> previousOccurrences =
-                new Dictionary<string, List<int>>(StringComparer.Ordinal);
-            for (int index = 0; index < previous.Count; index++)
-            {
-                string identity = ChatIdentity(previous[index]);
-                List<int> list;
-                if (!previousOccurrences.TryGetValue(identity, out list))
-                {
-                    list = new List<int>();
-                    previousOccurrences.Add(identity, list);
-                }
-                list.Add(index);
-            }
-            Dictionary<string, int> seen = new Dictionary<string, int>(StringComparer.Ordinal);
-            for (int index = 0; index < current.Count; index++)
-            {
-                string identity = ChatIdentity(current[index]);
-                int occurrence;
-                if (!seen.TryGetValue(identity, out occurrence)) occurrence = 0;
-                seen[identity] = occurrence + 1;
-                if (baseline[index]) continue;
-                List<int> before;
-                if (!previousOccurrences.TryGetValue(identity, out before) ||
-                    occurrence >= before.Count) continue;
-                ChatVisualStyle oldStyle = previousStyles[before[occurrence]];
-                ChatVisualStyle newStyle = currentStyles[index];
-                if (!StyleSourceChanged(oldStyle, newStyle)) continue;
-                result.Add(current[index]);
-                baseline[index] = true;
-                changed = true;
-            }
-            return result;
-        }
-
         internal static bool StyleSourceChanged(ChatVisualStyle previous, ChatVisualStyle current)
         {
             if (previous == null || current == null) return false;
@@ -2085,9 +2022,9 @@ namespace MapleOverlay
                 current.Category != ChatSourceCategory.Unknown;
         }
 
-        // Row-index form for the live queue. Candidates are current-frame row
-        // indices, so a duplicate sentence that scrolled into another channel is
-        // delivered as that exact row instead of an occurrence re-found by text.
+        // Row-index form for the live queue. Previous/current rows are aligned
+        // as an ordered sequence so a retained duplicate can move up after a
+        // scroll without being mistaken for a new occurrence of the same text.
         internal static List<int> AddSourceChangedChatLineIndices(List<string> previous,
             List<ChatVisualStyle> previousStyles, List<string> current,
             List<ChatVisualStyle> currentStyles, List<int> candidates, out bool changed)
@@ -2095,49 +2032,163 @@ namespace MapleOverlay
             changed = false;
             List<int> result = new List<int>();
             if (current == null) return result;
-            HashSet<int> baseline = new HashSet<int>();
+            HashSet<int> resultSet = new HashSet<int>();
             if (candidates != null)
                 foreach (int index in candidates)
-                {
-                    if (index < 0 || index >= current.Count) continue;
-                    if (baseline.Add(index)) result.Add(index);
-                }
+                    if (index >= 0 && index < current.Count) resultSet.Add(index);
             if (previous == null || previous.Count == 0 || current.Count == 0 ||
                 previousStyles == null || currentStyles == null ||
                 previousStyles.Count != previous.Count || currentStyles.Count != current.Count)
-                return result;
+                return BuildIndexList(resultSet);
 
-            Dictionary<string, List<int>> previousOccurrences =
-                new Dictionary<string, List<int>>(StringComparer.Ordinal);
-            for (int index = 0; index < previous.Count; index++)
+            List<ChatRowPair> aligned = AlignChatRows(previous, previousStyles, current,
+                currentStyles);
+            int[] currentToPrevious = new int[current.Count];
+            for (int index = 0; index < currentToPrevious.Length; index++)
+                currentToPrevious[index] = -1;
+            foreach (ChatRowPair pair in aligned)
             {
-                string identity = ChatIdentity(previous[index]);
-                List<int> list;
-                if (!previousOccurrences.TryGetValue(identity, out list))
+                if (pair.Current < 0 || pair.Current >= current.Count) continue;
+                currentToPrevious[pair.Current] = pair.Previous;
+            }
+
+            // Candidates aligned to a retained row are old screen content, not a
+            // new message. Drop them; keep new rows and true source changes.
+            List<int> filtered = new List<int>();
+            foreach (int index in resultSet) filtered.Add(index);
+            filtered.Sort();
+            resultSet.Clear();
+            foreach (int index in filtered)
+            {
+                int before = currentToPrevious[index];
+                if (before >= 0 && !StyleSourceChanged(previousStyles[before],
+                    currentStyles[index]))
+                    continue;
+                resultSet.Add(index);
+            }
+
+            foreach (ChatRowPair pair in aligned)
+            {
+                if (pair.Previous < 0 || pair.Previous >= previous.Count) continue;
+                if (pair.Current < 0 || pair.Current >= current.Count) continue;
+                if (!StyleSourceChanged(previousStyles[pair.Previous],
+                    currentStyles[pair.Current])) continue;
+                if (resultSet.Add(pair.Current)) changed = true;
+            }
+
+            // A genuinely new same-text copy may appear at a different source while
+            // the previous copy is still on screen. It is not a retained row and
+            // must not be swallowed by a same-text occurrence count.
+            for (int currentIndex = 0; currentIndex < current.Count; currentIndex++)
+            {
+                if (currentToPrevious[currentIndex] >= 0 ||
+                    resultSet.Contains(currentIndex)) continue;
+                for (int previousIndex = 0; previousIndex < previous.Count; previousIndex++)
                 {
-                    list = new List<int>();
-                    previousOccurrences.Add(identity, list);
+                    if (!SameChatRowText(previous[previousIndex], current[currentIndex]))
+                        continue;
+                    if (!StyleSourceChanged(previousStyles[previousIndex],
+                        currentStyles[currentIndex])) continue;
+                    if (resultSet.Add(currentIndex)) changed = true;
+                    break;
                 }
-                list.Add(index);
             }
-            Dictionary<string, int> seen = new Dictionary<string, int>(StringComparer.Ordinal);
-            for (int index = 0; index < current.Count; index++)
-            {
-                string identity = ChatIdentity(current[index]);
-                int occurrence;
-                if (!seen.TryGetValue(identity, out occurrence)) occurrence = 0;
-                seen[identity] = occurrence + 1;
-                if (baseline.Contains(index)) continue;
-                List<int> before;
-                if (!previousOccurrences.TryGetValue(identity, out before) ||
-                    occurrence >= before.Count) continue;
-                if (!StyleSourceChanged(previousStyles[before[occurrence]],
-                    currentStyles[index])) continue;
-                result.Add(index);
-                baseline.Add(index);
-                changed = true;
-            }
+            return BuildIndexList(resultSet);
+        }
+
+        private sealed class ChatRowPair
+        {
+            internal int Previous;
+            internal int Current;
+        }
+
+        private static List<int> BuildIndexList(HashSet<int> values)
+        {
+            List<int> result = new List<int>(values);
+            result.Sort();
             return result;
+        }
+
+        // Ordered sequence alignment. Same-source pairs score much higher than a
+        // changed-source pair, so a retained row that moved up is matched to its
+        // old row instead of pairing with an earlier duplicate of the same text.
+        private static List<ChatRowPair> AlignChatRows(List<string> previous,
+            List<ChatVisualStyle> previousStyles, List<string> current,
+            List<ChatVisualStyle> currentStyles)
+        {
+            List<ChatRowPair> pairs = new List<ChatRowPair>();
+            if (previous == null || current == null || previous.Count == 0 ||
+                current.Count == 0) return pairs;
+            int previousCount = previous.Count, currentCount = current.Count;
+            int[,] best = new int[previousCount + 1, currentCount + 1];
+            byte[,] choice = new byte[previousCount + 1, currentCount + 1];
+            for (int previousIndex = 1; previousIndex <= previousCount; previousIndex++)
+            {
+                for (int currentIndex = 1; currentIndex <= currentCount; currentIndex++)
+                {
+                    int value = best[previousIndex - 1, currentIndex];
+                    byte pick = 0;
+                    if (best[previousIndex, currentIndex - 1] > value)
+                    {
+                        value = best[previousIndex, currentIndex - 1];
+                        pick = 1;
+                    }
+                    if (SameChatRowText(previous[previousIndex - 1],
+                        current[currentIndex - 1]))
+                    {
+                        int pairValue = best[previousIndex - 1, currentIndex - 1] +
+                            ChatRowPairScore(previous[previousIndex - 1],
+                                current[currentIndex - 1],
+                                previousStyles[previousIndex - 1],
+                                currentStyles[currentIndex - 1]);
+                        if (pairValue >= value)
+                        {
+                            value = pairValue;
+                            pick = 2;
+                        }
+                    }
+                    best[previousIndex, currentIndex] = value;
+                    choice[previousIndex, currentIndex] = pick;
+                }
+            }
+            int left = previousCount, right = currentCount;
+            while (left > 0 && right > 0)
+            {
+                byte pick = choice[left, right];
+                if (pick == 2)
+                {
+                    pairs.Add(new ChatRowPair { Previous = left - 1, Current = right - 1 });
+                    left--; right--;
+                }
+                else if (pick == 0) left--;
+                else right--;
+            }
+            pairs.Reverse();
+            return pairs;
+        }
+
+        private static int ChatRowPairScore(string previousText, string currentText,
+            ChatVisualStyle previousStyle, ChatVisualStyle currentStyle)
+        {
+            int score = ChatIdentity(previousText) == ChatIdentity(currentText) ? 12 : 8;
+            if (previousStyle == null || currentStyle == null) return score;
+            if (SameSourceStyle(previousStyle, currentStyle)) return score + 100;
+            if (!StyleSourceChanged(previousStyle, currentStyle)) return score + 80;
+            return score + 40;
+        }
+
+        private static bool SameChatRowText(string previous, string current)
+        {
+            return SameChatLine(previous, current) ||
+                IsSameTranslationSource(previous, current);
+        }
+
+        private static bool SameSourceStyle(ChatVisualStyle previous, ChatVisualStyle current)
+        {
+            if (previous == null || current == null) return false;
+            return previous.Category == current.Category &&
+                previous.Kind == current.Kind &&
+                previous.HasBackground == current.HasBackground;
         }
 
         private static string ChatIdentity(string value)
