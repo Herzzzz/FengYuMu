@@ -1,0 +1,10 @@
+{
+  "taskId": "CHAT-001",
+  "state": "READY_FOR_RELAY",
+  "baseCommit": "c4dc19ea26e6a5611786ae7a6bd80acf33d6e858",
+  "cloudRole": "analysis, requirements and final acceptance",
+  "desktop56Role": "relay and collect implementation/native test evidence",
+  "dshRole": "implementation and self-test",
+  "communicationEstablished": false,
+  "implementationStarted": false
+}
