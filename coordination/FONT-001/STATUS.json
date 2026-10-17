@@ -1,9 +1,11 @@
 {
   "taskId": "FONT-001",
-  "state": "READY_FOR_RELAY",
+  "state": "READY_FOR_RELAY_SCREENSHOT_SCOPE",
   "cloudAnalysisComplete": true,
   "implementationChanged": false,
   "dshReceiptConfirmed": false,
   "nativeFontChecks": "UNVERIFIED",
-  "relatedTask": "CHAT-001"
+  "relatedTask": "CHAT-001",
+  "videoStatus": "USER_WITHDREW_WRONG_UPLOAD",
+  "awaitingCorrectVideo": true
 }
