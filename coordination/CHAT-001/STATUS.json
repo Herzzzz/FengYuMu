@@ -1,10 +1,14 @@
 {
   "taskId": "CHAT-001",
-  "state": "READY_FOR_RELAY",
+  "state": "AWAITING_EXISTING_BRIDGE_DISCOVERY",
   "baseCommit": "c4dc19ea26e6a5611786ae7a6bd80acf33d6e858",
-  "cloudRole": "analysis, requirements and final acceptance",
-  "desktop56Role": "relay and collect implementation/native test evidence",
-  "dshRole": "implementation and self-test",
+  "dshTool": "DeepSeek Harness",
+  "existingBridgeReportedByUser": true,
   "communicationEstablished": false,
+  "deliveryToDSHConfirmed": false,
+  "cloudPixelReproduction": {
+    "tested": 5,
+    "failedOnV40": 5
+  },
   "implementationStarted": false
 }
