@@ -200,9 +200,7 @@ namespace MapleOverlay
             {reason="missing-record-content";return false;}
             HashSet<string> candidateNumbers=JournalNumberTokens(record.English);
             HashSet<string> translatedNumbers=JournalNumberTokens(record.Chinese);
-            HashSet<string> candidateWords=JournalWords(record.English);
             StringBuilder visible=new StringBuilder();
-            List<OcrLine> prose=new List<OcrLine>();
             foreach(OcrLine line in lines) {
                 if(line==null)continue;
                 RectangleF raw=GetOcrLineBounds(line);
@@ -216,15 +214,18 @@ namespace MapleOverlay
                 if(objectiveCards!=null)foreach(RectangleF card in objectiveCards)
                     if(card.Contains(new PointF(raw.Left+raw.Width/2,raw.Top+raw.Height/2))){inCard=true;break;}
                 if(inCard)continue;
-                // The selected heading is the structural title/anchor; it is not
-                // body prose and may be translated separately.
-                if(line==heading)continue;
+                // Only a structurally confirmed stage title may be skipped. In a
+                // titleless/scroll path the heading is a body locator and must be
+                // checked like every other visible prose row.
+                bool confirmedTitle=line==heading&&stage.Length>0&&
+                    TranslationStore.Normalize(translations.ResolveJournalStage(line.Text))==
+                    TranslationStore.Normalize(stage);
+                if(confirmedTitle)continue;
                 if(!String.IsNullOrEmpty(record.Title)&&key==TranslationStore.Normalize(record.Title))continue;
                 if(key.Length<4)continue;
                 bool hasWord=false;
                 foreach(char value in line.Text)if(Char.IsLetterOrDigit(value)){hasWord=true;break;}
                 if(!hasWord)continue;
-                prose.Add(line);
                 if(visible.Length>0)visible.Append(' ');
                 visible.Append(line.Text);
             }
@@ -232,19 +233,13 @@ namespace MapleOverlay
                 if(!candidateNumbers.Contains(number)){reason="visible-quantity-not-in-record:"+number;return false;}
                 if(!translatedNumbers.Contains(number)){reason="visible-quantity-not-in-translation:"+number;return false;}
             }
-            foreach(OcrLine line in prose) {
-                string key=TranslationStore.Normalize(line.Text);
-                string[] words=key.Split(new char[]{' '},StringSplitOptions.RemoveEmptyEntries);
-                int content=0,common=0;
-                foreach(string word in words) {
-                    if(word.Length<3||Regex.IsMatch(word,@"^[0-9IlOo]+$"))continue;
-                    content++;
-                    if(candidateWords.Contains(word))common++;
-                }
-                if(content==0)continue;
-                if(common==0){reason="visible-prose-not-in-record:"+key;return false;}
-                if(content<3&&common<content){reason="visible-prose-partial:"+key;return false;}
-                if(content>=3&&common*3<content*2){reason="visible-prose-partial:"+key;return false;}
+            // Align the complete visible prose, not each row independently: the
+            // ordered sequence catches cross-line reordering as well as negation or
+            // inserted words. OCR-tolerant token matching is bounded below.
+            string alignReason;
+            if(!JournalLineAlignsToSource(visible.ToString(),record.English,out alignReason)) {
+                reason="visible-prose-"+alignReason;
+                return false;
             }
             return true;
         }
@@ -257,13 +252,69 @@ namespace MapleOverlay
             return result;
         }
 
-        private static HashSet<string> JournalWords(string text)
+        private static string[] JournalTokens(string text)
         {
-            HashSet<string> result=new HashSet<string>(StringComparer.Ordinal);
-            foreach(string word in TranslationStore.Normalize(text??"").Split(
-                new char[]{' '},StringSplitOptions.RemoveEmptyEntries))
-                if(word.Length>=3)result.Add(word);
-            return result;
+            return TranslationStore.Normalize(text??"").Split(
+                new char[]{' '},StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        // Ordered source alignment, not a bag-of-words score. Every visible
+        // non-numeric token must match a later candidate token (bounded fuzzy match
+        // for OCR damage). Adding, reordering or negating source words leaves an
+        // unmatched token and rejects the whole replacement.
+        internal static bool JournalLineAlignsToSource(string line,string source,out string reason)
+        {
+            reason="";
+            string[] visible=JournalTokens(line), candidate=JournalTokens(source);
+            int cursor=0;
+            foreach(string token in visible) {
+                if(token.Length<=1||JournalTokenHasDigit(token))continue;
+                bool matched=false;
+                for(int i=cursor;i<candidate.Length;i++) {
+                    string sourceToken=candidate[i];
+                    if(sourceToken.Length<=1||JournalTokenHasDigit(sourceToken))continue;
+                    if(JournalTokenMatches(token,sourceToken)) {
+                        cursor=i+1;matched=true;break;
+                    }
+                }
+                if(!matched){reason="order-or-content:"+token;return false;}
+            }
+            return true;
+        }
+
+        private static bool JournalTokenHasDigit(string token)
+        {
+            foreach(char value in token)if(Char.IsDigit(value))return true;
+            return false;
+        }
+
+        private static bool JournalTokenMatches(string left,string right)
+        {
+            if(String.Equals(left,right,StringComparison.Ordinal))return true;
+            if(left.Length<4||right.Length<4)return false;
+            int longest=Math.Max(left.Length,right.Length);
+            if(Math.Abs(left.Length-right.Length)>2)return false;
+            int limit=Math.Max(1,longest/5);
+            int distance=JournalEditDistance(left,right,limit);
+            return distance>=0&&distance<=limit;
+        }
+
+        private static int JournalEditDistance(string left,string right,int limit)
+        {
+            if(Math.Abs(left.Length-right.Length)>limit)return -1;
+            int[] previous=new int[right.Length+1],current=new int[right.Length+1];
+            for(int j=0;j<=right.Length;j++)previous[j]=j;
+            for(int i=1;i<=left.Length;i++) {
+                current[0]=i;int rowMinimum=i;
+                for(int j=1;j<=right.Length;j++) {
+                    int cost=left[i-1]==right[j-1]?0:1;
+                    current[j]=Math.Min(Math.Min(current[j-1]+1,previous[j]+1),previous[j-1]+cost);
+                    if(current[j]<rowMinimum)rowMinimum=current[j];
+                }
+                if(rowMinimum>limit)return -1;
+                int[] swap=previous;previous=current;current=swap;
+            }
+            return previous[right.Length]<=limit?previous[right.Length]:-1;
         }
 
         // SelectJournal needs enough prose anchors to choose one stage. When the

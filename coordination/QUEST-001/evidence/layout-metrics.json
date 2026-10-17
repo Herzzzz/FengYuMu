@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "annotation": "Actual GDI+ QuestJournalLayout metrics from synthetic panels; no OCR, AI, capture or in-game visual acceptance.",
-  "checks": 97,
+  "checks": 142,
   "cases": [
     {
       "case": "short-with-summary",
@@ -106,9 +106,108 @@
       "case": "r1-unknown-appended-prose",
       "scale": 1.0,
       "rejected": true,
-      "reason": "quest-journal-incomplete:visible-prose-partial:the mayor asked me to deliver this letter",
+      "reason": "quest-journal-incomplete:visible-prose-order-or-content:the",
       "appendedVisibleProse": [
         "The mayor asked me to deliver this letter"
+      ]
+    },
+    {
+      "case": "r3a-titleless-first-positive",
+      "scale": 1.0,
+      "bodyTop": 346,
+      "rejected": false,
+      "reason": "",
+      "override": ""
+    },
+    {
+      "case": "r3a-titleless-first-quantity",
+      "scale": 1.0,
+      "bodyTop": 346,
+      "rejected": true,
+      "reason": "quest-journal-incomplete:visible-quantity-not-in-record:50",
+      "override": "Please take care of 50"
+    },
+    {
+      "case": "r3a-titleless-first-unknown",
+      "scale": 1.0,
+      "bodyTop": 346,
+      "rejected": true,
+      "reason": "quest-journal-incomplete:visible-prose-order-or-content:mayor",
+      "override": "The mayor asked me to deliver this letter"
+    },
+    {
+      "case": "r3a-scrolled-first-positive",
+      "scale": 1.0,
+      "bodyTop": 300,
+      "rejected": false,
+      "reason": "",
+      "override": ""
+    },
+    {
+      "case": "r3a-scrolled-first-quantity",
+      "scale": 1.0,
+      "bodyTop": 300,
+      "rejected": true,
+      "reason": "quest-journal-incomplete:visible-quantity-not-in-record:50",
+      "override": "Please take care of 50"
+    },
+    {
+      "case": "r3a-scrolled-first-unknown",
+      "scale": 1.0,
+      "bodyTop": 300,
+      "rejected": true,
+      "reason": "quest-journal-incomplete:visible-prose-order-or-content:mayor",
+      "override": "The mayor asked me to deliver this letter"
+    },
+    {
+      "case": "r3a-titleless-no-caption-quantity",
+      "scale": 1.0,
+      "rejected": true,
+      "reason": "",
+      "override": "Please take care of 50"
+    },
+    {
+      "case": "r3a-titleless-no-caption-unknown",
+      "scale": 1.0,
+      "rejected": true,
+      "reason": "quest-journal-incomplete:visible-prose-order-or-content:mayor",
+      "override": "The mayor asked me to deliver this letter"
+    },
+    {
+      "case": "r3a-scrolled-no-caption-quantity",
+      "scale": 1.0,
+      "rejected": true,
+      "reason": "",
+      "override": "Please take care of 50"
+    },
+    {
+      "case": "r3a-scrolled-no-caption-unknown",
+      "scale": 1.0,
+      "rejected": true,
+      "reason": "quest-journal-incomplete:visible-prose-order-or-content:mayor",
+      "override": "The mayor asked me to deliver this letter"
+    },
+    {
+      "case": "r3b-ocr-noise-positive",
+      "scale": 1.0,
+      "rejected": false
+    },
+    {
+      "case": "r3b-negation-appended",
+      "scale": 1.0,
+      "rejected": true,
+      "reason": "quest-journal-incomplete:visible-prose-order-or-content:she",
+      "appendedVisibleProse": [
+        "She wanted Green Mushroom Cap but not Orange Mushroom Cap"
+      ]
+    },
+    {
+      "case": "r3b-reordered-appended",
+      "scale": 1.0,
+      "rejected": true,
+      "reason": "quest-journal-incomplete:visible-prose-order-or-content:she",
+      "appendedVisibleProse": [
+        "She wanted Green Mushroom Cap Orange Mushroom Cap"
       ]
     },
     {

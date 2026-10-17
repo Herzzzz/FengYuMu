@@ -5,10 +5,10 @@
 - Branch: `dsh/quest-font-001`.
 - Base commit: `dff639b828542d0bcad94fc9eb50a816f3f9bfd3`.
 - Previous implementation commit: `eba0d4d131f56fdeac88c7464b17f07a88162ed7`.
-- Review-fix implementation commit: `b79163c78bf3445ffb4c33679ae8596730fed4f2`.
+- Review-fix implementation commit: **PENDING**.
 - Result files commit: reported in the final relay message.
-- EXE: `D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe`; SHA-256 `FDC1DF5B48E53176B98A152D189F3118870BE08E53F4B51FBA33309899B8967A`.
-- Build evidence: `枫语幕.exe.build.json`; SHA-256 `FAE9AD823079D81E31657561E1C0C0EF39EB5693E77B9D80A97315BE912FD814`; head `b79163c`, 64 inputs, clean worktree at build.
+- EXE: `D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe`; SHA-256 **PENDING**.
+- Build evidence: `枫语幕.exe.build.json`; SHA-256 **PENDING**; head **PENDING**, 64 inputs, clean worktree required.
 
 ## What changed
 
@@ -70,10 +70,14 @@ Real objective counters/icons/summary remain protected, including `stump 30 f 30
 Every journal selection path (anchored `SelectJournal`, observed-body fallback, and remembered-scroll context) now goes through one generic `JournalReplacementComplete` guard before a replacement label is emitted:
 
 - every visible number inside the final region must exist in the candidate English and in the candidate Chinese; otherwise the quantity/version is inconsistent and the whole replacement is rejected;
-- every visible non-chrome prose row inside the region must be covered by candidate English words. Rows with no word support, or with only partial support (below the generic coverage floor), reject the whole replacement;
-- the selected title/heading, summary, level gate, counters and objective-card rows are excluded from the prose check because they are translated/handled separately.
+- the complete visible non-chrome prose sequence must align **in order** to the candidate English. Matching is OCR-tolerant per token (case/punctuation normalization and bounded edit distance), but every visible token must find a later candidate token. Inserted negation, reordered words across lines, or unknown prose rejects the whole replacement;
+- only a structurally confirmed stage title is skipped. In a titleless/scrolled path the heading is a body locator and is checked like any other prose row;
+- summary, level gate, counters and objective-card rows are excluded from the prose check because they are translated/handled separately.
 
-The guard is not phrase-specific. A visible appended line with a missing quantity (`50` vs a record that only has `20`) or unknown prose now causes `TryAddQuestJournal` to return false and records `quest-journal-incomplete:<reason>` in `lastQuestJournalRejection`. No journal label is created, so the original pixels/text stay in place. The R3 positive case uses English and Chinese that fully correspond, and both negative cases assert rejection, reason and pixel preservation.
+The guard is not phrase-specific. A visible appended line with a missing quantity (`50` vs a record that only has `20`) or unknown/reordered/negated prose causes `TryAddQuestJournal` to return false and records `quest-journal-incomplete:<reason>` in `lastQuestJournalRejection`. No journal label is created, so the original pixels/text stay in place.
+
+- **R3a:** titleless and scrolled first-row cases cover both conflict/unknown and matching positives, with and without a caption used only to keep selection reachable. The first body row is never skipped.
+- **R3b:** the coverage check now uses ordered source-text alignment over the whole visible prose, not a bag-of-words ratio. Tests cover `She wanted Green Mushroom Cap but not Orange Mushroom Cap`, reordered variants, cross-line reversal, an extra unknown token, and OCR noise (case/punctuation/one-letter typo) that must still pass.
 
 ### QUEST-R2 — Unicode wrapping progress
 
@@ -81,7 +85,7 @@ The guard is not phrase-specific. A visible appended line with a missing quantit
 
 ## Typography / overflow evidence
 
-Actual GDI+ metrics are recorded in `evidence/layout-metrics.json` (97 panel checks, measured with the built EXE's real `Graphics` and `Font`). Representative values:
+Actual GDI+ metrics are recorded in `evidence/layout-metrics.json` (142 panel checks, measured with the built EXE's real `Graphics` and `Font`). Representative values:
 
 | Case | Body | Title | Unit | Pages | Overflow |
 |---|---:|---:|---|---:|---|
@@ -98,11 +102,11 @@ Across all recorded cases the measured maximum line width is <= the measured con
 
 ## Tests
 
-See `evidence/test-results.json` and the individual logs in `evidence/`. The final run is against the clean-build EXE `FDC1DF5B...` (implementation head `b79163c`, build worktree clean).
+See `evidence/test-results.json` and the individual logs in `evidence/`. The logs below are pre-clean R3a/R3b PASS runs; the final clean-build rerun is recorded after the clean build.
 
 Passing on this host/build:
 
-- new `tests/logic-quest-panel-layout.ps1` — **97 checks** (the original 64 actual-GDI+ panel checks plus the R1/R2/R3 additions) using real GDI+ measurement on the built EXE (selection/region/typography/pagination/repeat F8/scale, R1 counter policy and integration, R2 actual-GDI+ emoji/supplementary plans, R3 completeness positive/negative cases);
+- new `tests/logic-quest-panel-layout.ps1` — **142 checks** (the original 64 actual-GDI+ panel checks plus all R1/R2/R3 additions) using real GDI+ measurement on the built EXE (selection/region/typography/pagination/repeat F8/scale, R1 counter policy and integration, R2 actual-GDI+ emoji/supplementary plans, R3 completeness positive/negative cases, R3a titleless/scrolled anchors, R3b ordered alignment/OCR noise);
 - new `tests/logic-quest-font-layout.ps1` — **51 checks** (the original 33 plus 18 R2 checks) using the generated-source **substitute Font/Graphics harness**, not native GDI acceptance (full composition, summary coexistence, first-line/right-edge markers, long/short body, scroll, page turn, repeated composition, scales, and 8-second-watchdog CJK/emoji/supplementary wrapping with character preservation);
 - `tests/logic-simple-flow-r11.ps1` — 33 checks;
 - `tests/logic-journal-and-item-r6.ps1 -ExePath .\枫语幕.exe` — 23/23;

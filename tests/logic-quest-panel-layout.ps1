@@ -55,7 +55,8 @@ SetField $form 'translations' $store
 $formType.GetProperty('Bounds', $flags).SetValue($form, [Drawing.Rectangle]::Empty, $null)
 SetField $form 'captureBounds' ([Drawing.Rectangle]::new(0, 0, 1000, 700))
 
-function NewFrame([single]$factor, [bool]$summary, [int]$objectiveCount, [string[]]$ProseLines = @()) {
+function NewFrame([single]$factor, [bool]$summary, [int]$objectiveCount, [string[]]$ProseLines = @(),
+    [switch]$NoTitle, [string]$FirstRowOverride = '', [int]$BodyTop = 346, [string]$Caption = '', [switch]$NoisyFirstRow) {
     $w = [int][Math]::Ceiling(1000 * $factor)
     $h = [int][Math]::Ceiling(700 * $factor)
     $bmp = [Drawing.Bitmap]::new($w, $h)
@@ -71,7 +72,8 @@ function NewFrame([single]$factor, [bool]$summary, [int]$objectiveCount, [string
     $g.FillRectangle([Drawing.Brushes]::White, $paper)
     $g.FillRectangle([Drawing.SolidBrush]::new([Drawing.Color]::FromArgb(255, 225, 222, 211)), $summaryCard)
     $font = [Drawing.Font]::new('Arial', [single](14 * $factor), [Drawing.FontStyle]::Regular, [Drawing.GraphicsUnit]::Pixel)
-    $g.DrawString("Maya's First Collection", $font, [Drawing.Brushes]::Black, 410 * $factor, 315 * $factor)
+    if (-not $NoTitle) { $g.DrawString("Maya's First Collection", $font, [Drawing.Brushes]::Black, 410 * $factor, 315 * $factor) }
+    if ($Caption.Length -gt 0) { $g.DrawString($Caption, $font, [Drawing.Brushes]::Black, 410 * $factor, 250 * $factor) }
     $rows = @()
     $words = $mayaEnglish.Split(' ')
     $current = ''
@@ -80,11 +82,13 @@ function NewFrame([single]$factor, [bool]$summary, [int]$objectiveCount, [string
         else { if ($current.Length -gt 0) { $current += ' ' }; $current += $word }
     }
     if ($current.Length -gt 0) { $rows += $current }
+    if ($FirstRowOverride.Length -gt 0 -and $rows.Count -gt 0) { $rows[0] = $FirstRowOverride }
+    elseif ($NoisyFirstRow -and $rows.Count -gt 0) { $rows[0] = $rows[0].ToUpperInvariant() + '...' }
     for ($i = 0; $i -lt $rows.Count; $i++) {
-        $g.DrawString($rows[$i], $font, [Drawing.Brushes]::Black, 410 * $factor, (346 + $i * 26) * $factor)
+        $g.DrawString($rows[$i], $font, [Drawing.Brushes]::Black, 410 * $factor, ($BodyTop + $i * 26) * $factor)
     }
     for ($i = 0; $i -lt $ProseLines.Count; $i++) {
-        $g.DrawString($ProseLines[$i], $font, [Drawing.Brushes]::Black, 410 * $factor, (346 + ($rows.Count + $i) * 26) * $factor)
+        $g.DrawString($ProseLines[$i], $font, [Drawing.Brushes]::Black, 410 * $factor, ($BodyTop + ($rows.Count + $i) * 26) * $factor)
     }
     if ($summary) { $g.DrawString('Quest Summary', $font, [Drawing.Brushes]::Black, 410 * $factor, 160 * $factor) }
     for ($i = 0; $i -lt $objectiveCount; $i++) {
@@ -94,17 +98,18 @@ function NewFrame([single]$factor, [bool]$summary, [int]$objectiveCount, [string
     $g.Dispose()
     $lines = [Activator]::CreateInstance($lineListType)
     if ($summary) { $lines.Add((NewLine 'Quest Summary' (410 * $factor) (160 * $factor) (180 * $factor) (20 * $factor))) }
-    $lines.Add((NewLine "Maya's First Collection" (410 * $factor) (315 * $factor) (300 * $factor) (20 * $factor)))
+    if (-not $NoTitle) { $lines.Add((NewLine "Maya's First Collection" (410 * $factor) (315 * $factor) (300 * $factor) (20 * $factor))) }
+    if ($Caption.Length -gt 0) { $lines.Add((NewLine $Caption (410 * $factor) (250 * $factor) (300 * $factor) (20 * $factor))) }
     for ($i = 0; $i -lt $rows.Count; $i++) {
-        $lines.Add((NewLine $rows[$i] (410 * $factor) ((346 + $i * 26) * $factor) (380 * $factor) (20 * $factor)))
+        $lines.Add((NewLine $rows[$i] (410 * $factor) (($BodyTop + $i * 26) * $factor) (380 * $factor) (20 * $factor)))
     }
     for ($i = 0; $i -lt $ProseLines.Count; $i++) {
-        $lines.Add((NewLine $ProseLines[$i] (410 * $factor) ((346 + ($rows.Count + $i) * 26) * $factor) (380 * $factor) (20 * $factor)))
+        $lines.Add((NewLine $ProseLines[$i] (410 * $factor) (($BodyTop + ($rows.Count + $i) * 26) * $factor) (380 * $factor) (20 * $factor)))
     }
     for ($i = 0; $i -lt $objectiveCount; $i++) {
         $lines.Add((NewLine ('Objective item ' + ($i + 1) + ' 0 / 1') (420 * $factor) ((205 + $i * 26) * $factor) (300 * $factor) (20 * $factor)))
     }
-    return [pscustomobject]@{ Bitmap = $bmp; Lines = $lines; Factor = $factor; Rows = $rows; Paper = $paper; FirstBodyTop = (346 * $factor); LastBodyBottom = ((346 + ($rows.Count + $ProseLines.Count - 1) * 26 + 20) * $factor); ProseLines = $ProseLines }
+    return [pscustomobject]@{ Bitmap = $bmp; Lines = $lines; Factor = $factor; Rows = $rows; Paper = $paper; FirstBodyTop = ($BodyTop * $factor); LastBodyBottom = (($BodyTop + ($rows.Count + $ProseLines.Count - 1) * 26 + 20) * $factor); ProseLines = $ProseLines; NoTitle = $NoTitle }
 }
 
 function Invoke-JournalBuilder($scene) {
@@ -281,6 +286,112 @@ foreach ($negative in @(
             rejected = $true; reason = $rejection
             appendedVisibleProse = $negative.Lines
         })
+    } finally { $scene.Bitmap.Dispose() }
+}
+
+# 1b2. QUEST-R3a: titleless/scrolled heading is a body locator, not a title.
+$alignMethod = $formType.GetMethod('JournalLineAlignsToSource', $flags)
+function Test-Alignment([string]$line, [string]$source) {
+    $args = [object[]]@($line, $source, '')
+    $ok = [bool]$alignMethod.Invoke($null, $args)
+    return [pscustomobject]@{ Ok = $ok; Reason = [string]$args[2] }
+}
+
+function Test-FirstVisibleLine([string]$name, [int]$bodyTop, [string]$override, [bool]$expectRejected, [string]$expectedReason, [string]$caption = '') {
+    $scene = NewFrame 1.0 $false 0 @() -NoTitle -FirstRowOverride $override -BodyTop $bodyTop -Caption $caption
+    try {
+        $marker = [Drawing.Color]::FromArgb(255, 21, 43, 65)
+        $scene.Bitmap.SetPixel(800, 560, $marker)
+        $label = Invoke-JournalBuilder $scene
+        $rejection = [string](GetField $form 'lastQuestJournalRejection')
+        if ($expectRejected) {
+            Check ($null -eq $label) ($name + ': whole journal replacement is rejected')
+            Check ($rejection.Contains($expectedReason)) ($name + ': rejection reason is ' + $expectedReason + ' (got ' + $rejection + ')')
+            Check ($scene.Bitmap.GetPixel(800, 560).ToArgb() -eq $marker.ToArgb()) ($name + ': original pixels are preserved')
+        } else {
+            Check ($null -ne $label) ($name + ': journal replacement is built')
+            Check ($rejection -eq '') ($name + ': completeness guard passes')
+            Check ((GetField $label 'SourceBounds').Top -le $scene.FirstBodyTop) ($name + ': first visible line is inside the region')
+        }
+        $evidence.Add([pscustomobject]@{
+            case = $name; scale = 1.0; bodyTop = $bodyTop; rejected = $expectRejected
+            reason = $rejection; override = $override
+        })
+    } finally { $scene.Bitmap.Dispose() }
+}
+
+Test-FirstVisibleLine 'r3a-titleless-first-positive' 346 '' $false ''
+Test-FirstVisibleLine 'r3a-titleless-first-quantity' 346 'Please take care of 50' $true 'visible-quantity-not-in-record:50' 'Maya''s First Collection'
+Test-FirstVisibleLine 'r3a-titleless-first-unknown' 346 'The mayor asked me to deliver this letter' $true 'visible-prose' 'Maya''s First Collection'
+Test-FirstVisibleLine 'r3a-scrolled-first-positive' 300 '' $false ''
+Test-FirstVisibleLine 'r3a-scrolled-first-quantity' 300 'Please take care of 50' $true 'visible-quantity-not-in-record:50' 'Maya''s First Collection'
+Test-FirstVisibleLine 'r3a-scrolled-first-unknown' 300 'The mayor asked me to deliver this letter' $true 'visible-prose' 'Maya''s First Collection'
+
+# No caption at all: selection may reject earlier, but the first body anchor must
+# never be accepted and erased. The builder must return no journal label.
+foreach ($case in @(
+    @{ Name = 'r3a-titleless-no-caption-quantity'; Override = 'Please take care of 50'; BodyTop = 346 },
+    @{ Name = 'r3a-titleless-no-caption-unknown'; Override = 'The mayor asked me to deliver this letter'; BodyTop = 346 },
+    @{ Name = 'r3a-scrolled-no-caption-quantity'; Override = 'Please take care of 50'; BodyTop = 300 },
+    @{ Name = 'r3a-scrolled-no-caption-unknown'; Override = 'The mayor asked me to deliver this letter'; BodyTop = 300 }
+)) {
+    $scene = NewFrame 1.0 $false 0 @() -NoTitle -FirstRowOverride $case.Override -BodyTop $case.BodyTop
+    try {
+        $marker = [Drawing.Color]::FromArgb(255, 44, 66, 88)
+        $scene.Bitmap.SetPixel(800, 560, $marker)
+        $label = Invoke-JournalBuilder $scene
+        $rejection = [string](GetField $form 'lastQuestJournalRejection')
+        Check ($null -eq $label) ($case.Name + ': no journal replacement is emitted')
+        Check ($scene.Bitmap.GetPixel(800, 560).ToArgb() -eq $marker.ToArgb()) ($case.Name + ': original pixels are preserved')
+        $evidence.Add([pscustomobject]@{ case = $case.Name; scale = 1.0; rejected = $true; reason = $rejection; override = $case.Override })
+    } finally { $scene.Bitmap.Dispose() }
+}
+
+# 1b3. QUEST-R3b: ordered source alignment, not bag-of-words; OCR noise still passes.
+foreach ($positive in @(
+    'She wanted 20 each of Orange Mushroom Cap',
+    'I GOT A REQUEST FROM MAYA OF HENESYS, WHO HAS BEEN COLLECTING VARIOUS ITEMS.',
+    'I got a reqvest from Maya of Henesys, who has been collecting various items.'
+)) {
+    $alignment = Test-Alignment $positive $mayaEnglish
+    Check ($alignment.Ok) ('R3b OCR-tolerant ordered alignment accepts: ' + $positive)
+}
+foreach ($negative in @(
+    'She wanted Green Mushroom Cap but not Orange Mushroom Cap',
+    'She wanted Green Mushroom Cap Orange Mushroom Cap',
+    'She wanted 20 each of Orange Mushroom Cap please'
+)) {
+    $alignment = Test-Alignment $negative $mayaEnglish
+    Check (-not $alignment.Ok) ('R3b changed order/negation/unknown alignment rejects: ' + $negative)
+    Check ($alignment.Reason.StartsWith('order-or-content')) ('R3b rejection identifies the unmatched token: ' + $alignment.Reason)
+}
+$forwardProse = 'I got a request from Maya of Henesys who has been collecting various items She wanted 20 each of Orange Mushroom Cap'
+$reverseProse = 'She wanted 20 each of Orange Mushroom Cap I got a request from Maya of Henesys who has been collecting various items'
+$forwardAlignment = Test-Alignment $forwardProse $mayaEnglish
+$reverseAlignment = Test-Alignment $reverseProse $mayaEnglish
+Check ($forwardAlignment.Ok) 'R3b multi-line prose in source order is accepted'
+Check (-not $reverseAlignment.Ok) 'R3b multi-line prose in reversed order is rejected'
+Check ($reverseAlignment.Reason.StartsWith('order-or-content')) ('R3b cross-line reorder identifies the unmatched token: ' + $reverseAlignment.Reason)
+$scene = NewFrame 1.0 $true 1 @() -NoisyFirstRow
+try {
+    $label = Invoke-JournalBuilder $scene
+    Check ($null -ne $label -and [string](GetField $form 'lastQuestJournalRejection') -eq '') 'R3b positive OCR-noise body passes the completeness guard'
+    $evidence.Add([pscustomobject]@{ case = 'r3b-ocr-noise-positive'; scale = 1.0; rejected = $false })
+} finally { $scene.Bitmap.Dispose() }
+foreach ($negative in @(
+    @{ Name = 'r3b-negation-appended'; Lines = @('She wanted Green Mushroom Cap but not Orange Mushroom Cap') },
+    @{ Name = 'r3b-reordered-appended'; Lines = @('She wanted Green Mushroom Cap Orange Mushroom Cap') }
+)) {
+    $scene = NewFrame 1.0 $true 1 $negative.Lines
+    try {
+        $marker = [Drawing.Color]::FromArgb(255, 34, 56, 78)
+        $scene.Bitmap.SetPixel(800, 560, $marker)
+        $label = Invoke-JournalBuilder $scene
+        $rejection = [string](GetField $form 'lastQuestJournalRejection')
+        Check ($null -eq $label) ($negative.Name + ': whole journal replacement is rejected')
+        Check ($rejection.Contains('visible-prose-order-or-content')) ($negative.Name + ': ordered alignment reason recorded (got ' + $rejection + ')')
+        Check ($scene.Bitmap.GetPixel(800, 560).ToArgb() -eq $marker.ToArgb()) ($negative.Name + ': original pixels are preserved')
+        $evidence.Add([pscustomobject]@{ case = $negative.Name; scale = 1.0; rejected = $true; reason = $rejection; appendedVisibleProse = $negative.Lines })
     } finally { $scene.Bitmap.Dispose() }
 }
 

@@ -1,13 +1,13 @@
 {
   "schema": 2,
-  "annotation": "Final clean-build run on 枫语幕.exe SHA-256 FDC1DF5B48E53176B98A152D189F3118870BE08E53F4B51FBA33309899B8967A (implementation head b79163c, worktree clean). Two test kinds are kept separate: 97 actual-GDI+ panel checks on the built EXE, and 51 generated-source substitute Font/Graphics checks (not native GDI acceptance). No OCR or AI rounds were added.",
+  "annotation": "Final clean-build run pending; existing logs are pre-clean R3a/R3b PASS runs. Two test kinds are kept separate: 142 actual-GDI+ panel checks on the built EXE, and 51 generated-source substitute Font/Graphics checks (not native GDI acceptance). No OCR or AI rounds were added.",
   "build": {
     "command": "pwsh -NoProfile -File src/build.ps1",
-    "status": "PASS",
-    "exeSha256": "FDC1DF5B48E53176B98A152D189F3118870BE08E53F4B51FBA33309899B8967A",
-    "buildEvidenceSha256": "FAE9AD823079D81E31657561E1C0C0EF39EB5693E77B9D80A97315BE912FD814",
-    "head": "b79163c78bf3445ffb4c33679ae8596730fed4f2",
-    "worktreeCleanAtBuild": true,
+    "status": "PENDING",
+    "exeSha256": "PENDING",
+    "buildEvidenceSha256": "PENDING",
+    "head": "PENDING",
+    "worktreeCleanAtBuild": false,
     "inputs": 64
   },
   "tests": [
@@ -15,7 +15,7 @@
       "name": "quest-panel-layout",
       "command": "pwsh -NoProfile -File tests/logic-quest-panel-layout.ps1",
       "kind": "actual GDI+ on built EXE",
-      "checks": 97,
+      "checks": 142,
       "exitCode": 0,
       "detail": "64 previous + 33 R1/R2/R3 checks; actual Font.Size/Pixel/content/page metrics in evidence/layout-metrics.json",
       "evidence": "evidence/quest-panel-layout.txt"
@@ -101,7 +101,7 @@
   "reviewFixes": {
     "QUEST-R1": "Pass: prose 'Please take care of 50' and 'Please collect a total of 20' are not counters; real weak/strong counter structures and target-column slash counts are recognized; the positive integration uses the selected record's fully corresponding English/Chinese rows, with first/last row coverage.",
     "QUEST-R2": "Pass: actual-GDI+ A😀 and long supplementary plans return; substitute watchdog cases cover CJK/emoji/supplementary title/body/pagination with no character loss and no lone surrogates.",
-    "QUEST-R3": "Pass: conflicting visible quantity 50 (record has 20, translation lacks 50) and unknown appended prose both reject the whole journal replacement; lastQuestJournalRejection records the reason and original pixels remain. The positive case passes completeness."
+    "QUEST-R3": "Pass: conflicting visible quantity 50 and unknown/reordered/negated appended prose reject the whole journal replacement; lastQuestJournalRejection records the reason and original pixels remain. R3a verifies titleless/scrolled first body anchors; R3b verifies ordered source alignment, cross-line reversal and OCR-noise positives."
   },
   "syntheticQuestShell": {
     "command": "pwsh -NoProfile -File tests/logic-quest-shell-resilience.ps1",
