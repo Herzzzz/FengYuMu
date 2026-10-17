@@ -51,8 +51,53 @@ PASS: r1-conflicting-quantity: whole journal replacement is rejected
 PASS: r1-conflicting-quantity: rejection reason is visible-quantity-not-in-record:50 (got quest-journal-incomplete:visible-quantity-not-in-record:50)
 PASS: r1-conflicting-quantity: original pixels are preserved
 PASS: r1-unknown-appended-prose: whole journal replacement is rejected
-PASS: r1-unknown-appended-prose: rejection reason is visible-prose (got quest-journal-incomplete:visible-prose-partial:the mayor asked me to deliver this letter)
+PASS: r1-unknown-appended-prose: rejection reason is visible-prose (got quest-journal-incomplete:visible-prose-order-or-content:the)
 PASS: r1-unknown-appended-prose: original pixels are preserved
+PASS: r3a-titleless-first-positive: journal replacement is built
+PASS: r3a-titleless-first-positive: completeness guard passes
+PASS: r3a-titleless-first-positive: first visible line is inside the region
+PASS: r3a-titleless-first-quantity: whole journal replacement is rejected
+PASS: r3a-titleless-first-quantity: rejection reason is visible-quantity-not-in-record:50 (got quest-journal-incomplete:visible-quantity-not-in-record:50)
+PASS: r3a-titleless-first-quantity: original pixels are preserved
+PASS: r3a-titleless-first-unknown: whole journal replacement is rejected
+PASS: r3a-titleless-first-unknown: rejection reason is visible-prose (got quest-journal-incomplete:visible-prose-order-or-content:mayor)
+PASS: r3a-titleless-first-unknown: original pixels are preserved
+PASS: r3a-scrolled-first-positive: journal replacement is built
+PASS: r3a-scrolled-first-positive: completeness guard passes
+PASS: r3a-scrolled-first-positive: first visible line is inside the region
+PASS: r3a-scrolled-first-quantity: whole journal replacement is rejected
+PASS: r3a-scrolled-first-quantity: rejection reason is visible-quantity-not-in-record:50 (got quest-journal-incomplete:visible-quantity-not-in-record:50)
+PASS: r3a-scrolled-first-quantity: original pixels are preserved
+PASS: r3a-scrolled-first-unknown: whole journal replacement is rejected
+PASS: r3a-scrolled-first-unknown: rejection reason is visible-prose (got quest-journal-incomplete:visible-prose-order-or-content:mayor)
+PASS: r3a-scrolled-first-unknown: original pixels are preserved
+PASS: r3a-titleless-no-caption-quantity: no journal replacement is emitted
+PASS: r3a-titleless-no-caption-quantity: original pixels are preserved
+PASS: r3a-titleless-no-caption-unknown: no journal replacement is emitted
+PASS: r3a-titleless-no-caption-unknown: original pixels are preserved
+PASS: r3a-scrolled-no-caption-quantity: no journal replacement is emitted
+PASS: r3a-scrolled-no-caption-quantity: original pixels are preserved
+PASS: r3a-scrolled-no-caption-unknown: no journal replacement is emitted
+PASS: r3a-scrolled-no-caption-unknown: original pixels are preserved
+PASS: R3b OCR-tolerant ordered alignment accepts: She wanted 20 each of Orange Mushroom Cap
+PASS: R3b OCR-tolerant ordered alignment accepts: I GOT A REQUEST FROM MAYA OF HENESYS, WHO HAS BEEN COLLECTING VARIOUS ITEMS.
+PASS: R3b OCR-tolerant ordered alignment accepts: I got a reqvest from Maya of Henesys, who has been collecting various items.
+PASS: R3b changed order/negation/unknown alignment rejects: She wanted Green Mushroom Cap but not Orange Mushroom Cap
+PASS: R3b rejection identifies the unmatched token: order-or-content:but
+PASS: R3b changed order/negation/unknown alignment rejects: She wanted Green Mushroom Cap Orange Mushroom Cap
+PASS: R3b rejection identifies the unmatched token: order-or-content:orange
+PASS: R3b changed order/negation/unknown alignment rejects: She wanted 20 each of Orange Mushroom Cap please
+PASS: R3b rejection identifies the unmatched token: order-or-content:please
+PASS: R3b multi-line prose in source order is accepted
+PASS: R3b multi-line prose in reversed order is rejected
+PASS: R3b cross-line reorder identifies the unmatched token: order-or-content:got
+PASS: R3b positive OCR-noise body passes the completeness guard
+PASS: r3b-negation-appended: whole journal replacement is rejected
+PASS: r3b-negation-appended: ordered alignment reason recorded (got quest-journal-incomplete:visible-prose-order-or-content:she)
+PASS: r3b-negation-appended: original pixels are preserved
+PASS: r3b-reordered-appended: whole journal replacement is rejected
+PASS: r3b-reordered-appended: ordered alignment reason recorded (got quest-journal-incomplete:visible-prose-order-or-content:she)
+PASS: r3b-reordered-appended: original pixels are preserved
 PASS: R2 actual-GDI+ plan returns for emoji-a
 PASS: R2 emoji-a preserves every character
 PASS: R2 emoji-a pages contain no lone surrogates
@@ -95,4 +140,4 @@ PASS: scale 2: body base size does not shrink
 PASS: scale 2: measured width fits
 PASS: repeated F8 planning is deterministic
 PASS: repeated F8 plan is reusable by the compositor
-Quest panel layout: 97 checks passed; metrics=D:\GPT\文件\枫语幕\work\dsh-chat-001\coordination\QUEST-001\evidence\layout-metrics.json
+Quest panel layout: 142 checks passed; metrics=D:\GPT\文件\枫语幕\work\dsh-chat-001\coordination\QUEST-001\evidence\layout-metrics.json
