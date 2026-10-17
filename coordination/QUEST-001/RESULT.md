@@ -5,10 +5,10 @@
 - Branch: `dsh/quest-font-001`.
 - Base commit: `dff639b828542d0bcad94fc9eb50a816f3f9bfd3`.
 - Previous implementation commit: `eba0d4d131f56fdeac88c7464b17f07a88162ed7`.
-- Review-fix implementation commit: `eea67cee6e54d5be2fb9762c7f698ce82f50c285`.
+- Review-fix implementation commit: **PENDING**.
 - Result files commit: reported in the final relay message.
-- EXE: `D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe`; SHA-256 `1A29EA825DDC7C2DAF157E998C75217DD77E43C201695FE258FE594225FCC2F0`.
-- Build evidence: `枫语幕.exe.build.json`; SHA-256 `58DAA70D8489BBA0983BEAA968D25E62292090CD013328D34F20126A67511573`; head `eea67ce`, 64 inputs, clean worktree at build.
+- EXE: `D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe`; SHA-256 **PENDING**.
+- Build evidence: `枫语幕.exe.build.json`; SHA-256 **PENDING**; head **PENDING**, 64 inputs, clean worktree required.
 
 ## What changed
 
@@ -63,7 +63,17 @@ The previous local counter regex could match the suffix `of 50` / `of 20` in ord
 - **true counter structure**: a numeric suffix pair at the end of the line, with a strong `/`/`\` separator or an OCR-confused `f`/`t` separator;
 - **word boundaries and real digits**: the pair must start at a word boundary. The weak `f`/`t` form requires a real ASCII digit on both sides, so `Please take care of 50` and `Please collect a total of 20` are never counters. A strong slash pair may be accepted in the target column even when OCR rendered both digits as confusable letters (`O / O`), but never outside it without a real digit.
 
-Real objective counters/icons/summary remain protected, including `stump 30 f 30`. The integration regression keeps a body containing both prose examples non-empty and covers the first/last prose rows.
+Real objective counters/icons/summary remain protected, including `stump 30 f 30`. The R1 positive integration now uses the selected record's own English/Chinese rows; the prose examples are tested as counter strings, not appended to a record that does not contain them. Negative integrations append `Please take care of 50` (quantity conflict) and an unknown sentence, and verify the whole journal replacement is rejected with original pixels preserved.
+
+### QUEST-R3 — visible-prose completeness safeguard
+
+Every journal selection path (anchored `SelectJournal`, observed-body fallback, and remembered-scroll context) now goes through one generic `JournalReplacementComplete` guard before a replacement label is emitted:
+
+- every visible number inside the final region must exist in the candidate English and in the candidate Chinese; otherwise the quantity/version is inconsistent and the whole replacement is rejected;
+- every visible non-chrome prose row inside the region must be covered by candidate English words. Rows with no word support, or with only partial support (below the generic coverage floor), reject the whole replacement;
+- the selected title/heading, summary, level gate, counters and objective-card rows are excluded from the prose check because they are translated/handled separately.
+
+The guard is not phrase-specific. A visible appended line with a missing quantity (`50` vs a record that only has `20`) or unknown prose now causes `TryAddQuestJournal` to return false and records `quest-journal-incomplete:<reason>` in `lastQuestJournalRejection`. No journal label is created, so the original pixels/text stay in place. The R3 positive case uses English and Chinese that fully correspond, and both negative cases assert rejection, reason and pixel preservation.
 
 ### QUEST-R2 — Unicode wrapping progress
 
@@ -71,7 +81,7 @@ Real objective counters/icons/summary remain protected, including `stump 30 f 30
 
 ## Typography / overflow evidence
 
-Actual GDI+ metrics are recorded in `evidence/layout-metrics.json` (90 panel checks, measured with the built EXE's real `Graphics` and `Font`). Representative values:
+Actual GDI+ metrics are recorded in `evidence/layout-metrics.json` (97 panel checks, measured with the built EXE's real `Graphics` and `Font`). Representative values:
 
 | Case | Body | Title | Unit | Pages | Overflow |
 |---|---:|---:|---|---:|---|
@@ -88,11 +98,11 @@ Across all recorded cases the measured maximum line width is <= the measured con
 
 ## Tests
 
-See `evidence/test-results.json` and the individual logs in `evidence/`. The final run was against the clean-build EXE `1A29EA82...` (implementation head `eea67ce`, build worktree clean).
+See `evidence/test-results.json` and the individual logs in `evidence/`. The logs below are pre-clean R3 PASS runs; the final clean-build rerun is recorded after the clean build.
 
 Passing on this host/build:
 
-- new `tests/logic-quest-panel-layout.ps1` — **90 checks** (the original 64 actual-GDI+ panel checks plus 26 R1/R2 checks) using real GDI+ measurement on the built EXE (selection/region/typography/pagination/repeat F8/scale, R1 counter policy and integration, R2 actual-GDI+ emoji/supplementary plans);
+- new `tests/logic-quest-panel-layout.ps1` — **97 checks** (the original 64 actual-GDI+ panel checks plus the R1/R2/R3 additions) using real GDI+ measurement on the built EXE (selection/region/typography/pagination/repeat F8/scale, R1 counter policy and integration, R2 actual-GDI+ emoji/supplementary plans, R3 completeness positive/negative cases);
 - new `tests/logic-quest-font-layout.ps1` — **51 checks** (the original 33 plus 18 R2 checks) using the generated-source **substitute Font/Graphics harness**, not native GDI acceptance (full composition, summary coexistence, first-line/right-edge markers, long/short body, scroll, page turn, repeated composition, scales, and 8-second-watchdog CJK/emoji/supplementary wrapping with character preservation);
 - `tests/logic-simple-flow-r11.ps1` — 33 checks;
 - `tests/logic-journal-and-item-r6.ps1 -ExePath .\枫语幕.exe` — 23/23;

@@ -2,11 +2,11 @@
   "schema": 2,
   "taskId": "QUEST-001",
   "sharedTaskId": "FONT-001",
-  "state": "R1_R2_IMPLEMENTED_BUILD_AND_TESTS_COMMITTED_PENDING_CLOUD_REVIEW",
+  "state": "R1_R2_R3_IMPLEMENTED_BUILD_PENDING",
   "branch": "dsh/quest-font-001",
   "baseCommit": "dff639b828542d0bcad94fc9eb50a816f3f9bfd3",
   "previousImplementationCommit": "eba0d4d131f56fdeac88c7464b17f07a88162ed7",
-  "implementationCommit": "eea67cee6e54d5be2fb9762c7f698ce82f50c285",
+  "implementationCommit": "PENDING",
   "resultFilesCommit": "reported in the final relay message; this file is committed with the result",
   "scope": {
     "sourceFiles": [
@@ -30,15 +30,19 @@
   "reviewFixes": {
     "QUEST-R1": {
       "status": "FIXED",
-      "detail": "Counter detection uses measured target-column cards, a real end-of-line pair structure, and word boundaries. The weak f/t separator requires real digits on both sides, so 'Please take care of 50' and 'Please collect a total of 20' are not counters. Strong slash counts in the target column may be all-confusable. Prose integration remains a non-empty single replacement region; real counters/icons/summary stay outside it."
+      "detail": "Counter detection uses measured target-column cards, a real end-of-line pair structure, and word boundaries. The weak f/t separator requires real digits on both sides, so 'Please take care of 50' and 'Please collect a total of 20' are not counters. Strong slash counts in the target column may be all-confusable. The positive integration uses the selected record's own corresponding English/Chinese rows; real counters/icons/summary stay outside it."
     },
     "QUEST-R2": {
       "status": "FIXED",
       "detail": "WrapText binary-searches only complete UTF-16 code-point boundaries; surrogate pairs advance together and both the line-end and position updates have defensive progress guards. 'A😀' returns immediately. Timeout-safe substitute tests cover CJK, emoji and supplementary-plane characters in titles, bodies and full pagination with no character loss; actual-GDI+ checks cover A😀 and a long supplementary title/body."
     },
+    "QUEST-R3": {
+      "status": "FIXED",
+      "detail": "A generic JournalReplacementComplete guard runs after every selection path and before the single-region label is emitted. Visible numbers must exist in both candidate English and Chinese; every visible non-chrome prose row must be covered by candidate English words. Conflicting quantities or unknown appended prose reject the whole journal replacement and preserve original pixels/text. Positive R1 integration uses fully corresponding content; negative regressions cover 'Please take care of 50' and an unknown sentence."
+    },
     "evidenceWording": {
       "status": "CORRECTED",
-      "panelChecks": "90 checks use actual GDI+ Font/Graphics measurement on the built EXE (64 previous + 26 R1/R2)",
+      "panelChecks": "97 checks use actual GDI+ Font/Graphics measurement on the built EXE (64 previous + R1/R2/R3 additions)",
       "fontCompositionChecks": "51 checks use the generated-source substitute Font/Graphics harness (33 previous + 18 R2); this is not native GDI acceptance",
       "actualMeasurements": "evidence/layout-metrics.json; produced by the actual-GDI+ panel checks"
     }
@@ -56,13 +60,13 @@
   },
   "build": {
     "command": "pwsh -NoProfile -File src/build.ps1",
-    "status": "PASS",
+    "status": "PENDING",
     "exePath": "枫语幕.exe",
-    "exeSha256": "1A29EA825DDC7C2DAF157E998C75217DD77E43C201695FE258FE594225FCC2F0",
+    "exeSha256": "PENDING",
     "buildEvidencePath": "枫语幕.exe.build.json",
-    "buildEvidenceSha256": "58DAA70D8489BBA0983BEAA968D25E62292090CD013328D34F20126A67511573",
-    "head": "eea67cee6e54d5be2fb9762c7f698ce82f50c285",
-    "worktreeCleanAtBuild": true,
+    "buildEvidenceSha256": "PENDING",
+    "head": "PENDING",
+    "worktreeCleanAtBuild": false,
     "inputs": 64,
     "compiler": "dotnet SDK 6.0.410 Roslyn csc.dll with .NET Framework 4.8 reference assemblies"
   },
@@ -70,15 +74,15 @@
     "questPanelLayout": {
       "command": "pwsh -NoProfile -File tests/logic-quest-panel-layout.ps1",
       "kind": "actual GDI+ on built EXE",
-      "checks": 90,
-      "status": "PASS on final clean build",
+      "checks": 97,
+      "status": "PASS on pre-clean R3 build; final clean-build rerun pending",
       "evidence": "evidence/quest-panel-layout.txt"
     },
     "questFontLayout": {
       "command": "pwsh -NoProfile -File tests/logic-quest-font-layout.ps1",
       "kind": "generated-source substitute Font/Graphics harness; not native GDI acceptance",
       "checks": 51,
-      "status": "PASS on final clean build",
+      "status": "PASS on pre-clean R3 build; final clean-build rerun pending",
       "evidence": "evidence/quest-font-layout.txt"
     },
     "simpleFlow": {

@@ -240,25 +240,49 @@ Check ([bool]$isCounterLine.Invoke($null, @('O / O', $targetLine, $targetCards, 
 Check (-not [bool]$isCounterLine.Invoke($null, @('O / O', $outsideLine, $noCards, [single]1))) 'R1 all-confusable slash count outside the target column is rejected'
 Check (-not [bool]$isCounterLine.Invoke($null, @('Please take care of 50', $targetLine, $targetCards, [single]1))) 'R1 prose is not a counter even in a misleading target column'
 
-$proseLines = @('Please take care of 50', 'Please collect a total of 20')
-$scene = NewFrame 1.0 $true 1 $proseLines
+# Positive integration uses the selected record's own English/Chinese rows; the
+# "of 50"/"of 20" examples are tested as counter strings above, not appended to a
+# record whose Chinese does not contain them.
+$scene = NewFrame 1.0 $true 1
 try {
     $label = Invoke-JournalBuilder $scene
-    Check ($null -ne $label) 'R1 prose body with "of 50"/"of 20" still builds a journal label'
+    Check ($null -ne $label) 'R1 corresponding body still builds a journal label'
     $source = GetField $label 'SourceBounds'
-    $lastProseBottom = 346 + ($scene.Rows.Count + 1) * 26 + 20
-    Check ($source.Top -le $scene.FirstBodyTop) 'R1 prose body replacement region still covers the first body row'
-    Check ($source.Bottom -ge $lastProseBottom) 'R1 prose body replacement region is not emptied by counter detection'
-    Check ((GetField (GetField $label 'Journal') 'Layout') -ne $null) 'R1 prose body still receives the shared typography plan'
+    $lastBodyBottom = 346 + ($scene.Rows.Count - 1) * 26 + 20
+    Check ($source.Top -le $scene.FirstBodyTop) 'R1 corresponding body region covers the first body row'
+    Check ($source.Bottom -ge $lastBodyBottom) 'R1 corresponding body region covers the last body row'
+    Check ((GetField (GetField $label 'Journal') 'Layout') -ne $null) 'R1 corresponding body receives the shared typography plan'
+    Check ([string](GetField $form 'lastQuestJournalRejection') -eq '') 'R1 corresponding body passes the completeness guard'
     $evidence.Add([pscustomobject]@{
-        case = 'r1-prose-not-counter'; scale = 1.0
+        case = 'r1-corresponding-body'; scale = 1.0
         source = @($source.X, $source.Y, $source.Width, $source.Height)
-        firstBodyTop = $scene.FirstBodyTop; lastProseBottom = $lastProseBottom
+        firstBodyTop = $scene.FirstBodyTop; lastBodyBottom = $lastBodyBottom
         sourceCoversFirst = $source.Top -le $scene.FirstBodyTop
-        sourceCoversLastProse = $source.Bottom -ge $lastProseBottom
-        counterExamples = @('Please take care of 50', 'Please collect a total of 20')
+        sourceCoversLast = $source.Bottom -ge $lastBodyBottom
+        rejected = $false
     })
 } finally { $scene.Bitmap.Dispose() }
+
+foreach ($negative in @(
+    @{ Name = 'r1-conflicting-quantity'; Lines = @('Please take care of 50'); Reason = 'visible-quantity-not-in-record:50' },
+    @{ Name = 'r1-unknown-appended-prose'; Lines = @('The mayor asked me to deliver this letter'); Reason = 'visible-prose' }
+)) {
+    $scene = NewFrame 1.0 $true 1 $negative.Lines
+    try {
+        $marker = [Drawing.Color]::FromArgb(255, 12, 34, 56)
+        $scene.Bitmap.SetPixel(800, 560, $marker)
+        $label = Invoke-JournalBuilder $scene
+        $rejection = [string](GetField $form 'lastQuestJournalRejection')
+        Check ($null -eq $label) ($negative.Name + ': whole journal replacement is rejected')
+        Check ($rejection.Contains($negative.Reason)) ($negative.Name + ': rejection reason is ' + $negative.Reason + ' (got ' + $rejection + ')')
+        Check ($scene.Bitmap.GetPixel(800, 560).ToArgb() -eq $marker.ToArgb()) ($negative.Name + ': original pixels are preserved')
+        $evidence.Add([pscustomobject]@{
+            case = $negative.Name; scale = 1.0
+            rejected = $true; reason = $rejection
+            appendedVisibleProse = $negative.Lines
+        })
+    } finally { $scene.Bitmap.Dispose() }
+}
 
 # 1c. QUEST-R2: actual-GDI+ emoji/supplementary plan, no hang and no character loss.
 function Test-LoneSurrogate([string]$value) {

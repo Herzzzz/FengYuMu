@@ -13,6 +13,7 @@ namespace MapleOverlay
         private string rememberedJournalHeader="",rememberedJournalObjectives="";
         private Rectangle rememberedJournalCapture;
         private long rememberedJournalAt;
+        private string lastQuestJournalRejection="";
 
         private RectangleF ResolveQuestJournalOwner(List<OcrLine> all,Size size,float scale,RectangleF measured)
         {
@@ -41,6 +42,7 @@ namespace MapleOverlay
             List<OcrLine> all,Bitmap prepared,float scale,bool questWindow,RectangleF measured)
         {
             if(prepared==null||scale<=0||all==null)return false;
+            lastQuestJournalRejection="";
             RectangleF owner=ResolveQuestJournalOwner(all,prepared.Size,scale,measured);
             if(owner.IsEmpty)return false;
             if(!measured.IsEmpty&&OverlayPaintSafety.IsFiniteRect(measured)) {
@@ -141,6 +143,12 @@ namespace MapleOverlay
                 translations.JournalMemoryMatches(rememberedJournal,JournalProse(sorted,GetOcrLineBounds(heading),area,true)))
             {record=rememberedJournal;reason="same-task-scroll-context";}
             if(record==null){Program.LogRuntimeEvent("quest-journal","selected=false reason="+reason);return false;}
+            string completeness;
+            if(!JournalReplacementComplete(record,sorted,area,objectiveCards,scale,heading,stage,out completeness)) {
+                lastQuestJournalRejection="quest-journal-incomplete:"+completeness;
+                Program.LogRuntimeEvent("quest-journal","selected=false reason="+lastQuestJournalRejection);
+                return false;
+            }
             RectangleF overlay=OverlaySpan(area,scale);
             Rectangle overlayArea=Rectangle.Ceiling(overlay);
             float fontHeight=Math.Max(14,Math.Min(40,GetOcrLineBounds(heading).Height/scale));
@@ -176,6 +184,86 @@ namespace MapleOverlay
                 " textRows="+(int)document.TextBounds.Width+"x"+(int)document.TextBounds.Height+
                 " layout="+layout.Describe());
             return true;
+        }
+
+        // Generic completeness guard for every journal selection path. The selected
+        // record may only replace visible prose that its English source and Chinese
+        // translation actually cover. Unknown appended prose, or a visible quantity
+        // absent from either side, aborts the whole replacement; the original pixels
+        // and text are preserved by the caller.
+        private bool JournalReplacementComplete(QuestJournalRecord record,List<OcrLine> lines,
+            Rectangle area,List<RectangleF> objectiveCards,float scale,OcrLine heading,string stage,
+            out string reason)
+        {
+            reason="";
+            if(record==null||String.IsNullOrWhiteSpace(record.English)||String.IsNullOrWhiteSpace(record.Chinese))
+            {reason="missing-record-content";return false;}
+            HashSet<string> candidateNumbers=JournalNumberTokens(record.English);
+            HashSet<string> translatedNumbers=JournalNumberTokens(record.Chinese);
+            HashSet<string> candidateWords=JournalWords(record.English);
+            StringBuilder visible=new StringBuilder();
+            List<OcrLine> prose=new List<OcrLine>();
+            foreach(OcrLine line in lines) {
+                if(line==null)continue;
+                RectangleF raw=GetOcrLineBounds(line);
+                if(raw.IsEmpty||!area.Contains(Rectangle.Ceiling(raw)))continue;
+                string key=TranslationStore.Normalize(line.Text);
+                if(QuestDetailGeometry.IsSummaryKey(key)||key.StartsWith("level ",StringComparison.Ordinal)||
+                    key=="quest helper"||key=="forfeit"||key=="details"||key=="available"||
+                    key=="in progress"||key=="completed"||
+                    QuestJournalLayout.IsCounterLine(line.Text,raw,objectiveCards,scale))continue;
+                bool inCard=false;
+                if(objectiveCards!=null)foreach(RectangleF card in objectiveCards)
+                    if(card.Contains(new PointF(raw.Left+raw.Width/2,raw.Top+raw.Height/2))){inCard=true;break;}
+                if(inCard)continue;
+                // The selected heading is the structural title/anchor; it is not
+                // body prose and may be translated separately.
+                if(line==heading)continue;
+                if(!String.IsNullOrEmpty(record.Title)&&key==TranslationStore.Normalize(record.Title))continue;
+                if(key.Length<4)continue;
+                bool hasWord=false;
+                foreach(char value in line.Text)if(Char.IsLetterOrDigit(value)){hasWord=true;break;}
+                if(!hasWord)continue;
+                prose.Add(line);
+                if(visible.Length>0)visible.Append(' ');
+                visible.Append(line.Text);
+            }
+            foreach(string number in JournalNumberTokens(visible.ToString())) {
+                if(!candidateNumbers.Contains(number)){reason="visible-quantity-not-in-record:"+number;return false;}
+                if(!translatedNumbers.Contains(number)){reason="visible-quantity-not-in-translation:"+number;return false;}
+            }
+            foreach(OcrLine line in prose) {
+                string key=TranslationStore.Normalize(line.Text);
+                string[] words=key.Split(new char[]{' '},StringSplitOptions.RemoveEmptyEntries);
+                int content=0,common=0;
+                foreach(string word in words) {
+                    if(word.Length<3||Regex.IsMatch(word,@"^[0-9IlOo]+$"))continue;
+                    content++;
+                    if(candidateWords.Contains(word))common++;
+                }
+                if(content==0)continue;
+                if(common==0){reason="visible-prose-not-in-record:"+key;return false;}
+                if(content<3&&common<content){reason="visible-prose-partial:"+key;return false;}
+                if(content>=3&&common*3<content*2){reason="visible-prose-partial:"+key;return false;}
+            }
+            return true;
+        }
+
+        private static HashSet<string> JournalNumberTokens(string text)
+        {
+            HashSet<string> result=new HashSet<string>(StringComparer.Ordinal);
+            foreach(Match match in Regex.Matches(text??"",@"[-+]?\d+(?:[.,]\d+)*(?:%|％)?"))
+                result.Add(match.Value.Replace('％','%'));
+            return result;
+        }
+
+        private static HashSet<string> JournalWords(string text)
+        {
+            HashSet<string> result=new HashSet<string>(StringComparer.Ordinal);
+            foreach(string word in TranslationStore.Normalize(text??"").Split(
+                new char[]{' '},StringSplitOptions.RemoveEmptyEntries))
+                if(word.Length>=3)result.Add(word);
+            return result;
         }
 
         // SelectJournal needs enough prose anchors to choose one stage. When the

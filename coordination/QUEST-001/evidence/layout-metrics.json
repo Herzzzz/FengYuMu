@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "annotation": "Actual GDI+ QuestJournalLayout metrics from synthetic panels; no OCR, AI, capture or in-game visual acceptance.",
-  "checks": 90,
+  "checks": 97,
   "cases": [
     {
       "case": "short-with-summary",
@@ -79,7 +79,7 @@
       "summaryProtected": true
     },
     {
-      "case": "r1-prose-not-counter",
+      "case": "r1-corresponding-body",
       "scale": 1.0,
       "source": [
         401.0,
@@ -88,12 +88,27 @@
         292.0
       ],
       "firstBodyTop": 346.0,
-      "lastProseBottom": 548,
+      "lastBodyBottom": 496,
       "sourceCoversFirst": true,
-      "sourceCoversLastProse": true,
-      "counterExamples": [
-        "Please take care of 50",
-        "Please collect a total of 20"
+      "sourceCoversLast": true,
+      "rejected": false
+    },
+    {
+      "case": "r1-conflicting-quantity",
+      "scale": 1.0,
+      "rejected": true,
+      "reason": "quest-journal-incomplete:visible-quantity-not-in-record:50",
+      "appendedVisibleProse": [
+        "Please take care of 50"
+      ]
+    },
+    {
+      "case": "r1-unknown-appended-prose",
+      "scale": 1.0,
+      "rejected": true,
+      "reason": "quest-journal-incomplete:visible-prose-partial:the mayor asked me to deliver this letter",
+      "appendedVisibleProse": [
+        "The mayor asked me to deliver this letter"
       ]
     },
     {
