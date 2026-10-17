@@ -16,4 +16,4 @@ PASS: MP Eater full description remains present in the actual candidate
 PASS: ledger item translation excludes the live progress counter
 PASS: loading observed wording never rewrites the user dictionary
 PASS: explicit user wording and identity override the built-in supplement
-Observed quest wording: 12/12 passed; candidate SHA256=3CF6851C9FE88A7DDC181E715F60B027973ABBD8884E3F4AF3FE709478361D33; manually transcribed text is not actual OCR validation.
+Observed quest wording: 12/12 passed; candidate SHA256=916A68E2D620B309681DC1D5C174CB9C13FEBDE8D0C8C81A4BCB020417A72683; manually transcribed text is not actual OCR validation.

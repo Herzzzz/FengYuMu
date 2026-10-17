@@ -1,10 +1,14 @@
 {
   "schema": 1,
-  "annotation": "Commands run on this host against the built 枫语幕.exe. Evidence logs are committed next to this file. The final clean-build rerun updates the PENDING fields.",
+  "annotation": "Final clean-build run on 枫语幕.exe SHA-256 916A68E2D620B309681DC1D5C174CB9C13FEBDE8D0C8C81A4BCB020417A72683 (implementation head eba0d4d). Evidence logs are committed next to this file. No OCR or AI rounds were added.",
   "build": {
     "command": "pwsh -NoProfile -File src/build.ps1",
-    "exitCode": "PENDING",
-    "exeSha256": "PENDING"
+    "exitCode": 0,
+    "exeSha256": "916A68E2D620B309681DC1D5C174CB9C13FEBDE8D0C8C81A4BCB020417A72683",
+    "buildEvidenceSha256": "7EC92B16B26022AFBA2E71F3B087761D802E7C7A4CD0D63AB9467F9162438F59",
+    "head": "eba0d4d131f56fdeac88c7464b17f07a88162ed7",
+    "worktreeCleanAtBuild": true,
+    "inputs": 64
   },
   "tests": [
     {
@@ -82,13 +86,19 @@
       "exitCode": 0,
       "checks": 9,
       "evidence": "evidence/chat-continuity.txt"
+    },
+    {
+      "name": "independent-window",
+      "command": "pwsh -NoProfile -File tests/logic-independent-window.ps1",
+      "exitCode": 0,
+      "evidence": "evidence/independent-window.txt"
     }
   ],
   "syntheticQuestShell": {
     "command": "pwsh -NoProfile -File tests/logic-quest-shell-resilience.ps1",
     "exitCode": 1,
     "classification": "PRE_EXISTING_BASELINE_FAILURE",
-    "detail": "The test's clean synthetic scene still reports an empty 识别场景 on this host; the journal path itself selected and composed: region=818,482,796x669, body=15px, title=19px, pages=1, committed=12/12.",
+    "detail": "The test's clean synthetic scene still reports an empty 识别场景 on this host; the journal path itself selected and composed in the same run: selected=true reason=stage-and-state-anchor region=818,482,796x669 body=15px title=19px pages=1, composition committed=True candidates=12 ready=12.",
     "evidence": "evidence/quest-shell-synthetic.txt"
   },
   "preExistingFailures": [
@@ -101,7 +111,7 @@
     "tests/logic-quest-shell-resilience.ps1"
   ],
   "baselineConfirmation": {
-    "worktree": ".bench/baseline-dff639b (detached at dff639b)",
+    "worktree": "detached at dff639b (temporary .bench worktree, removed after confirmation)",
     "exeSha256": "6E618DF248FBBDB3AC0A25F1B9E4A3E4A5E1BBB02A15CEBF1ADB69A8563C1737",
     "result": "Every pre-existing failure above reproduced on the untouched baseline worktree."
   },

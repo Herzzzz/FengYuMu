@@ -4,10 +4,10 @@
 - Tool: DeepSeek Harness (DSH) on Windows, PowerShell 7.6.5, .NET SDK 6.0.410 Roslyn.
 - Branch: `dsh/quest-font-001`.
 - Base commit: `dff639b828542d0bcad94fc9eb50a816f3f9bfd3`.
-- Implementation commit: **PENDING** (this file is committed with the implementation and then updated with the result commit).
+- Implementation commit: `eba0d4d131f56fdeac88c7464b17f07a88162ed7`.
 - Result files commit: reported in the final relay message.
-- EXE: `D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe`; SHA-256 **PENDING**.
-- Build evidence: `枫语幕.exe.build.json`; SHA-256 **PENDING**.
+- EXE: `D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe`; SHA-256 `916A68E2D620B309681DC1D5C174CB9C13FEBDE8D0C8C81A4BCB020417A72683`.
+- Build evidence: `枫语幕.exe.build.json`; SHA-256 `7EC92B16B26022AFBA2E71F3B087761D802E7C7A4CD0D63AB9467F9162438F59`; head `eba0d4d`, 64 inputs, clean worktree at build.
 
 ## What changed
 
@@ -71,7 +71,7 @@ Across all recorded cases the measured maximum line width is <= the measured con
 
 ## Tests
 
-See `evidence/test-results.json` and the individual logs in `evidence/`.
+See `evidence/test-results.json` and the individual logs in `evidence/`. The final run was against the clean-build EXE `916A68E2...` (implementation head `eba0d4d`, build worktree clean).
 
 Passing on this host/build:
 
@@ -107,5 +107,6 @@ Tests with hard-coded `/workspace` or `bin/windows-v4.0` paths (`logic-quest-par
 - No chat classification, OCR model/protocol or AI request logic changes.
 - No additional OCR or AI rounds. The journal plan is built from the already-selected OCR text and cached; page turns use the cached layout and pixels.
 - The existing conservative paper measurement and fallback preservation remain; if the plan/region cannot safely fit, English is preserved rather than partially erased.
+- Synthetic quest shell run on the final EXE: `quest-journal selected=true reason=stage-and-state-anchor`, region `818,482,796x669`, body `15px`, title `19px`, `pages=1`, composition `committed=True candidates=12 ready=12 localFill=0`. The test's separate scene-classification assertion still reports an empty scene on this host; that failure also reproduces on the untouched baseline.
 - Real in-game visual acceptance (physical F8, actual quest UI at 100/125/150/200%, real Game window) is **UNVERIFIED**. All evidence above is synthetic GDI+/generated-source evidence, not a real-game screenshot acceptance.
 - No raw user screenshots, chat text, keys or private logs were committed. Evidence contains only synthetic panel geometry and public dictionary text.

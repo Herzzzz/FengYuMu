@@ -2,10 +2,10 @@
   "schema": 1,
   "taskId": "QUEST-001",
   "sharedTaskId": "FONT-001",
-  "state": "IMPLEMENTATION_COMMITTED_BUILD_PENDING",
+  "state": "IMPLEMENTED_BUILD_AND_TESTS_COMMITTED_PENDING_CLOUD_REVIEW",
   "branch": "dsh/quest-font-001",
   "baseCommit": "dff639b828542d0bcad94fc9eb50a816f3f9bfd3",
-  "implementationCommit": "PENDING",
+  "implementationCommit": "eba0d4d131f56fdeac88c7464b17f07a88162ed7",
   "resultFilesCommit": "reported in the final relay message; this file is committed with the result",
   "scope": {
     "sourceFiles": [
@@ -39,25 +39,87 @@
   },
   "build": {
     "command": "pwsh -NoProfile -File src/build.ps1",
-    "status": "PENDING",
+    "status": "PASS",
     "exePath": "枫语幕.exe",
-    "exeSha256": "PENDING",
+    "exeSha256": "916A68E2D620B309681DC1D5C174CB9C13FEBDE8D0C8C81A4BCB020417A72683",
     "buildEvidencePath": "枫语幕.exe.build.json",
-    "buildEvidenceSha256": "PENDING"
+    "buildEvidenceSha256": "7EC92B16B26022AFBA2E71F3B087761D802E7C7A4CD0D63AB9467F9162438F59",
+    "head": "eba0d4d131f56fdeac88c7464b17f07a88162ed7",
+    "worktreeCleanAtBuild": true,
+    "buildInputs": 64,
+    "compiler": "dotnet SDK 6.0.410 Roslyn csc.dll with .NET Framework 4.8 reference assemblies"
   },
   "tests": {
-    "questPanelLayout": "PASS 64 checks (pending final clean-build rerun)",
-    "questFontLayout": "PASS 33 checks (pending final clean-build rerun)",
-    "simpleFlow": "PASS 33 checks (pending final clean-build rerun)",
-    "journalAndItemR6": "PASS 23/23 (pending final clean-build rerun)",
-    "questTextScopeR12": "PASS 17 checks (pending final clean-build rerun)",
-    "questMatchingR12": "PASS 28 checks (pending final clean-build rerun)",
-    "observedQuestWording": "PASS 12/12 (pending final clean-build rerun)",
-    "uiDpiScaling": "PASS 100/125/150/175/200% (pending final clean-build rerun)",
-    "chatCategoryFiltering": "PASS (pending final clean-build rerun)",
-    "chatMegaphonePixels": "PASS 164 checks (pending final clean-build rerun)",
-    "chatContinuity": "PASS 9/9 (pending final clean-build rerun)",
-    "independentWindow": "PASS (pending final clean-build rerun)"
+    "questPanelLayout": {
+      "command": "pwsh -NoProfile -File tests/logic-quest-panel-layout.ps1",
+      "exitCode": 0,
+      "checks": 64,
+      "evidence": "evidence/quest-panel-layout.txt"
+    },
+    "questFontLayout": {
+      "command": "pwsh -NoProfile -File tests/logic-quest-font-layout.ps1",
+      "exitCode": 0,
+      "checks": 33,
+      "evidence": "evidence/quest-font-layout.txt"
+    },
+    "simpleFlow": {
+      "command": "pwsh -NoProfile -File tests/logic-simple-flow-r11.ps1",
+      "exitCode": 0,
+      "checks": 33,
+      "evidence": "evidence/simple-flow-r11.txt"
+    },
+    "journalAndItemR6": {
+      "command": "pwsh -NoProfile -File tests/logic-journal-and-item-r6.ps1 -ExePath .\\枫语幕.exe",
+      "exitCode": 0,
+      "checks": 23,
+      "evidence": "evidence/journal-and-item-r6.txt"
+    },
+    "questTextScopeR12": {
+      "command": "pwsh -NoProfile -File tests/logic-quest-text-scope-r12.ps1",
+      "exitCode": 0,
+      "checks": 17,
+      "evidence": "evidence/quest-text-scope-r12.txt"
+    },
+    "questMatchingR12": {
+      "command": "pwsh -NoProfile -File tests/logic-quest-matching-r12.ps1 -ExePath .\\枫语幕.exe",
+      "exitCode": 0,
+      "checks": 28,
+      "evidence": "evidence/quest-matching-r12.txt"
+    },
+    "observedQuestWording": {
+      "command": "pwsh -NoProfile -File tests/logic-observed-quest-wording.ps1 -ExePath .\\枫语幕.exe",
+      "exitCode": 0,
+      "checks": 12,
+      "evidence": "evidence/observed-quest-wording.txt"
+    },
+    "uiDpiScaling": {
+      "command": "pwsh -NoProfile -File tests/logic-ui-dpi-scaling.ps1",
+      "exitCode": 0,
+      "detail": "100/125/150/175/200%, mixed DPI",
+      "evidence": "evidence/ui-dpi-scaling.txt"
+    },
+    "chatCategoryFiltering": {
+      "command": "pwsh -NoProfile -File tests/logic-chat-category-filtering.ps1",
+      "exitCode": 0,
+      "evidence": "evidence/chat-category-filtering.txt"
+    },
+    "chatMegaphonePixels": {
+      "command": "pwsh -NoProfile -File tests/logic-chat-megaphone-pixels.ps1",
+      "exitCode": 0,
+      "checks": 164,
+      "evidence": "evidence/chat-megaphone-pixels.txt"
+    },
+    "chatContinuity": {
+      "command": "pwsh -NoProfile -File tests/logic-chat-continuity.ps1",
+      "exitCode": 0,
+      "checks": 9,
+      "evidence": "evidence/chat-continuity.txt"
+    },
+    "independentWindow": {
+      "command": "pwsh -NoProfile -File tests/logic-independent-window.ps1",
+      "exitCode": 0,
+      "evidence": "evidence/independent-window.txt"
+    }
   },
   "preExistingFailuresConfirmedOnBaseline": [
     "tests/logic-quest-body-and-summary.ps1 (stale source-guard string)",
@@ -70,8 +132,10 @@
   ],
   "runtimeEvidence": {
     "syntheticJournalSelected": true,
+    "syntheticJournalReason": "stage-and-state-anchor",
+    "syntheticJournalRegion": "818,482,796x669 source pixels",
     "syntheticJournalLayout": "body=15px unit=Pixel title=19px wrap=342 content=371,219,342,294 pages=1 overflow=title-fit;body=single-page",
-    "syntheticComposition": "committed=True candidates=12 ready=12",
+    "syntheticComposition": "committed=True candidates=12 ready=12 localFill=0 elapsedMs=26",
     "ocrRoundsAdded": false,
     "aiRoundsAdded": false
   },
