@@ -5,10 +5,10 @@
 - Branch: `dsh/quest-font-001`.
 - Base commit: `dff639b828542d0bcad94fc9eb50a816f3f9bfd3`.
 - Previous implementation commit: `eba0d4d131f56fdeac88c7464b17f07a88162ed7`.
-- Review-fix implementation commit: **PENDING**.
+- Review-fix implementation commit: `b79163c78bf3445ffb4c33679ae8596730fed4f2`.
 - Result files commit: reported in the final relay message.
-- EXE: `D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe`; SHA-256 **PENDING**.
-- Build evidence: `枫语幕.exe.build.json`; SHA-256 **PENDING**; head **PENDING**, 64 inputs, clean worktree required.
+- EXE: `D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe`; SHA-256 `FDC1DF5B48E53176B98A152D189F3118870BE08E53F4B51FBA33309899B8967A`.
+- Build evidence: `枫语幕.exe.build.json`; SHA-256 `FAE9AD823079D81E31657561E1C0C0EF39EB5693E77B9D80A97315BE912FD814`; head `b79163c`, 64 inputs, clean worktree at build.
 
 ## What changed
 
@@ -98,7 +98,7 @@ Across all recorded cases the measured maximum line width is <= the measured con
 
 ## Tests
 
-See `evidence/test-results.json` and the individual logs in `evidence/`. The logs below are pre-clean R3 PASS runs; the final clean-build rerun is recorded after the clean build.
+See `evidence/test-results.json` and the individual logs in `evidence/`. The final run is against the clean-build EXE `FDC1DF5B...` (implementation head `b79163c`, build worktree clean).
 
 Passing on this host/build:
 

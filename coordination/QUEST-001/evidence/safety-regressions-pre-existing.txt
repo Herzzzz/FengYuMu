@@ -1,4 +1,4 @@
-Safety/legacy regression run on final EXE 1A29EA825DDC7C2DAF157E998C75217DD77E43C201695FE258FE594225FCC2F0 (head eea67ce).
+Safety/legacy regression run on final EXE FDC1DF5B48E53176B98A152D189F3118870BE08E53F4B51FBA33309899B8967A (head b79163c).
 These failures are pre-existing and reproduce on the untouched baseline EXE 6E618DF248FBBDB3AC0A25F1B9E4A3E4A5E1BBB02A15CEBF1ADB69A8563C1737.
 
 logic-quest-body-and-summary.ps1       exit 1  stale source-guard string: results.RemoveAll(...TaskId...)

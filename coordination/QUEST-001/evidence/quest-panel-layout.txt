@@ -42,10 +42,17 @@ PASS: R1 counter pair needs a word boundary
 PASS: R1 target-column location allows an all-confusable slash count
 PASS: R1 all-confusable slash count outside the target column is rejected
 PASS: R1 prose is not a counter even in a misleading target column
-PASS: R1 prose body with "of 50"/"of 20" still builds a journal label
-PASS: R1 prose body replacement region still covers the first body row
-PASS: R1 prose body replacement region is not emptied by counter detection
-PASS: R1 prose body still receives the shared typography plan
+PASS: R1 corresponding body still builds a journal label
+PASS: R1 corresponding body region covers the first body row
+PASS: R1 corresponding body region covers the last body row
+PASS: R1 corresponding body receives the shared typography plan
+PASS: R1 corresponding body passes the completeness guard
+PASS: r1-conflicting-quantity: whole journal replacement is rejected
+PASS: r1-conflicting-quantity: rejection reason is visible-quantity-not-in-record:50 (got quest-journal-incomplete:visible-quantity-not-in-record:50)
+PASS: r1-conflicting-quantity: original pixels are preserved
+PASS: r1-unknown-appended-prose: whole journal replacement is rejected
+PASS: r1-unknown-appended-prose: rejection reason is visible-prose (got quest-journal-incomplete:visible-prose-partial:the mayor asked me to deliver this letter)
+PASS: r1-unknown-appended-prose: original pixels are preserved
 PASS: R2 actual-GDI+ plan returns for emoji-a
 PASS: R2 emoji-a preserves every character
 PASS: R2 emoji-a pages contain no lone surrogates
@@ -88,4 +95,4 @@ PASS: scale 2: body base size does not shrink
 PASS: scale 2: measured width fits
 PASS: repeated F8 planning is deterministic
 PASS: repeated F8 plan is reusable by the compositor
-Quest panel layout: 90 checks passed; metrics=D:\GPT\文件\枫语幕\work\dsh-chat-001\coordination\QUEST-001\evidence\layout-metrics.json
+Quest panel layout: 97 checks passed; metrics=D:\GPT\文件\枫语幕\work\dsh-chat-001\coordination\QUEST-001\evidence\layout-metrics.json
