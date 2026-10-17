@@ -1,11 +1,11 @@
 {
   "taskId": "CHAT-001",
-  "state": "SECOND_REVIEW_FIXES_COMMITTED_PENDING_CLOUD_REVIEW",
-  "changeRound": "R1 exact nickname / R2 retained-row alignment (R3 preserved)",
+  "state": "THIRD_REVIEW_FIX_COMMITTED_PENDING_CLOUD_REVIEW",
+  "changeRound": "R2 same-channel duplicate growth / candidate-aware alignment (R1/R2/R3 preserved)",
   "baseCommit": "c4dc19ea26e6a5611786ae7a6bd80acf33d6e858",
   "implementationBranch": "dsh/chat-001",
-  "implementationCommit": "690e2c1bb9011109ee12dc031f55406496d6d973",
-  "previousImplementationCommit": "b968e8ccf9b363a391ba330065b66e1bf26c4b43",
+  "implementationCommit": "a68068bea09a1371f71e64925a5816465211a731",
+  "previousImplementationCommit": "690e2c1bb9011109ee12dc031f55406496d6d973",
   "resultFilesCommit": "reported in the final relay message; this file is committed with the result files",
   "dshTool": "DeepSeek Harness",
   "existingBridgeReportedByUser": true,
@@ -21,27 +21,39 @@
     "command": "pwsh -NoProfile -File src/build.ps1",
     "exitCode": 0,
     "exePath": "枫语幕.exe",
-    "exeSha256": "0D0565BFBA9B851B84B423175B68DA75D99C088486845B3BAC0997AE69E2473F",
+    "exeSha256": "B9C3252AA91FD8016898D69BD1A5EA414706CD0BEA696AEDCC9B960D2C88E387",
     "buildEvidencePath": "枫语幕.exe.build.json",
-    "buildEvidenceSha256": "274A5C8561268597481F90892D36BB268B7F13173A2AB86750109303D6652EE9",
+    "buildEvidenceSha256": "1C738D6568E755355F15B9FF77D9080449DF360B73F3AE3FB74EB02535E95267",
     "buildInputs": 64,
-    "buildHead": "690e2c1bb9011109ee12dc031f55406496d6d973",
+    "buildHead": "a68068bea09a1371f71e64925a5816465211a731",
     "worktreeCleanAtBuild": true,
     "compiler": "dotnet SDK 6.0.410 Roslyn csc.dll with .NET Framework 4.8 reference assemblies",
     "vs2022FallbackAdded": true
   },
-  "secondReviewFixes": {
-    "R1": {
+  "thirdReviewFixes": {
+    "sameChannelDuplicateGrowth": {
       "status": "FIXED",
-      "detail": "MapleOverlay exact is only set when both the normalized nickname and body are exact. SameSpeaker is still OCR-tolerant for association but never upgrades a fuzzy nickname to exact. Alice(Party)/Alicf(Guild) fixture: FindStyle and FindStyle(...,0) both select Guild for exact Alicf, while ambiguous Alic remains Unknown in both APIs. Missing nickname remains Unknown."
+      "detail": "Alignment primary score is still row/source match; an existing new-message candidate is only a tie-break penalty (1 point at x1000 scale), and the ordered DP requires a strict improvement to pair. This keeps the older identical row as retained and leaves the newly appended duplicate as the candidate instead of filtering it as retained."
     },
-    "R2": {
-      "status": "FIXED",
-      "detail": "OfflineChat removed same-text occurrence-from-start source-change mapping and replaced it with ordered previous/current DP row alignment. Aligned retained rows are filtered from candidates, unaligned new rows are kept, true source changes are added, and new same-text cross-channel rows missed by text diff are added. Pending/Prepared still carry RowIndex+Style and publication uses Prepared.Style."
-    },
-    "R3": {
+    "crossChannelSameTextAddition": {
       "status": "PRESERVED",
-      "detail": "FromSample with no foreground/background/row evidence remains Unknown; explicit [Party]/[Guild]/[Notice]/System: prefixes still classify; white-glyph Normal still classifies."
+      "detail": "A new same-text row in another channel is still delivered after alignment, including when text diff misses it."
+    },
+    "retainedOldRowAfterScroll": {
+      "status": "PRESERVED",
+      "detail": "Retained duplicate rows are filtered from candidates; only the new other row is enqueued."
+    },
+    "staticFrameNoDuplicatePublish": {
+      "status": "ADDED",
+      "detail": "Static previous/current frames with empty or all-current candidates publish no duplicate."
+    },
+    "R1ExactNickname": {
+      "status": "PRESERVED",
+      "detail": "Exact identity still requires exact normalized nickname + body. Alice(Party)/Alicf(Guild): both single and occurrence APIs select Guild for exact Alicf; ambiguous Alic remains Unknown."
+    },
+    "R3NoEvidenceUnknown": {
+      "status": "PRESERVED",
+      "detail": "FromSample with no foreground/background/row evidence remains Unknown; explicit prefixes still classify."
     }
   },
   "tests": {
@@ -49,64 +61,64 @@
       "command": "pwsh -NoProfile -File tests/logic-chat-megaphone-pixels.ps1",
       "exitCode": 0,
       "checks": 164,
-      "evidence": ".bench/evidence-r2-megaphone-pixels.log"
+      "evidence": ".bench/evidence-r3-megaphone-pixels.log"
     },
     "chatMegaphonePipeline": {
       "command": "pwsh -NoProfile -File tests/logic-chat-megaphone-pipeline.ps1",
       "exitCode": 0,
-      "checks": 72,
-      "evidence": ".bench/evidence-r2-megaphone-pipeline.log"
+      "checks": 86,
+      "evidence": ".bench/evidence-r3-megaphone-pipeline.log"
     },
     "chatMegaphoneOcr": {
       "command": "pwsh -NoProfile -File tests/logic-chat-megaphone-ocr.ps1",
       "exitCode": 0,
       "checks": 14,
       "repeatRuns": 3,
-      "evidence": ".bench/evidence-r2-megaphone-ocr.log, -run1.log, -run2.log"
+      "evidence": ".bench/evidence-r3-megaphone-ocr.log, -run1.log, -run2.log"
     },
     "chatCategoryFiltering": {
       "command": "pwsh -NoProfile -File tests/logic-chat-category-filtering.ps1",
       "exitCode": 0,
-      "evidence": ".bench/evidence-r2-chat-category-filtering.log"
+      "evidence": ".bench/evidence-r3-chat-category-filtering.log"
     },
     "chatContinuity": {
       "command": "pwsh -NoProfile -File tests/logic-chat-continuity.ps1",
       "exitCode": 0,
       "checks": 9,
-      "evidence": ".bench/evidence-r2-chat-continuity.log"
+      "evidence": ".bench/evidence-r3-chat-continuity.log"
     },
     "chatFeedbackCorrectness": {
       "command": "pwsh -NoProfile -File tests/logic-chat-feedback-correctness.ps1",
       "exitCode": 0,
       "checks": 39,
-      "evidence": ".bench/evidence-r2-chat-feedback-correctness.log"
+      "evidence": ".bench/evidence-r3-chat-feedback-correctness.log"
     },
     "independentWindow": {
       "command": "pwsh -NoProfile -File tests/logic-independent-window.ps1",
       "exitCode": 0,
-      "evidence": ".bench/evidence-r2-independent-window.log"
+      "evidence": ".bench/evidence-r3-independent-window.log"
     },
     "chatUiR15": {
       "command": "pwsh -NoProfile -File tests/logic-chat-ui-r15.ps1",
       "exitCode": 0,
       "checks": 20,
-      "evidence": ".bench/evidence-r2-chat-ui-r15.log"
+      "evidence": ".bench/evidence-r3-chat-ui-r15.log"
     },
     "videoChat": {
       "command": "pwsh -NoProfile -File tests/logic-video-bv1l8yc67et4-chat.ps1 -ExePath .\\枫语幕.exe",
       "exitCode": 0,
       "phrases": 32,
-      "evidence": ".bench/evidence-r2-video-chat.log"
+      "evidence": ".bench/evidence-r3-video-chat.log"
     },
     "aiChatPerformance": {
       "command": "pwsh -NoProfile -File tests/logic-ai-chat-performance.ps1 -ExePath .\\枫语幕.exe",
       "exitCode": 0,
-      "evidence": ".bench/evidence-r2-ai-chat-performance.log"
+      "evidence": ".bench/evidence-r3-ai-chat-performance.log"
     },
     "regionMouseLifecycle": {
       "command": "pwsh -NoProfile -File tests/logic-chat-region-mouse-lifecycle.ps1 -ExePath .\\枫语幕.exe",
       "exitCode": 0,
-      "evidence": ".bench/evidence-r2-region-mouse-lifecycle.log"
+      "evidence": ".bench/evidence-r3-region-mouse-lifecycle.log"
     }
   },
   "preExistingEnvironmentFailures": [
@@ -115,16 +127,28 @@
       "exitCode": 1,
       "area": "qq-220.0 sweep assertion",
       "reason": "This host's Windows OCR reads the first row without a colon (Xx.AzNKiDxX bullet repot); ParseChatLines text parsing is unchanged, only row-index output was added",
-      "evidence": ".bench/evidence-r2-ai-chat-accuracy.log"
+      "evidence": ".bench/evidence-r3-ai-chat-accuracy.log"
     },
     {
       "test": "tests/logic-chat-region-first-use.ps1",
       "exitCode": 1,
       "area": "stale source string",
       "reason": "The asserted RecognitionWasCancelled(automatic, requestId, generation) text is absent on the baseline too; unrelated to CHAT-001",
-      "evidence": ".bench/evidence-r2-region-first-use.log"
+      "evidence": ".bench/evidence-r3-region-first-use.log"
     }
   ],
+  "duplicateGrowthEvidence": {
+    "sameChannelNormal1to2": "enqueued new index 1",
+    "sameChannelNormal2to3": "enqueued new index 2",
+    "sameChannelParty1to2": "enqueued new index 1",
+    "sameChannelParty2to3": "enqueued new index 2",
+    "sameChannelMegaphone1to2": "enqueued new index 1",
+    "sameChannelMegaphone2to3": "enqueued new index 2",
+    "crossChannelSameText": "enqueued new channel row",
+    "retainedOldRowAfterScroll": "only new other row enqueued",
+    "staticFrame": "no duplicate published",
+    "candidateAwareTieBreak": true
+  },
   "identityEvidence": {
     "exactNicknameAndBodyRequired": true,
     "fuzzyNicknameNeverExact": true,
@@ -139,10 +163,12 @@
   "rowCarryEvidence": {
     "parsedRowIndices": true,
     "orderedPreviousCurrentAlignment": true,
+    "candidateAwareTieBreak": true,
     "retainedDuplicateSuppressedAfterScroll": true,
-    "retainedOnlyCandidateDropped": true,
+    "sameChannelDuplicateGrowthDelivered": true,
     "newSameTextCrossChannelDelivered": true,
     "trueSourceChangeDelivered": true,
+    "staticFrameNoDuplicatePublish": true,
     "firstMiddleLastDistinct": true,
     "asyncOutOfOrderPublication": true,
     "priorOccurrenceRerefindRemoved": true,
@@ -168,8 +194,8 @@
     "fastOcrCallsPerCapture": 1,
     "strongOcrCallsPerCapture": 1,
     "aiTranslateCallSites": 2,
-    "windowsOcrElapsedMsRange": [91, 102],
-    "pixelEvidenceMsPerLine": 2.56
+    "windowsOcrElapsedMsRange": [85, 103],
+    "pixelEvidenceMsPerLine": 2.32
   },
   "unverified": [
     "User's latest pink/blue interleaved screenshot was not present in this workspace; desktop private replay required",
