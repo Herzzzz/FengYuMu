@@ -1,0 +1,9 @@
+{
+  "taskId": "FONT-001",
+  "state": "READY_FOR_RELAY",
+  "cloudAnalysisComplete": true,
+  "implementationChanged": false,
+  "dshReceiptConfirmed": false,
+  "nativeFontChecks": "UNVERIFIED",
+  "relatedTask": "CHAT-001"
+}
