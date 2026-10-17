@@ -41,7 +41,7 @@ $constructor = $offlineType.GetConstructor($instance, $null,
 $form = $constructor.Invoke([object[]]@($null, [string]$repoRoot))
 try {
     $timer = $offlineType.GetField('timer', $instance).GetValue($form)
-    if ($timer.Interval -ne 140) { throw "AI聊天轮询不是140ms：$($timer.Interval)" }
+    if ($timer.Interval -ne 117) { throw "AI聊天轮询不是117ms：$($timer.Interval)" }
 
     $remember = $offlineType.GetMethod('RememberTranslation', $instance)
     foreach ($index in 0..299) {
@@ -64,7 +64,7 @@ if($parameters.Count -ne 5 -or $parameters[4].ParameterType -ne [Threading.Cance
 $source = Get-Content (Join-Path $repoRoot 'src\OfflineChat.cs') -Raw -Encoding UTF8
 $overlaySource = Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -Encoding UTF8
 foreach ($required in @(
-    'timer.Interval = 140',
+    'timer.Interval = 117',
     'TranslateWithPreferredAiAsync',
     'firstLiveCapture = true',
     'int first = Math.Max(0, lines.Count - 2)',
@@ -76,4 +76,4 @@ if (-not $overlaySource.Contains('PrepareForOcr(bitmap, out scale, false, 1800.0
     throw 'AI聊天OCR没有保留实图胜出的1800紧裁缩放'
 }
 
-Write-Output 'AI实时翻译：140ms监听、1800实图优选紧裁OCR、联网请求可取消、离线推理已移除、首帧仅最新2条、OCR变体短时去重、有界待处理队列、256条缓存、普通/超级喇叭实帧分类通过'
+Write-Output 'AI实时翻译：117ms监听、1800实图优选紧裁OCR、联网请求可取消、离线推理已移除、首帧仅最新2条、OCR变体短时去重、有界待处理队列、256条缓存、普通/超级喇叭实帧分类通过'

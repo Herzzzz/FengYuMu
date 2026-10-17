@@ -2495,6 +2495,7 @@ namespace MapleOverlay
     {
         internal string Text = "";
         internal ChatVisualStyle Style = ChatVisualStyle.Default;
+        internal ChatColorSample Evidence { get; set; }
         internal RectangleF Bounds = RectangleF.Empty;
     }
 
@@ -2518,26 +2519,200 @@ namespace MapleOverlay
 
         internal ChatVisualStyle FindStyle(string parsedLine)
         {
+            return FindStyle(parsedLine, 0);
+        }
+
+        internal ChatVisualStyle FindStyle(string parsedLine, int occurrence)
+        {
             string parsed = Normalize(parsedLine);
             if (parsed.Length == 0) return ChatVisualStyle.Default;
-            ChatCaptureLine best = null;
-            int bestScore = 0;
+            if (occurrence < 0) occurrence = 0;
+            string parsedSpeaker, parsedMessage;
+            SplitSpeakerText(parsedLine, out parsedSpeaker, out parsedMessage);
+            List<ChatLineMatch> matches = new List<ChatLineMatch>();
             foreach (ChatCaptureLine candidate in Lines)
             {
-                string source = Normalize(candidate.Text);
-                if (source.Length == 0) continue;
-                int score = source.IndexOf(parsed, StringComparison.Ordinal) >= 0 ||
-                    parsed.IndexOf(source, StringComparison.Ordinal) >= 0
-                    ? Math.Min(source.Length, parsed.Length)
-                    : Math.Max(SharedPrefix(source, parsed), LongestSharedRun(source, parsed));
-                if (score > bestScore) { bestScore = score; best = candidate; }
+                int score = MatchScore(parsedLine, parsedSpeaker, parsedMessage, candidate);
+                if (score <= 0) continue;
+                matches.Add(new ChatLineMatch { Score = score, Line = candidate });
             }
-            if (best != null && bestScore >= Math.Min(5, parsed.Length))
+            if (matches.Count == 0) return ChatVisualStyle.Default;
+            matches.Sort(delegate(ChatLineMatch left, ChatLineMatch right) {
+                int byScore = right.Score.CompareTo(left.Score);
+                if (byScore != 0) return byScore;
+                return left.Line.Bounds.Top.CompareTo(right.Line.Bounds.Top);
+            });
+            // A wrapped continuation of the same message must not become a second
+            // source when two speakers post identical text. Only the best-scoring
+            // physical rows are occurrence candidates.
+            int bestScore = matches[0].Score;
+            List<ChatLineMatch> top = new List<ChatLineMatch>();
+            foreach (ChatLineMatch match in matches)
+                if (match.Score >= bestScore - 400) top.Add(match);
+            if (top.Count == 0) return ChatVisualStyle.Default;
+            if (occurrence >= top.Count) occurrence = top.Count - 1;
+            ChatVisualStyle style = top[occurrence].Line.Style;
+            return style == null ? ChatVisualStyle.Default : style;
+        }
+
+        internal List<ChatVisualStyle> FindStyles(IList<string> parsedLines)
+        {
+            List<ChatVisualStyle> result = new List<ChatVisualStyle>();
+            Dictionary<string, int> seen = new Dictionary<string, int>(StringComparer.Ordinal);
+            if (parsedLines != null)
+                foreach (string line in parsedLines)
+                {
+                    string key = Normalize(line);
+                    int occurrence;
+                    if (!seen.TryGetValue(key, out occurrence)) occurrence = 0;
+                    seen[key] = occurrence + 1;
+                    result.Add(FindStyle(line, occurrence));
+                }
+            return result;
+        }
+
+        private sealed class ChatLineMatch
+        {
+            internal int Score;
+            internal ChatCaptureLine Line;
+        }
+
+        private static int MatchScore(string parsedLine, string parsedSpeaker,
+            string parsedMessage, ChatCaptureLine candidate)
+        {
+            if (candidate == null) return 0;
+            string candidateSpeaker, candidateMessage;
+            SplitSpeakerText(candidate.Text, out candidateSpeaker, out candidateMessage);
+            if (candidateSpeaker.Length > 0 && IsNoticeSpeaker(candidateSpeaker))
+                candidateSpeaker = "";
+            if (parsedSpeaker.Length > 0 && IsNoticeSpeaker(parsedSpeaker))
+                parsedSpeaker = "";
+            if (parsedSpeaker.Length > 0)
             {
-                ChatVisualStyle style = best.Style ?? ChatVisualStyle.Default;
-                return style;
+                // The source row must contain the same speaker. A shared sentence
+                // body alone can never associate one player's row with another's.
+                if (candidateSpeaker.Length == 0) return 0;
+                if (!SameSpeaker(SpeakerCore(parsedSpeaker), SpeakerCore(candidateSpeaker)))
+                    return 0;
             }
-            return ChatVisualStylePolicy.FromSample(parsedLine, Color.Empty, Color.Empty, false);
+            string parsedBody = Normalize(parsedMessage);
+            string candidateBody = Normalize(candidateMessage);
+            if (parsedBody.Length == 0 || candidateBody.Length == 0) return 0;
+            if (parsedBody == candidateBody) return 10000 + parsedBody.Length;
+            int shortest = Math.Min(parsedBody.Length, candidateBody.Length);
+            if (shortest >= 6 &&
+                (parsedBody.IndexOf(candidateBody, StringComparison.Ordinal) >= 0 ||
+                 candidateBody.IndexOf(parsedBody, StringComparison.Ordinal) >= 0))
+                return 6000 + shortest;
+            int minimumPrefix = Math.Max(6, (int)Math.Ceiling(shortest * 0.6));
+            int prefix = SharedPrefix(parsedBody, candidateBody);
+            if (prefix >= minimumPrefix) return 4000 + prefix;
+            // OCR jitter that preserves the same speaker and most of the same body
+            // is still one message; a five-character coincidence is not.
+            if (parsedSpeaker.Length > 0 && SameOcrMessage(parsedLine, candidate.Text))
+                return 3000 + shortest;
+            return 0;
+        }
+
+        private static bool SameOcrMessage(string left, string right)
+        {
+            string leftSpeaker, leftMessage, rightSpeaker, rightMessage;
+            SplitSpeakerText(left, out leftSpeaker, out leftMessage);
+            SplitSpeakerText(right, out rightSpeaker, out rightMessage);
+            if (leftSpeaker.Length > 0 && rightSpeaker.Length > 0 &&
+                !SameSpeaker(SpeakerCore(leftSpeaker), SpeakerCore(rightSpeaker))) return false;
+            string a = Normalize(leftMessage), b = Normalize(rightMessage);
+            if (a.Length == 0 || b.Length == 0) return false;
+            if (a == b) return true;
+            int longest = Math.Max(a.Length, b.Length), shortest = Math.Min(a.Length, b.Length);
+            if (shortest < 8 || longest - shortest > Math.Max(5, longest / 2)) return false;
+            int limit = Math.Max(3, longest / 4);
+            if (EditDistanceWithin(a, b, limit)) return true;
+            return SharedPrefix(a, b) >= Math.Min(9, shortest);
+        }
+
+        private static bool SameSpeaker(string left, string right)
+        {
+            string a = SpeakerIdentity(left), b = SpeakerIdentity(right);
+            if (a.Length == 0 || b.Length == 0) return false;
+            if (a == b) return true;
+            int shortest = Math.Min(a.Length, b.Length);
+            if (shortest < 4 || Math.Abs(a.Length - b.Length) > 2) return false;
+            if ((a.StartsWith(b, StringComparison.Ordinal) || b.StartsWith(a, StringComparison.Ordinal)) &&
+                Math.Abs(a.Length - b.Length) <= 2) return true;
+            return EditDistanceWithin(a, b, 1);
+        }
+
+        private static string SpeakerIdentity(string value)
+        {
+            return Regex.Replace((value ?? "").ToLowerInvariant(),
+                @"[^a-z0-9\u3400-\u9fff]+", "").Replace('0', 'o').Replace('1', 'l');
+        }
+
+        private static bool EditDistanceWithin(string left, string right, int limit)
+        {
+            if (Math.Abs(left.Length - right.Length) > limit) return false;
+            int[] previous = new int[right.Length + 1], current = new int[right.Length + 1];
+            for (int j = 0; j <= right.Length; j++) previous[j] = j;
+            for (int i = 1; i <= left.Length; i++)
+            {
+                current[0] = i; int rowMinimum = current[0];
+                for (int j = 1; j <= right.Length; j++)
+                {
+                    int cost = left[i - 1] == right[j - 1] ? 0 : 1;
+                    current[j] = Math.Min(Math.Min(current[j - 1] + 1, previous[j] + 1),
+                        previous[j - 1] + cost);
+                    rowMinimum = Math.Min(rowMinimum, current[j]);
+                }
+                if (rowMinimum > limit) return false;
+                int[] swap = previous; previous = current; current = swap;
+            }
+            return previous[right.Length] <= limit;
+        }
+
+        private static bool IsNoticeSpeaker(string speaker)
+        {
+            return Regex.IsMatch((speaker ?? "").Trim(),
+                @"^(?:system|notice|系统|系统公告|公告)$", RegexOptions.IgnoreCase);
+        }
+
+        private static string StripChannelBadge(string speaker)
+        {
+            return Regex.Replace((speaker ?? "").Trim(),
+                @"\s+(?:CH|SH|C)[A-Z0-9@±'’]{0,6}\s*$", "",
+                RegexOptions.IgnoreCase).Trim();
+        }
+
+        private static string SpeakerCore(string speaker)
+        {
+            string stripped = StripChannelBadge(speaker);
+            // GMS character names contain no spaces. OCR often appends the channel
+            // badge/ear glyph to the name (BeelsFad«HÖl 0); the leading name token is
+            // the stable identity in that case.
+            Match name = Regex.Match(stripped, @"^([A-Za-z][A-Za-z0-9_]{1,23})");
+            if (name.Success) return name.Groups[1].Value;
+            return stripped;
+        }
+
+        private static void SplitSpeakerText(string line, out string speaker, out string message)
+        {
+            string text = line ?? "";
+            int separator = -1;
+            foreach (char marker in new char[] { ':', '：', '•', '·' })
+            {
+                int at = text.IndexOf(marker);
+                if (at > 0 && (separator < 0 || at < separator)) separator = at;
+            }
+            if (separator > 0)
+            {
+                speaker = text.Substring(0, separator).Trim();
+                message = text.Substring(separator + 1).Trim();
+            }
+            else
+            {
+                speaker = "";
+                message = text.Trim();
+            }
         }
 
         private static string Normalize(string value)
@@ -2554,25 +2729,6 @@ namespace MapleOverlay
             int count = 0;
             while (count < maximum && left[count] == right[count]) count++;
             return count;
-        }
-
-        private static int LongestSharedRun(string left, string right)
-        {
-            if (left.Length == 0 || right.Length == 0) return 0;
-            int[] previous = new int[right.Length + 1];
-            int[] current = new int[right.Length + 1];
-            int best = 0;
-            for (int i = 1; i <= left.Length; i++)
-            {
-                for (int j = 1; j <= right.Length; j++)
-                {
-                    current[j] = left[i - 1] == right[j - 1] ? previous[j - 1] + 1 : 0;
-                    if (current[j] > best) best = current[j];
-                }
-                int[] swap = previous; previous = current; current = swap;
-                Array.Clear(current, 0, current.Length);
-            }
-            return best;
         }
     }
 
@@ -3426,14 +3582,27 @@ namespace MapleOverlay
             report.Append("elapsed_ms=").Append(stopwatch.ElapsedMilliseconds)
                 .Append(" lines=").Append(frame.Lines.Count).AppendLine();
             foreach (ChatCaptureLine line in frame.Lines)
+            {
+                ChatColorSample evidence = line.Evidence ?? new ChatColorSample();
                 report.Append(line.Style.HasBackground ? "BAND" : "TEXT")
                     .Append('/').Append(line.Style.Kind)
                     .Append('/').Append(line.Style.Category)
+                    .Append(" bounds=").Append(line.Bounds.X.ToString("0", CultureInfo.InvariantCulture))
+                    .Append(',').Append(line.Bounds.Y.ToString("0", CultureInfo.InvariantCulture))
+                    .Append(',').Append(line.Bounds.Width.ToString("0", CultureInfo.InvariantCulture))
+                    .Append(',').Append(line.Bounds.Height.ToString("0", CultureInfo.InvariantCulture))
+                    .Append(" band=").Append(evidence.Band)
+                    .Append(" cov=").Append(evidence.Coverage.ToString("0.000", CultureInfo.InvariantCulture))
+                    .Append(" row=").Append(evidence.RowCoverage.ToString("0.000", CultureInfo.InvariantCulture))
+                    .Append(" inkMatch=").Append(evidence.InkMatchesBand)
+                    .Append(" edge=").Append(evidence.Boundary)
+                    .Append(" inkPixels=").Append(evidence.InkPixels)
                     .Append(" fg=").Append(line.Style.ForeColor.R).Append(',')
                     .Append(line.Style.ForeColor.G).Append(',').Append(line.Style.ForeColor.B)
                     .Append(" bg=").Append(line.Style.BackColor.R).Append(',')
                     .Append(line.Style.BackColor.G).Append(',').Append(line.Style.BackColor.B)
                     .Append(" | ").AppendLine(line.Text);
+            }
             foreach (string parsed in OfflineChatForm.ParseChatLines(frame.PhysicalLineText()))
             {
                 ChatVisualStyle parsedStyle = frame.FindStyle(parsed);
@@ -4479,9 +4648,13 @@ namespace MapleOverlay
                     RectangleF sourceBounds = scale <= 0 ? RectangleF.Empty :
                         new RectangleF(raw.X / scale, raw.Y / scale,
                             raw.Width / scale, raw.Height / scale);
+                    ChatColorSample evidence;
+                    ChatVisualStyle style = SampleChatVisualStyle(bitmap, line, scale,
+                        out evidence);
                     frame.Lines.Add(new ChatCaptureLine {
                         Text = text,
-                        Style = SampleChatVisualStyle(bitmap, line, scale),
+                        Style = style,
+                        Evidence = evidence,
                         Bounds = sourceBounds
                     });
                 }
@@ -4497,7 +4670,14 @@ namespace MapleOverlay
             string fastIdentity = ChatFrameIdentity(frame);
             if (fastIdentity.Length > 0 && fastIdentity == lastFastChatIdentity &&
                 lastReviewedChatFrame != null)
-                return lastReviewedChatFrame;
+            {
+                // The identity is deliberately text-only so a static frame does not pay
+                // for a second OCR pass. Source colour, however, is not in the text:
+                // identical words under another channel band must not inherit the
+                // previous frame's category. Keep the fresh per-line evidence instead.
+                if (FramesShareStyles(frame, lastReviewedChatFrame)) return lastReviewedChatFrame;
+                return frame;
+            }
 
             StrongOcrResult strong = await strongOcr.RecognizeAsync(bitmap);
             cancellationToken.ThrowIfCancellationRequested();
@@ -4597,10 +4777,14 @@ namespace MapleOverlay
                 if (rowText.Length == 0) continue;
                 if (all.Length > 0) all.AppendLine();
                 all.Append(rowText);
+                ChatColorSample evidence;
+                ChatVisualStyle rowStyle = SampleChatVisualStyle(bitmap, row.Bounds, rowText,
+                    null, out evidence);
                 frame.Lines.Add(new ChatCaptureLine {
                     Text = rowText,
                     Bounds = row.Bounds,
-                    Style = SampleChatVisualStyle(bitmap, row.Bounds, rowText)
+                    Style = rowStyle,
+                    Evidence = evidence
                 });
             }
             frame.Text = all.ToString();
@@ -4692,6 +4876,20 @@ namespace MapleOverlay
             return Math.Max(0, score);
         }
 
+        private static bool FramesShareStyles(ChatCaptureFrame left, ChatCaptureFrame right)
+        {
+            if (left == null || right == null || left.Lines.Count != right.Lines.Count) return false;
+            for (int index = 0; index < left.Lines.Count; index++)
+            {
+                ChatVisualStyle a = left.Lines[index].Style;
+                ChatVisualStyle b = right.Lines[index].Style;
+                if (a == null || b == null) return false;
+                if (a.Category != b.Category || a.Kind != b.Kind ||
+                    a.HasBackground != b.HasBackground) return false;
+            }
+            return true;
+        }
+
         private static string ChatFrameIdentity(ChatCaptureFrame frame)
         {
             StringBuilder value = new StringBuilder();
@@ -4720,20 +4918,24 @@ namespace MapleOverlay
             internal double Coverage;
         }
 
-        private static ChatVisualStyle SampleChatVisualStyle(Bitmap bitmap, OcrLine line, float scale)
+        private static ChatVisualStyle SampleChatVisualStyle(Bitmap bitmap, OcrLine line, float scale,
+            out ChatColorSample evidence)
         {
+            evidence = new ChatColorSample();
             RectangleF raw = GetOcrLineBounds(line);
             if (raw.IsEmpty || scale <= 0)
                 return ChatVisualStylePolicy.FromSample(line.Text, Color.Empty, Color.Empty, false);
             List<RectangleF> ink=new List<RectangleF>();
             foreach(OcrWord word in line.Words){RectangleF r=word.BoundingRect;ink.Add(new RectangleF(r.X/scale,r.Y/scale,r.Width/scale,r.Height/scale));}
             return SampleChatVisualStyle(bitmap, new RectangleF(raw.X / scale, raw.Y / scale,
-                raw.Width / scale, raw.Height / scale), line.Text,ink);
+                raw.Width / scale, raw.Height / scale), line.Text,ink, out evidence);
         }
 
         private static ChatVisualStyle SampleChatVisualStyle(Bitmap bitmap,
-            RectangleF sourceBounds, string lineText, IList<RectangleF> inkWords = null)
+            RectangleF sourceBounds, string lineText, IList<RectangleF> inkWords,
+            out ChatColorSample evidence)
         {
+            evidence = new ChatColorSample();
             if (sourceBounds.IsEmpty)
                 return ChatVisualStylePolicy.FromSample(lineText, Color.Empty, Color.Empty, false);
             Rectangle text = Rectangle.FromLTRB((int)Math.Floor(sourceBounds.Left),
@@ -4743,9 +4945,11 @@ namespace MapleOverlay
             if (text.Width < 2 || text.Height < 2)
                 return ChatVisualStylePolicy.FromSample(lineText, Color.Empty, Color.Empty, false);
 
-            Color foreground,background;bool band;
-            ChatColorEvidence.Sample(ReadSimplePixels(bitmap),bitmap.Width,bitmap.Height,text,inkWords,out foreground,out background,out band);
-            return ChatVisualStylePolicy.FromSample(lineText,foreground,background,band);
+            ChatColorSample sample = ChatColorEvidence.Analyze(ReadSimplePixels(bitmap), bitmap.Width,
+                bitmap.Height, text, inkWords);
+            evidence = sample;
+            return ChatVisualStylePolicy.FromSample(lineText, sample.Foreground,
+                sample.Background, sample.IsBroadcastBand);
         }
 
         private static DominantColorSample SampleDominantColor(Bitmap bitmap, Rectangle area,

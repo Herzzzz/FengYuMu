@@ -84,14 +84,14 @@ $chatSource = Get-Content (Join-Path $repoRoot 'src\OfflineChat.cs') -Raw -Encod
 $forms = Get-Content (Join-Path $repoRoot 'src\SimpleForms.cs') -Raw -Encoding UTF8
 foreach ($required in @(
     'internal async Task<ChatCaptureFrame> CaptureChatAsync',
-    'SampleChatVisualStyle(bitmap, line, scale)',
+    'SampleChatVisualStyle(bitmap, line, scale',
     'if (shuttingDown || !visibleTranslation) return;',
     'return chatTranslator.RestoreFloatingWindowFromTray();')) {
     if (-not $overlaySource.Contains($required)) { throw "AI聊天样式采样接入缺少：$required" }
 }
 foreach ($required in @(
     'Queue<PendingChatLine>',
-    'Style = capture.FindStyle(line)',
+    'capture.FindStyle(line,',
     'floatingWindow.AppendTranslation(record.Translation, visualStyle)',
     'internal void ApplyFloatingWindow(bool enabled)',
     'HasPendingTranslationWork',

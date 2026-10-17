@@ -32,7 +32,8 @@ namespace MapleOverlay
         System = 6,
         Notice = 7,
         Megaphone = 8,
-        Manual = 9
+        Manual = 9,
+        Unknown = 10
     }
 
     internal sealed class ChatVisualStyle
@@ -55,7 +56,7 @@ namespace MapleOverlay
                     ForeColor = Color.FromArgb(241, 245, 249),
                     BackColor = Color.FromArgb(18, 18, 22),
                     HasBackground = false,
-                    Category = ChatSourceCategory.Normal
+                    Category = ChatSourceCategory.Unknown
                 };
             }
         }
@@ -97,12 +98,19 @@ namespace MapleOverlay
                 ForeColor = foreground,
                 BackColor = background,
                 HasBackground = broadcast,
-                Category = ClassifySource(sourceText, sampledForeground, kind)
+                Category = ClassifySourceWithBackground(sourceText, sampledForeground,
+                    sampledBackground, kind)
             };
         }
 
         internal static ChatSourceCategory ClassifySource(string sourceText, Color foreground,
             ChatVisualKind visualKind)
+        {
+            return ClassifySourceWithBackground(sourceText, foreground, Color.Empty, visualKind);
+        }
+
+        internal static ChatSourceCategory ClassifySourceWithBackground(string sourceText, Color foreground,
+            Color background, ChatVisualKind visualKind)
         {
             string text = StripTimePrefix(sourceText).TrimStart();
             if (Regex.IsMatch(text, @"^(\[\s*notice\s*\]|notice\s*[:：]|公告\s*[:：])",
@@ -118,9 +126,24 @@ namespace MapleOverlay
             if (visualKind == ChatVisualKind.Megaphone || visualKind == ChatVisualKind.SuperMegaphone)
                 return ChatSourceCategory.Megaphone;
 
+            bool hasForeground = !foreground.IsEmpty;
+            bool hasBackground = !background.IsEmpty;
+            bool coloredBackground = hasBackground && IsLikelyColoredBand(background);
+
+            // A near-neutral stroke carries no channel hue. Treating it through the
+            // nearest saturated anchor made dark grey look like Guild purple.
+            if (hasForeground)
+            {
+                int chroma = Math.Max(foreground.R, Math.Max(foreground.G, foreground.B)) -
+                    Math.Min(foreground.R, Math.Min(foreground.G, foreground.B));
+                if (chroma < 24)
+                    return Luminance(foreground) >= 150
+                        ? ChatSourceCategory.Normal : ChatSourceCategory.Unknown;
+            }
+
             // GMS chat colors stay stable while antialiasing, UI scale and capture scaling
             // shift individual pixels. Classify by the nearest color family, not one exact RGB.
-            if (!foreground.IsEmpty)
+            if (hasForeground)
             {
                 Color[] anchors = {
                     Color.FromArgb(235,235,235),Color.FromArgb(255,204,102),Color.FromArgb(235,151,62),
@@ -143,10 +166,34 @@ namespace MapleOverlay
                     if(!distances.TryGetValue(categories[i],out previous)||distance<previous)distances[categories[i]]=distance;}
                 int best=Int32.MaxValue,second=Int32.MaxValue;ChatSourceCategory winner=ChatSourceCategory.Normal;
                 foreach(KeyValuePair<ChatSourceCategory,int> item in distances)if(item.Value<best){second=best;best=item.Value;winner=item.Key;}else second=Math.Min(second,item.Value);
-                if(best<=5200&&second-best>=650)return winner;
+                if(best<=5200&&second-best>=650)
+                {
+                    // Dark pink/blue strokes are the broadcast fill on top of a coloured
+                    // scene. They must not be re-read as a nearby System/Guild anchor;
+                    // only a confirmed band may promote them to Megaphone.
+                    if (coloredBackground && IsDarkBroadcastStroke(foreground))
+                        return ChatSourceCategory.Unknown;
+                    return winner;
+                }
             }
-            return visualKind == ChatVisualKind.System
-                ? ChatSourceCategory.System : ChatSourceCategory.Normal;
+            // A coloured scene without a confirmed band cannot prove Normal, System
+            // or a personal channel. Keep the message in All and record it as Unknown.
+            if (coloredBackground) return ChatSourceCategory.Unknown;
+            if (visualKind == ChatVisualKind.System) return ChatSourceCategory.System;
+            if (!hasForeground && LooksLikePlayerChatLine(text))
+                return ChatSourceCategory.Normal;
+            return ChatSourceCategory.Unknown;
+        }
+
+        private static bool IsDarkBroadcastStroke(Color color)
+        {
+            if (color.IsEmpty) return false;
+            int maximum = Math.Max(color.R, Math.Max(color.G, color.B));
+            int minimum = Math.Min(color.R, Math.Min(color.G, color.B));
+            if (maximum > 175 || maximum - minimum < 28) return false;
+            bool pink = color.R - color.G >= 34 && color.B - color.G >= 10;
+            bool blue = color.B - color.R >= 22 && color.G - color.R >= 4;
+            return pink || blue;
         }
 
         private static bool HasChannelPrefix(string text, string english, string chinese)
@@ -724,6 +771,7 @@ namespace MapleOverlay
                 case ChatSourceCategory.System: return "系统";
                 case ChatSourceCategory.Notice: return "公告";
                 case ChatSourceCategory.Megaphone: return "喇叭";
+                case ChatSourceCategory.Unknown: return "未识别";
                 default: return "普通";
             }
         }

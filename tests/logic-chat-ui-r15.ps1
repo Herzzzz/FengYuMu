@@ -1,5 +1,7 @@
 ﻿$ErrorActionPreference='Stop'
-$r=Split-Path -Parent $PSScriptRoot;$work='/workspace/work/release-v4.0'
+$r=Split-Path -Parent $PSScriptRoot
+$work=Join-Path $r '.bench/chat-ui-r15'
+New-Item -ItemType Directory -Force -Path $work | Out-Null
 Add-Type -Path (Join-Path $PSHOME 'Microsoft.CodeAnalysis.dll');Add-Type -Path (Join-Path $PSHOME 'Microsoft.CodeAnalysis.CSharp.dll')
 $simple=[Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree]::ParseText([IO.File]::ReadAllText((Join-Path $r 'src/SimpleForms.cs'))).GetRoot()
 $main=[Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree]::ParseText([IO.File]::ReadAllText((Join-Path $r 'src/MapleOverlay.cs'))).GetRoot()

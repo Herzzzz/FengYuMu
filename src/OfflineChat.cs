@@ -982,6 +982,7 @@ namespace MapleOverlay
         private readonly ChatFrameContinuity chatContinuity = new ChatFrameContinuity();
         private DateTime lastChatDiagnosticUtc;
         private List<string> previousChatFrame = new List<string>();
+        private List<ChatVisualStyle> previousChatStyles = new List<ChatVisualStyle>();
         private readonly List<List<string>> recentChatFrames = new List<List<string>>();
         private List<KeyValuePair<string, string>> glossaryEntries = new List<KeyValuePair<string, string>>();
         private List<KeyValuePair<string, string>> outboundGlossaryEntries =
@@ -1437,7 +1438,7 @@ namespace MapleOverlay
             chatRegion = region;
             if (changed)
             {
-                previousChatFrame.Clear(); chatContinuity.Reset();
+                previousChatFrame.Clear(); previousChatStyles.Clear(); chatContinuity.Reset();
                 recentChatFrames.Clear();
                 pendingChatLines.Clear();
             }
@@ -1449,7 +1450,7 @@ namespace MapleOverlay
         internal void OnCaptureGeometryChanged(Rectangle region)
         {
             RenewChatCancellation();
-            previousChatFrame.Clear(); chatContinuity.Reset(); recentChatFrames.Clear(); pendingChatLines.Clear();
+            previousChatFrame.Clear(); previousChatStyles.Clear(); chatContinuity.Reset(); recentChatFrames.Clear(); pendingChatLines.Clear();
             firstLiveCapture = true;
             chatRegion = region;
             if (!IsDisposed) status.Text = "游戏窗口变化，已取消旧画面；聊天区域将自动同步";
@@ -1577,7 +1578,7 @@ namespace MapleOverlay
                     }
                     chatRegion = selector.SelectedScreenRegion;
                     ChatRegionSettings.SaveManual(chatRegion, game);
-                    previousChatFrame.Clear(); chatContinuity.Reset(); recentChatFrames.Clear(); pendingChatLines.Clear();
+                    previousChatFrame.Clear(); previousChatStyles.Clear(); chatContinuity.Reset(); recentChatFrames.Clear(); pendingChatLines.Clear();
                     status.Text = "聊天区已绑定 " + chatRegion.Width + "×" + chatRegion.Height + "｜框内AI翻译，F8跳过";
                 });
             }
@@ -1610,7 +1611,7 @@ namespace MapleOverlay
             RenewChatCancellation();
             droppedChatLines = 0;
             liveButton.Text = "停止实时翻译";
-            previousChatFrame.Clear(); chatContinuity.Reset();
+            previousChatFrame.Clear(); previousChatStyles.Clear(); chatContinuity.Reset();
             recentChatFrames.Clear();
             pendingChatLines.Clear();
             firstLiveCapture = true;
@@ -1647,9 +1648,15 @@ namespace MapleOverlay
                 // OcrResult.Text may flatten unrelated visual rows into one sentence.
                 // Preserve the OCR engine's physical line boundaries for chat parsing.
                 List<string> lines = ParseChatLines(capture.PhysicalLineText());
-                List<string> newLines = GetNewChatLines(previousChatFrame, lines);
+                // Resolve every parsed message against its own physical OCR row before
+                // frame differencing. The same words under a different channel band are
+                // a different source and must not be treated as the old message.
+                List<ChatVisualStyle> lineStyles = capture.FindStyles(lines);
+                List<string> priorFrame = previousChatFrame;
+                List<ChatVisualStyle> priorStyles = previousChatStyles;
+                List<string> newLines = GetNewChatLines(priorFrame, lines);
                 bool advanceFrame;
-                newLines = chatContinuity.Resolve(previousChatFrame, lines, newLines, SameChatLine, out advanceFrame);
+                newLines = chatContinuity.Resolve(priorFrame, lines, newLines, SameChatLine, out advanceFrame);
                 if (firstLiveCapture && lines.Count > 0)
                 {
                     firstLiveCapture = false;
@@ -1657,20 +1664,33 @@ namespace MapleOverlay
                     newLines = lines.GetRange(first, lines.Count - first);
                 }
                 newLines = SuppressRecentOcrReappearances(recentChatFrames,
-                    previousChatFrame, lines, newLines);
+                    priorFrame, lines, newLines);
+                bool sourceChanged;
+                newLines = AddSourceChangedChatLines(priorFrame, priorStyles, lines, lineStyles,
+                    newLines, out sourceChanged);
+                if (sourceChanged) advanceFrame = true;
                 if (advanceFrame)
                 {
                     previousChatFrame = lines;
+                    previousChatStyles = lineStyles;
                     recentChatFrames.Add(new List<string>(lines));
                     while (recentChatFrames.Count > 3) recentChatFrames.RemoveAt(0);
                 }
                 int queuedBefore = pendingChatLines.Count;
+                Dictionary<string, int> styleOccurrences =
+                    new Dictionary<string, int>(StringComparer.Ordinal);
                 // Frame differencing already preserves genuine repeated messages while
                 // suppressing a static OCR frame. Text-based queue filtering would swallow
                 // a real duplicate sent while the first copy is still being translated.
                 foreach (string line in newLines)
                 {
-                    ChatVisualStyle visualStyle = capture.FindStyle(line);
+                    string styleKey = ChatIdentity(line);
+                    int priorOccurrence = CountSimilarChatLines(priorFrame, line);
+                    int seenOccurrence;
+                    if (!styleOccurrences.TryGetValue(styleKey, out seenOccurrence)) seenOccurrence = 0;
+                    styleOccurrences[styleKey] = seenOccurrence + 1;
+                    ChatVisualStyle visualStyle = capture.FindStyle(line,
+                        priorOccurrence + seenOccurrence);
                     if (!IsUsefulChatLine(line) ||
                         IsIgnoredSystemBroadcast(line, visualStyle)) continue;
                     pendingChatLines.Enqueue(new PendingChatLine {
@@ -1941,6 +1961,81 @@ namespace MapleOverlay
             return count;
         }
 
+        // A scroll can replace one channel's copy of a sentence with the same
+        // sentence from another channel. Text differencing alone sees no change;
+        // compare the per-row source evidence as well and deliver that occurrence.
+        internal static List<string> AddSourceChangedChatLines(List<string> previous,
+            List<ChatVisualStyle> previousStyles, List<string> current,
+            List<ChatVisualStyle> currentStyles, List<string> candidates, out bool changed)
+        {
+            changed = false;
+            List<string> result = new List<string>();
+            if (candidates != null) result.AddRange(candidates);
+            if (previous == null || current == null || previous.Count == 0 || current.Count == 0 ||
+                previousStyles == null || currentStyles == null ||
+                previousStyles.Count != previous.Count || currentStyles.Count != current.Count)
+                return result;
+
+            bool[] baseline = new bool[current.Count];
+            foreach (string candidate in result)
+            {
+                string identity = ChatIdentity(candidate);
+                for (int index = 0; index < current.Count; index++)
+                {
+                    if (baseline[index]) continue;
+                    if (ChatIdentity(current[index]) != identity) continue;
+                    baseline[index] = true;
+                    break;
+                }
+            }
+            // Occurrence order follows the physical row order, so duplicate posts
+            // keep one style each instead of inheriting the first occurrence.
+            Dictionary<string, List<int>> previousOccurrences =
+                new Dictionary<string, List<int>>(StringComparer.Ordinal);
+            for (int index = 0; index < previous.Count; index++)
+            {
+                string identity = ChatIdentity(previous[index]);
+                List<int> list;
+                if (!previousOccurrences.TryGetValue(identity, out list))
+                {
+                    list = new List<int>();
+                    previousOccurrences.Add(identity, list);
+                }
+                list.Add(index);
+            }
+            Dictionary<string, int> seen = new Dictionary<string, int>(StringComparer.Ordinal);
+            for (int index = 0; index < current.Count; index++)
+            {
+                string identity = ChatIdentity(current[index]);
+                int occurrence;
+                if (!seen.TryGetValue(identity, out occurrence)) occurrence = 0;
+                seen[identity] = occurrence + 1;
+                if (baseline[index]) continue;
+                List<int> before;
+                if (!previousOccurrences.TryGetValue(identity, out before) ||
+                    occurrence >= before.Count) continue;
+                ChatVisualStyle oldStyle = previousStyles[before[occurrence]];
+                ChatVisualStyle newStyle = currentStyles[index];
+                if (!StyleSourceChanged(oldStyle, newStyle)) continue;
+                result.Add(current[index]);
+                baseline[index] = true;
+                changed = true;
+            }
+            return result;
+        }
+
+        internal static bool StyleSourceChanged(ChatVisualStyle previous, ChatVisualStyle current)
+        {
+            if (previous == null || current == null) return false;
+            if (previous.HasBackground != current.HasBackground) return true;
+            if (previous.Kind != current.Kind) return true;
+            if (previous.Category == current.Category) return false;
+            // Resolving an earlier Unknown is not proof that the same message moved
+            // to a different channel; a known category replacing another is.
+            return previous.Category != ChatSourceCategory.Unknown &&
+                current.Category != ChatSourceCategory.Unknown;
+        }
+
         private static string ChatIdentity(string value)
         {
             string identity = Regex.Replace((value ?? "").ToLowerInvariant(), @"[^a-z0-9\u3400-\u9fff]+", "");
@@ -1979,9 +2074,12 @@ namespace MapleOverlay
         private static void SplitChatIdentityParts(string value, out string speaker, out string message)
         {
             string line = value ?? "";
-            int separator = line.IndexOf(':');
-            int chineseSeparator = line.IndexOf('：');
-            if (separator < 0 || (chineseSeparator >= 0 && chineseSeparator < separator)) separator = chineseSeparator;
+            int separator = -1;
+            foreach (char marker in new char[] { ':', '：', '•', '·' })
+            {
+                int at = line.IndexOf(marker);
+                if (at > 0 && (separator < 0 || at < separator)) separator = at;
+            }
             if (separator > 0)
             {
                 speaker = ChatIdentity(line.Substring(0, separator));
