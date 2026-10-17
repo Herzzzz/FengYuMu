@@ -1,4 +1,3 @@
-2026-10-17T05:16:19.5331190Z PID=23100 quest-journal selected=true reason=stage-and-state-anchor canonical=True region=818,482,796x669 textRows=311x121 layout=body=15px unit=Pixel title=19px wrap=342 content=371,219,342,294 pages=1 overflow=title-fit;body=single-page
-2026-10-17T05:16:19.6500909Z PID=23100 quest-journal-layout region=356x300 body=15px unit=Pixel title=19px wrap=342 content=371,219,342,294 pages=1 overflow=title-fit;body=single-page maxLine=330.0 reused=True
-2026-10-17T05:16:19.6665964Z PID=23100 composition-pass generation=0 committed=True candidates=12 ready=12 localFill=0 elapsedMs=26
-2026-10-17T05:16:19.6665964Z PID=23100 ocr-complete generation=0 labels=12 prepared=12 painted=0 elapsedMs=494
+2026-10-17T07:00:44.1814133Z PID=28940 quest-journal selected=true reason=stage-and-state-anchor canonical=True region=818,451,796x700 textRows=311x121 layout=body=15px unit=Pixel title=19px wrap=342 content=371,205,342,307 pages=1 overflow=title-fit;body=single-page
+2026-10-17T07:00:44.2936582Z PID=28940 quest-journal-layout region=356x313 body=15px unit=Pixel title=19px wrap=342 content=371,205,342,307 pages=1 overflow=title-fit;body=single-page maxLine=330.0 reused=True
+2026-10-17T07:00:44.3140928Z PID=28940 ocr-complete generation=0 labels=12 prepared=12 painted=0 elapsedMs=520

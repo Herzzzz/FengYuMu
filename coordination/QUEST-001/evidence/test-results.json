@@ -1,13 +1,13 @@
 {
   "schema": 2,
-  "annotation": "Final clean-build run pending. Evidence will be regenerated after the clean build; the existing logs are pre-clean-build PASS runs. Two test kinds are kept separate: 90 actual-GDI+ panel checks on the built EXE, and 51 generated-source substitute Font/Graphics checks (not native GDI acceptance). No OCR or AI rounds were added.",
+  "annotation": "Final clean-build run on 枫语幕.exe SHA-256 1A29EA825DDC7C2DAF157E998C75217DD77E43C201695FE258FE594225FCC2F0 (implementation head eea67ce, worktree clean). Two test kinds are kept separate: 90 actual-GDI+ panel checks on the built EXE, and 51 generated-source substitute Font/Graphics checks (not native GDI acceptance). No OCR or AI rounds were added.",
   "build": {
     "command": "pwsh -NoProfile -File src/build.ps1",
-    "status": "PENDING",
-    "exeSha256": "PENDING",
-    "buildEvidenceSha256": "PENDING",
-    "head": "PENDING",
-    "worktreeCleanAtBuild": "PENDING",
+    "status": "PASS",
+    "exeSha256": "1A29EA825DDC7C2DAF157E998C75217DD77E43C201695FE258FE594225FCC2F0",
+    "buildEvidenceSha256": "58DAA70D8489BBA0983BEAA968D25E62292090CD013328D34F20126A67511573",
+    "head": "eea67cee6e54d5be2fb9762c7f698ce82f50c285",
+    "worktreeCleanAtBuild": true,
     "inputs": 64
   },
   "tests": [

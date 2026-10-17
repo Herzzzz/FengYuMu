@@ -5,10 +5,10 @@
 - Branch: `dsh/quest-font-001`.
 - Base commit: `dff639b828542d0bcad94fc9eb50a816f3f9bfd3`.
 - Previous implementation commit: `eba0d4d131f56fdeac88c7464b17f07a88162ed7`.
-- Review-fix implementation commit: **PENDING**.
+- Review-fix implementation commit: `eea67cee6e54d5be2fb9762c7f698ce82f50c285`.
 - Result files commit: reported in the final relay message.
-- EXE: `D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe`; SHA-256 **PENDING**.
-- Build evidence: `枫语幕.exe.build.json`; SHA-256 **PENDING**; head **PENDING**, 64 inputs, clean worktree required.
+- EXE: `D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe`; SHA-256 `1A29EA825DDC7C2DAF157E998C75217DD77E43C201695FE258FE594225FCC2F0`.
+- Build evidence: `枫语幕.exe.build.json`; SHA-256 `58DAA70D8489BBA0983BEAA968D25E62292090CD013328D34F20126A67511573`; head `eea67ce`, 64 inputs, clean worktree at build.
 
 ## What changed
 
@@ -88,7 +88,7 @@ Across all recorded cases the measured maximum line width is <= the measured con
 
 ## Tests
 
-See `evidence/test-results.json` and the individual logs in `evidence/`. The logs below are pre-clean-build PASS runs; the final clean-build rerun is recorded after the clean build.
+See `evidence/test-results.json` and the individual logs in `evidence/`. The final run was against the clean-build EXE `1A29EA82...` (implementation head `eea67ce`, build worktree clean).
 
 Passing on this host/build:
 
@@ -124,6 +124,6 @@ Tests with hard-coded `/workspace` or `bin/windows-v4.0` paths (`logic-quest-par
 - No chat classification, OCR model/protocol or AI request logic changes.
 - No additional OCR or AI rounds. The journal plan is built from the already-selected OCR text and cached; page turns use the cached layout and pixels.
 - The existing conservative paper measurement and fallback preservation remain; if the plan/region cannot safely fit, English is preserved rather than partially erased.
-- Synthetic quest shell run on the previous round's EXE: `quest-journal selected=true reason=stage-and-state-anchor`, body `15px`, title `19px`, `pages=1`, composition `committed=True candidates=12 ready=12 localFill=0`. The test's separate scene-classification assertion still reports an empty scene on this host; that failure also reproduces on the untouched baseline. The current round's synthetic unit/integration tests are in the two dedicated layout regressions above.
+- Synthetic quest shell run on the final EXE: `quest-journal selected=true reason=stage-and-state-anchor`, region `818,451,796x700`, layout `body=15px`, `title=19px`, `content=371,205,342,307`, `pages=1`, composition `labels=12 prepared=12` (the test's separate scene-classification assertion still reports an empty scene on this host; that failure reproduces on the untouched baseline).
 - Real in-game visual acceptance (physical F8, actual quest UI at 100/125/150/200%, real Game window) is **UNVERIFIED**. The 90 panel checks use synthetic pixels with actual GDI+; the 51 font checks use a substitute Font/Graphics harness. Neither is a real-game visual acceptance.
 - No raw user screenshots, chat text, keys or private logs were committed. Evidence contains only synthetic panel geometry and public dictionary text.

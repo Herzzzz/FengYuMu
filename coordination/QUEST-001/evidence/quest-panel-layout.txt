@@ -31,6 +31,32 @@ PASS: three-objectives: body base size is at least 15px
 PASS: three-objectives: title is larger than body
 PASS: three-objectives: measured line width fits content width
 PASS: three-objectives: full body has at least one page
+PASS: R1 prose is not a counter: Please take care of 50
+PASS: R1 prose is not a counter: Please collect a total of 20
+PASS: R1 prose is not a counter: care of 20
+PASS: R1 real counter structure recognized: stump 30 f 30
+PASS: R1 real counter structure recognized: Pink Anthurium 0 / 1
+PASS: R1 real counter structure recognized: O / 2O
+PASS: R1 real counter structure recognized: 30 / 30
+PASS: R1 counter pair needs a word boundary
+PASS: R1 target-column location allows an all-confusable slash count
+PASS: R1 all-confusable slash count outside the target column is rejected
+PASS: R1 prose is not a counter even in a misleading target column
+PASS: R1 prose body with "of 50"/"of 20" still builds a journal label
+PASS: R1 prose body replacement region still covers the first body row
+PASS: R1 prose body replacement region is not emptied by counter detection
+PASS: R1 prose body still receives the shared typography plan
+PASS: R2 actual-GDI+ plan returns for emoji-a
+PASS: R2 emoji-a preserves every character
+PASS: R2 emoji-a pages contain no lone surrogates
+PASS: R2 emoji-a title preserves every character
+PASS: R2 emoji-a title contains no lone surrogates
+PASS: R2 actual-GDI+ plan returns for supplementary-long
+PASS: R2 supplementary-long preserves every character
+PASS: R2 supplementary-long pages contain no lone surrogates
+PASS: R2 supplementary-long title preserves every character
+PASS: R2 supplementary-long title contains no lone surrogates
+PASS: R2 supplementary-long paginates
 PASS: manual-short: composition plan built with actual GDI+ metrics
 PASS: manual-short: short body stays on one page
 PASS: manual-short: body base size stays readable
@@ -62,4 +88,4 @@ PASS: scale 2: body base size does not shrink
 PASS: scale 2: measured width fits
 PASS: repeated F8 planning is deterministic
 PASS: repeated F8 plan is reusable by the compositor
-Quest panel layout: 64 checks passed; metrics=D:\GPT\文件\枫语幕\work\dsh-chat-001\coordination\QUEST-001\evidence\layout-metrics.json
+Quest panel layout: 90 checks passed; metrics=D:\GPT\文件\枫语幕\work\dsh-chat-001\coordination\QUEST-001\evidence\layout-metrics.json

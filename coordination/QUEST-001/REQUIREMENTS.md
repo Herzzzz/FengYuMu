@@ -40,3 +40,10 @@ Synthetic regressions for:
 - 100/125/150/200% scale.
 
 Record actual `Font.Size`, `Font.Unit`, content bounds and overflow/pagination decisions where testable. Build on Windows, run the relevant quest/font/global regressions, commit code and evidence, and report the commit SHA and EXE SHA-256. Mark real in-game visual checks UNVERIFIED.
+
+## Cloud review round (NEEDS_CHANGES)
+
+- **QUEST-R1:** prose such as `Please take care of 50` and `Please collect a total of 20` was falsely treated as an objective counter, making a valid replacement region empty. Counters must be identified by target-column location, true counter structure and word boundaries; do not blacklist example phrases. Preserve real objective counts/icons/summary.
+- **QUEST-R2:** wrapping `A😀` could hang. Surrogate boundaries must always advance; add timeout-safe CJK/emoji/supplementary title/body/full-pagination tests with no character loss.
+- Evidence wording must distinguish the actual-GDI+ panel checks from the substitute Font/Graphics harness checks, and list actual font measurements separately.
+- Preserve the one-region replacement and first-line/right-edge/summary residue checks. No chat/OCR/AI changes. Clean build, run relevant + safety regressions, update result/status, commit code/evidence, report SHAs and EXE hash.
