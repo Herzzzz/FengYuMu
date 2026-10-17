@@ -180,8 +180,8 @@ namespace MapleOverlay
             // or a personal channel. Keep the message in All and record it as Unknown.
             if (coloredBackground) return ChatSourceCategory.Unknown;
             if (visualKind == ChatVisualKind.System) return ChatSourceCategory.System;
-            if (!hasForeground && LooksLikePlayerChatLine(text))
-                return ChatSourceCategory.Normal;
+            // No foreground, background or physical-row evidence is not proof of a
+            // player channel. Only an explicit text prefix above can name a source.
             return ChatSourceCategory.Unknown;
         }
 

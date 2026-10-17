@@ -75,8 +75,8 @@ if ((Compare-Object $expectedCategories $renderedCategories -SyncWindow 0)) {
 }
 $partyMember = $fromSample.Invoke($null, @('PartyMember: hello',
     [System.Drawing.Color]::Empty, [System.Drawing.Color]::Empty, $false))
-if ([string]$partyMember.GetType().GetField('Category', $instance).GetValue($partyMember) -ne 'Normal') {
-    throw '普通玩家名 PartyMember 被错误当成组队频道'
+if ([string]$partyMember.GetType().GetField('Category', $instance).GetValue($partyMember) -ne 'Unknown') {
+    throw '无字体/背景/物理行证据的普通行未保持 Unknown'
 }
 
 $overlaySource = Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -Encoding UTF8
@@ -91,7 +91,8 @@ foreach ($required in @(
 }
 foreach ($required in @(
     'Queue<PendingChatLine>',
-    'capture.FindStyle(line,',
+    'capture.StyleForRow(row)',
+    'RowIndex = rowIndex',
     'floatingWindow.AppendTranslation(record.Translation, visualStyle)',
     'internal void ApplyFloatingWindow(bool enabled)',
     'HasPendingTranslationWork',

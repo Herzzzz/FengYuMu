@@ -2519,10 +2519,23 @@ namespace MapleOverlay
 
         internal ChatVisualStyle FindStyle(string parsedLine)
         {
-            return FindStyle(parsedLine, 0);
+            return FindStyleCore(parsedLine, 0, true);
         }
 
         internal ChatVisualStyle FindStyle(string parsedLine, int occurrence)
+        {
+            return FindStyleCore(parsedLine, occurrence, false);
+        }
+
+        internal ChatVisualStyle StyleForRow(int rowIndex)
+        {
+            if (rowIndex < 0 || rowIndex >= Lines.Count) return ChatVisualStyle.Default;
+            ChatVisualStyle style = Lines[rowIndex].Style;
+            return style == null ? ChatVisualStyle.Default : style;
+        }
+
+        private ChatVisualStyle FindStyleCore(string parsedLine, int occurrence,
+            bool requireUnambiguous)
         {
             string parsed = Normalize(parsedLine);
             if (parsed.Length == 0) return ChatVisualStyle.Default;
@@ -2532,9 +2545,13 @@ namespace MapleOverlay
             List<ChatLineMatch> matches = new List<ChatLineMatch>();
             foreach (ChatCaptureLine candidate in Lines)
             {
-                int score = MatchScore(parsedLine, parsedSpeaker, parsedMessage, candidate);
+                bool exact;
+                int score = MatchScore(parsedLine, parsedSpeaker, parsedMessage, candidate,
+                    out exact);
                 if (score <= 0) continue;
-                matches.Add(new ChatLineMatch { Score = score, Line = candidate });
+                matches.Add(new ChatLineMatch {
+                    Score = score, Exact = exact, Line = candidate
+                });
             }
             if (matches.Count == 0) return ChatVisualStyle.Default;
             matches.Sort(delegate(ChatLineMatch left, ChatLineMatch right) {
@@ -2542,18 +2559,36 @@ namespace MapleOverlay
                 if (byScore != 0) return byScore;
                 return left.Line.Bounds.Top.CompareTo(right.Line.Bounds.Top);
             });
-            // A wrapped continuation of the same message must not become a second
-            // source when two speakers post identical text. Only the best-scoring
-            // physical rows are occurrence candidates.
-            int bestScore = matches[0].Score;
-            List<ChatLineMatch> top = new List<ChatLineMatch>();
+            // Exact speaker + exact body identity always outranks a similar row.
+            List<ChatLineMatch> exactMatches = new List<ChatLineMatch>();
             foreach (ChatLineMatch match in matches)
-                if (match.Score >= bestScore - 400) top.Add(match);
-            if (top.Count == 0) return ChatVisualStyle.Default;
-            if (occurrence >= top.Count) occurrence = top.Count - 1;
-            ChatVisualStyle style = top[occurrence].Line.Style;
+                if (match.Exact) exactMatches.Add(match);
+            List<ChatLineMatch> pool;
+            if (exactMatches.Count > 0) pool = exactMatches;
+            else
+            {
+                // Similar rows stay ambiguous: a shared body or a one-character name
+                // difference must not silently pick the first channel.
+                int bestScore = matches[0].Score;
+                pool = new List<ChatLineMatch>();
+                foreach (ChatLineMatch match in matches)
+                    if (match.Score >= bestScore - 400) pool.Add(match);
+            }
+            if (pool.Count == 0) return ChatVisualStyle.Default;
+            if (requireUnambiguous)
+            {
+                // The text-only API has no row index. More than one equally good
+                // physical row is ambiguous even when the sampled source happens to
+                // agree; the row-aware live path resolves it by index instead.
+                if (pool.Count != 1) return ChatVisualStyle.Default;
+                ChatVisualStyle only = pool[0].Line.Style;
+                return only == null ? ChatVisualStyle.Default : only;
+            }
+            if (occurrence >= pool.Count) occurrence = pool.Count - 1;
+            ChatVisualStyle style = pool[occurrence].Line.Style;
             return style == null ? ChatVisualStyle.Default : style;
         }
+
 
         internal List<ChatVisualStyle> FindStyles(IList<string> parsedLines)
         {
@@ -2574,12 +2609,14 @@ namespace MapleOverlay
         private sealed class ChatLineMatch
         {
             internal int Score;
+            internal bool Exact;
             internal ChatCaptureLine Line;
         }
 
         private static int MatchScore(string parsedLine, string parsedSpeaker,
-            string parsedMessage, ChatCaptureLine candidate)
+            string parsedMessage, ChatCaptureLine candidate, out bool exact)
         {
+            exact = false;
             if (candidate == null) return 0;
             string candidateSpeaker, candidateMessage;
             SplitSpeakerText(candidate.Text, out candidateSpeaker, out candidateMessage);
@@ -2595,10 +2632,23 @@ namespace MapleOverlay
                 if (!SameSpeaker(SpeakerCore(parsedSpeaker), SpeakerCore(candidateSpeaker)))
                     return 0;
             }
+            else if (candidateSpeaker.Length > 0)
+            {
+                // Without a nickname there is no identity to associate. Only the
+                // whole normalised row may match, never the body alone.
+                int lineLength = Normalize(parsedLine).Length;
+                if (Normalize(parsedLine) != Normalize(candidate.Text)) return 0;
+                exact = true;
+                return 12000 + lineLength;
+            }
             string parsedBody = Normalize(parsedMessage);
             string candidateBody = Normalize(candidateMessage);
             if (parsedBody.Length == 0 || candidateBody.Length == 0) return 0;
-            if (parsedBody == candidateBody) return 10000 + parsedBody.Length;
+            if (parsedBody == candidateBody)
+            {
+                exact = true;
+                return 10000 + parsedBody.Length;
+            }
             int shortest = Math.Min(parsedBody.Length, candidateBody.Length);
             if (shortest >= 6 &&
                 (parsedBody.IndexOf(candidateBody, StringComparison.Ordinal) >= 0 ||

@@ -20,7 +20,9 @@ namespace MapleOverlay {
 '@
 $source+=Member (GetProbeClass $chatTree 'ChatTextRules') 'LooksLikeInstructionLeak'
 $source+="}`nclass TranslationStore {"+(Member $store 'Normalize')+"}`npublic class Probe {"
-foreach($name in @('PendingChatLine','PreparedChatLine','ParseChatLines','IsCompleteChatNotice','RepairChatSpeakerMarker','TryParseChatPresence','IsStructuredUiNoise','IsLikelyWrappedChatTail','IsWrappedPseudoSpeaker','IsWrappedContinuationWord','IsPlausibleChatTranslationForTarget','RestorePlayerNames','RememberTranslation')){$source+="`n"+(Member $chat $name)}
+foreach($name in @('PendingChatLine','PreparedChatLine','IsCompleteChatNotice','RepairChatSpeakerMarker','TryParseChatPresence','IsStructuredUiNoise','IsLikelyWrappedChatTail','IsWrappedPseudoSpeaker','IsWrappedContinuationWord','IsPlausibleChatTranslationForTarget','RestorePlayerNames','RememberTranslation')){$source+="`n"+(Member $chat $name)}
+foreach($parseMethod in @($chat.Members|Where-Object{$_ -is [Microsoft.CodeAnalysis.CSharp.Syntax.MethodDeclarationSyntax] -and $_.Identifier.ValueText -eq 'ParseChatLines'})){$source+="`n"+$parseMethod.ToFullString()}
+$source+="`n"+(Member $chat 'AddParsedLine')
 if(-not $Before){foreach($name in @('ChatTranslationOutcome','PublishPreparedChatLine','ForgetTranslation','RequestChatTranslationAsync')){$source+="`n"+(Member $chat $name)}}
 else{
  $source=$source.Replace('internal bool CacheAfterTranslation;', 'internal bool CacheAfterTranslation; internal string Failure="";')

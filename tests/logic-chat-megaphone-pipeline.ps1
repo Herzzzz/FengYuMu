@@ -21,11 +21,21 @@ $lineType = $assembly.GetType('MapleOverlay.ChatCaptureLine', $true)
 $evidenceType = $assembly.GetType('MapleOverlay.ChatColorEvidence', $true)
 $analyze = $evidenceType.GetMethod('Analyze', $all)
 $findStyle = $frameType.GetMethod('FindStyle', $all, $null, [Type[]]@([string], [int]), $null)
+$findStyleSingle = $frameType.GetMethod('FindStyle', $all, $null, [Type[]]@([string]), $null)
 $findStyles = $frameType.GetMethod('FindStyles', $all)
+$styleForRow = $frameType.GetMethod('StyleForRow', $all)
 $addSourceChanged = $chatType.GetMethod('AddSourceChangedChatLines', $all)
+$addSourceChangedIndices = $chatType.GetMethod('AddSourceChangedChatLineIndices', $all)
+$getNewIndices = $chatType.GetMethod('GetNewChatLineIndices', $all)
+$suppressIndices = $chatType.GetMethod('SuppressRecentOcrReappearanceIndices', $all)
+$parseWithRows = $chatType.GetMethod('ParseChatLines', $all, $null,
+    [Type[]]@([string], [System.Collections.Generic.List[int]]), $null)
+$continuityType = $assembly.GetType('MapleOverlay.ChatFrameContinuity', $true)
+$resolveIndices = $continuityType.GetMethod('ResolveIndices', $all)
 $framesShareStyles = $overlayType.GetMethod('FramesShareStyles',
     [Reflection.BindingFlags]'Static,NonPublic,Public')
 $styleListType = [System.Collections.Generic.List``1].MakeGenericType($styleType)
+$intListType = [System.Collections.Generic.List[int]]
 
 $script:checks = 0
 function Assert-True([bool]$condition, [string]$message) {
@@ -61,6 +71,25 @@ function Get-FoundCategory($frame, [string]$text, [int]$occurrence) {
     $style = $findStyle.Invoke($frame, [object[]]@($text, $occurrence))
     return [string](Get-Field $style 'Category')
 }
+function Get-FoundCategorySingle($frame, [string]$text) {
+    $style = $findStyleSingle.Invoke($frame, [object[]]@($text))
+    return [string](Get-Field $style 'Category')
+}
+function Get-RowCategory($frame, [int]$row) {
+    $style = $styleForRow.Invoke($frame, [object[]]@($row))
+    return [string](Get-Field $style 'Category')
+}
+function New-IntList([int[]]$values) {
+    $list = [System.Collections.Generic.List[int]]::new()
+    foreach ($value in $values) { $list.Add($value) }
+    return ,$list
+}
+function Invoke-TwoListMethod($method, $first, $second) {
+    $arguments = [object[]]::new(2)
+    $arguments[0] = $first
+    $arguments[1] = $second
+    Write-Output -NoEnumerate $method.Invoke($null, $arguments)
+}
 function To-StringList([string[]]$values) {
     $list = [System.Collections.Generic.List[string]]::new()
     foreach ($value in $values) { $list.Add($value) }
@@ -84,6 +113,8 @@ Add-CaptureLine $frame 'Toph CH01: Anyone know a fix?' (New-Style 'Megaphone' 'M
 Add-CaptureLine $frame 'BeelsFad«HÖl 0 : T> Int Bamboo Hat' (New-Style 'Megaphone' 'SuperMegaphone' $true) 190
 Add-CaptureLine $frame 'Alice: hello world' (New-Style 'Party' 'Chat' $false) 220
 Add-CaptureLine $frame 'this is a wrapped tail' (New-Style 'Unknown' 'Chat' $false) 250
+Add-CaptureLine $frame 'Alicia: hello' (New-Style 'Party' 'Chat' $false) 280
+Add-CaptureLine $frame 'Alice: hello there' (New-Style 'Guild' 'Chat' $false) 310
 
 Assert-True ((Get-FoundCategory $frame 'Alice: selling hat 40k' 0) -eq 'Buddy') 'same body with another speaker does not steal Alice row'
 Assert-True ((Get-FoundCategory $frame 'Bob: selling hat 40k' 0) -eq 'Party') 'Bob row keeps its own Party source'
@@ -95,6 +126,12 @@ Assert-True ((Get-FoundCategory $frame 'Jae: where do i bring the magic box?' 0)
 Assert-True ((Get-FoundCategory $frame 'Toph: Anyone know a fix?' 0) -eq 'Megaphone') 'CHxx badge on the physical row still associates'
 Assert-True ((Get-FoundCategory $frame 'BeelsFad: T> Int Bamboo Hat' 0) -eq 'Megaphone') 'OCR badge noise on the physical name still associates'
 Assert-True ((Get-FoundCategory $frame 'Alice: hello world this is a wrapped tail' 0) -eq 'Party') 'wrapped tail uses the speaker row source'
+Assert-True ((Get-FoundCategorySingle $frame 'Alicia: hello') -eq 'Party') 'exact similar nickname keeps its row source'
+Assert-True ((Get-FoundCategorySingle $frame 'Alic: hello') -eq 'Unknown') 'ambiguous similar nickname remains Unknown'
+Assert-True ((Get-FoundCategorySingle $frame 'hello') -eq 'Unknown') 'missing nickname does not bind by sentence body'
+Assert-True ((Get-FoundCategorySingle $frame 'Alice: hello there') -eq 'Guild') 'exact identity outranks a contained fuzzy body'
+Assert-True ((Get-FoundCategorySingle $frame 'Alice: hello') -eq 'Unknown') 'text-only duplicate exact identities with different sources are ambiguous'
+Assert-True ((Get-FoundCategorySingle $frame 'Alice: hexlo') -eq 'Unknown') 'fuzzy body with two possible rows remains Unknown'
 $duplicates = [System.Collections.Generic.List[string]]::new()
 $duplicates.Add('Alice: hello')
 $duplicates.Add('Alice: hello')
@@ -127,6 +164,85 @@ $unknownArgs = [object[]]@((To-StringList @('Alice: hi')),
 [void]$addSourceChanged.Invoke($null, $unknownArgs)
 Assert-True (-not [bool]$unknownArgs[5]) 'Normal-to-Unknown jitter is not treated as another channel'
 
+# B2. Current-row identity: parse rows, diff by index, resolve style by row and
+# deliver a changed source without re-finding duplicate text by prior count.
+$rowList = [System.Collections.Generic.List[int]]::new()
+$parseArgs = [object[]]::new(2)
+$parseArgs[0] = "Alice: hello`nAlice: hello`nBob: hi"
+$parseArgs[1] = $rowList
+$parsedRows = $parseWithRows.Invoke($null, $parseArgs)
+Assert-True ($parsedRows.Count -eq 3 -and $rowList.Count -eq 3) 'parser returns one current row index per parsed message'
+Assert-True ($rowList[0] -eq 0 -and $rowList[1] -eq 1 -and $rowList[2] -eq 2) 'duplicate text keeps distinct first/middle/last row indices'
+$rowList.Clear()
+$wrappedArgs = [object[]]::new(2)
+$wrappedArgs[0] = 'Alice: this is a long message that keeps going and will wrap onto the next row' + "`nand this is the wrapped tail"
+$wrappedArgs[1] = $rowList
+$wrappedParsed = $parseWithRows.Invoke($null, $wrappedArgs)
+Assert-True ($wrappedParsed.Count -eq 1 -and $rowList.Count -eq 1 -and $rowList[0] -eq 0) 'wrapped tail keeps the speaker row index'
+
+$diffArgs = [object[]]::new(2)
+$diffArgs[0] = To-StringList @('Alice: hi')
+$diffArgs[1] = To-StringList @('Alice: hi', 'Alice: hi', 'Bob: ho')
+$newIndexList = $getNewIndices.Invoke($null, $diffArgs)
+Assert-True ($newIndexList.Count -eq 2 -and $newIndexList[0] -eq 1 -and $newIndexList[1] -eq 2) 'new duplicate occurrence is identified by current row index'
+
+$rowFrame = [Activator]::CreateInstance($frameType, $true)
+Add-CaptureLine $rowFrame 'Alice: hi' (New-Style 'Megaphone' 'Megaphone' $true) 10
+Add-CaptureLine $rowFrame 'Alice: hi' (New-Style 'Guild' 'Chat' $false) 40
+Add-CaptureLine $rowFrame 'Alice: hi' (New-Style 'Megaphone' 'SuperMegaphone' $true) 70
+Assert-True ((Get-RowCategory $rowFrame 0) -eq 'Megaphone') 'row 0 resolves its own style'
+Assert-True ((Get-RowCategory $rowFrame 1) -eq 'Guild') 'row 1 resolves its own style'
+Assert-True ((Get-RowCategory $rowFrame 2) -eq 'Megaphone') 'row 2 resolves its own style'
+Assert-True ((Get-RowCategory $rowFrame 3) -eq 'Unknown') 'missing row resolves Unknown, not another duplicate'
+
+$changedIndexArgs = [object[]]::new(6)
+$changedIndexArgs[0] = To-StringList @('Alice: hi')
+$changedIndexArgs[1] = To-StyleList @((New-Style 'Megaphone' 'SuperMegaphone' $true))
+$changedIndexArgs[2] = To-StringList @('Alice: hi')
+$changedIndexArgs[3] = To-StyleList @((New-Style 'Megaphone' 'Megaphone' $true))
+$changedIndexArgs[4] = New-IntList @()
+$changedIndexArgs[5] = $false
+$changedIndices = $addSourceChangedIndices.Invoke($null, $changedIndexArgs)
+Assert-True ([bool]$changedIndexArgs[5]) 'index flow detects pink-to-blue same-text source change'
+Assert-True ($changedIndices.Count -eq 1 -and $changedIndices[0] -eq 0) 'index flow delivers the changed current row, not a prior occurrence'
+
+$firstMiddleLast = To-StringList @('Alice: hi', 'Alice: hi', 'Alice: hi')
+$firstMiddleStyles = To-StyleList @(
+    (New-Style 'Megaphone' 'SuperMegaphone' $true),
+    (New-Style 'Guild' 'Chat' $false),
+    (New-Style 'Megaphone' 'Megaphone' $true))
+$firstMiddleArgs = [object[]]::new(2)
+$firstMiddleArgs[0] = To-StringList @()
+$firstMiddleArgs[1] = $firstMiddleLast
+$firstMiddleIndices = $getNewIndices.Invoke($null, $firstMiddleArgs)
+Assert-True ($firstMiddleIndices.Count -eq 3 -and
+    $firstMiddleIndices[0] -eq 0 -and $firstMiddleIndices[1] -eq 1 -and
+    $firstMiddleIndices[2] -eq 2) 'first/middle/last duplicate rows are all delivered in row order'
+Assert-True (([string](Get-Field $firstMiddleStyles[0] 'Category') -eq 'Megaphone') -and
+    ([string](Get-Field $firstMiddleStyles[1] 'Category') -eq 'Guild') -and
+    ([string](Get-Field $firstMiddleStyles[2] 'Category') -eq 'Megaphone')) 'first/middle/last duplicate rows keep distinct styles'
+
+$continuity = [Activator]::CreateInstance($continuityType, $true)
+$sameDelegate = [Func[string, string, bool]]{ param($left, $right) return $left -eq $right }
+$continuityArgs = [object[]]::new(5)
+$continuityArgs[0] = To-StringList @()
+$continuityArgs[1] = To-StringList @('Alice: hi')
+$continuityArgs[2] = New-IntList @(0)
+$continuityArgs[3] = $sameDelegate
+$continuityArgs[4] = $false
+$continuityResult = $resolveIndices.Invoke($continuity, $continuityArgs)
+Assert-True ([bool]$continuityArgs[4] -and $continuityResult.Count -eq 1 -and
+    $continuityResult[0] -eq 0) 'index continuity advances a first nonempty frame with its current row'
+$continuityArgs[0] = To-StringList @('Alice: hi')
+$continuityArgs[1] = To-StringList @('Bob: ho')
+$continuityArgs[2] = New-IntList @()
+$continuityArgs[4] = $false
+$continuityResult = $resolveIndices.Invoke($continuity, $continuityArgs)
+Assert-True (-not [bool]$continuityArgs[4] -and $continuityResult.Count -eq 0) 'index continuity holds an unanchored replacement'
+$continuityResult = $resolveIndices.Invoke($continuity, $continuityArgs)
+Assert-True ([bool]$continuityArgs[4] -and $continuityResult.Count -eq 1 -and
+    $continuityResult[0] -eq 0) 'index continuity delivers the confirmed replacement row'
+
 # C. Strong-OCR cache identity: text-only reuse must not reuse a different source.
 $cacheLeft = [Activator]::CreateInstance($frameType, $true)
 $cacheRight = [Activator]::CreateInstance($frameType, $true)
@@ -158,26 +274,36 @@ try {
     $output = $outputField.GetValue($form)
 
     function Publish-Line([string]$source, [string]$message, [string]$translation,
-        $style) {
+        $style, [int]$rowIndex = -1) {
         $pending = [Activator]::CreateInstance($pendingType, $true)
         $pendingType.GetField('Text', $all).SetValue($pending, $source)
         $pendingType.GetField('Style', $all).SetValue($pending, $style)
+        $pendingType.GetField('RowIndex', $all).SetValue($pending, $rowIndex)
         $prepared = [Activator]::CreateInstance($preparedType, $true)
         $preparedType.GetField('Pending', $all).SetValue($prepared, $pending)
         $preparedType.GetField('Source', $all).SetValue($prepared, $source)
         $preparedType.GetField('SpeakerPrefix', $all).SetValue($prepared, 'Alice: ')
         $preparedType.GetField('Untranslated', $all).SetValue($prepared, $message)
         $preparedType.GetField('Translated', $all).SetValue($prepared, $translation)
+        $preparedType.GetField('Style', $all).SetValue($prepared, $style)
+        $preparedType.GetField('RowIndex', $all).SetValue($prepared, $rowIndex)
         $preparedType.GetField('NameTokens', $all).SetValue($prepared,
             [System.Collections.Generic.Dictionary[string, string]]::new())
+        $preparedRow = [int]$preparedType.GetField('RowIndex', $all).GetValue($prepared)
+        $preparedStyle = $preparedType.GetField('Style', $all).GetValue($prepared)
+        $preparedCategory = [string]$styleType.GetField('Category', $all).GetValue($preparedStyle)
+        if ($preparedRow -ne $rowIndex -or
+            $preparedCategory -ne [string](Get-Field $style 'Category')) {
+            throw 'prepared publication did not retain the resolved style/row'
+        }
         return [bool]$publish.Invoke($form, [object[]]@($prepared))
     }
 
     $published = 0
-    if (Publish-Line 'Alice: hat' 'hat' '出售帽子。' (New-Style 'Normal' 'Chat' $false)) { $published++ }
-    if (Publish-Line 'Alice: mega' 'mega' '喇叭公告。' (New-Style 'Megaphone' 'Megaphone' $true)) { $published++ }
-    if (Publish-Line 'Alice: guild' 'guild' '家族消息。' (New-Style 'Guild' 'Chat' $false)) { $published++ }
-    if (Publish-Line 'Alice: unknown' 'unknown' '未知来源。' (New-Style 'Unknown' 'Chat' $false)) { $published++ }
+    if (Publish-Line 'Alice: hat' 'hat' '出售帽子。' (New-Style 'Normal' 'Chat' $false) 0) { $published++ }
+    if (Publish-Line 'Alice: mega' 'mega' '喇叭公告。' (New-Style 'Megaphone' 'Megaphone' $true) 1) { $published++ }
+    if (Publish-Line 'Alice: guild' 'guild' '家族消息。' (New-Style 'Guild' 'Chat' $false) 2) { $published++ }
+    if (Publish-Line 'Alice: unknown' 'unknown' '未知来源。' (New-Style 'Unknown' 'Chat' $false) 3) { $published++ }
     Assert-True ($published -eq 4) 'four styled records publish successfully'
 
     $allRecords = $historySelect.Invoke($history, [object[]]@($null))
@@ -216,16 +342,44 @@ try {
         $floatingContent.Text.Contains('未知来源。')) 'floating window All filter matches the main window'
 
     # Same text on two channels must not inherit the first record's source.
-    if (-not (Publish-Line 'Alice: same' 'same' '相同文本。' (New-Style 'Megaphone' 'Megaphone' $true))) {
-        throw 'same-text first publication failed'
+    # Guild finishes first, then the megaphone copy from its own current row.
+    if (-not (Publish-Line 'Alice: same' 'same' '相同文本。' (New-Style 'Guild' 'Chat' $false) 2)) {
+        throw 'same-text guild publication failed'
     }
-    if (-not (Publish-Line 'Alice: same' 'same' '相同文本。' (New-Style 'Guild' 'Chat' $false))) {
-        throw 'same-text second publication failed'
+    if (-not (Publish-Line 'Alice: same' 'same' '相同文本。' (New-Style 'Megaphone' 'Megaphone' $true) 1)) {
+        throw 'same-text megaphone publication failed'
     }
     $sameAll = $historySelect.Invoke($history, [object[]]@($null))
     $sameMega = $historySelect.Invoke($history, [object[]]@([Enum]::Parse($categoryType, 'Megaphone')))
     $sameGuild = $historySelect.Invoke($history, [object[]]@([Enum]::Parse($categoryType, 'Guild')))
-    Assert-True ($sameAll.Count -eq 6 -and $sameMega.Count -eq 2 -and $sameGuild.Count -eq 2) 'same text carries each channel record independently'
+    Assert-True ($sameAll.Count -eq 6 -and $sameMega.Count -eq 2 -and $sameGuild.Count -eq 2) 'same text carries each channel record independently after delayed publication'
+
+    # First/middle/last duplicate rows complete asynchronously out of order.
+    if (-not (Publish-Line 'Alice: triple' 'triple' '最后行。' (New-Style 'Megaphone' 'Megaphone' $true) 2)) {
+        throw 'triple last publication failed'
+    }
+    if (-not (Publish-Line 'Alice: triple' 'triple' '第一行。' (New-Style 'Megaphone' 'SuperMegaphone' $true) 0)) {
+        throw 'triple first publication failed'
+    }
+    if (-not (Publish-Line 'Alice: triple' 'triple' '中间行。' (New-Style 'Guild' 'Chat' $false) 1)) {
+        throw 'triple middle publication failed'
+    }
+    $tripleAll = $historySelect.Invoke($history, [object[]]@($null))
+    $tripleCategories = @{}
+    foreach ($record in $tripleAll) {
+        $recordType = $record.GetType()
+        if ([string]$recordType.GetField('Original', $all).GetValue($record) -ne 'Alice: triple') { continue }
+        $recordStyle = $recordType.GetField('Style', $all).GetValue($record)
+        $tripleCategories[[string]$recordType.GetField('Translation', $all).GetValue($record)] =
+            [string]$styleType.GetField('Category', $all).GetValue($recordStyle)
+    }
+    foreach ($key in $tripleCategories.Keys) {
+        Write-Host ("  triple evidence: {0} => {1}" -f $key, $tripleCategories[$key])
+    }
+    Assert-True ($tripleCategories.Count -eq 3 -and
+        $tripleCategories['Alice: 第一行。'] -eq 'Megaphone' -and
+        $tripleCategories['Alice: 中间行。'] -eq 'Guild' -and
+        $tripleCategories['Alice: 最后行。'] -eq 'Megaphone') 'first/middle/last duplicate rows retain their own source through out-of-order async publication'
 } finally {
     $floating.Dispose()
     $form.Dispose()
@@ -265,8 +419,14 @@ $recognizeCalls = [regex]::Matches($captureBody, 'RecognizeAsync\(').Count
 Assert-True ($recognizeCalls -eq 2) 'capture path keeps exactly one fast + one strong OCR call'
 Assert-True ($captureBody.Contains('FramesShareStyles(frame, lastReviewedChatFrame)')) 'reviewed-frame cache checks source styles'
 $chatSource = Get-Content (Join-Path $repoRoot 'src/OfflineChat.cs') -Raw -Encoding UTF8
-Assert-True ($chatSource.Contains('List<ChatVisualStyle> lineStyles = capture.FindStyles(lines)')) 'queue receives per-row styles after parsing'
-Assert-True ($chatSource.Contains('AddSourceChangedChatLines(priorFrame, priorStyles')) 'same-text source changes are fed into the queue'
+Assert-True ($chatSource.Contains('List<ChatVisualStyle> lineStyles = new List<ChatVisualStyle>();')) 'queue resolves styles once from parsed rows'
+Assert-True ($chatSource.Contains('capture.StyleForRow(row)')) 'queue takes the resolved style by current row index'
+Assert-True ($chatSource.Contains('RowIndex = rowIndex')) 'enqueued pending line carries its current row index'
+Assert-True ($chatSource.Contains('chatContinuity.ResolveIndices(priorFrame, lines')) 'continuity is applied to current row indices'
+Assert-True ($chatSource.Contains('AddSourceChangedChatLineIndices(priorFrame, priorStyles')) 'same-text source changes are fed by current row index'
+Assert-True ($chatSource.Contains('PublishPreparedChatLine') -and
+    $chatSource.Contains('ChatVisualStyle style = prepared.Style')) 'publication uses the carried prepared style'
+Assert-True (-not $chatSource.Contains('priorOccurrence')) 'queue no longer re-finds duplicate text by prior-frame occurrence count'
 Assert-True (([regex]::Matches($chatSource, 'OnlineAiClient\.TranslateAsync\(').Count) -eq 2) 'AI translation request sites remain at the v4.0 count (2)'
 
-Write-Host ("Chat megaphone pipeline regression: {0} checks passed; physical-row association, duplicate sources, scroll source change, cache identity, parse→queue→publish→history, main/floating filters, detection cost and OCR call count covered." -f $script:checks)
+Write-Host ("Chat megaphone pipeline regression: {0} checks passed; exact-vs-fuzzy identity, ambiguous/missing nickname Unknown, physical-row association, first/middle/last duplicate sources, current-row carry, scroll source change, cache identity, parse→queue→publish→history, out-of-order async publication, main/floating filters, detection cost and OCR call count covered." -f $script:checks)

@@ -7,7 +7,7 @@ if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) { . (Joi
 $assembly = Load-TestAssembly $exe
 $chatType = $assembly.GetType('MapleOverlay.OfflineChatForm', $true)
 $flags = [Reflection.BindingFlags]'Static,NonPublic,Public'
-$parse = $chatType.GetMethod('ParseChatLines', $flags)
+$parse = $chatType.GetMethod('ParseChatLines', $flags, $null, [Type[]]@([string]), $null)
 
 function Invoke-Parse([string]$text) {
     $invokeArgs = [object[]]::new(1)

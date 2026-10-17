@@ -59,7 +59,7 @@ Assert-Translation '任务放弃按钮' (Invoke-Store 'FindMatches' @('FORFEIT')
 $chatType = $assembly.GetType('MapleOverlay.OfflineChatForm', $true)
 $flags = [Reflection.BindingFlags]'Static,NonPublic,Public'
 $getNew = $chatType.GetMethod('GetNewChatLines', $flags)
-$parse = $chatType.GetMethod('ParseChatLines', $flags)
+$parse = $chatType.GetMethod('ParseChatLines', $flags, $null, [Type[]]@([string]), $null)
 function Invoke-NewChat([string[]]$previous, [string[]]$current) {
     $left = [Collections.Generic.List[string]]::new()
     $right = [Collections.Generic.List[string]]::new()

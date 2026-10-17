@@ -938,6 +938,7 @@ namespace MapleOverlay
             internal string Text = "";
             internal DateTime EnqueuedUtc = DateTime.UtcNow;
             internal ChatVisualStyle Style = ChatVisualStyle.Default;
+            internal int RowIndex = -1;
         }
 
         private sealed class ChatTranslationOutcome
@@ -959,6 +960,8 @@ namespace MapleOverlay
             internal Task<ChatTranslationOutcome> TranslationTask;
             internal string Failure = "";
             internal bool CacheAfterTranslation;
+            internal ChatVisualStyle Style;
+            internal int RowIndex = -1;
         }
 
         private readonly OverlayForm overlay;
@@ -1647,27 +1650,35 @@ namespace MapleOverlay
                 if (sessionVersion != liveSessionVersion || (!forceOnce && !live)) return;
                 // OcrResult.Text may flatten unrelated visual rows into one sentence.
                 // Preserve the OCR engine's physical line boundaries for chat parsing.
-                List<string> lines = ParseChatLines(capture.PhysicalLineText());
+                List<int> lineRows = new List<int>();
+                List<string> lines = ParseChatLines(capture.PhysicalLineText(), lineRows);
                 // Resolve every parsed message against its own physical OCR row before
-                // frame differencing. The same words under a different channel band are
-                // a different source and must not be treated as the old message.
-                List<ChatVisualStyle> lineStyles = capture.FindStyles(lines);
+                // frame differencing. The row index and resolved style are carried all
+                // the way to publication; duplicate text is never re-found by count.
+                List<ChatVisualStyle> lineStyles = new List<ChatVisualStyle>();
+                for (int index = 0; index < lines.Count; index++)
+                {
+                    int row = index < lineRows.Count ? lineRows[index] : -1;
+                    lineStyles.Add(capture.StyleForRow(row));
+                }
                 List<string> priorFrame = previousChatFrame;
                 List<ChatVisualStyle> priorStyles = previousChatStyles;
-                List<string> newLines = GetNewChatLines(priorFrame, lines);
+                List<int> newIndices = GetNewChatLineIndices(priorFrame, lines);
                 bool advanceFrame;
-                newLines = chatContinuity.Resolve(priorFrame, lines, newLines, SameChatLine, out advanceFrame);
+                newIndices = chatContinuity.ResolveIndices(priorFrame, lines, newIndices,
+                    SameChatLine, out advanceFrame);
                 if (firstLiveCapture && lines.Count > 0)
                 {
                     firstLiveCapture = false;
                     int first = Math.Max(0, lines.Count - 2);
-                    newLines = lines.GetRange(first, lines.Count - first);
+                    newIndices = new List<int>();
+                    for (int index = first; index < lines.Count; index++) newIndices.Add(index);
                 }
-                newLines = SuppressRecentOcrReappearances(recentChatFrames,
-                    priorFrame, lines, newLines);
+                newIndices = SuppressRecentOcrReappearanceIndices(recentChatFrames,
+                    priorFrame, lines, newIndices);
                 bool sourceChanged;
-                newLines = AddSourceChangedChatLines(priorFrame, priorStyles, lines, lineStyles,
-                    newLines, out sourceChanged);
+                newIndices = AddSourceChangedChatLineIndices(priorFrame, priorStyles, lines,
+                    lineStyles, newIndices, out sourceChanged);
                 if (sourceChanged) advanceFrame = true;
                 if (advanceFrame)
                 {
@@ -1676,25 +1687,21 @@ namespace MapleOverlay
                     recentChatFrames.Add(new List<string>(lines));
                     while (recentChatFrames.Count > 3) recentChatFrames.RemoveAt(0);
                 }
+                newIndices.Sort();
                 int queuedBefore = pendingChatLines.Count;
-                Dictionary<string, int> styleOccurrences =
-                    new Dictionary<string, int>(StringComparer.Ordinal);
                 // Frame differencing already preserves genuine repeated messages while
                 // suppressing a static OCR frame. Text-based queue filtering would swallow
                 // a real duplicate sent while the first copy is still being translated.
-                foreach (string line in newLines)
+                foreach (int index in newIndices)
                 {
-                    string styleKey = ChatIdentity(line);
-                    int priorOccurrence = CountSimilarChatLines(priorFrame, line);
-                    int seenOccurrence;
-                    if (!styleOccurrences.TryGetValue(styleKey, out seenOccurrence)) seenOccurrence = 0;
-                    styleOccurrences[styleKey] = seenOccurrence + 1;
-                    ChatVisualStyle visualStyle = capture.FindStyle(line,
-                        priorOccurrence + seenOccurrence);
+                    if (index < 0 || index >= lines.Count) continue;
+                    string line = lines[index];
+                    ChatVisualStyle visualStyle = lineStyles[index];
+                    int rowIndex = index < lineRows.Count ? lineRows[index] : -1;
                     if (!IsUsefulChatLine(line) ||
                         IsIgnoredSystemBroadcast(line, visualStyle)) continue;
                     pendingChatLines.Enqueue(new PendingChatLine {
-                        Text = line, Style = visualStyle
+                        Text = line, Style = visualStyle, RowIndex = rowIndex
                     });
                     while (pendingChatLines.Count > MaximumPendingChatLines)
                     {
@@ -1705,7 +1712,8 @@ namespace MapleOverlay
                 {
                     lastChatDiagnosticUtc = DateTime.UtcNow;
                     Program.LogRuntimeEvent("chat-capture", "session=" + sessionVersion + " live=" + live +
-                        " rawLines=" + capture.Lines.Count + " lines=" + lines.Count + " candidates=" + newLines.Count +
+                        " rawLines=" + capture.Lines.Count + " rows=" + lineRows.Count +
+                        " lines=" + lines.Count + " candidates=" + newIndices.Count +
                         " queued=" + pendingChatLines.Count + " advancing=" + advanceFrame +
                         " regionWidth=" + chatRegion.Width + " regionHeight=" + chatRegion.Height);
                     if (!translateBusy && pendingChatLines.Count == 0)
@@ -1753,7 +1761,9 @@ namespace MapleOverlay
                             Pending = pending,
                             Source = pending.Text,
                             SpeakerPrefix = speakerPrefix,
-                            NameTokens = nameTokens
+                            NameTokens = nameTokens,
+                            Style = pending.Style,
+                            RowIndex = pending.RowIndex
                         };
                         prepared.Untranslated = protectedMessage;
                         if (ChatBoundaryPolicy.HasUnresolvedSpeaker(cleanedMessage))
@@ -1864,18 +1874,21 @@ namespace MapleOverlay
 
         private bool PublishPreparedChatLine(PreparedChatLine prepared)
         {
+            ChatVisualStyle style = prepared.Style;
+            if (style == null && prepared.Pending != null) style = prepared.Pending.Style;
+            if (style == null) style = ChatVisualStyle.Default;
             if (!IsPlausibleChatTranslationForTarget(prepared.Untranslated, prepared.Translated, "简体中文"))
             {
                 ForgetTranslation(prepared.CacheKey);
                 if (String.IsNullOrEmpty(prepared.Failure)) prepared.Failure = "未取得有效中文译文；原文保留在上方。";
-                AppendTranslation(prepared.Source, prepared.Failure, prepared.Pending.Style, "未翻译", false);
-                Program.LogRuntimeEvent("chat-translation-result", "success=false");
+                AppendTranslation(prepared.Source, prepared.Failure, style, "未翻译", false);
+                Program.LogRuntimeEvent("chat-translation-result", "success=false row=" + prepared.RowIndex);
                 return false;
             }
             if (prepared.CacheAfterTranslation) RememberTranslation(prepared.CacheKey, prepared.Translated);
             string translated = RestorePlayerNames(prepared.Translated, prepared.NameTokens);
-            AppendTranslation(prepared.Source, prepared.SpeakerPrefix + translated, prepared.Pending.Style);
-            Program.LogRuntimeEvent("chat-translation-result", "success=true");
+            AppendTranslation(prepared.Source, prepared.SpeakerPrefix + translated, style);
+            Program.LogRuntimeEvent("chat-translation-result", "success=true row=" + prepared.RowIndex);
             return true;
         }
 
@@ -1894,7 +1907,20 @@ namespace MapleOverlay
         {
             List<string> added = new List<string>();
             if (current == null || current.Count == 0) return added;
-            if (previous == null || previous.Count == 0) { added.AddRange(current); return added; }
+            foreach (int index in GetNewChatLineIndices(previous, current))
+                if (index >= 0 && index < current.Count) added.Add(current[index]);
+            return added;
+        }
+
+        internal static List<int> GetNewChatLineIndices(List<string> previous, List<string> current)
+        {
+            List<int> added = new List<int>();
+            if (current == null || current.Count == 0) return added;
+            if (previous == null || previous.Count == 0)
+            {
+                for (int i = 0; i < current.Count; i++) added.Add(i);
+                return added;
+            }
             int bestOverlap = 0;
             int maximum = Math.Min(previous.Count, current.Count);
             for (int overlap = maximum; overlap >= 1; overlap--)
@@ -1906,7 +1932,7 @@ namespace MapleOverlay
             }
             if (bestOverlap > 0)
             {
-                for (int i = bestOverlap; i < current.Count; i++) added.Add(current[i]);
+                for (int i = bestOverlap; i < current.Count; i++) added.Add(i);
                 return added;
             }
             // OCR may alter one old character between frames. Use the newest stable anchor,
@@ -1917,14 +1943,14 @@ namespace MapleOverlay
                     if (SameChatLine(previous[j], current[i])) { anchor = i; break; }
             if (anchor >= 0)
             {
-                for (int i = anchor + 1; i < current.Count; i++) added.Add(current[i]);
+                for (int i = anchor + 1; i < current.Count; i++) added.Add(i);
             }
             else if (current.Count > previous.Count)
             {
                 // With no reliable anchor, only a growing chat frame proves that something
                 // was appended. A same-size but OCR-noisy frame is not new content.
                 int appendCount = Math.Min(current.Count - previous.Count, current.Count);
-                for (int i = current.Count - appendCount; i < current.Count; i++) added.Add(current[i]);
+                for (int i = current.Count - appendCount; i < current.Count; i++) added.Add(i);
             }
             return added;
         }
@@ -1937,20 +1963,43 @@ namespace MapleOverlay
             if (candidates == null || candidates.Count == 0) return filtered;
             foreach (string candidate in candidates)
             {
-                int previousCount = CountSimilarChatLines(previous, candidate);
-                int currentCount = CountSimilarChatLines(current, candidate);
-                int olderMaximum = 0;
-                if (recentFrames != null)
-                    foreach (List<string> frame in recentFrames)
-                        olderMaximum = Math.Max(olderMaximum,
-                            CountSimilarChatLines(frame, candidate));
-                // One OCR miss must not make an older line look newly appended. A genuine
-                // repeated post raises the occurrence count and therefore still passes.
-                if (previousCount == 0 && olderMaximum > 0 &&
-                    currentCount <= olderMaximum) continue;
+                if (IsRecentOcrReappearance(recentFrames, previous, current, candidate))
+                    continue;
                 filtered.Add(candidate);
             }
             return filtered;
+        }
+
+        internal static List<int> SuppressRecentOcrReappearanceIndices(
+            IList<List<string>> recentFrames, List<string> previous, List<string> current,
+            List<int> candidates)
+        {
+            List<int> filtered = new List<int>();
+            if (current == null || candidates == null || candidates.Count == 0) return filtered;
+            foreach (int index in candidates)
+            {
+                if (index < 0 || index >= current.Count) continue;
+                if (IsRecentOcrReappearance(recentFrames, previous, current, current[index]))
+                    continue;
+                filtered.Add(index);
+            }
+            return filtered;
+        }
+
+        private static bool IsRecentOcrReappearance(IList<List<string>> recentFrames,
+            List<string> previous, List<string> current, string candidate)
+        {
+            int previousCount = CountSimilarChatLines(previous, candidate);
+            int currentCount = CountSimilarChatLines(current, candidate);
+            int olderMaximum = 0;
+            if (recentFrames != null)
+                foreach (List<string> frame in recentFrames)
+                    olderMaximum = Math.Max(olderMaximum,
+                        CountSimilarChatLines(frame, candidate));
+            // One OCR miss must not make an older line look newly appended. A genuine
+            // repeated post raises the occurrence count and therefore still passes.
+            return previousCount == 0 && olderMaximum > 0 &&
+                currentCount <= olderMaximum;
         }
 
         private static int CountSimilarChatLines(List<string> lines, string target)
@@ -2036,6 +2085,61 @@ namespace MapleOverlay
                 current.Category != ChatSourceCategory.Unknown;
         }
 
+        // Row-index form for the live queue. Candidates are current-frame row
+        // indices, so a duplicate sentence that scrolled into another channel is
+        // delivered as that exact row instead of an occurrence re-found by text.
+        internal static List<int> AddSourceChangedChatLineIndices(List<string> previous,
+            List<ChatVisualStyle> previousStyles, List<string> current,
+            List<ChatVisualStyle> currentStyles, List<int> candidates, out bool changed)
+        {
+            changed = false;
+            List<int> result = new List<int>();
+            if (current == null) return result;
+            HashSet<int> baseline = new HashSet<int>();
+            if (candidates != null)
+                foreach (int index in candidates)
+                {
+                    if (index < 0 || index >= current.Count) continue;
+                    if (baseline.Add(index)) result.Add(index);
+                }
+            if (previous == null || previous.Count == 0 || current.Count == 0 ||
+                previousStyles == null || currentStyles == null ||
+                previousStyles.Count != previous.Count || currentStyles.Count != current.Count)
+                return result;
+
+            Dictionary<string, List<int>> previousOccurrences =
+                new Dictionary<string, List<int>>(StringComparer.Ordinal);
+            for (int index = 0; index < previous.Count; index++)
+            {
+                string identity = ChatIdentity(previous[index]);
+                List<int> list;
+                if (!previousOccurrences.TryGetValue(identity, out list))
+                {
+                    list = new List<int>();
+                    previousOccurrences.Add(identity, list);
+                }
+                list.Add(index);
+            }
+            Dictionary<string, int> seen = new Dictionary<string, int>(StringComparer.Ordinal);
+            for (int index = 0; index < current.Count; index++)
+            {
+                string identity = ChatIdentity(current[index]);
+                int occurrence;
+                if (!seen.TryGetValue(identity, out occurrence)) occurrence = 0;
+                seen[identity] = occurrence + 1;
+                if (baseline.Contains(index)) continue;
+                List<int> before;
+                if (!previousOccurrences.TryGetValue(identity, out before) ||
+                    occurrence >= before.Count) continue;
+                if (!StyleSourceChanged(previousStyles[before[occurrence]],
+                    currentStyles[index])) continue;
+                result.Add(index);
+                baseline.Add(index);
+                changed = true;
+            }
+            return result;
+        }
+
         private static string ChatIdentity(string value)
         {
             string identity = Regex.Replace((value ?? "").ToLowerInvariant(), @"[^a-z0-9\u3400-\u9fff]+", "");
@@ -2119,21 +2223,28 @@ namespace MapleOverlay
 
         internal static List<string> ParseChatLines(string ocrText)
         {
+            return ParseChatLines(ocrText, null);
+        }
+
+        internal static List<string> ParseChatLines(string ocrText, List<int> rowIndices)
+        {
             List<string> output = new List<string>();
+            if (rowIndices != null) rowIndices.Clear();
             if (String.IsNullOrWhiteSpace(ocrText)) return output;
             string[] physicalLines = ocrText.Replace("\r", "").Split('\n');
             // SHOT/SHOUT and similar message words must never be mistaken for the
             // SHO±9 channel badge. A bare O/0 badge is accepted only with a colon.
             Regex speaker = new Regex(@"(?<![A-Za-z0-9_])([A-Za-z][A-Za-z0-9_]{2,23}?)(?:(?:C(?:H|W)?[O0A]?\d{1,3}\s*[:：•·]?|SH[O0](?=[0-9@±])[A-Z0-9@±]*\s*[:：•·]?)|\s+(?:C(?:H|W)?[O0A]?\s*\d{1,3}\s*[:：•·]?|C[A-Z0-9]{0,4}\s*[:：•·]|SH[O0](?=[0-9@±])[A-Z0-9@±]*\s*[:：•·]?)|\s+[0-9O@±'’]{1,4}\s*[:：•·]|\s+(?-i:[A-Z])[A-Za-z0-9]{0,2}\s*[:：•·]|\s*[:：•·])\s*", RegexOptions.IgnoreCase);
-            foreach (string sourceLine in physicalLines)
+            for (int rowIndex = 0; rowIndex < physicalLines.Length; rowIndex++)
             {
+                string sourceLine = physicalLines[rowIndex];
                 string line = Regex.Replace(sourceLine.Trim(), @"\s+", " ");
                 if (line.Length < 2) continue;
                 if (IsStructuredUiNoise(line)) continue;
                 string presence;
                 if (TryParseChatPresence(line, out presence))
                 {
-                    output.Add(presence);
+                    AddParsedLine(output, rowIndices, presence, rowIndex);
                     continue;
                 }
                 line = ChatBoundaryPolicy.RepairBadges(RepairChatSpeakerMarker(line));
@@ -2152,7 +2263,8 @@ namespace MapleOverlay
                 if (output.Count > 0 && IsWrappedPseudoSpeaker(output[output.Count - 1], line))
                 {
                     output[output.Count - 1] = output[output.Count - 1] + " " + line;
-                    if (IsCompleteChatNotice(notice)) output.Add("系统公告: " + notice);
+                    if (IsCompleteChatNotice(notice))
+                        AddParsedLine(output, rowIndices, "系统公告: " + notice, rowIndex);
                     continue;
                 }
                 List<Match> matches = new List<Match>();
@@ -2196,12 +2308,27 @@ namespace MapleOverlay
                     int messageEnd = i + 1 < matches.Count ? matches[i + 1].Index : line.Length;
                     string message = line.Substring(messageStart, messageEnd - messageStart).Trim(' ', '-', '>', '|');
                     if (message.Length < 2) continue;
-                    output.Add(name + ": " + message);
+                    AddParsedLine(output, rowIndices, name + ": " + message, rowIndex);
                     }
                 }
-                if (IsCompleteChatNotice(notice)) output.Add("系统公告: " + notice);
+                if (IsCompleteChatNotice(notice))
+                    AddParsedLine(output, rowIndices, "系统公告: " + notice, rowIndex);
             }
             return output;
+        }
+
+        private static void AddParsedLine(List<string> output, List<int> rowIndices,
+            string text, int rowIndex)
+        {
+            output.Add(text);
+            if (rowIndices != null) rowIndices.Add(rowIndex);
+        }
+
+        internal static List<int> ParseChatLineRows(string ocrText)
+        {
+            List<int> rows = new List<int>();
+            ParseChatLines(ocrText, rows);
+            return rows;
         }
 
         private static bool IsCompleteChatNotice(string notice)

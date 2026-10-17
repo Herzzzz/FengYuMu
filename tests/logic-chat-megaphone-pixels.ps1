@@ -327,6 +327,12 @@ Assert-True ((Get-StyleCategory $ordinary) -eq 'Normal') 'ordinary words do not 
 
 # G. Unknown / no-evidence rows stay out of personal channels; real guild and
 # explicit personal prefixes still identify their source.
+$noEvidence = $fromSample.Invoke($null, [object[]]@('Alice: hello',
+    [System.Drawing.Color]::Empty, [System.Drawing.Color]::Empty, $false))
+Assert-True ((Get-StyleCategory $noEvidence) -eq 'Unknown') 'FromSample with no foreground/background/row evidence is Unknown'
+$whiteEvidence = $fromSample.Invoke($null, [object[]]@('Alice: hello',
+    [System.Drawing.Color]::White, [System.Drawing.Color]::Empty, $false))
+Assert-True ((Get-StyleCategory $whiteEvidence) -eq 'Normal') 'white glyph evidence still proves Normal'
 $unknownStroke = $fromSample.Invoke($null, [object[]]@('Alice: hello',
     [System.Drawing.Color]::FromArgb(86, 121, 151), [System.Drawing.Color]::FromArgb(140, 168, 180), $false))
 Assert-True ((Get-StyleCategory $unknownStroke) -eq 'Unknown') 'dark blue stroke on a blue scene without band evidence is Unknown'
@@ -336,6 +342,9 @@ Assert-True ((Get-StyleCategory $unmatched) -eq 'Unknown') 'unmatched glyph colo
 $unknownText = $fromSample.Invoke($null, [object[]]@('loose OCR fragment',
     [System.Drawing.Color]::Empty, [System.Drawing.Color]::Empty, $false))
 Assert-True ((Get-StyleCategory $unknownText) -eq 'Unknown') 'unassociated fragment without visual evidence is Unknown'
+$explicitParty = $fromSample.Invoke($null, [object[]]@('[Party] Alice: hello',
+    [System.Drawing.Color]::Empty, [System.Drawing.Color]::Empty, $false))
+Assert-True ((Get-StyleCategory $explicitParty) -eq 'Party') 'explicit party prefix works without visual evidence'
 $guild = $fromSample.Invoke($null, [object[]]@('Alice: hello',
     [System.Drawing.Color]::FromArgb(153, 153, 255), [System.Drawing.Color]::Empty, $false))
 Assert-True ((Get-StyleCategory $guild) -eq 'Guild') 'valid guild glyph colour is still Guild'

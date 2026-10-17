@@ -67,9 +67,11 @@ $chatKindType = $assembly.GetType('MapleOverlay.ChatVisualKind', $true)
 $chatKind = [Enum]::Parse($chatKindType, 'Chat')
 $party = $classify.Invoke($null, @('[Party] Alice: need one more',
     [Drawing.Color]::Empty, $chatKind))
-$normal = $classify.Invoke($null, @('Alice: hello', [Drawing.Color]::Empty, $chatKind))
-if ([string]$party -ne 'Party' -or [string]$normal -ne 'Normal') {
-    throw "频道来源识别错误：$party / $normal"
+$normal = $classify.Invoke($null, @('Alice: hello', [Drawing.Color]::White, $chatKind))
+$unknown = $classify.Invoke($null, @('Alice: hello', [Drawing.Color]::Empty, $chatKind))
+if ([string]$party -ne 'Party' -or [string]$normal -ne 'Normal' -or
+    [string]$unknown -ne 'Unknown') {
+    throw "频道来源识别错误：$party / $normal / $unknown"
 }
 
 $source = Get-Content (Join-Path $repoRoot 'src\SimpleForms.cs') -Raw -Encoding UTF8
