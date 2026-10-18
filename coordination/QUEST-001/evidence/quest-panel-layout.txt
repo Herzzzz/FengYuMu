@@ -98,6 +98,28 @@ PASS: r3b-negation-appended: original pixels are preserved
 PASS: r3b-reordered-appended: whole journal replacement is rejected
 PASS: r3b-reordered-appended: ordered alignment reason recorded (got quest-journal-incomplete:visible-prose-order-or-content:she)
 PASS: r3b-reordered-appended: original pixels are preserved
+PASS: R3c numeric association accepts: He wants you to get him 1 Orange Mushroom Cap and 10 Blue Snail Shells
+PASS: R3c numeric association accepts: 10
+PASS: R3c numeric association accepts: 1
+PASS: R3c numeric association rejects: He wants you to get him 10 Orange Mushroom Cap and 1 Blue Snail Shells
+PASS: R3c numeric rejection identifies the unmatched token: order-or-content:orange
+PASS: R3c numeric association rejects: He wants you to get him 1 Orange Mushroom Cap and 1 Blue Snail Shells
+PASS: R3c numeric rejection identifies the unmatched token: order-or-content:1
+PASS: R3c numeric association rejects: He wants you to get him 1 Orange Mushroom Cap and 10 Blue Snail Shells and 10 Blue Snail Shells
+PASS: R3c numeric rejection identifies the unmatched token: order-or-content:and
+PASS: R3c numeric association rejects: 2
+PASS: R3c numeric rejection identifies the unmatched token: order-or-content:2
+PASS: r3c-correct-association: journal replacement is built
+PASS: r3c-correct-association: completeness guard passes
+PASS: r3c-swapped-quantities: whole journal replacement is rejected
+PASS: r3c-swapped-quantities: numeric association reason recorded (got quest-journal-incomplete:visible-prose-order-or-content:orange)
+PASS: r3c-swapped-quantities: original pixels are preserved
+PASS: r3c-changed-blue-count: whole journal replacement is rejected
+PASS: r3c-changed-blue-count: numeric association reason recorded (got quest-journal-incomplete:visible-prose-order-or-content:1)
+PASS: r3c-changed-blue-count: original pixels are preserved
+PASS: r3c-duplicate-multiplicity: whole journal replacement is rejected
+PASS: r3c-duplicate-multiplicity: numeric association reason recorded (got quest-journal-incomplete:visible-prose-order-or-content:and)
+PASS: r3c-duplicate-multiplicity: original pixels are preserved
 PASS: R2 actual-GDI+ plan returns for emoji-a
 PASS: R2 emoji-a preserves every character
 PASS: R2 emoji-a pages contain no lone surrogates
@@ -140,4 +162,4 @@ PASS: scale 2: body base size does not shrink
 PASS: scale 2: measured width fits
 PASS: repeated F8 planning is deterministic
 PASS: repeated F8 plan is reusable by the compositor
-Quest panel layout: 142 checks passed; metrics=D:\GPT\文件\枫语幕\work\dsh-chat-001\coordination\QUEST-001\evidence\layout-metrics.json
+Quest panel layout: 164 checks passed; metrics=D:\GPT\文件\枫语幕\work\dsh-chat-001\coordination\QUEST-001\evidence\layout-metrics.json

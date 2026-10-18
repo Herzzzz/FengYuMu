@@ -2,11 +2,11 @@
   "schema": 2,
   "taskId": "QUEST-001",
   "sharedTaskId": "FONT-001",
-  "state": "R3C_IMPLEMENTED_BUILD_PENDING",
+  "state": "R3C_IMPLEMENTED_BUILD_AND_TESTS_COMMITTED_PENDING_CLOUD_REVIEW",
   "branch": "dsh/quest-font-001",
   "baseCommit": "dff639b828542d0bcad94fc9eb50a816f3f9bfd3",
   "previousImplementationCommit": "eba0d4d131f56fdeac88c7464b17f07a88162ed7",
-  "implementationCommit": "PENDING",
+  "implementationCommit": "dd7639fc29fbafbf3ee714eae93ed1b5f5437104",
   "resultFilesCommit": "reported in the final relay message; this file is committed with the result",
   "scope": {
     "sourceFiles": [
@@ -60,13 +60,13 @@
   },
   "build": {
     "command": "pwsh -NoProfile -File src/build.ps1",
-    "status": "PENDING",
+    "status": "PASS",
     "exePath": "枫语幕.exe",
-    "exeSha256": "PENDING",
+    "exeSha256": "F257E8336D3CD80551780E62D9780434CBF7DF184A2F79911F0E0E4836084A0F",
     "buildEvidencePath": "枫语幕.exe.build.json",
-    "buildEvidenceSha256": "PENDING",
-    "head": "PENDING",
-    "worktreeCleanAtBuild": false,
+    "buildEvidenceSha256": "9187FA7939E79441A5702F6F80BBE2CE4EBEC9677E035240813012AF82B52C7A",
+    "head": "dd7639fc29fbafbf3ee714eae93ed1b5f5437104",
+    "worktreeCleanAtBuild": true,
     "inputs": 64,
     "compiler": "dotnet SDK 6.0.410 Roslyn csc.dll with .NET Framework 4.8 reference assemblies"
   },
@@ -75,14 +75,14 @@
       "command": "pwsh -NoProfile -File tests/logic-quest-panel-layout.ps1",
       "kind": "actual GDI+ on built EXE",
       "checks": 164,
-      "status": "PASS on pre-clean R3c build; final clean-build rerun pending",
+      "status": "PASS on final clean build",
       "evidence": "evidence/quest-panel-layout.txt"
     },
     "questFontLayout": {
       "command": "pwsh -NoProfile -File tests/logic-quest-font-layout.ps1",
       "kind": "generated-source substitute Font/Graphics harness; not native GDI acceptance",
       "checks": 51,
-      "status": "PASS on pre-clean R3c build; final clean-build rerun pending",
+      "status": "PASS on final clean build",
       "evidence": "evidence/quest-font-layout.txt"
     },
     "simpleFlow": {

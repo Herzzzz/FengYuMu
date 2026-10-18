@@ -1,13 +1,13 @@
 {
   "schema": 2,
-  "annotation": "Final clean-build run pending; existing logs are pre-clean R3c PASS runs. Two test kinds are kept separate: 164 actual-GDI+ panel checks on the built EXE, and 51 generated-source substitute Font/Graphics checks (not native GDI acceptance). No OCR or AI rounds were added.",
+  "annotation": "Final clean-build run on 枫语幕.exe SHA-256 F257E8336D3CD80551780E62D9780434CBF7DF184A2F79911F0E0E4836084A0F (implementation head dd7639f, worktree clean). Two test kinds are kept separate: 164 actual-GDI+ panel checks on the built EXE, and 51 generated-source substitute Font/Graphics checks (not native GDI acceptance). No OCR or AI rounds were added.",
   "build": {
     "command": "pwsh -NoProfile -File src/build.ps1",
-    "status": "PENDING",
-    "exeSha256": "PENDING",
-    "buildEvidenceSha256": "PENDING",
-    "head": "PENDING",
-    "worktreeCleanAtBuild": false,
+    "status": "PASS",
+    "exeSha256": "F257E8336D3CD80551780E62D9780434CBF7DF184A2F79911F0E0E4836084A0F",
+    "buildEvidenceSha256": "9187FA7939E79441A5702F6F80BBE2CE4EBEC9677E035240813012AF82B52C7A",
+    "head": "dd7639fc29fbafbf3ee714eae93ed1b5f5437104",
+    "worktreeCleanAtBuild": true,
     "inputs": 64
   },
   "tests": [

@@ -21,4 +21,4 @@ PASS: another item description cannot corroborate Screw
 PASS: wrong name cannot borrow an unrelated item description
 PASS: the observed quantity does not suppress its exact item-name prefix
 PASS: reloading does not accumulate synthetic aliases or corrections
-R6 journal/item: 23/23 passed; actual candidate A0BDDE7FA4750903CD123CBF3F6D415DF151C6DC89321240E1EF958707C5B074; Windows/CW OCR pixels unverified.
+R6 journal/item: 23/23 passed; actual candidate F257E8336D3CD80551780E62D9780434CBF7DF184A2F79911F0E0E4836084A0F; Windows/CW OCR pixels unverified.
