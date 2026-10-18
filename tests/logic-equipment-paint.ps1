@@ -222,6 +222,30 @@ namespace MapleOverlay {
      form.ClearSimpleFusion();
     }
    }
+   // EQUIP-R3b: a clipped-letter key stays estimated even when its value box is to
+   // the right. Composition must refuse it and leave the whole value region original.
+   {
+    var clippedPanel=EqPanel(new RectangleF(50,25,600,140),18);
+    var valid=EqLabel("INT: +1",new RectangleF(90,50,80,18),new RectangleF(190,50,25,18),
+      new RectangleF(80,48,260,22),clippedPanel);
+    var clipped=EqLabelIndex("INT:+3",0,new RectangleF(90,90,20,18),
+      new RectangleF(120,90,20,18),new RectangleF(80,88,260,22),clippedPanel,false);
+    using(var frame=EqFrame(680,200,new List<OverlayLabel>{valid,clipped},
+      new List<int[]>{new int[]{120,90,140,108}},
+      new List<int>{unchecked((int)0xff99dd44)})){
+     var form=EqForm(new Rectangle(0,0,680,200));
+     var ok=form.PrepareSimpleFusionAsync(frame,Rectangle.Empty,
+       new List<OverlayLabel>{valid,clipped}).GetAwaiter().GetResult();
+     EqCheck(ok&&!form.simpleReady.Contains(clipped)&&
+       clipped.FusionFailureReason=="equipment-field-boundary-estimated",
+       "EQUIP-R3b clipped-letter key is not painted");
+     int[] layer=form.simpleLayer.Pixels();
+     int preserved=0;
+     for(int y=90;y<108;y++)for(int x=120;x<140;x++)if(layer[y*680+x]==0)preserved++;
+     EqCheck(preserved==18*20,"EQUIP-R3b complete value region stays original");
+     form.ClearSimpleFusion();
+    }
+   }
    // EQUIP-R2: the panel decides one size; a wide key cannot shrink independently.
    {
     var sharedPanel=EqPanel(new RectangleF(50,25,800,180),22);

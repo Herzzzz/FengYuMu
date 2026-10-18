@@ -114,6 +114,18 @@ Check ((FieldValue $fields[0]) -eq '+1O' -and (FieldValue $fields[1]) -eq '+3') 
 $script:currentText='POINT is here'
 $fields=Fields $script:currentText $false
 Check ($fields.Count -eq 0) 'R3a prose POINT is not split into an INT field'
+# EQUIP-R3b: a digit-containing but non-numeric prefix must not admit POINT/FOO.
+foreach($r3b in @('STR:+1POINT:+3','STR:+1FOOINT:+3','STR:+1PO INT:+3')){
+ $script:currentText=$r3b
+ $fields=Fields $r3b $false
+ Check ($fields.Count -eq 0) ('R3b no non-equipment fields from '+$r3b)
+ Check (-not [bool]$looksRow.Invoke($null,[object[]]@($r3b))) ('R3b row is not equipment: '+$r3b)
+ Check (-not [bool]$looksStructure.Invoke($null,[object[]]@($r3b))) ('R3b panel is not equipment: '+$r3b)
+ if($r3b -ne 'STR:+1PO INT:+3'){
+  $strictFields=Fields $r3b $true
+  Check (-not ($strictFields|Where-Object{$_.GetType().GetField('Key',$flags).GetValue($_) -eq 'intelligence'})) ('R3b INT inside POINT is rejected: '+$r3b)
+ }
+}
 $script:currentText='MaxHP: +15'
 $fields=Fields $script:currentText $false
 Check ($fields.Count -eq 1 -and (Key0 $fields) -eq 'hp') 'R3a key boundary does not duplicate inner HP'

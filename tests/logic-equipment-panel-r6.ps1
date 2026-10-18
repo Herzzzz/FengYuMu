@@ -224,6 +224,21 @@ $suffix=@'
    Check(output.TrueForAll(x=>x.EquipmentField.BoundaryMode=="measured"&&
      x.EquipmentField.ValuePixelsPreserved),"R3a contiguous OCR-digit fields are measured");
 
+   // EQUIP-R3b: a digit-containing prefix that is not a complete numeric value
+   // cannot admit POINT/FOO inside a prose row. No field may be planned at all.
+   foreach(string bad in new string[]{"STR:+1POINT:+3","STR:+1FOOINT:+3","STR:+1PO INT:+3"}){
+    var badLines=new List<OcrLine>{Line(bad,100,590)};
+    var badPanels=Panels(badLines,false,"");
+    form.Build(badLines,badPanels,out output);
+    Check(output.Count==0,("R3b non-equipment row plans nothing: "+bad));
+    Check(Program.Logs.Exists(x=>x.Contains("equipment-coverage")&&x.Contains("recognizedRows=0")&&
+      x.Contains("prepared=0")),("R3b coverage records zero prepared for "+bad));
+   }
+   var pointLine=Adjacent("POINT",new string[]{"POINT"},100,610);
+   bool pointMeasured;
+   var pointSpan=PreciseTextSpan(new List<OcrLine>{pointLine},"POINT",2,3,out pointMeasured,true);
+   Check(!pointSpan.IsEmpty&&!pointMeasured,"R3b clipped-letter key box stays estimated");
+
    var seen=new HashSet<string>();
    foreach(var log in Program.Logs)
     if((log.StartsWith("equipment-coverage")||log.StartsWith("equipment-panel"))&&seen.Add(log))

@@ -12,7 +12,7 @@ namespace MapleOverlay
         // translated key and leaves this value (and therefore sign, %, parenthesis
         // correction and coloured pixels) untouched.
         internal string RawValue;
-        internal bool HasValue,Required,TextValue,StrongContext;
+        internal bool HasValue,Required,TextValue;
     }
 
     internal static class EquipmentFieldGrammar
@@ -118,16 +118,10 @@ namespace MapleOverlay
                     // key are prose, not an equipment value, so those are skipped.
                     if(!equipment||Regex.IsMatch(tail,@"[A-Za-z0-9]"))continue;
                 }
-                bool hasPunctuation=hasValue&&Regex.IsMatch(tail.Substring(0,
-                    value.Groups["value"].Index),@"[.:：]");
-                int leading=text.Length-text.TrimStart().Length;
-                bool leadingSigned=hasValue&&match.Index==leading&&Regex.IsMatch(
-                    value.Groups["value"].Value.Trim(),@"^[+\-\u2212\uFF0B\uFF0D]");
                 EquipmentField field=new EquipmentField{
                     Start=match.Index,Length=match.Length,Key=definition.Key,
                     Chinese=(required?"需要":"")+definition.Chinese,
-                    Required=required,TextValue=definition.TextValue,
-                    StrongContext=definition.Explicit||required||hasPunctuation||leadingSigned};
+                    Required=required,TextValue=definition.TextValue};
                 if(hasValue) {
                     int start=after+value.Groups["value"].Index;
                     int length=value.Groups["value"].Length;
@@ -155,11 +149,18 @@ namespace MapleOverlay
                     {overlap=true;break;}
                 if(!overlap)distinct.Add(candidate);
             }
-            // A row made only of field spans may use signed no-colon forms such as
-            // "Speed +3 Evasion +4". If prose remains outside the spans, only fields
-            // with an explicit/colon/signed context survive this guard.
-            if(!equipment&&!AllFieldsConsumed(text,distinct))
-                distinct.RemoveAll(delegate(EquipmentField field){return !field.StrongContext;});
+            // Outside a confirmed equipment panel, prose outside the complete field/
+            // value spans normally means this is not a tooltip row. Keep parsed fields
+            // only when the row also carries a strong equipment anchor (type, req,
+            // upgrade, attack/defence); STR:+1POINT:+3 has no anchor and is cleared.
+            if(!equipment&&!AllFieldsConsumed(text,distinct)) {
+                bool anchored=Regex.IsMatch(text,@"(?i)\b(?:type|category)\s*[.:：]");
+                foreach(EquipmentField field in distinct)
+                    if(field.Required||field.Key=="upgrades"||field.Key=="attack-speed"||
+                        field.Key=="weapon-defense"||field.Key=="magic-defense"||
+                        field.Key=="weapon-attack"||field.Key=="magic-attack")anchored=true;
+                if(!anchored)distinct.Clear();
+            }
             // A field followed by ordinary prose is not a tooltip row. Another field
             // after a punctuation/space boundary is allowed: combined OCR rows carry
             // Weapon Def + Magic Def (or REQ LEV + REQ STR + ...) on one line.
@@ -199,10 +200,6 @@ namespace MapleOverlay
             return false;
         }
 
-        private static bool IsNumericSign(char value)
-        {
-            return value=='+'||value=='-'||value=='\u2212'||value=='\uFF0B'||value=='\uFF0D';
-        }
 
         // The old (?<![A-Za-z]) lookbehind rejected INT when the preceding OCR digit
         // was O/I/l (STR:+1OINT:+3). A key may start after a letter/digit only when
@@ -219,14 +216,16 @@ namespace MapleOverlay
                 if(other.Match.Index<index&&other.Match.Index+other.Match.Length<=index&&
                     (nearest==null||other.Match.Index>nearest.Match.Index))nearest=other;
             if(nearest==null)return false;
-            int runStart=index-1;
-            while(runStart>0&&Char.IsLetterOrDigit(text[runStart-1]))runStart--;
-            if(runStart>0&&IsNumericSign(text[runStart-1]))runStart--;
-            if(nearest.Match.Index+nearest.Match.Length>runStart)return false;
-            if(runStart>=index)return false;
-            if(!Char.IsDigit(text[runStart])&&!IsNumericSign(text[runStart]))return false;
-            for(int i=runStart;i<index;i++)if(Char.IsDigit(text[i]))return true;
-            return false;
+            int previousEnd=nearest.Match.Index+nearest.Match.Length;
+            if(previousEnd>index)return false;
+            string segment=text.Substring(previousEnd,index-previousEnd);
+            string trimmed=Regex.Replace(segment,@"^[\s,;/|·•.:：]+","");
+            if(trimmed.Length==0)return false;
+            // The whole segment between the previous field and this key must be a
+            // complete numeric value (plus separators). A digit-containing prefix
+            // such as +1PO must not qualify just because it starts with +1.
+            string numericValue=@"^\s*"+NumericValue+@"\s*[.:：]?\s*$";
+            return Regex.IsMatch(trimmed,numericValue,RegexOptions.IgnoreCase);
         }
 
         // A single-line fallback for panels that OCR never grouped. It requires a

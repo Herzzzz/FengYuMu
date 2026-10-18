@@ -115,12 +115,12 @@ namespace MapleOverlay
                         RectangleF name=PreciseTextSpan(row,text,field.Start,field.Length,out nameMeasured,true);
                         if(name.IsEmpty){rejected++;continue;}
                         RectangleF value=field.ValueLength>0?PreciseTextSpan(row,text,field.ValueStart,field.ValueLength,out valueMeasured,false):RectangleF.Empty;
-                        // A clipped key word is acceptable when its measured value starts
-                        // after the key box (for example WDEF: with the colon attached).
-                        // If the value box is unknown, or the key estimate overlaps it,
-                        // the whole field is treated as estimated and preserved.
-                        bool measuredBounds=value.IsEmpty?nameMeasured:
-                            (valueMeasured&&(nameMeasured||name.Right<=value.Left+0.5f));
+                        // Both key and value boundaries must be measured. A value box
+                        // sitting to the right must never upgrade a key box that clipped
+                        // letters (for example INT inside POINT). Attached punctuation on
+                        // a key word is already treated as a safe key trim by
+                        // PreciseTextSpan(..., allowPunctuationTrim:true).
+                        bool measuredBounds=nameMeasured&&valueMeasured;
                         EquipmentFieldPlan fieldPlan=EquipmentPanelLayout.BuildField(field,text,
                             OverlaySpan(name,scale),value.IsEmpty?RectangleF.Empty:OverlaySpan(value,scale),
                             localRow,panelPlan.PanelBounds,panelPlan.Typography,measuredBounds);
