@@ -86,5 +86,5 @@ PASS: shared planner and explicit list context are wired
 PASS: build includes both new source files
 PASS: planner adds no OCR or AI round
 PASS: main dictionary pass routes bare skill names through explicit list context
-SKILL-001 logic: 81 checks passed; candidate SHA256=1CF7240654BAC8589FC5F441348381BE88F947280953E6129B35EC194CC4FCB3
+SKILL-001 logic: 81 checks passed; candidate SHA256=45ED9F51C4274AD80977A99122CDECD58455F27A105C0A600B58F5DCF865DFE1
 Evidence boundary: controlled OCR geometry, actual built EXE reflection, native GDI+ font measurement; original 36 screenshots and Windows native OCR/real game remain UNVERIFIED.

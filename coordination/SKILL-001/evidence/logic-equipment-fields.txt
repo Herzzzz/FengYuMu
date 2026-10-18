@@ -1,0 +1,98 @@
+
+An error has occurred that was not properly handled. Additional information is shown below. The PowerShell process will exit.
+Unhandled exception. System.IO.FileLoadException: The given assembly name was invalid.
+File name: 'ﾫg￭ﾋU^,'
+   at System.Reflection.AssemblyNameParser.Parse(ReadOnlySpan`1 name)
+   at System.Reflection.AssemblyName.ParseAsAssemblySpec(Char* pAssemblyName, Void* pAssemblySpec)
+PASS: requirements keep all six attributes on a combined OCR row
+PASS: requirement aliases map to generic attributes
+PASS: requirement key carries the required prefix
+PASS: requirement INT keeps its exact value
+PASS: Weapon Def and Magic Def both survive on one row
+PASS: defence values keep sign and digits
+PASS: INT, LUK and Remaining Enhancements all survive together
+PASS: primary/upgrade aliases are distinct
+PASS: remaining enhancements keeps the observed count
+PASS: parenthesized attack correction is preserved exactly
+PASS: negative magic attack keeps its sign
+PASS: short ATT aliases map to attack fields
+PASS: Attack Power is a generic weapon-attack alias
+PASS: critical rate keeps percentage and sign
+PASS: Crit Damage is a critical-damage alias
+PASS: Evasion is a generic avoidability alias
+PASS: Evasion uses the existing avoidability translation
+PASS: partial OCR without a colon still matches Evasion
+PASS: Avoidability remains a negative-capable alias
+PASS: Speed keeps its exact modifier
+PASS: Movement Speed is a generic speed alias
+PASS: Attack Speed is parsed and its Fast value is preserved
+PASS: multi-word attack speed value is preserved
+PASS: signed no-colon speed and Evasion both survive
+PASS: contiguous STR+5INT+3 yields two fields
+PASS: STR value stops before INT and INT keeps +3
+PASS: next-field boundary keeps legitimate OCR +1O
+PASS: R3a INT follows OCR digit O and is still recognized
+PASS: R3a STR keeps +1O and INT keeps +3
+PASS: R3a prose POINT is not split into an INT field
+PASS: R3b no non-equipment fields from STR:+1POINT:+3
+PASS: R3b row is not equipment: STR:+1POINT:+3
+PASS: R3b panel is not equipment: STR:+1POINT:+3
+PASS: R3b INT inside POINT is rejected: STR:+1POINT:+3
+PASS: R3b no non-equipment fields from STR:+1FOOINT:+3
+PASS: R3b row is not equipment: STR:+1FOOINT:+3
+PASS: R3b panel is not equipment: STR:+1FOOINT:+3
+PASS: R3b INT inside POINT is rejected: STR:+1FOOINT:+3
+PASS: R3b no non-equipment fields from STR:+1PO INT:+3
+PASS: R3b row is not equipment: STR:+1PO INT:+3
+PASS: R3b panel is not equipment: STR:+1PO INT:+3
+PASS: R3a key boundary does not duplicate inner HP
+PASS: Upgrade Slots maps to the upgrade attribute
+PASS: Upgrades Available accepts a zero value
+PASS: OCR-confusable digit is preserved verbatim
+PASS: Unicode minus is preserved verbatim
+PASS: independent Unicode sign and digit are one raw value
+PASS: independent ASCII minus and digit are one raw value
+PASS: decimal negative percentage is preserved
+PASS: generic fields work for Hat
+PASS: generic fields work for Overall
+PASS: generic fields work for Shoes
+PASS: generic fields work for Gloves
+PASS: generic fields work for One-Handed Sword
+PASS: two defences establish an equipment panel
+PASS: a requirement row establishes an equipment panel
+PASS: an upgrade row establishes an equipment panel
+PASS: attack speed establishes an equipment field row
+PASS: a partial Evasion row establishes equipment structure
+PASS: Evasion is recognized as an equipment field row
+PASS: critical prose after a value is not an equipment panel
+PASS: ordinary prose with two stat words is not an equipment row
+PASS: ordinary critical prose is not an equipment row
+PASS: prose after a value is not an equipment field row
+PASS: prose is not an equipment panel
+PASS: equipment typography uses the shared FONT family
+PASS: equipment typography uses one pixel unit
+PASS: equipment field base size stays readable and bounded
+PASS: painted field font keeps the planned size/unit
+PASS: EQUIP-R2 narrow and wide keys fit at the panel size
+PASS: EQUIP-R2 real GDI+ uses one panel font size for both keys
+PASS: EQUIP-R2 shared 16px plan is the panel decision
+PASS: EQUIP-R2 wide key that cannot fit is preserved, not shrunk
+PASS: the shared plan prepares an attack field
+PASS: the plan retains the complete raw attack modifier
+PASS: the plan protects value pixels rather than repainting them
+PASS: the measured value rectangle is the protection guard
+PASS: the key layout region stays left of the protected value
+PASS: the plan keeps the measured equipment panel boundary
+PASS: all fields share the one panel typography plan
+PASS: a merged OCR word is split before its value
+PASS: the split key region ends before the value
+PASS: the merged value is retained in evidence
+PASS: EQUIP-R1 estimates are distinguished from measured boundaries
+PASS: EQUIP-R1 estimated value boundary never claims pixel preservation
+PASS: EQUIP-R1 estimated value region preserves the original
+PASS: an unsplittable merged word falls back safely
+PASS: the unsplittable fallback still retains the exact value text
+PASS: an unsafe merged value preserves the original instead of recolouring it
+PASS: partial OCR without a value rectangle is marked partial
+PASS: partial value still protects the rest of the row
+Equipment fields: 91 checks passed; actual built EXE grammar/plan API; synthetic rectangles; real CW pixels unverified.

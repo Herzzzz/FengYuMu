@@ -1,0 +1,243 @@
+{
+  "schema": 2,
+  "taskId": "SKILL-001",
+  "state": "IMPLEMENTED_BUILD_AND_TESTS_COMMITTED_PENDING_CLOUD_REVIEW",
+  "branch": "dsh/skill-001",
+  "baseCommit": "bb4f9c361d5cc0ddef05d8cbdecfe95772eebe05",
+  "implementationCommit": "5b6c9b07e2f870f1d626f7060eca76e0436da100",
+  "resultFilesCommit": "reported in the final relay message; this file is committed with the result",
+  "inherits": [
+    "CHAT-001 accepted",
+    "QUEST-001 / FONT-001 accepted",
+    "EQUIP-001 R3b base bb4f9c3"
+  ],
+  "scope": {
+    "sourceFiles": [
+      "src/SkillPanelComposition.cs",
+      "src/SkillNameListPolicy.cs",
+      "src/SkillDictionaryMatching.cs",
+      "src/SkillEffectVocabulary.cs",
+      "src/SkillSectionOverlay.cs",
+      "src/StructuredPanelOverlay.cs",
+      "src/MapleOverlay.cs",
+      "src/SimpleFusionComposition.cs",
+      "src/build.ps1"
+    ],
+    "testFiles": [
+      "tests/logic-skill-panel-001.ps1",
+      "tests/logic-skill-title-matching.ps1",
+      "tests/logic-skill-detail-semantics.ps1",
+      "tests/logic-simple-flow-r11.ps1"
+    ],
+    "notChanged": [
+      "OCR model, protocol and OCR rounds",
+      "AI provider requests, prompts and retries",
+      "chat classification and quest matching dictionaries",
+      "equipment field grammar"
+    ]
+  },
+  "diagnosis": {
+    "genericMasterHeader": "DetectSkillContentId took the first exact dictionary row. Every panel beginning with the generic '[Master Level: 20]' segment resolved to 1200000, so Rush, Critical Recovery, Sword Booster and Slow could borrow Sword Mastery's or another skill's description; Arrow Bomb borrowed Drain.",
+    "containedName": "DetectUniqueSkillNameId scanned every short name contained in the line. 'Recovery' inside 'Critical Recovery' made the unique title ambiguous and prevented the correct id.",
+    "sectionOwnership": "The old AddSkillPanelLabels ranked at most three long-text candidates, let the body union include the master and prerequisite rows, and the independent overview/effect passes could add competing owners for the same panel. A successful section could suppress or overlap another.",
+    "listNames": "The main dictionary pass called FindSkillNameMatches on every ordinary line, so a bare skill name in prose or a player name could be replaced outside a skill list. Trailing level digits had no protected span.",
+    "evidence": "coordination/SKILL-001/evidence/baseline-skill-panel-probe.txt"
+  },
+  "implementation": {
+    "identity": "Maximal exact skill-name spans are resolved first. A unique visible body is the second source of identity. The generic '[Master Level: N]' row never resolves an id. Contained short names do not create ambiguity, and a shared Chinese body is used only when every candidate supplies the identical Chinese; otherwise the original body is preserved.",
+    "onePanelPlan": "BuildSkillPanelPlan creates one SkillPanelPlan per visible panel. It owns name, master level, description, prerequisite, current and next as separate sections with exact source spans. One section cannot suppress another; absent sections are not invented; a failed section is preserved without blocking the others.",
+    "combinedRows": "SplitSkillSemanticRows separates title, master header, body, prerequisite, current and next when they share one OCR line. Splits are measured where possible and recorded; a proportional split inside one OCR word is marked estimated and never upgraded to measured.",
+    "numericSafety": "Every level section keeps the observed level number. Current and next effects use the shared effect grammar with TranslationValueSafety ordered numeric preservation. Values are never swapped between levels. A description from another server's numbers is rejected rather than borrowed.",
+    "typography": "SkillPanelTypography is shared: SimSun, GraphicsUnit.Pixel, body floor 11px, body cap 16px, title body+3 with a narrow-name readable fallback. Section slots expand only into blank space before the next measured section. There is no per-section 8px shrink loop.",
+    "listNames": "SkillNameListPolicy requires an explicit skill-list header or at least two same-column exact skill-name rows. Bare names in ordinary prose are rejected. A trailing level number is excluded from the replaced span and protected by KeepClearBounds; the split is marked estimated.",
+    "composition": "SimpleFusionComposition uses the plan's fixed pixel size, refuses a section that does not fit, and records skill-panel/skill-paint status. Generic overview/effect passes skip panels owned by the plan.",
+    "taskSpecificRuntimeBranches": false,
+    "extraOcrOrAiRounds": false
+  },
+  "coverage": {
+    "corpus": "shipped 枫语幕词库.tsv",
+    "skillIds": 264,
+    "namesTranslated": "264/264",
+    "overviewRowsAvailable": 95,
+    "overviewTranslationsPassed": "95/95",
+    "overviewAbsent": 169,
+    "overviewAbsentMeaning": "The shipped corpus has no non-level overview row for these ids; this is not a translation failure.",
+    "levelEffects": 3804,
+    "levelEffectsPassed": "3804/3804",
+    "multiEffectSkills": 164,
+    "classCounts": {
+      "Warrior": 85,
+      "Magician": 73,
+      "Bowman": 53,
+      "Thief": 50,
+      "Beginner": 3,
+      "Pirate": 0
+    },
+    "stageCounts": {
+      "Beginner": 3,
+      "1st": 93,
+      "2nd": 70,
+      "3rd": 98,
+      "4th": 0
+    },
+    "table": "evidence/skill-coverage.tsv",
+    "summary": "evidence/coverage-summary.json"
+  },
+  "build": {
+    "command": "pwsh -NoProfile -File src/build.ps1",
+    "status": "PASS",
+    "head": "5b6c9b07e2f870f1d626f7060eca76e0436da100",
+    "worktreeAtBuild": "tracked worktree clean; only the pre-existing untracked main_ui_live_*.png application captures were present",
+    "inputs": 67,
+    "exePath": "枫语幕.exe",
+    "exeSha256": "45ED9F51C4274AD80977A99122CDECD58455F27A105C0A600B58F5DCF865DFE1",
+    "buildEvidencePath": "枫语幕.exe.build.json",
+    "buildEvidenceSha256": "437EECC71DAB158302B31B57BE59A0C50B6B6E7BCF98CBF1F2E0699FBEB7CC5F",
+    "compiler": "dotnet SDK 6.0.410 Roslyn csc.dll with .NET Framework 4.8 reference assemblies"
+  },
+  "tests": {
+    "skillPanel": {
+      "command": "pwsh -NoProfile -File tests/logic-skill-panel-001.ps1 -ExePath .\\枫语幕.exe",
+      "checks": 81,
+      "kind": "actual built EXE reflection; controlled OCR geometry; native GDI+ font measurement and stand-in pixel composition",
+      "status": "PASS",
+      "evidence": "evidence/logic-skill-panel-001-root.txt"
+    },
+    "skillTitleMatching": {
+      "command": "pwsh -NoProfile -File tests/logic-skill-title-matching.ps1 -ExePath .\\枫语幕.exe",
+      "checks": 13,
+      "status": "PASS",
+      "evidence": "evidence/skill-title-matching-root.txt"
+    },
+    "skillDetailSemantics": {
+      "command": "pwsh -NoProfile -File tests/logic-skill-detail-semantics.ps1 -ExePath .\\枫语幕.exe",
+      "status": "PASS",
+      "evidence": "evidence/skill-detail-semantics-root.txt"
+    },
+    "controlledPanels": {
+      "command": "included in logic-skill-panel-001",
+      "fixtures": 41,
+      "plannedSectionLabelsComposed": "all planned labels across 41/41 panels",
+      "visibleRoleCoverage": "body=40, current=26, next=37; 6 preserved sections with concrete reasons",
+      "evidence": "evidence/skill-panel-cases.json"
+    },
+    "equipmentFields": {
+      "command": "pwsh -NoProfile -File tests/logic-equipment-fields.ps1",
+      "checks": 91,
+      "status": "PASS",
+      "evidence": "evidence/logic-equipment-fields.txt"
+    },
+    "equipmentPaint": {
+      "command": "pwsh -NoProfile -File tests/logic-equipment-paint.ps1",
+      "checks": 42,
+      "status": "PASS",
+      "evidence": "evidence/logic-equipment-paint.txt"
+    },
+    "equipmentPanel": {
+      "command": "pwsh -NoProfile -File tests/logic-equipment-panel-r6.ps1",
+      "checks": 56,
+      "status": "PASS"
+    },
+    "equipmentBody": {
+      "command": "pwsh -NoProfile -File tests/logic-equipment-body-r6.ps1",
+      "checks": 7,
+      "status": "PASS"
+    },
+    "equipmentScope": {
+      "command": "pwsh -NoProfile -File tests/logic-equipment-scope.ps1",
+      "checks": 27,
+      "status": "PASS"
+    },
+    "simpleFlow": {
+      "command": "pwsh -NoProfile -File tests/logic-simple-flow-r11.ps1",
+      "checks": 33,
+      "status": "PASS",
+      "evidence": "evidence/logic-simple-flow-r11.txt"
+    },
+    "questFont": {
+      "command": "pwsh -NoProfile -File tests/logic-quest-font-layout.ps1",
+      "checks": 51,
+      "status": "PASS",
+      "evidence": "evidence/logic-quest-font-layout.txt"
+    },
+    "questPanel": {
+      "command": "pwsh -NoProfile -File tests/logic-quest-panel-layout.ps1",
+      "checks": 164,
+      "status": "PASS"
+    },
+    "journalAndItem": {
+      "command": "pwsh -NoProfile -File tests/logic-journal-and-item-r6.ps1 -ExePath .\\枫语幕.exe",
+      "checks": 23,
+      "status": "PASS",
+      "evidence": "evidence/logic-journal-and-item-r6.txt"
+    },
+    "chatCategoryFiltering": {
+      "command": "pwsh -NoProfile -File tests/logic-chat-category-filtering.ps1",
+      "status": "PASS"
+    },
+    "chatContinuity": {
+      "command": "pwsh -NoProfile -File tests/logic-chat-continuity.ps1",
+      "checks": 9,
+      "status": "PASS"
+    },
+    "chatMegaphonePixels": {
+      "command": "pwsh -NoProfile -File tests/logic-chat-megaphone-pixels.ps1",
+      "checks": 164,
+      "status": "PASS"
+    },
+    "uiDpiScaling": {
+      "command": "pwsh -NoProfile -File tests/logic-ui-dpi-scaling.ps1",
+      "status": "PASS 100/125/150/175/200% and mixed DPI"
+    },
+    "releaseSafety": {
+      "command": "pwsh -NoProfile -File tests/logic-release-safety.ps1",
+      "checks": 22,
+      "status": "PASS"
+    },
+    "followupSafety": {
+      "command": "pwsh -NoProfile -File tests/logic-followup-safety.ps1",
+      "checks": 11,
+      "status": "PASS"
+    },
+    "sceneFeedbackSafety": {
+      "command": "pwsh -NoProfile -File tests/logic-scene-feedback-safety.ps1",
+      "checks": 32,
+      "status": "PASS"
+    },
+    "captureFramePolicy": {
+      "command": "pwsh -NoProfile -File tests/logic-capture-frame-policy.ps1",
+      "checks": 13,
+      "status": "PASS"
+    },
+    "userFeedbackSafety": {
+      "command": "pwsh -NoProfile -File tests/logic-user-feedback-safety.ps1",
+      "checks": 20,
+      "status": "PASS"
+    }
+  },
+  "preExistingFailuresConfirmed": [
+    "tests/logic-overlay-label-layout.ps1 (cross-screen geometry assertion)",
+    "tests/logic-overlay-paint-safety.ps1 (stale source guard)",
+    "tests/logic-overlay-dual-rendering.ps1 (stale source guard)",
+    "tests/logic-panel-context-isolation.ps1 (stale source guard)",
+    "tests/logic-quest-body-and-summary.ps1 (stale source guard)",
+    "tests/logic-quest-title-groups.ps1 (dictionary/title index assertion)",
+    "tests/logic-quest-shell-resilience.ps1 (clean quest scene not recognized on this host)",
+    "tests/logic-characters-r15.ps1 (stale hard-coded /workspace/work/release-v4.0 path)",
+    "tests/logic-hotkey-toggle.ps1 (compiled self-check process exits 3)"
+  ],
+  "notRunStalePathTests": [
+    "tests/logic-skill-corpus-r15.ps1",
+    "tests/logic-sections-r15.ps1",
+    "tests/logic-skill-screenshots-r15.ps1 (requires private original pixel fixtures)"
+  ],
+  "unverified": [
+    "Original 36 user screenshots / 41 panels were not available in this checkout; the controlled screenshot-geometry rows were replayed, not the original pixels.",
+    "Windows native OCR on the actual game client",
+    "Real in-game skill tooltip rendering and readability at 100/125/150/175/200% and mixed DPI",
+    "Actual native GDI+ output over real game pixels (this run used native GDI+ font measurement and controlled stand-in pixels)",
+    "Private user screenshots, video and chat evidence (intentionally not committed)",
+    "Whether every aesthetically imperfect generic fallback is acceptable to the user; unsafe/ambiguous bodies were preserved rather than guessed"
+  ],
+  "cloudAcceptance": "PENDING"
+}
