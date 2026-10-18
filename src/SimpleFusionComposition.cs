@@ -176,6 +176,8 @@ namespace MapleOverlay
                             if (guard.Bottom > area.Top && guard.Top < area.Bottom && guard.Left >= area.Right)
                                 right = Math.Min(right, guard.Left - 1);
                         content.Width = Math.Max(area.Width, right - area.Left);
+                        if (label.EquipmentField != null && label.EquipmentField.BoundaryEstimated)
+                        { failures[label] = "equipment-field-boundary-estimated"; continue; }
                         Font font;
                         if (label.EquipmentField != null)
                             font = FitEquipmentFieldFont(measure, label.EquipmentField, label.Text, content.Size);
@@ -270,11 +272,14 @@ namespace MapleOverlay
                     if (!simpleReady.Contains(label)) Program.LogRuntimeEvent("replacement-preserved", "generation=" + generation + " role="+label.SemanticRole+" source="+label.MatchSource+" reason=" + label.FusionFailureReason);
                 }
                 int equipmentPrepared = 0, equipmentPainted = 0, equipmentPreserved = 0;
-                string equipmentReasons = "";
+                string equipmentReasons = "", equipmentPanelSizes = "";
                 foreach (OverlayLabel equipmentLabel in source)
                 {
                     if (equipmentLabel == null || equipmentLabel.EquipmentField == null) continue;
                     equipmentPrepared++;
+                    string panelSize = equipmentLabel.EquipmentField.PanelFontSize.ToString("0.#");
+                    if (equipmentPanelSizes.IndexOf(panelSize, StringComparison.Ordinal) < 0)
+                        equipmentPanelSizes += (equipmentPanelSizes.Length > 0 ? "," : "") + panelSize;
                     if (simpleReady.Contains(equipmentLabel))
                     {
                         equipmentPainted++;
@@ -305,6 +310,7 @@ namespace MapleOverlay
                     Program.LogRuntimeEvent("equipment-paint", "generation=" + generation +
                         " prepared=" + equipmentPrepared + " painted=" + equipmentPainted +
                         " preserved=" + equipmentPreserved +
+                        " panelSize=" + (equipmentPanelSizes.Length == 0 ? "none" : equipmentPanelSizes) +
                         " preservedReason=" + (equipmentReasons.Length == 0 ? "none" : equipmentReasons));
                 committed = true;
                 return true;
@@ -356,9 +362,9 @@ namespace MapleOverlay
             return null;
         }
 
-        // Equipment fields use the panel's shared family/size (FONT-001 principle)
-        // instead of independently squeezing every key to 8px. If the complete key
-        // cannot fit at the shared floor, the original pixels are preserved.
+        // Equipment fields use one final panel font size. There is deliberately no
+        // per-label shrink loop: a narrow key cannot drag a wide key to a smaller
+        // size, and a key that does not fit at the panel size preserves the original.
         private static Font FitEquipmentFieldFont(Graphics graphics, EquipmentFieldPlan plan,
             string text, SizeF area)
         {
@@ -366,17 +372,15 @@ namespace MapleOverlay
             if (type == null || String.IsNullOrEmpty(type.Family) ||
                 Single.IsNaN(type.FieldSize) || Single.IsInfinity(type.FieldSize))
                 return FitSimpleFont(graphics, text, area, 14.0f, 11.0f);
-            float floor = Math.Max(11.0f, type.MinimumSize);
-            float start = Math.Max(floor, Math.Min(22.0f, type.FieldSize));
+            float size = Math.Max(11.0f, Math.Min(22.0f, type.FieldSize));
+            Font font = new Font(type.Family, size, FontStyle.Regular, GraphicsUnit.Pixel);
             using (StringFormat format = SimpleTextFormat())
-            for (float size = start; size >= floor; size -= 1)
             {
-                Font font = new Font(type.Family, size, FontStyle.Regular, GraphicsUnit.Pixel);
                 int fitted, lines;
                 graphics.MeasureString(text, font, area, format, out fitted, out lines);
                 if (fitted == text.Length) return font;
-                font.Dispose();
             }
+            font.Dispose();
             return null;
         }
 

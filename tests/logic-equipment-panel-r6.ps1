@@ -2,9 +2,12 @@ $ErrorActionPreference='Stop'
 $root=Split-Path -Parent $PSScriptRoot
 Add-Type -Path (Join-Path $PSHOME 'Microsoft.CodeAnalysis.dll')
 Add-Type -Path (Join-Path $PSHOME 'Microsoft.CodeAnalysis.CSharp.dll')
-function Method([string]$file,[string]$name){
+function Method([string]$file,[string]$name,[int]$parameterCount=-1){
  $tree=[Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree]::ParseText([IO.File]::ReadAllText((Join-Path $root ('src/'+$file)))).GetRoot()
- @($tree.DescendantNodes()|Where-Object{$_ -is [Microsoft.CodeAnalysis.CSharp.Syntax.MethodDeclarationSyntax] -and $_.Identifier.ValueText -eq $name})[0].ToFullString()
+ $methods=@($tree.DescendantNodes()|Where-Object{$_ -is [Microsoft.CodeAnalysis.CSharp.Syntax.MethodDeclarationSyntax] -and $_.Identifier.ValueText -eq $name})
+ if($parameterCount -ge 0){$methods=@($methods|Where-Object{$_.ParameterList.Parameters.Count -eq $parameterCount})}
+ if($methods.Count -eq 0){throw ("method not found: "+$file+" "+$name+" params="+$parameterCount)}
+ return $methods[0].ToFullString()
 }
 $prefix=@'
 using System;using System.Collections.Generic;using System.Globalization;using System.Text;using System.Text.RegularExpressions;
@@ -58,7 +61,7 @@ namespace MapleOverlay {
 '@
 $body=$prefix
 foreach($method in @(
- @{File='StructuredPanelOverlay.cs';Name='PreciseTextSpan'},
+ @{File='StructuredPanelOverlay.cs';Name='PreciseTextSpan';Params=5},
  @{File='StructuredPanelOverlay.cs';Name='OverlaySpan'},
  @{File='StructuredPanelOverlay.cs';Name='AddStructuredFieldLabels'},
  @{File='MapleOverlay.cs';Name='BuildVisualRows'},
@@ -67,7 +70,7 @@ foreach($method in @(
  @{File='MapleOverlay.cs';Name='GetOcrLineBounds'},
  @{File='MapleOverlay.cs';Name='ToOverlayX'},
  @{File='MapleOverlay.cs';Name='ToOverlayY'})){
- $body+="`n"+(Method $method.File $method.Name)
+ if($method.ContainsKey('Params')){$body+="`n"+(Method $method.File $method.Name $method.Params)}else{$body+="`n"+(Method $method.File $method.Name)}
 }
 $body+="`n}`n}`n"
 $body+=([IO.File]::ReadAllText((Join-Path $root 'src/EquipmentFieldGrammar.cs')) -replace '(?m)^using .*;\r?\n','')
@@ -83,6 +86,15 @@ $suffix=@'
     float width=Math.Max(5,token.Length*7.0f);
     line.Words.Add(new OcrWord{Text=token,BoundingRect=new RectangleF(cx,y,width,16)});
     cx+=width+4;
+   }
+   return line;
+  }
+  static OcrLine Adjacent(string text,string[] words,float x,float y){
+   var line=new OcrLine{Text=text};float cx=x;
+   foreach(string token in words){
+    float width=Math.Max(5,token.Length*7.0f);
+    line.Words.Add(new OcrWord{Text=token,BoundingRect=new RectangleF(cx,y,width,16)});
+    cx+=width;
    }
    return line;
   }
@@ -154,6 +166,30 @@ $suffix=@'
     form.Build(kindLines,kindPanels,out output);
     Check(output.Count==2,"equipment type "+kind+" uses the same field path");
    }
+   // EQUIP-R1: one OCR word contains both key and value. The proportional split is
+   // estimated, so the field must be preserved and never claimed as pixel-protected.
+   var mergedLines=new List<OcrLine>{Line("WeaponDef-5",100,520)};
+   var mergedPanels=Panels(mergedLines,true,"grammar-structure");
+   form.Build(mergedLines,mergedPanels,out output);
+   Check(output.Count==0,"R1 estimated merged-word boundary preserves the original row");
+   Check(Program.Logs.Exists(x=>x.Contains("equipment-coverage")&&x.Contains("estimatedValues=1")&&
+     x.Contains("preservedReason=weapon-defense:estimated-value-region")),
+     "R1 estimated boundary is not reported as value-pixels-preserved");
+
+   // EQUIP-R3: adjacent no-space fields with measured word boxes. The STR value must
+   // stop before INT, and both key/value pairs must be prepared without conflict.
+   var contiguousLines=new List<OcrLine>{Adjacent("STR+5INT+3",new string[]{"STR","+5","INT","+3"},100,550)};
+   var contiguousPanels=Panels(contiguousLines,true,"grammar-structure");
+   form.Build(contiguousLines,contiguousPanels,out output);
+   Check(output.Count==2,"R3 contiguous STR+5INT+3 parses and prepares two fields");
+   Check(output.TrueForAll(x=>x.EquipmentField.BoundaryMode=="measured"&&
+     x.EquipmentField.ValuePixelsPreserved),"R3 contiguous fields have measured value boundaries");
+   Check(output.Exists(x=>x.EquipmentField.Key=="strength"&&x.EquipmentField.OriginalValue=="+5")&&
+     output.Exists(x=>x.EquipmentField.Key=="intelligence"&&x.EquipmentField.OriginalValue=="+3"),
+     "R3 STR does not consume the first character of INT");
+   Check(output.TrueForAll(x=>x.KeepClearBounds.Left>x.SourceBounds.Right),
+     "R3 STR value guard does not intrude into the INT key");
+
    var seen=new HashSet<string>();
    foreach(var log in Program.Logs)
     if((log.StartsWith("equipment-coverage")||log.StartsWith("equipment-panel"))&&seen.Add(log))

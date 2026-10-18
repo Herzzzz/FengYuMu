@@ -17,12 +17,12 @@ namespace MapleOverlay {
     new RectangleF[]{new RectangleF(panel.X,panel.Y,panel.Width,sourceHeight)},panel);
    return p;
   }
-  static OverlayLabel EqLabel(string text,RectangleF key,RectangleF value,RectangleF row,
-      EquipmentPanelPlan panel){
+  static OverlayLabel EqLabelIndex(string text,int index,RectangleF key,RectangleF value,
+      RectangleF row,EquipmentPanelPlan panel,bool measured){
    var fields=EquipmentFieldGrammar.Parse(text,true);
-   if(fields.Count==0)throw new Exception("fixture did not parse: "+text);
-   var plan=EquipmentPanelLayout.BuildField(fields[0],text,key,value,row,panel.PanelBounds,
-    panel.Typography);
+   if(fields.Count<=index)throw new Exception("fixture did not parse: "+text);
+   var plan=EquipmentPanelLayout.BuildField(fields[index],text,key,value,row,panel.PanelBounds,
+    panel.Typography,measured);
    if(plan==null)throw new Exception("fixture did not plan: "+text);
    panel.Add(plan);
    return new OverlayLabel{Bounds=plan.KeySourceBounds,SourceBounds=plan.KeySourceBounds,
@@ -30,6 +30,10 @@ namespace MapleOverlay {
     KeepClearBounds=plan.ValueGuardBounds,PanelBounds=plan.PanelBounds,
     Text=plan.Translation,SemanticRole="item-field",MatchSource=plan.MatchSource,
     Confidence=LabelConfidence.High,EquipmentField=plan,EquipmentPanel=panel};
+  }
+  static OverlayLabel EqLabel(string text,RectangleF key,RectangleF value,RectangleF row,
+      EquipmentPanelPlan panel){
+   return EqLabelIndex(text,0,key,value,row,panel,true);
   }
   static OverlayForm EqForm(Rectangle frame){
    var p=new OverlayForm();p.Bounds=Rectangle.Empty;p.gameBounds=p.captureBounds=frame;
@@ -79,9 +83,16 @@ namespace MapleOverlay {
     EqCheck(ok,"equipment composition commits");
     EqCheck(form.simpleReady.Count==labels.Count,"all equipment fields that fit are painted");
     int[] layer=form.simpleLayer.Pixels();
-    int preserved=0;
-    for(int i=0;i<values.Count;i++)if(layer[EqMarker(w,values[i])]==0)preserved++;
-    EqCheck(preserved==values.Count,"every measured numeric value stays transparent/original");
+    int preservedPixels=0,totalValuePixels=0;
+    for(int i=0;i<values.Count;i++){
+     int[] v=values[i];
+     for(int y=v[1];y<v[3];y++)for(int x=v[0];x<v[2];x++){
+      totalValuePixels++;
+      if(layer[y*w+x]==0)preservedPixels++;
+     }
+    }
+    EqCheck(totalValuePixels>=48&&preservedPixels==totalValuePixels,
+      "every pixel of every value region (sign, correction and colour) stays original");
     int painted=0;
     foreach(var label in labels)if(label.EquipmentField.Status=="painted"&&label.EquipmentField.PreparedFontSize>=11.0f)painted++;
     EqCheck(painted==labels.Count,"every equipment label records a painted stage and readable font size");
@@ -111,6 +122,99 @@ namespace MapleOverlay {
      EqCheck(allPainted,"paint counters identify the actual equipment labels");
     }
     form.ClearSimpleFusion();
+   }
+   // EQUIP-R1: an estimated merged-word boundary must not paint. The composition
+   // guard preserves the whole numeric region even if a caller supplied a label.
+   {
+    var estimatedPanel=EqPanel(new RectangleF(50,25,760,120),18);
+    var valid=EqLabel("INT: +1",new RectangleF(90,50,90,18),new RectangleF(200,50,30,18),
+      new RectangleF(80,48,300,22),estimatedPanel);
+    var estimated=EqLabelIndex("WeaponDef-5",0,new RectangleF(90,90,100,18),
+      new RectangleF(200,90,12,4),new RectangleF(80,88,300,22),estimatedPanel,false);
+    var estimatedValues=new List<int[]>{new int[]{200,90,212,94}};
+    using(var frame=EqFrame(860,220,new List<OverlayLabel>{valid,estimated},estimatedValues,
+      new List<int>{unchecked((int)0xff44ccff)})){
+     var form=EqForm(new Rectangle(0,0,860,220));
+     var ok=form.PrepareSimpleFusionAsync(frame,Rectangle.Empty,
+       new List<OverlayLabel>{valid,estimated}).GetAwaiter().GetResult();
+     EqCheck(ok&&form.simpleReady.Contains(valid)&&!form.simpleReady.Contains(estimated),
+       "EQUIP-R1 estimated boundary label is not painted");
+     EqCheck(estimated.FusionFailureReason=="equipment-field-boundary-estimated",
+       "EQUIP-R1 estimated boundary records its preserve reason");
+     int[] layer=form.simpleLayer.Pixels();
+     int preservedPixels=0;
+     for(int y=90;y<94;y++)for(int x=200;x<212;x++)if(layer[y*860+x]==0)preservedPixels++;
+     EqCheck(preservedPixels==48,"EQUIP-R1 all 48 numeric marker pixels stay original");
+     form.ClearSimpleFusion();
+    }
+   }
+   // EQUIP-R3: adjacent no-space fields with measured word boxes both paint; the
+   // STR value guard must stop before INT and must not trigger a live-value conflict.
+   {
+    var contiguousPanel=EqPanel(new RectangleF(50,25,600,120),18);
+    var strength=EqLabelIndex("STR+5INT+3",0,new RectangleF(90,50,30,18),
+      new RectangleF(125,50,20,18),new RectangleF(80,48,220,22),contiguousPanel,true);
+    var intelligence=EqLabelIndex("STR+5INT+3",1,new RectangleF(150,50,30,18),
+      new RectangleF(185,50,20,18),new RectangleF(80,48,220,22),contiguousPanel,true);
+    using(var frame=EqFrame(680,180,new List<OverlayLabel>{strength,intelligence},
+      new List<int[]>{new int[]{125,50,145,68},new int[]{185,50,205,68}},
+      new List<int>{unchecked((int)0xffffaa33),unchecked((int)0xff33aaff)})){
+     var form=EqForm(new Rectangle(0,0,680,180));
+     var ok=form.PrepareSimpleFusionAsync(frame,Rectangle.Empty,
+       new List<OverlayLabel>{strength,intelligence}).GetAwaiter().GetResult();
+     EqCheck(ok&&form.simpleReady.Contains(strength)&&form.simpleReady.Contains(intelligence),
+       "EQUIP-R3 contiguous STR+5INT+3 paints both fields");
+     EqCheck(strength.FusionFailureReason==""&&intelligence.FusionFailureReason=="",
+       "EQUIP-R3 no source-or-live-value-conflict for contiguous fields");
+     int[] layer=form.simpleLayer.Pixels();
+     int preserved=0;
+     for(int y=50;y<68;y++)for(int x=125;x<145;x++)if(layer[y*680+x]==0)preserved++;
+     for(int y=50;y<68;y++)for(int x=185;x<205;x++)if(layer[y*680+x]==0)preserved++;
+     EqCheck(preserved==2*18*20,"EQUIP-R3 both complete value regions stay original");
+     form.ClearSimpleFusion();
+    }
+   }
+   // EQUIP-R2: the panel decides one size; a wide key cannot shrink independently.
+   {
+    var sharedPanel=EqPanel(new RectangleF(50,25,800,180),22);
+    EqCheck(sharedPanel.Typography.FieldSize==16,"EQUIP-R2 fixture shares a 16px panel size");
+    var narrow=EqLabel("INT: +1",new RectangleF(90,50,90,22),new RectangleF(230,50,30,22),
+      new RectangleF(80,48,260,26),sharedPanel);
+    var wide=EqLabel("Weapon Def.: +16",new RectangleF(90,90,150,22),new RectangleF(260,90,40,22),
+      new RectangleF(80,88,300,26),sharedPanel);
+    using(var frame=EqFrame(900,260,new List<OverlayLabel>{narrow,wide},
+      new List<int[]>{new int[]{230,50,260,72},new int[]{260,90,300,112}},
+      new List<int>{unchecked((int)0xffff8844),unchecked((int)0xff44aaff)})){
+     var form=EqForm(new Rectangle(0,0,900,260));
+     var ok=form.PrepareSimpleFusionAsync(frame,Rectangle.Empty,
+       new List<OverlayLabel>{narrow,wide}).GetAwaiter().GetResult();
+     EqCheck(ok&&form.simpleReady.Contains(narrow)&&form.simpleReady.Contains(wide),
+       "EQUIP-R2 narrow and wide keys both paint at the shared size");
+     EqCheck(narrow.EquipmentField.PreparedFontSize==16&&wide.EquipmentField.PreparedFontSize==16,
+       "EQUIP-R2 narrow 智力 and wide 物理防御力 both use 16px, not 16/14");
+     EqCheck(Program.Logs.Exists(x=>x.Contains("equipment-paint")&&x.Contains("panelSize=16")&&
+       x.Contains("prepared=2")&&x.Contains("painted=2")),
+       "EQUIP-R2 paint evidence records the single 16px panel decision");
+     form.ClearSimpleFusion();
+    }
+    var mixedPanel=EqPanel(new RectangleF(50,25,800,180),22);
+    var fits=EqLabel("INT: +1",new RectangleF(90,50,80,22),new RectangleF(180,50,25,22),
+      new RectangleF(80,48,260,26),mixedPanel);
+    var tooWide=EqLabel("Weapon Def.: +16",new RectangleF(90,90,24,22),new RectangleF(120,90,30,22),
+      new RectangleF(80,88,260,26),mixedPanel);
+    using(var frame=EqFrame(900,260,new List<OverlayLabel>{fits,tooWide},
+      new List<int[]>{new int[]{180,50,205,72},new int[]{120,90,150,112}},
+      new List<int>{unchecked((int)0xff77dd88),unchecked((int)0xffdd77cc)})){
+     var form=EqForm(new Rectangle(0,0,900,260));
+     var ok=form.PrepareSimpleFusionAsync(frame,Rectangle.Empty,
+       new List<OverlayLabel>{fits,tooWide}).GetAwaiter().GetResult();
+     EqCheck(ok&&form.simpleReady.Contains(fits)&&!form.simpleReady.Contains(tooWide),
+       "EQUIP-R2 wide key that cannot fit is preserved while the narrow key paints");
+     EqCheck(tooWide.FusionFailureReason=="equipment-field-does-not-fit"&&
+       tooWide.EquipmentField.PanelFontSize==16&&tooWide.EquipmentField.PreparedFontSize==0,
+       "EQUIP-R2 preserved wide key keeps the 16px panel decision and records no shrink");
+     form.ClearSimpleFusion();
+    }
    }
    // A key that cannot fit at the shared floor must preserve the original and report a reason.
    {

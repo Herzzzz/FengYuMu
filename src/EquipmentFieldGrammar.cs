@@ -25,6 +25,16 @@ namespace MapleOverlay
             {Key=key;Pattern=pattern;Chinese=chinese;Explicit=explicitStat;TextValue=textValue;}
         }
 
+        // Key occurrences are collected before any value is read, so the value of
+        // STR+5INT+3 can be bounded by the already-confirmed INT key.
+        private sealed class FieldMatch
+        {
+            internal Match Match;
+            internal FieldDefinition Definition;
+            internal int After;
+            internal bool Required;
+        }
+
         // Every entry is a generic attribute shape. No item name, item id, class,
         // player or server value participates in matching.
         private static readonly FieldDefinition[] Fields={
@@ -66,6 +76,7 @@ namespace MapleOverlay
             foreach(string key in new string[]{"master level","current level","next level","physical damage","magic damage"})
                 if(text.IndexOf(key,StringComparison.OrdinalIgnoreCase)>=0)return result;
 
+            List<FieldMatch> keyMatches=new List<FieldMatch>();
             for(int i=0;i<Fields.Length;i++) {
                 FieldDefinition definition=Fields[i];
                 string expression=@"(?<![A-Za-z])(?<req>(?:req(?:uired)?\s*[.:]?\s*)?)(?<name>"+
@@ -74,36 +85,55 @@ namespace MapleOverlay
                     int after=match.Index+match.Length;
                     bool required=match.Groups["req"].Length>0;
                     if(definition.Key=="level"&&!required)continue;
-                    string tail=text.Substring(after);
-                    Match value=MatchValue(tail,definition);
-                    bool hasValue=value!=null&&value.Success;
-                    if(!hasValue) {
-                        // A key followed only by punctuation is a partial OCR row and
-                        // still yields a safe key-only field. Letters/digits after the
-                        // key are prose, not an equipment value, so those are skipped.
-                        if(!equipment||Regex.IsMatch(tail,@"[A-Za-z0-9]"))continue;
-                    }
-                    bool hasPunctuation=hasValue&&Regex.IsMatch(tail.Substring(0,
-                        value.Groups["value"].Index),@"[.:：]");
-                    int leading=text.Length-text.TrimStart().Length;
-                    bool leadingSigned=hasValue&&match.Index==leading&&Regex.IsMatch(
-                        value.Groups["value"].Value.Trim(),@"^[+\-\u2212\uFF0B\uFF0D]");
-                    EquipmentField field=new EquipmentField{
-                        Start=match.Index,Length=match.Length,Key=definition.Key,
-                        Chinese=(required?"需要":"")+definition.Chinese,
-                        Required=required,TextValue=definition.TextValue,
-                        StrongContext=definition.Explicit||required||hasPunctuation||leadingSigned};
-                    if(hasValue) {
-                        int start=after+value.Groups["value"].Index;
-                        int length=value.Groups["value"].Length;
-                        while(length>0&&Char.IsWhiteSpace(text[start+length-1]))length--;
-                        if(length>0) {
-                            field.ValueStart=start;field.ValueLength=length;
-                            field.RawValue=text.Substring(start,length);field.HasValue=true;
-                        }
-                    }
-                    result.Add(field);
+                    keyMatches.Add(new FieldMatch{Match=match,Definition=definition,
+                        After=after,Required=required});
                 }
+            }
+            keyMatches.Sort(delegate(FieldMatch a,FieldMatch b){
+                int start=a.Match.Index.CompareTo(b.Match.Index);
+                return start!=0?start:b.Match.Length.CompareTo(a.Match.Length);});
+
+            foreach(FieldMatch keyMatch in keyMatches) {
+                Match match=keyMatch.Match;
+                FieldDefinition definition=keyMatch.Definition;
+                int after=keyMatch.After;
+                bool required=keyMatch.Required;
+                // Never let a numeric/confusable token consume the first characters
+                // of the next confirmed field. This keeps +5I from swallowing INT in
+                // STR+5INT+3, while an unbounded +1O still keeps its OCR tolerance.
+                int nextStart=text.Length;
+                foreach(FieldMatch other in keyMatches)
+                    if(other.Match.Index>=after&&other.Match.Index<nextStart)
+                        nextStart=other.Match.Index;
+                string tail=text.Substring(after,Math.Max(0,nextStart-after));
+                Match value=MatchValue(tail,definition);
+                bool hasValue=value!=null&&value.Success;
+                if(!hasValue) {
+                    // A key followed only by punctuation is a partial OCR row and
+                    // still yields a safe key-only field. Letters/digits after the
+                    // key are prose, not an equipment value, so those are skipped.
+                    if(!equipment||Regex.IsMatch(tail,@"[A-Za-z0-9]"))continue;
+                }
+                bool hasPunctuation=hasValue&&Regex.IsMatch(tail.Substring(0,
+                    value.Groups["value"].Index),@"[.:：]");
+                int leading=text.Length-text.TrimStart().Length;
+                bool leadingSigned=hasValue&&match.Index==leading&&Regex.IsMatch(
+                    value.Groups["value"].Value.Trim(),@"^[+\-\u2212\uFF0B\uFF0D]");
+                EquipmentField field=new EquipmentField{
+                    Start=match.Index,Length=match.Length,Key=definition.Key,
+                    Chinese=(required?"需要":"")+definition.Chinese,
+                    Required=required,TextValue=definition.TextValue,
+                    StrongContext=definition.Explicit||required||hasPunctuation||leadingSigned};
+                if(hasValue) {
+                    int start=after+value.Groups["value"].Index;
+                    int length=value.Groups["value"].Length;
+                    while(length>0&&Char.IsWhiteSpace(text[start+length-1]))length--;
+                    if(length>0) {
+                        field.ValueStart=start;field.ValueLength=length;
+                        field.RawValue=text.Substring(start,length);field.HasValue=true;
+                    }
+                }
+                result.Add(field);
             }
 
             // Several aliases can overlap (Critical Damage/Damage, Attack Speed/Speed,

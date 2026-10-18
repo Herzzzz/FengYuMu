@@ -3,6 +3,7 @@ $ErrorActionPreference='Stop'
 $repoRoot=Split-Path -Parent $PSScriptRoot
 if([String]::IsNullOrWhiteSpace($ExePath)){$ExePath=Join-Path $repoRoot '枫语幕.exe'}
 . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1')
+Add-Type -AssemblyName System.Drawing.Common
 $assembly=Load-TestAssembly $ExePath
 $flags=[Reflection.BindingFlags]'Public,NonPublic,Static,Instance'
 $grammar=$assembly.GetType('MapleOverlay.EquipmentFieldGrammar',$true)
@@ -11,7 +12,8 @@ $parse=$grammar.GetMethod('Parse',$flags)
 $looksRow=$grammar.GetMethod('LooksLikeEquipmentRow',$flags)
 $looksStructure=$grammar.GetMethod('LooksLikeEquipmentStructure',$flags)
 $forRows=$assembly.GetType('MapleOverlay.EquipmentPanelTypography',$true).GetMethod('ForRows',$flags)
-$buildField=$layout.GetMethod('BuildField',$flags)
+$buildField=@($layout.GetMethods($flags)|Where-Object{$_.Name -eq 'BuildField' -and $_.GetParameters().Count -eq 7})[0]
+$buildFieldMeasured=@($layout.GetMethods($flags)|Where-Object{$_.Name -eq 'BuildField' -and $_.GetParameters().Count -eq 8})[0]
 $count=0
 function Check([bool]$ok,[string]$name){if(-not $ok){throw $name};$script:count++;Write-Output ('PASS: '+$name)}
 function Fields([string]$text,[bool]$equipment=$false){return @($parse.Invoke($null,[object[]]@($text,$equipment)))}
@@ -25,6 +27,12 @@ function Plan([string]$text,[System.Drawing.RectangleF]$key,[System.Drawing.Rect
  if($fields.Count -eq 0){throw ('no field parsed: '+$text)}
  $field=Base $fields[0];$type=Base $typography
  return $buildField.Invoke($null,[object[]]@($field,$text,$key,$value,$row,$panel,$type))
+}
+function PlanWithBoundary([string]$text,[System.Drawing.RectangleF]$key,[System.Drawing.RectangleF]$value,[System.Drawing.RectangleF]$row,[System.Drawing.RectangleF]$panel,$typography,[bool]$measured){
+ $script:currentText=$text;$fields=Fields $text $true
+ if($fields.Count -eq 0){throw ('no field parsed: '+$text)}
+ $field=Base $fields[0];$type=Base $typography
+ return $buildFieldMeasured.Invoke($null,[object[]]@($field,$text,$key,$value,$row,$panel,$type,$measured))
 }
 
 # Requirements: every column survives even when the tooltip panel was not recognized.
@@ -90,6 +98,15 @@ Check ((Key0 $fields) -eq 'attack-speed' -and (FieldValue $fields[0]) -eq 'Very 
 $script:currentText='Speed +3 Evasion +4'
 $fields=Fields $script:currentText $false
 Check ($fields.Count -eq 2 -and ((Keys $fields) -join ',') -eq 'speed,avoidability') 'signed no-colon speed and Evasion both survive'
+# EQUIP-R3: the following confirmed key bounds the previous value, without
+# removing legitimate OCR tolerance (+1O stays +1O).
+$script:currentText='STR+5INT+3'
+$fields=Fields $script:currentText $false
+Check ($fields.Count -eq 2 -and ((Keys $fields) -join ',') -eq 'strength,intelligence') 'contiguous STR+5INT+3 yields two fields'
+Check ((FieldValue $fields[0]) -eq '+5' -and (FieldValue $fields[1]) -eq '+3') 'STR value stops before INT and INT keeps +3'
+$script:currentText='Weapon Def.: +1O INT: +5'
+$fields=Fields $script:currentText $false
+Check ($fields.Count -eq 2 -and (FieldValue $fields[0]) -eq '+1O' -and (FieldValue $fields[1]) -eq '+5') 'next-field boundary keeps legitimate OCR +1O'
 $script:currentText='Upgrade Slots: 2'
 $fields=Fields $script:currentText $false
 Check ((Key0 $fields) -eq 'upgrades' -and (FieldValue $fields[0]) -eq '2') 'Upgrade Slots maps to the upgrade attribute'
@@ -147,6 +164,48 @@ $font=$type.GetType().GetMethod('CreateFieldFont',$flags).Invoke($type,@())
 try{
  Check ($font.Size -eq $size -and $font.Unit.ToString() -eq 'Pixel') 'painted field font keeps the planned size/unit'
 }finally{$font.Dispose()}
+# EQUIP-R2: one panel font size is used for both narrow and wide keys. A wide
+# key that does not fit at that size is preserved, never quietly shrunk.
+$panel22=New-Object System.Drawing.RectangleF(50,50,500,220)
+$rows22=New-Object 'System.Collections.Generic.List[System.Drawing.RectangleF]'
+$rows22.Add((New-Object System.Drawing.RectangleF(90,80,400,22)))
+$rows22.Add((New-Object System.Drawing.RectangleF(90,110,400,22)))
+$rowArgs22=New-Object 'object[]' 2
+$rowArgs22[0]=$rows22.PSObject.BaseObject
+$rowArgs22[1]=$panel22
+$type22=$forRows.Invoke($null,$rowArgs22)
+$script:currentText='INT: +1'
+$narrowPlan=Plan $script:currentText (New-Object System.Drawing.RectangleF(100,100,90,22)) (New-Object System.Drawing.RectangleF(200,100,40,22)) (New-Object System.Drawing.RectangleF(90,98,260,24)) $panel22 $type22
+$script:currentText='Weapon Def.: +16'
+$widePlan=Plan $script:currentText (New-Object System.Drawing.RectangleF(100,100,150,22)) (New-Object System.Drawing.RectangleF(260,100,50,22)) (New-Object System.Drawing.RectangleF(90,98,360,24)) $panel22 $type22
+$fitMethod=$assembly.GetType('MapleOverlay.OverlayForm',$true).GetMethod('FitEquipmentFieldFont',$flags)
+$bmp=New-Object System.Drawing.Bitmap(400,120)
+$graphics=[System.Drawing.Graphics]::FromImage($bmp)
+try{
+ $fontArgs1=New-Object 'object[]' 4
+ $fontArgs1[0]=Base $graphics;$fontArgs1[1]=Base $narrowPlan;$fontArgs1[2]='智力'
+ $fontArgs1[3]=[System.Drawing.SizeF](New-Object System.Drawing.SizeF(90,22))
+ $fontNarrow=$fitMethod.Invoke($null,$fontArgs1)
+ $fontArgs2=New-Object 'object[]' 4
+ $fontArgs2[0]=Base $graphics;$fontArgs2[1]=Base $widePlan;$fontArgs2[2]='物理防御力'
+ $fontArgs2[3]=[System.Drawing.SizeF](New-Object System.Drawing.SizeF(250,22))
+ $fontWide=$fitMethod.Invoke($null,$fontArgs2)
+ try{
+  Check ($fontNarrow -ne $null -and $fontWide -ne $null) 'EQUIP-R2 narrow and wide keys fit at the panel size'
+  $panelSize=[single]$narrowPlan.GetType().GetField('PanelFontSize',$flags).GetValue($narrowPlan)
+  Check ($fontNarrow.Size -eq $panelSize -and $fontWide.Size -eq $panelSize) 'EQUIP-R2 real GDI+ uses one panel font size for both keys'
+  Check ($panelSize -eq 16) 'EQUIP-R2 shared 16px plan is the panel decision'
+ }finally{
+  if($fontNarrow -ne $null){$fontNarrow.Dispose()}
+  if($fontWide -ne $null){$fontWide.Dispose()}
+ }
+ $fontArgs3=New-Object 'object[]' 4
+ $fontArgs3[0]=Base $graphics;$fontArgs3[1]=Base $widePlan;$fontArgs3[2]='物理防御力'
+ $fontArgs3[3]=[System.Drawing.SizeF](New-Object System.Drawing.SizeF(35,22))
+ $fontTooWide=$fitMethod.Invoke($null,$fontArgs3)
+ Check ($fontTooWide -eq $null) 'EQUIP-R2 wide key that cannot fit is preserved, not shrunk'
+ if($fontTooWide -ne $null){$fontTooWide.Dispose()}
+}finally{$graphics.Dispose();$bmp.Dispose()}
 $script:currentText='Weapon Attack: +36 (40 -4)'
 $plan=Plan $script:currentText (New-Object System.Drawing.RectangleF(100,100,120,18)) (New-Object System.Drawing.RectangleF(232,100,90,18)) (New-Object System.Drawing.RectangleF(90,98,400,22)) $panel $type
 Check ($plan -ne $null) 'the shared plan prepares an attack field'
@@ -168,6 +227,11 @@ Check ([bool]$plan.GetType().GetField('MergedValueSplit',$flags).GetValue($plan)
 $splitRight=[single]$plan.GetType().GetField('KeySourceBounds',$flags).GetValue($plan).Right
 Check ($splitRight -le 120.5) 'the split key region ends before the value'
 Check ($plan.GetType().GetField('OriginalValue',$flags).GetValue($plan) -eq '+5') 'the merged value is retained in evidence'
+$estimated=PlanWithBoundary $script:currentText (New-Object System.Drawing.RectangleF(100,100,40,18)) (New-Object System.Drawing.RectangleF(122,100,18,18)) (New-Object System.Drawing.RectangleF(90,98,120,22)) $panel $type $false
+Check ($estimated.GetType().GetField('BoundaryMode',$flags).GetValue($estimated) -eq 'estimated') 'EQUIP-R1 estimates are distinguished from measured boundaries'
+Check (-not [bool]$estimated.GetType().GetProperty('ValuePixelsPreserved',$flags).GetValue($estimated,$null)) 'EQUIP-R1 estimated value boundary never claims pixel preservation'
+Check ($estimated.GetType().GetField('Status',$flags).GetValue($estimated) -eq 'preserved' -and
+  $estimated.GetType().GetField('PreservedReason',$flags).GetValue($estimated) -eq 'estimated-value-region') 'EQUIP-R1 estimated value region preserves the original'
 $plan=Plan $script:currentText (New-Object System.Drawing.RectangleF(100,100,6,18)) (New-Object System.Drawing.RectangleF(102,100,18,18)) (New-Object System.Drawing.RectangleF(90,98,120,22)) $panel $type
 Check ([bool]$plan.GetType().GetField('MergedValueBaked',$flags).GetValue($plan)) 'an unsplittable merged word falls back safely'
 Check ($plan.GetType().GetField('Translation',$flags).GetValue($plan).Contains('+5')) 'the unsplittable fallback still retains the exact value text'

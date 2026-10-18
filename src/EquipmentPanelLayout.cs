@@ -80,13 +80,15 @@ namespace MapleOverlay
         internal bool MergedValueBaked;
         internal bool PartialValue;
         internal string ValueMode;
+        internal string BoundaryMode;
+        internal bool BoundaryEstimated;
         internal string Status;
         internal string PreservedReason;
-        internal float PreparedFontSize;
+        internal float PanelFontSize,PreparedFontSize;
 
         internal bool ValuePixelsPreserved
         {
-            get { return ValueMode == "value-pixels-preserved"; }
+            get { return ValueMode == "value-pixels-preserved" && BoundaryMode == "measured"; }
         }
 
         internal string Describe()
@@ -94,6 +96,7 @@ namespace MapleOverlay
             return "key=" + Key +
                 " value=" + (OriginalValue ?? "") +
                 " valueMode=" + ValueMode +
+                " boundary=" + BoundaryMode +
                 " status=" + Status +
                 " source=" + KeySourceBounds.Left.ToString("0.#", CultureInfo.InvariantCulture) +
                 "," + KeySourceBounds.Top.ToString("0.#", CultureInfo.InvariantCulture) +
@@ -150,6 +153,14 @@ namespace MapleOverlay
             RectangleF keyBounds, RectangleF valueBounds, RectangleF rowBounds,
             RectangleF panelBounds, EquipmentPanelTypography typography)
         {
+            return BuildField(field, rowText, keyBounds, valueBounds, rowBounds,
+                panelBounds, typography, true);
+        }
+
+        internal static EquipmentFieldPlan BuildField(EquipmentField field, string rowText,
+            RectangleF keyBounds, RectangleF valueBounds, RectangleF rowBounds,
+            RectangleF panelBounds, EquipmentPanelTypography typography, bool measuredBounds)
+        {
             if (field == null || String.IsNullOrEmpty(field.Key) || keyBounds.IsEmpty ||
                 !IsFinite(keyBounds)) return null;
             if (typography == null)
@@ -166,7 +177,10 @@ namespace MapleOverlay
             plan.HasValue = field.HasValue && plan.OriginalValue.Length > 0;
             plan.Translation = plan.Chinese;
             plan.Typography = typography;
+            plan.PanelFontSize = typography.FieldSize;
             plan.RowBounds = rowBounds;
+            plan.BoundaryMode = measuredBounds ? "measured" : "estimated";
+            plan.BoundaryEstimated = !measuredBounds;
             plan.Status = "matched";
 
             RectangleF key = keyBounds;
@@ -247,6 +261,21 @@ namespace MapleOverlay
                 // pixels, so keep the original row and report why.
                 plan.Status = "preserved";
                 plan.PreservedReason = "merged-value-region-unsafe";
+            }
+            if (!measuredBounds)
+            {
+                // PreciseTextSpan clipped an OCR word, so the key/value edge is an
+                // estimate, not a measured glyph boundary. Never claim pixel
+                // preservation on an estimate: keep the original row untouched.
+                plan.Translation = plan.Chinese;
+                plan.MergedValueSplit = false;
+                plan.MergedValueBaked = false;
+                plan.PartialValue = false;
+                plan.KeySourceBounds = keyBounds;
+                plan.ValueGuardBounds = valueBox ? valueBounds : RectangleF.Empty;
+                plan.ValueMode = field.HasValue ? "value-bounds-estimated" : "key-bounds-estimated";
+                plan.Status = "preserved";
+                plan.PreservedReason = field.HasValue ? "estimated-value-region" : "estimated-key-region";
             }
             return plan;
         }

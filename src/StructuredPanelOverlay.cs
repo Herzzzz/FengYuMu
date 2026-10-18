@@ -13,24 +13,36 @@ namespace MapleOverlay
 
         // Unlike the old whole-word span, this also separates INT+5 when OCR
         // emitted it as one word. A missing value is never supplied by a glossary.
+        // The bool reports whether every intersected OCR word was covered whole.
+        // A clipped word box is a proportional estimate, not a measured glyph edge.
         private static RectangleF PreciseTextSpan(List<OcrLine> lines,string text,int rawStart,int rawLength)
+        {bool measured;return PreciseTextSpan(lines,text,rawStart,rawLength,out measured);}
+
+        private static RectangleF PreciseTextSpan(List<OcrLine> lines,string text,int rawStart,int rawLength,
+            out bool measured)
         {
+            measured=false;
             int start=TranslationStore.Normalize(text.Substring(0,rawStart)).Length;
             if(start>0)start=TranslationStore.Normalize(text).IndexOf(TranslationStore.Normalize(text.Substring(rawStart,rawLength)),Math.Min(start,TranslationStore.Normalize(text).Length),StringComparison.Ordinal);
             if(start<0)return RectangleF.Empty;
             int end=start+TranslationStore.Normalize(text.Substring(rawStart,rawLength)).Length;
             string all=TranslationStore.Normalize(text);int cursor=0;RectangleF bounds=RectangleF.Empty;
+            bool foundAny=false,clean=true;
             foreach(OcrLine line in lines)foreach(OcrWord word in line.Words) {
                 string value=TranslationStore.Normalize(word.Text);if(value.Length==0)continue;
-                int found=all.IndexOf(value,Math.Min(cursor,all.Length),StringComparison.Ordinal);if(found<0)found=cursor;
+                int found=all.IndexOf(value,Math.Min(cursor,all.Length),StringComparison.Ordinal);
+                if(found<0){found=cursor;clean=false;}
                 int left=Math.Max(start,found),right=Math.Min(end,found+value.Length);
                 if(right>left) {
+                    foundAny=true;
+                    if(left>found||right<found+value.Length)clean=false;
                     RectangleF box=new RectangleF((float)word.BoundingRect.X+(float)word.BoundingRect.Width*(left-found)/value.Length,
                         (float)word.BoundingRect.Y,(float)word.BoundingRect.Width*(right-left)/value.Length,(float)word.BoundingRect.Height);
                     bounds=bounds.IsEmpty?box:RectangleF.Union(bounds,box);
                 }
                 cursor=Math.Min(all.Length,found+value.Length);
             }
+            measured=foundAny&&clean;
             return bounds;
         }
 
@@ -39,6 +51,7 @@ namespace MapleOverlay
         {
             int parsed=0,added=0,recognizedPanels=0,recognizedRows=0;
             int valuePixels=0,partialValues=0,mergedText=0,preservedSafety=0,rejected=0;
+            int measuredValues=0,estimatedValues=0;
             string keys="",preservedReasons="";
             HashSet<OcrPanelInfo> used=new HashSet<OcrPanelInfo>();
             foreach(OcrLine origin in all) {
@@ -67,14 +80,18 @@ namespace MapleOverlay
                     RectangleF rawRow=GetCombinedLineBounds(row),localRow=OverlaySpan(rawRow,scale);
                     List<OverlayLabel> replacements=new List<OverlayLabel>();
                     foreach(EquipmentField field in fields) {
-                        RectangleF name=PreciseTextSpan(row,text,field.Start,field.Length);
+                        bool nameMeasured,valueMeasured=true;
+                        RectangleF name=PreciseTextSpan(row,text,field.Start,field.Length,out nameMeasured);
                         if(name.IsEmpty){rejected++;continue;}
-                        RectangleF value=field.ValueLength>0?PreciseTextSpan(row,text,field.ValueStart,field.ValueLength):RectangleF.Empty;
+                        RectangleF value=field.ValueLength>0?PreciseTextSpan(row,text,field.ValueStart,field.ValueLength,out valueMeasured):RectangleF.Empty;
+                        bool measuredBounds=nameMeasured&&valueMeasured;
                         EquipmentFieldPlan fieldPlan=EquipmentPanelLayout.BuildField(field,text,
                             OverlaySpan(name,scale),value.IsEmpty?RectangleF.Empty:OverlaySpan(value,scale),
-                            localRow,panelPlan.PanelBounds,panelPlan.Typography);
+                            localRow,panelPlan.PanelBounds,panelPlan.Typography,measuredBounds);
                         if(fieldPlan==null){rejected++;continue;}
                         panelPlan.Add(fieldPlan);
+                        if(fieldPlan.BoundaryMode=="measured")measuredValues++;
+                        else estimatedValues++;
                         if(fieldPlan.ValuePixelsPreserved)valuePixels++;
                         if(fieldPlan.PartialValue)partialValues++;
                         if(fieldPlan.MergedValueBaked)mergedText++;
@@ -115,6 +132,7 @@ namespace MapleOverlay
             Program.LogRuntimeEvent("field-coverage","parsed="+parsed+" planned="+added);
             Program.LogRuntimeEvent("equipment-coverage","recognizedPanels="+recognizedPanels+
                 " recognizedRows="+recognizedRows+" parsed="+parsed+" prepared="+added+
+                " measuredValues="+measuredValues+" estimatedValues="+estimatedValues+
                 " valuePixels="+valuePixels+" partialValues="+partialValues+
                 " mergedText="+mergedText+" preserved="+preservedSafety+
                 " preservedReason="+(preservedReasons.Length==0?"none":preservedReasons)+
