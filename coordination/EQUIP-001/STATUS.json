@@ -1,11 +1,12 @@
 {
   "schema": 2,
   "taskId": "EQUIP-001",
-  "state": "IMPLEMENTED_BUILD_AND_TESTS_COMMITTED_PENDING_CLOUD_REVIEW",
+  "state": "R1_R2_R3_IMPLEMENTED_BUILD_AND_TESTS_COMMITTED_PENDING_CLOUD_REVIEW",
   "branch": "dsh/equip-001",
   "baseCommit": "399cc8e",
-  "previousImplementationCommit": "ce945b0947f7b1e81b8ac2e5e2d43c1ef9874669",
-  "implementationCommit": "e12156425afb6ba3c96d44cd6f50854be144cfb4",
+  "initialImplementationCommit": "ce945b0947f7b1e81b8ac2e5e2d43c1ef9874669",
+  "previousImplementationCommit": "e12156425afb6ba3c96d44cd6f50854be144cfb4",
+  "implementationCommit": "7736051f2d290683e83d7b5a6a95fdc1562ea5fe",
   "resultFilesCommit": "reported in the final relay message; this file is committed with the result",
   "inherits": [
     "CHAT-001 accepted",
@@ -62,36 +63,50 @@
     "taskSpecificRuntimeBranches": false,
     "extraOcrOrAiRounds": false
   },
+  "reviewFixes": {
+    "EQUIP-R1": {
+      "status": "FIXED",
+      "detail": "PreciseTextSpan distinguishes whole-word measured boundaries from proportional estimates. ValuePixelsPreserved is true only for measured boundaries; estimated merged key/value words are preserved and composition also refuses equipment-field-boundary-estimated. The 48-marker regression checks every value-region pixel (sign, correction, colour), not a centre point."
+    },
+    "EQUIP-R2": {
+      "status": "FIXED",
+      "detail": "FitEquipmentFieldFont uses exactly the panel typography's final FieldSize and has no per-label shrink loop. A key that does not fit is preserved; real GDI+ confirms 智力 and 物理防御力 both use 16px at a shared 16px panel plan, and a too-wide key is preserved instead of painted at 14px."
+    },
+    "EQUIP-R3": {
+      "status": "FIXED",
+      "detail": "Key matches are collected before value extraction; each value range is bounded by the next confirmed field start. STR+5INT+3 parses STR=+5 and INT=+3, +1O remains valid OCR tolerance, and parsing/planning/painting regressions cover the no-space form."
+    }
+  },
   "build": {
     "command": "pwsh -NoProfile -File src/build.ps1",
     "status": "PASS",
-    "head": "e12156425afb6ba3c96d44cd6f50854be144cfb4",
+    "head": "7736051f2d290683e83d7b5a6a95fdc1562ea5fe",
     "worktreeCleanAtBuild": true,
     "inputs": 65,
     "exePath": "枫语幕.exe",
-    "exeSha256": "57EC956CC490DA8E5D442A030F9C1D8BDFDAF453CAC3B24D58F1250B0D66CAF1",
+    "exeSha256": "4D39DB71D6E7CFEDF4CA81E3F7BDCC605FAB2AA459724D4FF6109C4C7BDD5EC3",
     "buildEvidencePath": "枫语幕.exe.build.json",
-    "buildEvidenceSha256": "D9F96BD19622B023857579ABE96CB6270D0945DD78CD57589886D68FCD9BFFAB",
+    "buildEvidenceSha256": "EE7F31BEB38B665577C3900878CB511CC50497378A94944701633E2CB74A2CA6",
     "compiler": "dotnet SDK 6.0.410 Roslyn csc.dll with .NET Framework 4.8 reference assemblies"
   },
   "tests": {
     "equipmentFields": {
       "command": "pwsh -NoProfile -File tests/logic-equipment-fields.ps1",
-      "checks": 64,
+      "checks": 74,
       "kind": "actual built EXE grammar/plan API; synthetic rectangles",
       "status": "PASS",
       "evidence": "evidence/equipment-fields.txt"
     },
     "equipmentPaint": {
       "command": "pwsh -NoProfile -File tests/logic-equipment-paint.ps1",
-      "checks": 22,
+      "checks": 34,
       "kind": "generated-source substitute Font/Graphics harness",
       "status": "PASS",
       "evidence": "evidence/equipment-paint.txt"
     },
     "equipmentPanel": {
       "command": "pwsh -NoProfile -File tests/logic-equipment-panel-r6.ps1",
-      "checks": 28,
+      "checks": 34,
       "kind": "exact production structured builder with controlled OCR geometry",
       "status": "PASS",
       "evidence": "evidence/equipment-panel.txt"

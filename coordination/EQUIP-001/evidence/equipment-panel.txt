@@ -26,12 +26,22 @@ PASS: equipment type Overall uses the same field path
 PASS: equipment type Shoes uses the same field path
 PASS: equipment type Gloves uses the same field path
 PASS: equipment type One-Handed Sword uses the same field path
+PASS: R1 estimated merged-word boundary preserves the original row
+PASS: R1 estimated boundary is not reported as value-pixels-preserved
+PASS: R3 contiguous STR+5INT+3 parses and prepares two fields
+PASS: R3 contiguous fields have measured value boundaries
+PASS: R3 STR does not consume the first character of INT
+PASS: R3 STR value guard does not intrude into the INT key
 EVIDENCE: equipment-panel recognized=1 matched=13 prepared=13 painted=0 preserved=0 keys=level,strength,intelligence,weapon-defense,magic-defense,intelligence,luck,upgrades,weapon-attack,critical-rate,avoidability,attack-speed,upgrades panel=100,100,269,184 typography=family=Microsoft YaHei unit=Pixel size=12 floor=11 reason=grammar-structure sourceRows=8
-EVIDENCE: equipment-coverage recognizedPanels=1 recognizedRows=8 parsed=13 prepared=13 valuePixels=13 partialValues=0 mergedText=0 preserved=0 preservedReason=none rejected=0 keys=level,strength,intelligence,weapon-defense,magic-defense,intelligence,luck,upgrades,weapon-attack,critical-rate,avoidability,attack-speed,upgrades
+EVIDENCE: equipment-coverage recognizedPanels=1 recognizedRows=8 parsed=13 prepared=13 measuredValues=13 estimatedValues=0 valuePixels=13 partialValues=0 mergedText=0 preserved=0 preservedReason=none rejected=0 keys=level,strength,intelligence,weapon-defense,magic-defense,intelligence,luck,upgrades,weapon-attack,critical-rate,avoidability,attack-speed,upgrades
 EVIDENCE: equipment-panel recognized=0 matched=3 prepared=3 painted=0 preserved=0 keys=weapon-defense,magic-defense,avoidability panel=100,300,202,40 typography=family=Microsoft YaHei unit=Pixel size=12 floor=11 reason=field-row-fallback sourceRows=2
-EVIDENCE: equipment-coverage recognizedPanels=0 recognizedRows=2 parsed=3 prepared=3 valuePixels=3 partialValues=0 mergedText=0 preserved=0 preservedReason=none rejected=0 keys=weapon-defense,magic-defense,avoidability
+EVIDENCE: equipment-coverage recognizedPanels=0 recognizedRows=2 parsed=3 prepared=3 measuredValues=3 estimatedValues=0 valuePixels=3 partialValues=0 mergedText=0 preserved=0 preservedReason=none rejected=0 keys=weapon-defense,magic-defense,avoidability
 EVIDENCE: equipment-panel recognized=1 matched=1 prepared=1 painted=0 preserved=0 keys=weapon-defense panel=100,400,74,16 typography=family=Microsoft YaHei unit=Pixel size=12 floor=11 reason=grammar-structure sourceRows=1
-EVIDENCE: equipment-coverage recognizedPanels=1 recognizedRows=1 parsed=1 prepared=1 valuePixels=0 partialValues=0 mergedText=0 preserved=0 preservedReason=none rejected=0 keys=weapon-defense
+EVIDENCE: equipment-coverage recognizedPanels=1 recognizedRows=1 parsed=1 prepared=1 measuredValues=1 estimatedValues=0 valuePixels=0 partialValues=0 mergedText=0 preserved=0 preservedReason=none rejected=0 keys=weapon-defense
 EVIDENCE: equipment-panel recognized=1 matched=2 prepared=2 painted=0 preserved=0 keys=weapon-defense,magic-defense panel=100,450,209,40 typography=family=Microsoft YaHei unit=Pixel size=12 floor=11 reason=grammar-structure sourceRows=2
-EVIDENCE: equipment-coverage recognizedPanels=1 recognizedRows=1 parsed=2 prepared=2 valuePixels=2 partialValues=0 mergedText=0 preserved=0 preservedReason=none rejected=0 keys=weapon-defense,magic-defense
-Equipment panel plan: 28 checks passed; exact production structured builder with controlled OCR geometry; real CW pixels unverified.
+EVIDENCE: equipment-coverage recognizedPanels=1 recognizedRows=1 parsed=2 prepared=2 measuredValues=2 estimatedValues=0 valuePixels=2 partialValues=0 mergedText=0 preserved=0 preservedReason=none rejected=0 keys=weapon-defense,magic-defense
+EVIDENCE: equipment-panel recognized=1 matched=1 prepared=0 painted=0 preserved=0 keys=weapon-defense panel=100,520,77,16 typography=family=Microsoft YaHei unit=Pixel size=12 floor=11 reason=grammar-structure sourceRows=1
+EVIDENCE: equipment-coverage recognizedPanels=1 recognizedRows=1 parsed=1 prepared=0 measuredValues=0 estimatedValues=1 valuePixels=0 partialValues=0 mergedText=0 preserved=1 preservedReason=weapon-defense:estimated-value-region rejected=0 keys=weapon-defense
+EVIDENCE: equipment-panel recognized=1 matched=2 prepared=2 painted=0 preserved=0 keys=strength,intelligence panel=100,550,70,16 typography=family=Microsoft YaHei unit=Pixel size=12 floor=11 reason=grammar-structure sourceRows=1
+EVIDENCE: equipment-coverage recognizedPanels=1 recognizedRows=1 parsed=2 prepared=2 measuredValues=2 estimatedValues=0 valuePixels=2 partialValues=0 mergedText=0 preserved=0 preservedReason=none rejected=0 keys=strength,intelligence
+Equipment panel plan: 34 checks passed; exact production structured builder with controlled OCR geometry; real CW pixels unverified.

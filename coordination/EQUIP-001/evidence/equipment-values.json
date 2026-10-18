@@ -24,13 +24,17 @@
     {"category": "merged-safe-split", "row": "INT+5", "keys": ["intelligence"], "values": ["+5"], "plan": "MergedValueSplit=true, key ends before value, value guard retained"},
     {"category": "merged-unsafe", "row": "INT+5", "plan": "MergedValueBaked=true, status=preserved, preservedReason=merged-value-region-unsafe, translation retains the exact +5 text"},
     {"category": "partial-value-rectangle", "row": "Weapon Def.: +16", "plan": "PartialValue=true, ValueMode=value-bounds-unmeasured, rest of row guarded"},
-    {"category": "key-only-partial", "row": "Weapon Def.", "plan": "HasValue=false, no invented guard or number"}
+    {"category": "key-only-partial", "row": "Weapon Def.", "plan": "HasValue=false, no invented guard or number"},
+    {"category": "EQUIP-R1-estimated-boundary", "row": "WeaponDef-5", "plan": "BoundaryMode=estimated, status=preserved, ValuePixelsPreserved=false, preservedReason=estimated-value-region; 48-marker composition guard keeps every pixel"},
+    {"category": "EQUIP-R3-contiguous-no-space", "row": "STR+5INT+3", "keys": ["strength", "intelligence"], "values": ["+5", "+3"], "plan": "STR value bounded before INT; both measured key/value boxes prepare and paint"},
+    {"category": "EQUIP-R3-contiguous-ocr-tolerance", "row": "Weapon Def.: +1O INT: +5", "keys": ["weapon-defense", "intelligence"], "values": ["+1O", "+5"], "plan": "next-field boundary does not erase legitimate OCR O"}
   ],
-  "colorPreservation": "The value region is the measured guard and is never sampled into the replacement. The composition test checks that every value marker remains transparent/original after painting.",
+  "colorPreservation": "The measured value region is the guard and is never sampled into the replacement. The composition test checks every pixel of every value rectangle (not a centre point) stays transparent/original, including signs, corrections and colour markers. Estimated merged-word regions are never painted.",
   "typography": {
     "family": "Microsoft YaHei",
     "unit": "Pixel",
     "sharedPanelSizeExample": 12,
+    "mixedNarrowWideSharedSize": {"narrow": "智力", "wide": "物理防御力", "panelSize": 16, "result": "both 16px; a too-wide key is preserved rather than shrunk"},
     "floor": 11,
     "cap": 22
   }

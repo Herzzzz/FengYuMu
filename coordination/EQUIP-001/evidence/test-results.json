@@ -2,19 +2,20 @@
   "taskId": "EQUIP-001",
   "branch": "dsh/equip-001",
   "baseCommit": "399cc8e",
-  "previousImplementationCommit": "ce945b0947f7b1e81b8ac2e5e2d43c1ef9874669",
-  "implementationCommit": "e12156425afb6ba3c96d44cd6f50854be144cfb4",
+  "initialImplementationCommit": "ce945b0947f7b1e81b8ac2e5e2d43c1ef9874669",
+  "previousImplementationCommit": "e12156425afb6ba3c96d44cd6f50854be144cfb4",
+  "implementationCommit": "7736051f2d290683e83d7b5a6a95fdc1562ea5fe",
   "build": {
     "command": "pwsh -NoProfile -File src/build.ps1",
     "status": "PASS",
-    "head": "e12156425afb6ba3c96d44cd6f50854be144cfb4",
+    "head": "7736051f2d290683e83d7b5a6a95fdc1562ea5fe",
     "worktreeEntries": 0,
     "inputs": 65,
     "compiler": "dotnet SDK 6.0.410 Roslyn csc.dll with .NET Framework 4.8 reference assemblies",
     "exePath": "枫语幕.exe",
-    "exeSha256": "57EC956CC490DA8E5D442A030F9C1D8BDFDAF453CAC3B24D58F1250B0D66CAF1",
+    "exeSha256": "4D39DB71D6E7CFEDF4CA81E3F7BDCC605FAB2AA459724D4FF6109C4C7BDD5EC3",
     "buildEvidencePath": "枫语幕.exe.build.json",
-    "buildEvidenceSha256": "D9F96BD19622B023857579ABE96CB6270D0945DD78CD57589886D68FCD9BFFAB"
+    "buildEvidenceSha256": "EE7F31BEB38B665577C3900878CB511CC50497378A94944701633E2CB74A2CA6"
   },
   "stageDefinitions": {
     "recognized": "equipment panel (grammar structure) or equipment field row is identified from OCR geometry/text",
@@ -25,30 +26,46 @@
   },
   "equipmentStageEvidence": {
     "panel": "equipment-panel recognized=1 matched=13 prepared=13 painted=0 preserved=0 keys=level,strength,intelligence,weapon-defense,magic-defense,intelligence,luck,upgrades,weapon-attack,critical-rate,avoidability,attack-speed,upgrades panel=100,100,269,184 typography=family=Microsoft YaHei unit=Pixel size=12 floor=11 reason=grammar-structure sourceRows=8",
-    "coverage": "equipment-coverage recognizedPanels=1 recognizedRows=8 parsed=13 prepared=13 valuePixels=13 partialValues=0 mergedText=0 preserved=0 preservedReason=none rejected=0 keys=level,strength,intelligence,weapon-defense,magic-defense,intelligence,luck,upgrades,weapon-attack,critical-rate,avoidability,attack-speed,upgrades",
+    "coverage": "equipment-coverage recognizedPanels=1 recognizedRows=8 parsed=13 prepared=13 measuredValues=13 estimatedValues=0 valuePixels=13 partialValues=0 mergedText=0 preserved=0 preservedReason=none rejected=0 keys=level,strength,intelligence,weapon-defense,magic-defense,intelligence,luck,upgrades,weapon-attack,critical-rate,avoidability,attack-speed,upgrades",
     "fallback": "equipment-panel recognized=0 matched=3 prepared=3 painted=0 preserved=0 keys=weapon-defense,magic-defense,avoidability panel=100,300,202,40 typography=family=Microsoft YaHei unit=Pixel size=12 floor=11 reason=field-row-fallback sourceRows=2",
-    "paintAll": "equipment-paint generation=1 prepared=12 painted=12 preserved=0 preservedReason=none",
-    "paintPreserved": "equipment-paint generation=1 prepared=1 painted=0 preserved=1 preservedReason=equipment-field-does-not-fit",
+    "paintAll": "equipment-paint generation=1 prepared=12 painted=12 preserved=0 panelSize=13 preservedReason=none",
+    "paintPreserved": "equipment-paint generation=1 prepared=2 painted=1 preserved=1 panelSize=16 preservedReason=equipment-field-does-not-fit",
+    "paintEstimated": "equipment-paint generation=1 prepared=2 painted=1 preserved=1 panelSize=13 preservedReason=equipment-field-boundary-estimated",
+    "paintR3": "equipment-paint generation=1 prepared=2 painted=2 preserved=0 panelSize=13 preservedReason=none",
     "planPreserved": "merged-value-region-unsafe (field test; original pixels kept instead of recolouring an unsplittable key/value word)"
+  },
+  "reviewFixes": {
+    "EQUIP-R1": {
+      "status": "FIXED",
+      "detail": "PreciseTextSpan now reports measured vs estimated OCR word boundaries. ValuePixelsPreserved is true only for measured boundaries. Estimated merged-word regions are preserved as a plan and refused again by composition (equipment-field-boundary-estimated). The 48-marker regression checks the entire value region, not just its centre."
+    },
+    "EQUIP-R2": {
+      "status": "FIXED",
+      "detail": "FitEquipmentFieldFont no longer loops/shrinks per label. Every field uses the panel typography's final FieldSize; a key that cannot fit keeps the original. Real GDI+ checks confirm 智力 and 物理防御力 both use the same 16px panel size, with a too-wide key preserved instead of painted at 14px."
+    },
+    "EQUIP-R3": {
+      "status": "FIXED",
+      "detail": "Key matches are collected before value extraction. Each value range is bounded by the next confirmed field start, so STR+5INT+3 parses STR=+5 and INT=+3, while legitimate OCR tolerance such as +1O remains. Parsing, planning and painting regressions cover the no-space and spaced forms."
+    }
   },
   "testsPass": [
     {
       "script": "tests/logic-equipment-fields.ps1",
-      "checks": 64,
+      "checks": 74,
       "kind": "actual built EXE grammar and plan API; synthetic rectangles",
       "exit": 0,
       "evidence": "evidence/equipment-fields.txt"
     },
     {
       "script": "tests/logic-equipment-paint.ps1",
-      "checks": 22,
+      "checks": 34,
       "kind": "generated-source substitute Font/Graphics composition harness",
       "exit": 0,
       "evidence": "evidence/equipment-paint.txt"
     },
     {
       "script": "tests/logic-equipment-panel-r6.ps1",
-      "checks": 28,
+      "checks": 34,
       "kind": "exact production structured builder with controlled OCR geometry",
       "exit": 0,
       "evidence": "evidence/equipment-panel.txt"

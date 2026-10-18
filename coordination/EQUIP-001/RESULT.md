@@ -5,10 +5,11 @@
 - Branch: `dsh/equip-001`.
 - Base commit: `399cc8e` (accepted CHAT-001 + QUEST-001/FONT-001 records).
 - Initial implementation commit: `ce945b0947f7b1e81b8ac2e5e2d43c1ef9874669`.
-- Final implementation commit: `e12156425afb6ba3c96d44cd6f50854be144cfb4`.
+- Previous implementation commit: `e12156425afb6ba3c96d44cd6f50854be144cfb4`.
+- Final implementation commit: `7736051f2d290683e83d7b5a6a95fdc1562ea5fe`.
 - Result files commit: reported in the final relay message; this file is committed with the result.
-- EXE: `D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe`; SHA-256 `57EC956CC490DA8E5D442A030F9C1D8BDFDAF453CAC3B24D58F1250B0D66CAF1`.
-- Build evidence: `枫语幕.exe.build.json`; SHA-256 `D9F96BD19622B023857579ABE96CB6270D0945DD78CD57589886D68FCD9BFFAB`; head `e121564`, 65 inputs, clean worktree at build.
+- EXE: `D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe`; SHA-256 `4D39DB71D6E7CFEDF4CA81E3F7BDCC605FAB2AA459724D4FF6109C4C7BDD5EC3`.
+- Build evidence: `枫语幕.exe.build.json`; SHA-256 `EE7F31BEB38B665577C3900878CB511CC50497378A94944701633E2CB74A2CA6`; head `7736051`, 65 inputs, clean worktree at build.
 
 ## Diagnosis
 
@@ -118,34 +119,82 @@ ink colour.
 
 ### 6. `src/SimpleFusionComposition.cs`
 
-- Equipment fields use the panel plan's family/size (bounded to the 11px floor)
-  instead of the generic 8px squeeze.
-- A key that cannot fit at the floor is preserved with
+- Equipment fields use one final panel font size from `EquipmentPanelTypography`.
+  `FitEquipmentFieldFont` has no per-label shrink loop; narrow keys cannot pull
+  wide keys to a smaller size.
+- A key that cannot fit at the panel size is preserved with
   `equipment-field-does-not-fit`.
-- Records `equipment-paint prepared=... painted=... preserved=...
+- Records `equipment-paint prepared=... painted=... preserved=... panelSize=...
   preservedReason=...` and updates each field plan's painted/preserved state.
 
 ### 7. Tests
 
-- `tests/logic-equipment-fields.ps1` (64 checks): actual built EXE grammar and
-  plan API over requirements, defences, attacks, critical, evasion, speed,
-  attack speed, slots, positive/negative/Unicode/percent/corrected values,
-  partial OCR, merged words, multiple equipment types and shared typography.
-- `tests/logic-equipment-paint.ps1` (22 checks): generated-source substitute
-  Font/Graphics composition. Paints a synthetic 12-row equipment panel, verifies
-  every value marker stays transparent/original, one shared font size, the same
-  panel plan, painted counts and preservation reasons.
-- `tests/logic-equipment-panel-r6.ps1` (28 checks): exact production
+- `tests/logic-equipment-fields.ps1` (74 checks): actual built EXE grammar and
+  plan API plus real GDI+ font measurement over requirements, defences, attacks,
+  critical, evasion, speed, attack speed, slots, positive/negative/Unicode/
+  percent/corrected values, partial OCR, merged words, multiple equipment types,
+  measured-vs-estimated boundaries and shared 16px panel typography.
+- `tests/logic-equipment-paint.ps1` (34 checks): generated-source substitute
+  Font/Graphics composition. Paints a synthetic 12-row equipment panel, checks
+  every pixel of every value region (sign, correction and colour), one shared
+  panel size, the R1 48-pixel estimated-boundary preservation, the R2 16/16
+  wide/narrow decision and the R3 contiguous-field paint.
+- `tests/logic-equipment-panel-r6.ps1` (34 checks): exact production
   `AddStructuredFieldLabels` with controlled OCR geometry. Verifies recognised/
-  matched/prepared counts, all fields survive on combined rows, one panel plan,
-  one typography, key-before-guard geometry, unrecognised-row fallback,
-  key-only partial rows and five equipment types.
+  matched/prepared counts, measured/estimated boundaries, all fields survive on
+  combined rows, one panel plan, one typography, key-before-guard geometry,
+  unrecognised-row fallback, key-only partial rows, R1 merged-word preservation,
+  R3 contiguous parsing/preparing and five equipment types.
 - `tests/logic-equipment-body-r6.ps1` (7 checks): existing equipment description
   routing regression updated for the new builder boundary.
 - `tests/logic-equipment-scope.ps1` (27 checks): chat gate and AI gate use the
   unchanged vocabulary; no item/class/player/server branch in the new plan;
   no OCR/AI dependency in the new files.
 
+## Cloud review fixes (EQUIP-R1/R2/R3)
+
+### EQUIP-R1 — measured boundaries and the 48-pixel value region
+
+`PreciseTextSpan` now has an out `measured` flag. It is false whenever the span
+clips an OCR word; whole-word coverage is a measured OCR boundary, while a
+proportional in-word cut is an estimate. `EquipmentFieldPlan` records
+`BoundaryMode=measured|estimated` and only a measured plan can report
+`ValuePixelsPreserved`. `BuildField(..., measuredBounds:false)` marks the field
+`preserved` with reason `estimated-value-region` (or `estimated-key-region`);
+`AddStructuredFieldLabels` emits no label for it and logs
+`estimatedValues=...`. `SimpleFusionComposition` independently refuses such a
+label with `equipment-field-boundary-estimated`, so supply-chain mistakes cannot
+repaint an estimate.
+
+Regression: a `WeaponDef-5` single-word counterexample produces zero labels and
+`preservedReason=weapon-defense:estimated-value-region`; the paint harness also
+supplies an estimated label and verifies all 48 value-region marker pixels stay
+original. The ordinary panel now checks every pixel of every value rectangle,
+including `+36 (40 -4)`, not only its centre.
+
+### EQUIP-R2 — one final panel font size
+
+`FitEquipmentFieldFont` no longer iterates from a start size down to a floor. It
+uses the panel typography's `FieldSize` exactly. If the complete key does not fit
+at that size, the label is preserved with `equipment-field-does-not-fit`; there
+is no narrow-key 16px / wide-key 14px split. `PanelFontSize` is carried on every
+field plan, and the paint evidence records `panelSize=...`.
+
+Regression: real GDI+ on the built EXE measures `智力` and `物理防御力` at the
+same 16px panel size and returns null for a too-wide 35px area instead of a
+smaller font. The substitute paint harness separately checks 16/16 mixed
+wide/narrow keys, a preserved too-wide key at 16px, and the single
+`panelSize=16` evidence line.
+
+### EQUIP-R3 — contiguous fields without losing OCR tolerance
+
+Key occurrences are now collected first; each value is extracted only from the
+text before the next confirmed field start. `STR+5INT+3` therefore parses
+`strength=+5` and `intelligence=+3` instead of `+5I`, so the STR guard stops
+before the INT key. `+1O` remains valid when it is not immediately followed by a
+field. Parsing, planning and painting regressions cover the no-space and spaced
+forms; the contiguous paint case checks both complete value regions and confirms
+there is no `source-or-live-value-conflict`.
 ## Stage evidence
 
 Definitions used below:
@@ -169,35 +218,43 @@ equipment-panel recognized=1 matched=13 prepared=13 painted=0 preserved=0
  reason=grammar-structure sourceRows=8
 
 equipment-coverage recognizedPanels=1 recognizedRows=8 parsed=13 prepared=13
- valuePixels=13 partialValues=0 mergedText=0 preserved=0 preservedReason=none
- rejected=0 keys=...
+ measuredValues=13 estimatedValues=0 valuePixels=13 partialValues=0 mergedText=0
+ preserved=0 preservedReason=none rejected=0 keys=...
 
 equipment-panel recognized=0 matched=3 prepared=3 ... reason=field-row-fallback
 
-equipment-paint generation=1 prepared=12 painted=12 preserved=0
+equipment-paint generation=1 prepared=12 painted=12 preserved=0 panelSize=13
  preservedReason=none
 
-equipment-paint generation=1 prepared=1 painted=0 preserved=1
+equipment-paint generation=1 prepared=2 painted=1 preserved=1 panelSize=13
+ preservedReason=equipment-field-boundary-estimated
+
+equipment-paint generation=1 prepared=2 painted=1 preserved=1 panelSize=16
  preservedReason=equipment-field-does-not-fit
+
+equipment-coverage ... parsed=1 prepared=0 measuredValues=0 estimatedValues=1
+ preserved=1 preservedReason=weapon-defense:estimated-value-region
 
 plan status=preserved preservedReason=merged-value-region-unsafe
  (field test; the unsplittable merged word keeps the original row)
 ```
 
-The value-preservation check is behavioural: after composition the synthetic
-pixel under every measured value is transparent/original, and the full raw value
-string is still attached to the field evidence. Merged safe splits leave a
-two-pixel gap before the value; unsafe splits are not painted at all.
+The value-preservation check is behavioural: after composition every pixel in
+the measured value rectangle is transparent/original, not just a centre point.
+The R1 regression also checks all 48 marker pixels of an estimated merged word;
+that field is never emitted and composition independently refuses
+`equipment-field-boundary-estimated`. The full raw value string (sign,
+percentage and parenthesized correction) remains attached to the field evidence.
 
 ## Tests
 
 See `evidence/test-results.json` and the individual logs. All PASS results
-below are against the clean-build EXE `57EC956C...` (implementation head
-`e121564`, 65 build inputs, clean worktree).
+below are against the clean-build EXE `4D39DB71...` (implementation head
+`7736051`, 65 build inputs, clean worktree).
 
 Passing on this host/build:
 
-- new equipment tests: 64 + 22 + 28 + 7 + 27 = **148 checks**;
+- new equipment tests: 74 + 34 + 34 + 7 + 27 = **176 checks**;
 - `tests/logic-simple-flow-r11.ps1` — 33 checks;
 - `tests/logic-quest-font-layout.ps1` — 51 checks (substitute Font/Graphics);
 - `tests/logic-quest-panel-layout.ps1` — 164 checks (actual GDI+);

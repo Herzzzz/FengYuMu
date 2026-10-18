@@ -1,11 +1,11 @@
 EQUIP-001 final build
 command=pwsh -NoProfile -File src/build.ps1
-head=e12156425afb6ba3c96d44cd6f50854be144cfb4
+head=7736051f2d290683e83d7b5a6a95fdc1562ea5fe
 inputs=65
 worktreeEntries=0
 compiler=C:\Program Files\dotnet\dotnet.exe C:\Program Files\dotnet\sdk\6.0.410\Roslyn\bincore\csc.dll
 exe=D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe
-exeSha256=57EC956CC490DA8E5D442A030F9C1D8BDFDAF453CAC3B24D58F1250B0D66CAF1
+exeSha256=4D39DB71D6E7CFEDF4CA81E3F7BDCC605FAB2AA459724D4FF6109C4C7BDD5EC3
 buildEvidence=D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe.build.json
-buildEvidenceSha256=D9F96BD19622B023857579ABE96CB6270D0945DD78CD57589886D68FCD9BFFAB
-builtAtUtc=10/18/2026 01:16:37
+buildEvidenceSha256=EE7F31BEB38B665577C3900878CB511CC50497378A94944701633E2CB74A2CA6
+builtAtUtc=10/18/2026 01:52:31

@@ -22,6 +22,9 @@ PASS: Movement Speed is a generic speed alias
 PASS: Attack Speed is parsed and its Fast value is preserved
 PASS: multi-word attack speed value is preserved
 PASS: signed no-colon speed and Evasion both survive
+PASS: contiguous STR+5INT+3 yields two fields
+PASS: STR value stops before INT and INT keeps +3
+PASS: next-field boundary keeps legitimate OCR +1O
 PASS: Upgrade Slots maps to the upgrade attribute
 PASS: Upgrades Available accepts a zero value
 PASS: OCR-confusable digit is preserved verbatim
@@ -47,6 +50,10 @@ PASS: equipment typography uses the shared FONT family
 PASS: equipment typography uses one pixel unit
 PASS: equipment field base size stays readable and bounded
 PASS: painted field font keeps the planned size/unit
+PASS: EQUIP-R2 narrow and wide keys fit at the panel size
+PASS: EQUIP-R2 real GDI+ uses one panel font size for both keys
+PASS: EQUIP-R2 shared 16px plan is the panel decision
+PASS: EQUIP-R2 wide key that cannot fit is preserved, not shrunk
 PASS: the shared plan prepares an attack field
 PASS: the plan retains the complete raw attack modifier
 PASS: the plan protects value pixels rather than repainting them
@@ -57,9 +64,12 @@ PASS: all fields share the one panel typography plan
 PASS: a merged OCR word is split before its value
 PASS: the split key region ends before the value
 PASS: the merged value is retained in evidence
+PASS: EQUIP-R1 estimates are distinguished from measured boundaries
+PASS: EQUIP-R1 estimated value boundary never claims pixel preservation
+PASS: EQUIP-R1 estimated value region preserves the original
 PASS: an unsplittable merged word falls back safely
 PASS: the unsplittable fallback still retains the exact value text
 PASS: an unsafe merged value preserves the original instead of recolouring it
 PASS: partial OCR without a value rectangle is marked partial
 PASS: partial value still protects the rest of the row
-Equipment fields: 64 checks passed; actual built EXE grammar/plan API; synthetic rectangles; real CW pixels unverified.
+Equipment fields: 74 checks passed; actual built EXE grammar/plan API; synthetic rectangles; real CW pixels unverified.
