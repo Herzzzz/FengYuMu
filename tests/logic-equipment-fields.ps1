@@ -87,6 +87,9 @@ Check ((Key0 $fields) -eq 'attack-speed' -and (FieldValue $fields[0]) -eq 'Fast'
 $script:currentText='Attack Speed: Very Slow'
 $fields=Fields $script:currentText $false
 Check ((Key0 $fields) -eq 'attack-speed' -and (FieldValue $fields[0]) -eq 'Very Slow') 'multi-word attack speed value is preserved'
+$script:currentText='Speed +3 Evasion +4'
+$fields=Fields $script:currentText $false
+Check ($fields.Count -eq 2 -and ((Keys $fields) -join ',') -eq 'speed,avoidability') 'signed no-colon speed and Evasion both survive'
 $script:currentText='Upgrade Slots: 2'
 $fields=Fields $script:currentText $false
 Check ((Key0 $fields) -eq 'upgrades' -and (FieldValue $fields[0]) -eq '2') 'Upgrade Slots maps to the upgrade attribute'

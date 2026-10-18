@@ -12,7 +12,7 @@ namespace MapleOverlay
         // translated key and leaves this value (and therefore sign, %, parenthesis
         // correction and coloured pixels) untouched.
         internal string RawValue;
-        internal bool HasValue,Required,TextValue;
+        internal bool HasValue,Required,TextValue,StrongContext;
     }
 
     internal static class EquipmentFieldGrammar
@@ -88,12 +88,11 @@ namespace MapleOverlay
                     int leading=text.Length-text.TrimStart().Length;
                     bool leadingSigned=hasValue&&match.Index==leading&&Regex.IsMatch(
                         value.Groups["value"].Value.Trim(),@"^[+\-\u2212\uFF0B\uFF0D]");
-                    if(!equipment&&!definition.Explicit&&!required&&!hasPunctuation&&
-                        !leadingSigned)continue;
                     EquipmentField field=new EquipmentField{
                         Start=match.Index,Length=match.Length,Key=definition.Key,
                         Chinese=(required?"需要":"")+definition.Chinese,
-                        Required=required,TextValue=definition.TextValue};
+                        Required=required,TextValue=definition.TextValue,
+                        StrongContext=definition.Explicit||required||hasPunctuation||leadingSigned};
                     if(hasValue) {
                         int start=after+value.Groups["value"].Index;
                         int length=value.Groups["value"].Length;
@@ -122,6 +121,11 @@ namespace MapleOverlay
                     {overlap=true;break;}
                 if(!overlap)distinct.Add(candidate);
             }
+            // A row made only of field spans may use signed no-colon forms such as
+            // "Speed +3 Evasion +4". If prose remains outside the spans, only fields
+            // with an explicit/colon/signed context survive this guard.
+            if(!equipment&&!AllFieldsConsumed(text,distinct))
+                distinct.RemoveAll(delegate(EquipmentField field){return !field.StrongContext;});
             // A field followed by ordinary prose is not a tooltip row. Another field
             // after a punctuation/space boundary is allowed: combined OCR rows carry
             // Weapon Def + Magic Def (or REQ LEV + REQ STR + ...) on one line.
