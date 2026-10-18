@@ -11,36 +11,67 @@ namespace MapleOverlay
         private RectangleF OverlaySpan(RectangleF raw,float scale)
         {return new RectangleF(ToOverlayX(raw.Left,scale),ToOverlayY(raw.Top,scale),raw.Width/scale,raw.Height/scale);}
 
+        private static bool HasLetterOrDigit(string value)
+        {
+            if(String.IsNullOrEmpty(value))return false;
+            foreach(char c in value)if(Char.IsLetterOrDigit(c))return true;
+            return false;
+        }
+
         // Unlike the old whole-word span, this also separates INT+5 when OCR
         // emitted it as one word. A missing value is never supplied by a glossary.
         // The bool reports whether every intersected OCR word was covered whole.
         // A clipped word box is a proportional estimate, not a measured glyph edge.
         private static RectangleF PreciseTextSpan(List<OcrLine> lines,string text,int rawStart,int rawLength)
-        {bool measured;return PreciseTextSpan(lines,text,rawStart,rawLength,out measured);}
+        {bool measured;return PreciseTextSpan(lines,text,rawStart,rawLength,out measured,false);}
 
         private static RectangleF PreciseTextSpan(List<OcrLine> lines,string text,int rawStart,int rawLength,
             out bool measured)
+        {return PreciseTextSpan(lines,text,rawStart,rawLength,out measured,false);}
+
+        private static RectangleF PreciseTextSpan(List<OcrLine> lines,string text,int rawStart,int rawLength,
+            out bool measured,bool allowPunctuationTrim)
         {
             measured=false;
-            int start=TranslationStore.Normalize(text.Substring(0,rawStart)).Length;
-            if(start>0)start=TranslationStore.Normalize(text).IndexOf(TranslationStore.Normalize(text.Substring(rawStart,rawLength)),Math.Min(start,TranslationStore.Normalize(text).Length),StringComparison.Ordinal);
-            if(start<0)return RectangleF.Empty;
-            int end=start+TranslationStore.Normalize(text.Substring(rawStart,rawLength)).Length;
-            string all=TranslationStore.Normalize(text);int cursor=0;RectangleF bounds=RectangleF.Empty;
+            if(lines==null||String.IsNullOrEmpty(text)||rawLength<=0)return RectangleF.Empty;
+            int spanStart=Math.Max(0,Math.Min(rawStart,text.Length));
+            int spanEnd=Math.Min(text.Length,spanStart+rawLength);
+            if(spanEnd<=spanStart)return RectangleF.Empty;
+            RectangleF bounds=RectangleF.Empty;
             bool foundAny=false,clean=true;
-            foreach(OcrLine line in lines)foreach(OcrWord word in line.Words) {
-                string value=TranslationStore.Normalize(word.Text);if(value.Length==0)continue;
-                int found=all.IndexOf(value,Math.Min(cursor,all.Length),StringComparison.Ordinal);
-                if(found<0){found=cursor;clean=false;}
-                int left=Math.Max(start,found),right=Math.Min(end,found+value.Length);
-                if(right>left) {
+            int cursor=0;
+            foreach(OcrLine line in lines) {
+                if(line==null||String.IsNullOrEmpty(line.Text))continue;
+                int lineStart=text.IndexOf(line.Text,cursor,StringComparison.Ordinal);
+                if(lineStart<0){lineStart=cursor;clean=false;}
+                int wordCursor=0;
+                foreach(OcrWord word in line.Words) {
+                    string raw=word.Text??"";if(raw.Length==0)continue;
+                    int local=line.Text.IndexOf(raw,Math.Min(wordCursor,line.Text.Length),StringComparison.Ordinal);
+                    if(local<0){local=wordCursor;clean=false;}
+                    int absoluteStart=lineStart+local,absoluteEnd=absoluteStart+raw.Length;
+                    wordCursor=Math.Min(line.Text.Length,local+raw.Length);
+                    int left=Math.Max(spanStart,absoluteStart),right=Math.Min(spanEnd,absoluteEnd);
+                    if(right<=left)continue;
                     foundAny=true;
-                    if(left>found||right<found+value.Length)clean=false;
-                    RectangleF box=new RectangleF((float)word.BoundingRect.X+(float)word.BoundingRect.Width*(left-found)/value.Length,
-                        (float)word.BoundingRect.Y,(float)word.BoundingRect.Width*(right-left)/value.Length,(float)word.BoundingRect.Height);
+                    if(left>absoluteStart||right<absoluteEnd) {
+                        // A key word may keep an attached colon/period outside the
+                        // replaced key; that punctuation-only trim is safe. A clipped
+                        // value word is never safe, even when the clipped character is
+                        // punctuation, because the sign/number edge would be estimated.
+                        bool clippedValue=false;
+                        if(left>absoluteStart)clippedValue=HasLetterOrDigit(raw.Substring(0,left-absoluteStart));
+                        if(right<absoluteEnd)clippedValue=clippedValue||HasLetterOrDigit(raw.Substring(right-absoluteStart));
+                        if(!allowPunctuationTrim||clippedValue)clean=false;
+                    }
+                    // Use the raw OCR word box, including sign/punctuation-only words
+                    // that normalize to an empty string. Splitting inside a word is a
+                    // proportional estimate and is reported as such.
+                    RectangleF box=new RectangleF((float)word.BoundingRect.X+(float)word.BoundingRect.Width*(left-absoluteStart)/raw.Length,
+                        (float)word.BoundingRect.Y,(float)word.BoundingRect.Width*(right-left)/raw.Length,(float)word.BoundingRect.Height);
                     bounds=bounds.IsEmpty?box:RectangleF.Union(bounds,box);
                 }
-                cursor=Math.Min(all.Length,found+value.Length);
+                cursor=Math.Min(text.Length,lineStart+line.Text.Length);
             }
             measured=foundAny&&clean;
             return bounds;
@@ -81,10 +112,15 @@ namespace MapleOverlay
                     List<OverlayLabel> replacements=new List<OverlayLabel>();
                     foreach(EquipmentField field in fields) {
                         bool nameMeasured,valueMeasured=true;
-                        RectangleF name=PreciseTextSpan(row,text,field.Start,field.Length,out nameMeasured);
+                        RectangleF name=PreciseTextSpan(row,text,field.Start,field.Length,out nameMeasured,true);
                         if(name.IsEmpty){rejected++;continue;}
-                        RectangleF value=field.ValueLength>0?PreciseTextSpan(row,text,field.ValueStart,field.ValueLength,out valueMeasured):RectangleF.Empty;
-                        bool measuredBounds=nameMeasured&&valueMeasured;
+                        RectangleF value=field.ValueLength>0?PreciseTextSpan(row,text,field.ValueStart,field.ValueLength,out valueMeasured,false):RectangleF.Empty;
+                        // A clipped key word is acceptable when its measured value starts
+                        // after the key box (for example WDEF: with the colon attached).
+                        // If the value box is unknown, or the key estimate overlaps it,
+                        // the whole field is treated as estimated and preserved.
+                        bool measuredBounds=value.IsEmpty?nameMeasured:
+                            (valueMeasured&&(nameMeasured||name.Right<=value.Left+0.5f));
                         EquipmentFieldPlan fieldPlan=EquipmentPanelLayout.BuildField(field,text,
                             OverlaySpan(name,scale),value.IsEmpty?RectangleF.Empty:OverlaySpan(value,scale),
                             localRow,panelPlan.PanelBounds,panelPlan.Typography,measuredBounds);

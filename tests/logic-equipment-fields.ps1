@@ -107,6 +107,16 @@ Check ((FieldValue $fields[0]) -eq '+5' -and (FieldValue $fields[1]) -eq '+3') '
 $script:currentText='Weapon Def.: +1O INT: +5'
 $fields=Fields $script:currentText $false
 Check ($fields.Count -eq 2 -and (FieldValue $fields[0]) -eq '+1O' -and (FieldValue $fields[1]) -eq '+5') 'next-field boundary keeps legitimate OCR +1O'
+$script:currentText='STR:+1OINT:+3'
+$fields=Fields $script:currentText $false
+Check ($fields.Count -eq 2 -and ((Keys $fields) -join ',') -eq 'strength,intelligence') 'R3a INT follows OCR digit O and is still recognized'
+Check ((FieldValue $fields[0]) -eq '+1O' -and (FieldValue $fields[1]) -eq '+3') 'R3a STR keeps +1O and INT keeps +3'
+$script:currentText='POINT is here'
+$fields=Fields $script:currentText $false
+Check ($fields.Count -eq 0) 'R3a prose POINT is not split into an INT field'
+$script:currentText='MaxHP: +15'
+$fields=Fields $script:currentText $false
+Check ($fields.Count -eq 1 -and (Key0 $fields) -eq 'hp') 'R3a key boundary does not duplicate inner HP'
 $script:currentText='Upgrade Slots: 2'
 $fields=Fields $script:currentText $false
 Check ((Key0 $fields) -eq 'upgrades' -and (FieldValue $fields[0]) -eq '2') 'Upgrade Slots maps to the upgrade attribute'
@@ -122,6 +132,13 @@ $script:currentText='Magic Attack: ' + [char]0x2212 + '6'
 $fields=Fields $script:currentText $false
 $minusExpected=[string][char]0x2212 + '6'
 Check ((FieldValue $fields[0]) -eq $minusExpected) 'Unicode minus is preserved verbatim'
+$script:currentText='Weapon Def.: ' + [char]0x2212 + ' 5'
+$fields=Fields $script:currentText $false
+$independentMinus=[string][char]0x2212 + ' 5'
+Check ((FieldValue $fields[0]) -eq $independentMinus) 'independent Unicode sign and digit are one raw value'
+$script:currentText='Weapon Def.: - 5'
+$fields=Fields $script:currentText $false
+Check ((FieldValue $fields[0]) -eq '- 5') 'independent ASCII minus and digit are one raw value'
 $script:currentText='Critical Damage: -4.5%'
 $fields=Fields $script:currentText $false
 Check ((FieldValue $fields[0]) -eq '-4.5%') 'decimal negative percentage is preserved'

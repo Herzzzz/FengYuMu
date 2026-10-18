@@ -148,6 +148,28 @@ namespace MapleOverlay {
      form.ClearSimpleFusion();
     }
    }
+   // EQUIP-R1a: an independent sign word is inside the value guard. The whole
+   // signed value region, including the sign, must stay original.
+   {
+    var signPanel=EqPanel(new RectangleF(50,25,500,120),18);
+    var signed=EqLabel("WDEF : \u2212 5",new RectangleF(90,50,60,18),
+      new RectangleF(155,50,20,18),new RectangleF(80,48,260,22),signPanel);
+    using(var frame=EqFrame(580,180,new List<OverlayLabel>{signed},
+      new List<int[]>{new int[]{155,50,175,68}},new List<int>{unchecked((int)0xffffbb22)})){
+     var form=EqForm(new Rectangle(0,0,580,180));
+     var ok=form.PrepareSimpleFusionAsync(frame,Rectangle.Empty,
+       new List<OverlayLabel>{signed}).GetAwaiter().GetResult();
+     EqCheck(ok&&form.simpleReady.Contains(signed),"EQUIP-R1a independent sign field paints from the measured range");
+     int[] layer=form.simpleLayer.Pixels();
+     int preserved=0;
+     for(int y=50;y<68;y++)for(int x=155;x<175;x++)if(layer[y*580+x]==0)preserved++;
+     EqCheck(preserved==18*20&&signed.EquipmentField.OriginalValue=="\u2212 5",
+       "EQUIP-R1a the complete signed value region stays original");
+     EqCheck(signed.KeepClearBounds.Left<=155&&signed.KeepClearBounds.Right>=175,
+       "EQUIP-R1a composition guard covers the independent sign");
+     form.ClearSimpleFusion();
+    }
+   }
    // EQUIP-R3: adjacent no-space fields with measured word boxes both paint; the
    // STR value guard must stop before INT and must not trigger a live-value conflict.
    {
@@ -171,6 +193,32 @@ namespace MapleOverlay {
      for(int y=50;y<68;y++)for(int x=125;x<145;x++)if(layer[y*680+x]==0)preserved++;
      for(int y=50;y<68;y++)for(int x=185;x<205;x++)if(layer[y*680+x]==0)preserved++;
      EqCheck(preserved==2*18*20,"EQUIP-R3 both complete value regions stay original");
+     form.ClearSimpleFusion();
+    }
+   }
+   // EQUIP-R3a: INT follows the OCR digit O in STR:+1OINT:+3. Both fields must
+   // paint and the STR guard must not touch the INT key.
+   {
+    var ocrDigitPanel=EqPanel(new RectangleF(50,25,600,120),18);
+    var strength=EqLabelIndex("STR:+1OINT:+3",0,new RectangleF(90,50,30,18),
+      new RectangleF(125,50,22,18),new RectangleF(80,48,220,22),ocrDigitPanel,true);
+    var intelligence=EqLabelIndex("STR:+1OINT:+3",1,new RectangleF(150,50,30,18),
+      new RectangleF(185,50,22,18),new RectangleF(80,48,220,22),ocrDigitPanel,true);
+    using(var frame=EqFrame(680,180,new List<OverlayLabel>{strength,intelligence},
+      new List<int[]>{new int[]{125,50,147,68},new int[]{185,50,207,68}},
+      new List<int>{unchecked((int)0xffff8833),unchecked((int)0xff3388ff)})){
+     var form=EqForm(new Rectangle(0,0,680,180));
+     var ok=form.PrepareSimpleFusionAsync(frame,Rectangle.Empty,
+       new List<OverlayLabel>{strength,intelligence}).GetAwaiter().GetResult();
+     EqCheck(ok&&form.simpleReady.Contains(strength)&&form.simpleReady.Contains(intelligence),
+       "EQUIP-R3a STR:+1OINT:+3 paints both fields");
+     EqCheck(strength.EquipmentField.OriginalValue=="+1O"&&strength.FusionFailureReason==""&&
+       intelligence.FusionFailureReason=="","EQUIP-R3a STR keeps +1O and INT is not blocked");
+     int[] layer=form.simpleLayer.Pixels();
+     int preserved=0;
+     for(int y=50;y<68;y++)for(int x=125;x<147;x++)if(layer[y*680+x]==0)preserved++;
+     for(int y=50;y<68;y++)for(int x=185;x<207;x++)if(layer[y*680+x]==0)preserved++;
+     EqCheck(preserved==2*18*22,"EQUIP-R3a both complete value regions stay original");
      form.ClearSimpleFusion();
     }
    }

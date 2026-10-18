@@ -79,7 +79,7 @@ namespace MapleOverlay
             List<FieldMatch> keyMatches=new List<FieldMatch>();
             for(int i=0;i<Fields.Length;i++) {
                 FieldDefinition definition=Fields[i];
-                string expression=@"(?<![A-Za-z])(?<req>(?:req(?:uired)?\s*[.:]?\s*)?)(?<name>"+
+                string expression=@"(?<req>(?:req(?:uired)?\s*[.:]?\s*)?)(?<name>"+
                     definition.Pattern+@")(?![A-Za-z])";
                 foreach(Match match in Regex.Matches(text,expression,RegexOptions.IgnoreCase)) {
                     int after=match.Index+match.Length;
@@ -92,6 +92,10 @@ namespace MapleOverlay
             keyMatches.Sort(delegate(FieldMatch a,FieldMatch b){
                 int start=a.Match.Index.CompareTo(b.Match.Index);
                 return start!=0?start:b.Match.Length.CompareTo(a.Match.Length);});
+            List<FieldMatch> allowedMatches=new List<FieldMatch>();
+            foreach(FieldMatch candidate in keyMatches)
+                if(IsAllowedKeyStart(text,candidate,allowedMatches))allowedMatches.Add(candidate);
+            keyMatches=allowedMatches;
 
             foreach(FieldMatch keyMatch in keyMatches) {
                 Match match=keyMatch.Match;
@@ -192,6 +196,36 @@ namespace MapleOverlay
                     Fields[i].Pattern+@")(?![A-Za-z])";
                 if(Regex.IsMatch(trimmed,expression,RegexOptions.IgnoreCase))return true;
             }
+            return false;
+        }
+
+        private static bool IsNumericSign(char value)
+        {
+            return value=='+'||value=='-'||value=='\u2212'||value=='\uFF0B'||value=='\uFF0D';
+        }
+
+        // The old (?<![A-Za-z]) lookbehind rejected INT when the preceding OCR digit
+        // was O/I/l (STR:+1OINT:+3). A key may start after a letter/digit only when
+        // that run is a numeric value immediately following a previously confirmed
+        // field. This keeps POINT/R2INT prose from becoming equipment fields.
+        private static bool IsAllowedKeyStart(string text,FieldMatch candidate,List<FieldMatch> previousMatches)
+        {
+            int index=candidate.Match.Index;
+            if(index<=0)return true;
+            char previous=text[index-1];
+            if(!Char.IsLetterOrDigit(previous))return true;
+            FieldMatch nearest=null;
+            foreach(FieldMatch other in previousMatches)
+                if(other.Match.Index<index&&other.Match.Index+other.Match.Length<=index&&
+                    (nearest==null||other.Match.Index>nearest.Match.Index))nearest=other;
+            if(nearest==null)return false;
+            int runStart=index-1;
+            while(runStart>0&&Char.IsLetterOrDigit(text[runStart-1]))runStart--;
+            if(runStart>0&&IsNumericSign(text[runStart-1]))runStart--;
+            if(nearest.Match.Index+nearest.Match.Length>runStart)return false;
+            if(runStart>=index)return false;
+            if(!Char.IsDigit(text[runStart])&&!IsNumericSign(text[runStart]))return false;
+            for(int i=runStart;i<index;i++)if(Char.IsDigit(text[i]))return true;
             return false;
         }
 

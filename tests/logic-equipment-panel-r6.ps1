@@ -61,7 +61,8 @@ namespace MapleOverlay {
 '@
 $body=$prefix
 foreach($method in @(
- @{File='StructuredPanelOverlay.cs';Name='PreciseTextSpan';Params=5},
+ @{File='StructuredPanelOverlay.cs';Name='HasLetterOrDigit'},
+ @{File='StructuredPanelOverlay.cs';Name='PreciseTextSpan';Params=6},
  @{File='StructuredPanelOverlay.cs';Name='OverlaySpan'},
  @{File='StructuredPanelOverlay.cs';Name='AddStructuredFieldLabels'},
  @{File='MapleOverlay.cs';Name='BuildVisualRows'},
@@ -176,6 +177,26 @@ $suffix=@'
      x.Contains("preservedReason=weapon-defense:estimated-value-region")),
      "R1 estimated boundary is not reported as value-pixels-preserved");
 
+   // EQUIP-R1a: OCR emits key, independent sign and digit as separate word boxes.
+   // The value guard must cover the sign word as well as the digit.
+   foreach(string sign in new string[]{"\u2212","-"}) {
+    foreach(bool attachedColon in new bool[]{false,true}) {
+     string signText=attachedColon?("WDEF: "+sign+" 5"):("WDEF : "+sign+" 5");
+     string[] signWords=attachedColon?new string[]{"WDEF:",sign,"5"}:
+       new string[]{"WDEF",":",sign,"5"};
+     var signLine=Adjacent(signText,signWords,100,530);
+     var signPanels=Panels(new List<OcrLine>{signLine},true,"grammar-structure");
+     form.Build(new List<OcrLine>{signLine},signPanels,out output);
+     Check(output.Count==1,"R1a independent sign word still prepares one field");
+     var signPlan=output[0].EquipmentField;
+     Check(signPlan.OriginalValue==sign+" 5"&&signPlan.BoundaryMode=="measured"&&
+       signPlan.ValuePixelsPreserved,"R1a independent sign is measured and pixel-protected");
+     var guard=output[0].KeepClearBounds;
+     Check(guard.Left<=135.5&&guard.Right>=148.5,
+       "R1a guard covers both the independent sign and the digit");
+    }
+   }
+
    // EQUIP-R3: adjacent no-space fields with measured word boxes. The STR value must
    // stop before INT, and both key/value pairs must be prepared without conflict.
    var contiguousLines=new List<OcrLine>{Adjacent("STR+5INT+3",new string[]{"STR","+5","INT","+3"},100,550)};
@@ -189,6 +210,19 @@ $suffix=@'
      "R3 STR does not consume the first character of INT");
    Check(output.TrueForAll(x=>x.KeepClearBounds.Left>x.SourceBounds.Right),
      "R3 STR value guard does not intrude into the INT key");
+
+   // EQUIP-R3a: the INT key follows an OCR digit O and a colon, not a space.
+   // The previous STR value must stay +1O and INT must still be recognized.
+   var ocrDigitLines=new List<OcrLine>{Adjacent("STR:+1OINT:+3",
+     new string[]{"STR",":","+1O","INT",":","+3"},100,570)};
+   var ocrDigitPanels=Panels(ocrDigitLines,true,"grammar-structure");
+   form.Build(ocrDigitLines,ocrDigitPanels,out output);
+   Check(output.Count==2,"R3a STR:+1OINT:+3 prepares both fields");
+   Check(output.Exists(x=>x.EquipmentField.Key=="strength"&&x.EquipmentField.OriginalValue=="+1O")&&
+     output.Exists(x=>x.EquipmentField.Key=="intelligence"&&x.EquipmentField.OriginalValue=="+3"),
+     "R3a STR keeps +1O and does not absorb INT");
+   Check(output.TrueForAll(x=>x.EquipmentField.BoundaryMode=="measured"&&
+     x.EquipmentField.ValuePixelsPreserved),"R3a contiguous OCR-digit fields are measured");
 
    var seen=new HashSet<string>();
    foreach(var log in Program.Logs)
