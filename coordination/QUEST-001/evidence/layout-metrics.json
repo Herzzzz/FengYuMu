@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "annotation": "Actual GDI+ QuestJournalLayout metrics from synthetic panels; no OCR, AI, capture or in-game visual acceptance.",
-  "checks": 142,
+  "checks": 164,
   "cases": [
     {
       "case": "short-with-summary",
@@ -209,6 +209,30 @@
       "appendedVisibleProse": [
         "She wanted Green Mushroom Cap Orange Mushroom Cap"
       ]
+    },
+    {
+      "case": "r3c-correct-association",
+      "scale": 1.0,
+      "rejected": false,
+      "reason": ""
+    },
+    {
+      "case": "r3c-swapped-quantities",
+      "scale": 1.0,
+      "rejected": true,
+      "reason": "quest-journal-incomplete:visible-prose-order-or-content:orange"
+    },
+    {
+      "case": "r3c-changed-blue-count",
+      "scale": 1.0,
+      "rejected": true,
+      "reason": "quest-journal-incomplete:visible-prose-order-or-content:1"
+    },
+    {
+      "case": "r3c-duplicate-multiplicity",
+      "scale": 1.0,
+      "rejected": true,
+      "reason": "quest-journal-incomplete:visible-prose-order-or-content:and"
     },
     {
       "case": "r2-emoji-a",

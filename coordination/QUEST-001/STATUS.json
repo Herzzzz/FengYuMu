@@ -2,11 +2,11 @@
   "schema": 2,
   "taskId": "QUEST-001",
   "sharedTaskId": "FONT-001",
-  "state": "R3A_R3B_IMPLEMENTED_BUILD_AND_TESTS_COMMITTED_PENDING_CLOUD_REVIEW",
+  "state": "R3C_IMPLEMENTED_BUILD_PENDING",
   "branch": "dsh/quest-font-001",
   "baseCommit": "dff639b828542d0bcad94fc9eb50a816f3f9bfd3",
   "previousImplementationCommit": "eba0d4d131f56fdeac88c7464b17f07a88162ed7",
-  "implementationCommit": "55781e3bd032f672bc907f5294f48612412c0bda",
+  "implementationCommit": "PENDING",
   "resultFilesCommit": "reported in the final relay message; this file is committed with the result",
   "scope": {
     "sourceFiles": [
@@ -38,11 +38,11 @@
     },
     "QUEST-R3": {
       "status": "FIXED",
-      "detail": "A generic JournalReplacementComplete guard runs after every selection path and before the single-region label is emitted. Visible numbers must exist in both candidate English and Chinese; every visible non-chrome prose row must be covered by candidate English words. Conflicting quantities or unknown appended prose reject the whole journal replacement and preserve original pixels/text. Positive R1 integration uses fully corresponding content; negative regressions cover 'Please take care of 50' and an unknown sentence."
+      "detail": "A generic JournalReplacementComplete guard runs after every selection path and before the single-region label is emitted. Visible numbers must exist in both candidate English and Chinese; the complete visible prose sequence must align in order to the candidate English with bounded OCR-tolerant token matching. Only a structurally confirmed stage title is skipped; titleless/scrolled body anchors are checked. Numeric tokens participate in the alignment and remain bound to their surrounding item/prose tokens, including single-number and short-number rows. Conflicting, swapped, changed or duplicate quantities and unknown/reordered/negated prose reject the whole journal replacement and preserve original pixels/text."
     },
     "evidenceWording": {
       "status": "CORRECTED",
-      "panelChecks": "97 checks use actual GDI+ Font/Graphics measurement on the built EXE (64 previous + R1/R2/R3 additions)",
+      "panelChecks": "164 checks use actual GDI+ Font/Graphics measurement on the built EXE (64 previous + R1/R2/R3a/R3b/R3c additions)",
       "fontCompositionChecks": "51 checks use the generated-source substitute Font/Graphics harness (33 previous + 18 R2); this is not native GDI acceptance",
       "actualMeasurements": "evidence/layout-metrics.json; produced by the actual-GDI+ panel checks"
     }
@@ -60,13 +60,13 @@
   },
   "build": {
     "command": "pwsh -NoProfile -File src/build.ps1",
-    "status": "PASS",
+    "status": "PENDING",
     "exePath": "枫语幕.exe",
-    "exeSha256": "A0BDDE7FA4750903CD123CBF3F6D415DF151C6DC89321240E1EF958707C5B074",
+    "exeSha256": "PENDING",
     "buildEvidencePath": "枫语幕.exe.build.json",
-    "buildEvidenceSha256": "41818D0CD9D6D5AAC09CA9161B3C8046584F164FBEA2220AD91C90B9DDCA399C",
-    "head": "55781e3bd032f672bc907f5294f48612412c0bda",
-    "worktreeCleanAtBuild": true,
+    "buildEvidenceSha256": "PENDING",
+    "head": "PENDING",
+    "worktreeCleanAtBuild": false,
     "inputs": 64,
     "compiler": "dotnet SDK 6.0.410 Roslyn csc.dll with .NET Framework 4.8 reference assemblies"
   },
@@ -74,15 +74,15 @@
     "questPanelLayout": {
       "command": "pwsh -NoProfile -File tests/logic-quest-panel-layout.ps1",
       "kind": "actual GDI+ on built EXE",
-      "checks": 142,
-      "status": "PASS on final clean build",
+      "checks": 164,
+      "status": "PASS on pre-clean R3c build; final clean-build rerun pending",
       "evidence": "evidence/quest-panel-layout.txt"
     },
     "questFontLayout": {
       "command": "pwsh -NoProfile -File tests/logic-quest-font-layout.ps1",
       "kind": "generated-source substitute Font/Graphics harness; not native GDI acceptance",
       "checks": 51,
-      "status": "PASS on final clean build",
+      "status": "PASS on pre-clean R3c build; final clean-build rerun pending",
       "evidence": "evidence/quest-font-layout.txt"
     },
     "simpleFlow": {

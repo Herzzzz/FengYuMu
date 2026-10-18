@@ -222,9 +222,13 @@ namespace MapleOverlay
                     TranslationStore.Normalize(stage);
                 if(confirmedTitle)continue;
                 if(!String.IsNullOrEmpty(record.Title)&&key==TranslationStore.Normalize(record.Title))continue;
-                if(key.Length<4)continue;
-                bool hasWord=false;
-                foreach(char value in line.Text)if(Char.IsLetterOrDigit(value)){hasWord=true;break;}
+                bool hasWord=false,hasDigit=false;
+                foreach(char value in line.Text) {
+                    if(Char.IsLetterOrDigit(value))hasWord=true;
+                    if(Char.IsDigit(value))hasDigit=true;
+                }
+                // Short numeric rows are quantity/prose evidence, not noise.
+                if(key.Length<4&&!hasDigit)continue;
                 if(!hasWord)continue;
                 if(visible.Length>0)visible.Append(' ');
                 visible.Append(line.Text);
@@ -268,11 +272,14 @@ namespace MapleOverlay
             string[] visible=JournalTokens(line), candidate=JournalTokens(source);
             int cursor=0;
             foreach(string token in visible) {
-                if(token.Length<=1||JournalTokenHasDigit(token))continue;
+                // Single-character words are OCR decoration, but numeric tokens
+                // (including "1") are part of quantity-to-item association and must
+                // participate in the ordered alignment.
+                if(token.Length<=1&&!JournalTokenHasDigit(token))continue;
                 bool matched=false;
                 for(int i=cursor;i<candidate.Length;i++) {
                     string sourceToken=candidate[i];
-                    if(sourceToken.Length<=1||JournalTokenHasDigit(sourceToken))continue;
+                    if(sourceToken.Length<=1&&!JournalTokenHasDigit(sourceToken))continue;
                     if(JournalTokenMatches(token,sourceToken)) {
                         cursor=i+1;matched=true;break;
                     }
@@ -290,6 +297,12 @@ namespace MapleOverlay
 
         private static bool JournalTokenMatches(string left,string right)
         {
+            bool leftDigit=JournalTokenHasDigit(left),rightDigit=JournalTokenHasDigit(right);
+            // A number is not interchangeable with another number: "1 Green ... 10
+            // Blue" may not align as "10 Green ... 1 Blue". Exact numeric tokens keep
+            // the quantity bound to its neighbouring item/prose tokens.
+            if(leftDigit||rightDigit)
+                return leftDigit&&rightDigit&&String.Equals(left,right,StringComparison.Ordinal);
             if(String.Equals(left,right,StringComparison.Ordinal))return true;
             if(left.Length<4||right.Length<4)return false;
             int longest=Math.Max(left.Length,right.Length);

@@ -5,10 +5,10 @@
 - Branch: `dsh/quest-font-001`.
 - Base commit: `dff639b828542d0bcad94fc9eb50a816f3f9bfd3`.
 - Previous implementation commit: `eba0d4d131f56fdeac88c7464b17f07a88162ed7`.
-- Review-fix implementation commit: `55781e3bd032f672bc907f5294f48612412c0bda`.
+- Review-fix implementation commit: **PENDING**.
 - Result files commit: reported in the final relay message.
-- EXE: `D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe`; SHA-256 `A0BDDE7FA4750903CD123CBF3F6D415DF151C6DC89321240E1EF958707C5B074`.
-- Build evidence: `枫语幕.exe.build.json`; SHA-256 `41818D0CD9D6D5AAC09CA9161B3C8046584F164FBEA2220AD91C90B9DDCA399C`; head `55781e3`, 64 inputs, clean worktree at build.
+- EXE: `D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe`; SHA-256 **PENDING**.
+- Build evidence: `枫语幕.exe.build.json`; SHA-256 **PENDING**; head **PENDING**, 64 inputs, clean worktree required.
 
 ## What changed
 
@@ -78,6 +78,7 @@ The guard is not phrase-specific. A visible appended line with a missing quantit
 
 - **R3a:** titleless and scrolled first-row cases cover both conflict/unknown and matching positives, with and without a caption used only to keep selection reachable. The first body row is never skipped.
 - **R3b:** the coverage check now uses ordered source-text alignment over the whole visible prose, not a bag-of-words ratio. Tests cover `She wanted Green Mushroom Cap but not Orange Mushroom Cap`, reordered variants, cross-line reversal, an extra unknown token, and OCR noise (case/punctuation/one-letter typo) that must still pass.
+- **R3c:** numeric tokens participate in that ordered alignment and remain bound to their surrounding item/prose tokens. Single-number and short-number rows are not skipped. Tests use Biggs's body (`1 Orange Mushroom Cap and 10 Blue Snail Shells`): correct associations pass; swapped quantities, a changed Blue count, and duplicate multiplicity all reject and preserve original pixels.
 
 ### QUEST-R2 — Unicode wrapping progress
 
@@ -85,7 +86,7 @@ The guard is not phrase-specific. A visible appended line with a missing quantit
 
 ## Typography / overflow evidence
 
-Actual GDI+ metrics are recorded in `evidence/layout-metrics.json` (142 panel checks, measured with the built EXE's real `Graphics` and `Font`). Representative values:
+Actual GDI+ metrics are recorded in `evidence/layout-metrics.json` (164 panel checks, measured with the built EXE's real `Graphics` and `Font`). Representative values:
 
 | Case | Body | Title | Unit | Pages | Overflow |
 |---|---:|---:|---|---:|---|
@@ -102,11 +103,11 @@ Across all recorded cases the measured maximum line width is <= the measured con
 
 ## Tests
 
-See `evidence/test-results.json` and the individual logs in `evidence/`. The final run is against the clean-build EXE `A0BDDE7F...` (implementation head `55781e3`, build worktree clean).
+See `evidence/test-results.json` and the individual logs in `evidence/`. The logs below are pre-clean R3c PASS runs; the final clean-build rerun is recorded after the clean build.
 
 Passing on this host/build:
 
-- new `tests/logic-quest-panel-layout.ps1` — **142 checks** (the original 64 actual-GDI+ panel checks plus all R1/R2/R3 additions) using real GDI+ measurement on the built EXE (selection/region/typography/pagination/repeat F8/scale, R1 counter policy and integration, R2 actual-GDI+ emoji/supplementary plans, R3 completeness positive/negative cases, R3a titleless/scrolled anchors, R3b ordered alignment/OCR noise);
+- new `tests/logic-quest-panel-layout.ps1` — **164 checks** (the original 64 actual-GDI+ panel checks plus all R1/R2/R3 additions) using real GDI+ measurement on the built EXE (selection/region/typography/pagination/repeat F8/scale, R1 counter policy and integration, R2 actual-GDI+ emoji/supplementary plans, R3 completeness positive/negative cases, R3a titleless/scrolled anchors, R3b ordered alignment/OCR noise, R3c quantity-to-item association);
 - new `tests/logic-quest-font-layout.ps1` — **51 checks** (the original 33 plus 18 R2 checks) using the generated-source **substitute Font/Graphics harness**, not native GDI acceptance (full composition, summary coexistence, first-line/right-edge markers, long/short body, scroll, page turn, repeated composition, scales, and 8-second-watchdog CJK/emoji/supplementary wrapping with character preservation);
 - `tests/logic-simple-flow-r11.ps1` — 33 checks;
 - `tests/logic-journal-and-item-r6.ps1 -ExePath .\枫语幕.exe` — 23/23;

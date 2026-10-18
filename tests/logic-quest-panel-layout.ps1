@@ -28,6 +28,18 @@ $mayaEnglish = [string](GetField $maya 'English')
 $mayaChinese = [string](GetField $maya 'Chinese')
 $mayaTitle = [string](GetField $maya 'ChineseTitle')
 if ([string]::IsNullOrWhiteSpace($mayaEnglish) -or [string]::IsNullOrWhiteSpace($mayaChinese)) { throw 'Maya record is incomplete' }
+$biggsArgs = [object[]]@([string]"Biggs's Collection of Items", [string]"", [string]"")
+$biggs = $storeType.GetMethod('SelectJournal', $flags).Invoke($store, $biggsArgs)
+if ($null -eq $biggs) { throw 'Biggs journal record not found' }
+$biggsEnglish = [string](GetField $biggs 'English')
+$biggsChinese = [string](GetField $biggs 'Chinese')
+$biggsTitle = [string](GetField $biggs 'ChineseTitle')
+if ([string]::IsNullOrWhiteSpace($biggsEnglish) -or [string]::IsNullOrWhiteSpace($biggsChinese)) { throw 'Biggs record is incomplete' }
+$biggsSwapped = $biggsEnglish.Replace('1 Orange Mushroom Cap and 10 Blue Snail Shells',
+    '10 Orange Mushroom Cap and 1 Blue Snail Shells')
+$biggsChangedBlue = $biggsEnglish.Replace('10 Blue Snail Shells', '1 Blue Snail Shells')
+$biggsDuplicate = $biggsEnglish + ' and 10 Blue Snail Shells'
+if ($biggsSwapped -eq $biggsEnglish -or $biggsChangedBlue -eq $biggsEnglish) { throw 'Biggs quantity fixture replacement failed' }
 
 $lineType = TypeOf 'OcrLine'
 $wordType = TypeOf 'OcrWord'
@@ -56,7 +68,9 @@ $formType.GetProperty('Bounds', $flags).SetValue($form, [Drawing.Rectangle]::Emp
 SetField $form 'captureBounds' ([Drawing.Rectangle]::new(0, 0, 1000, 700))
 
 function NewFrame([single]$factor, [bool]$summary, [int]$objectiveCount, [string[]]$ProseLines = @(),
-    [switch]$NoTitle, [string]$FirstRowOverride = '', [int]$BodyTop = 346, [string]$Caption = '', [switch]$NoisyFirstRow) {
+    [switch]$NoTitle, [string]$FirstRowOverride = '', [int]$BodyTop = 346, [string]$Caption = '', [switch]$NoisyFirstRow,
+    [string]$StageTitle = "Maya's First Collection", [string]$BodyEnglish = '') {
+    if ($BodyEnglish.Length -eq 0) { $BodyEnglish = $mayaEnglish }
     $w = [int][Math]::Ceiling(1000 * $factor)
     $h = [int][Math]::Ceiling(700 * $factor)
     $bmp = [Drawing.Bitmap]::new($w, $h)
@@ -72,10 +86,10 @@ function NewFrame([single]$factor, [bool]$summary, [int]$objectiveCount, [string
     $g.FillRectangle([Drawing.Brushes]::White, $paper)
     $g.FillRectangle([Drawing.SolidBrush]::new([Drawing.Color]::FromArgb(255, 225, 222, 211)), $summaryCard)
     $font = [Drawing.Font]::new('Arial', [single](14 * $factor), [Drawing.FontStyle]::Regular, [Drawing.GraphicsUnit]::Pixel)
-    if (-not $NoTitle) { $g.DrawString("Maya's First Collection", $font, [Drawing.Brushes]::Black, 410 * $factor, 315 * $factor) }
+    if (-not $NoTitle) { $g.DrawString($StageTitle, $font, [Drawing.Brushes]::Black, 410 * $factor, 315 * $factor) }
     if ($Caption.Length -gt 0) { $g.DrawString($Caption, $font, [Drawing.Brushes]::Black, 410 * $factor, 250 * $factor) }
     $rows = @()
-    $words = $mayaEnglish.Split(' ')
+    $words = $BodyEnglish.Split(' ')
     $current = ''
     foreach ($word in $words) {
         if (($current + ' ' + $word).Length -gt 52) { $rows += $current; $current = $word }
@@ -98,7 +112,7 @@ function NewFrame([single]$factor, [bool]$summary, [int]$objectiveCount, [string
     $g.Dispose()
     $lines = [Activator]::CreateInstance($lineListType)
     if ($summary) { $lines.Add((NewLine 'Quest Summary' (410 * $factor) (160 * $factor) (180 * $factor) (20 * $factor))) }
-    if (-not $NoTitle) { $lines.Add((NewLine "Maya's First Collection" (410 * $factor) (315 * $factor) (300 * $factor) (20 * $factor))) }
+    if (-not $NoTitle) { $lines.Add((NewLine $StageTitle (410 * $factor) (315 * $factor) (300 * $factor) (20 * $factor))) }
     if ($Caption.Length -gt 0) { $lines.Add((NewLine $Caption (410 * $factor) (250 * $factor) (300 * $factor) (20 * $factor))) }
     for ($i = 0; $i -lt $rows.Count; $i++) {
         $lines.Add((NewLine $rows[$i] (410 * $factor) (($BodyTop + $i * 26) * $factor) (380 * $factor) (20 * $factor)))
@@ -392,6 +406,52 @@ foreach ($negative in @(
         Check ($rejection.Contains('visible-prose-order-or-content')) ($negative.Name + ': ordered alignment reason recorded (got ' + $rejection + ')')
         Check ($scene.Bitmap.GetPixel(800, 560).ToArgb() -eq $marker.ToArgb()) ($negative.Name + ': original pixels are preserved')
         $evidence.Add([pscustomobject]@{ case = $negative.Name; scale = 1.0; rejected = $true; reason = $rejection; appendedVisibleProse = $negative.Lines })
+    } finally { $scene.Bitmap.Dispose() }
+}
+
+# 1b4. QUEST-R3c: quantities participate in ordered alignment and stay bound to
+# their neighbouring item/prose tokens. Biggs has 1 Orange Mushroom Cap and
+# 10 Blue Snail Shells in both English and Chinese.
+foreach ($numericPositive in @(
+    'He wants you to get him 1 Orange Mushroom Cap and 10 Blue Snail Shells',
+    '10',
+    '1'
+)) {
+    $alignment = Test-Alignment $numericPositive $biggsEnglish
+    Check ($alignment.Ok) ('R3c numeric association accepts: ' + $numericPositive)
+}
+foreach ($numericNegative in @(
+    'He wants you to get him 10 Orange Mushroom Cap and 1 Blue Snail Shells',
+    'He wants you to get him 1 Orange Mushroom Cap and 1 Blue Snail Shells',
+    'He wants you to get him 1 Orange Mushroom Cap and 10 Blue Snail Shells and 10 Blue Snail Shells',
+    '2'
+)) {
+    $alignment = Test-Alignment $numericNegative $biggsEnglish
+    Check (-not $alignment.Ok) ('R3c numeric association rejects: ' + $numericNegative)
+    Check ($alignment.Reason.StartsWith('order-or-content')) ('R3c numeric rejection identifies the unmatched token: ' + $alignment.Reason)
+}
+$biggsCases = @(
+    @{ Name = 'r3c-correct-association'; Body = $biggsEnglish; Rejected = $false; Reason = '' },
+    @{ Name = 'r3c-swapped-quantities'; Body = $biggsSwapped; Rejected = $true; Reason = 'visible-prose-order-or-content' },
+    @{ Name = 'r3c-changed-blue-count'; Body = $biggsChangedBlue; Rejected = $true; Reason = 'visible-prose-order-or-content' },
+    @{ Name = 'r3c-duplicate-multiplicity'; Body = $biggsDuplicate; Rejected = $true; Reason = 'visible-prose-order-or-content' }
+)
+foreach ($case in $biggsCases) {
+    $scene = NewFrame 1.0 $true 1 @() -StageTitle "Biggs's Collection of Items" -BodyEnglish $case.Body
+    try {
+        $marker = [Drawing.Color]::FromArgb(255, 55, 77, 99)
+        $scene.Bitmap.SetPixel(800, 560, $marker)
+        $label = Invoke-JournalBuilder $scene
+        $rejection = [string](GetField $form 'lastQuestJournalRejection')
+        if ($case.Rejected) {
+            Check ($null -eq $label) ($case.Name + ': whole journal replacement is rejected')
+            Check ($rejection.Contains($case.Reason)) ($case.Name + ': numeric association reason recorded (got ' + $rejection + ')')
+            Check ($scene.Bitmap.GetPixel(800, 560).ToArgb() -eq $marker.ToArgb()) ($case.Name + ': original pixels are preserved')
+        } else {
+            Check ($null -ne $label) ($case.Name + ': journal replacement is built')
+            Check ($rejection -eq '') ($case.Name + ': completeness guard passes')
+        }
+        $evidence.Add([pscustomobject]@{ case = $case.Name; scale = 1.0; rejected = $case.Rejected; reason = $rejection })
     } finally { $scene.Bitmap.Dispose() }
 }
 
