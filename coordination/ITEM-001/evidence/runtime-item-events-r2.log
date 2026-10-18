@@ -1,0 +1,22 @@
+﻿2026-10-18T16:44:50.5652268Z PID=20020 picture-test-start engine=Windows
+2026-10-18T16:44:51.4825671Z PID=20020 item-draw-stage generation=1 label=2000000:item-body:029A2186 stage=prepareAttempt bounds=796.8,580.27,200.53,30.93
+2026-10-18T16:44:51.4948436Z PID=20020 item-draw-stage generation=1 label=2000000:item-body:029A2186 stage=ready bounds=796.8,580.27,200.53,30.93
+2026-10-18T16:44:51.4948436Z PID=20020 item-draw-stage generation=1 label=2000000:item-aux:01DE5256 stage=prepareAttempt bounds=726.4,551.47,268.8,13.87
+2026-10-18T16:44:51.4967077Z PID=20020 item-draw-stage generation=1 label=2000000:item-aux:01DE5256 stage=ready bounds=726.4,551.47,268.8,13.87
+2026-10-18T16:44:51.4997601Z PID=20020 item-draw-stage generation=1 label=2000000:item-body:029A2186 stage=drawAttempt bounds=796.8,580.27,200.53,30.93
+2026-10-18T16:44:51.5002622Z PID=20020 item-draw-stage generation=1 label=2000000:item-body:029A2186 stage=drawSuccess bounds=796.8,580.27,200.53,30.93
+2026-10-18T16:44:51.5002622Z PID=20020 item-draw-stage generation=1 label=2000000:item-aux:01DE5256 stage=drawAttempt bounds=726.4,551.47,268.8,13.87
+2026-10-18T16:44:51.5007635Z PID=20020 item-draw-stage generation=1 label=2000000:item-aux:01DE5256 stage=drawSuccess bounds=726.4,551.47,268.8,13.87
+2026-10-18T16:44:51.5189041Z PID=20020 item-compose generation=1 id=2000000 recognized=2 matched=2 planned=2 prepared=2 painted=0 preserved=0 font=11.9 reason=body-only-context parts=item-aux:prepared;item-body:prepared
+2026-10-18T16:44:51.5329521Z PID=20020 item-picture-labels labels=3 item=2 ready=2
+2026-10-18T16:44:51.5334650Z PID=20020 item-painted generation=1 phase=picture id=2000000 recognized=2 matched=2 planned=2 prepared=2 painted=2 preserved=0 font=11.9 reason=body-only-context parts=item-aux:painted;item-body:painted
+2026-10-18T16:44:51.5334650Z PID=20020 picture-test engine=Windows lines=52 matched=3 painted=2 elapsedMs=969
+2026-10-18T16:44:52.7475668Z PID=6244 picture-test-start engine=Windows
+2026-10-18T16:44:53.6149274Z PID=6244 item-draw-stage generation=1 label=2030003:item-body:01D9AFBA stage=prepareAttempt bounds=795.73,679.47,140.8,13.87
+2026-10-18T16:44:53.6149274Z PID=6244 item-draw-stage generation=1 label=2030003:item-body:01D9AFBA stage=ready bounds=795.73,679.47,140.8,13.87
+2026-10-18T16:44:53.6188784Z PID=6244 item-draw-stage generation=1 label=2030003:item-body:01D9AFBA stage=drawAttempt bounds=795.73,679.47,140.8,13.87
+2026-10-18T16:44:53.6198838Z PID=6244 item-draw-stage generation=1 label=2030003:item-body:01D9AFBA stage=drawSuccess bounds=795.73,679.47,140.8,13.87
+2026-10-18T16:44:53.6349177Z PID=6244 item-compose generation=1 id=2030003 recognized=1 matched=1 planned=1 prepared=1 painted=0 preserved=0 font=11.9 reason=body-only-context parts=item-body:prepared
+2026-10-18T16:44:53.6489181Z PID=6244 item-picture-labels labels=3 item=1 ready=2
+2026-10-18T16:44:53.6489181Z PID=6244 item-painted generation=1 phase=picture id=2030003 recognized=1 matched=1 planned=1 prepared=1 painted=1 preserved=0 font=11.9 reason=body-only-context parts=item-body:painted
+2026-10-18T16:44:53.6489181Z PID=6244 picture-test engine=Windows lines=54 matched=3 painted=2 elapsedMs=901

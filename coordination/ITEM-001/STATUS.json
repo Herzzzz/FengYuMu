@@ -1,0 +1,65 @@
+{
+  "workItem": "ITEM-001",
+  "checkpoint": "CP1",
+  "state": "READY_FOR_CLOUD_REVIEW",
+  "branch": "dsh/item-001",
+  "baselineCommit": "68094394080a6c951f6c3fd998150fc4266f992c",
+  "implementationCommit": "ea7439a",
+  "evidenceCommit": "cf98099",
+  "scope": "ordinary item tooltip drawing and known negative misattribution only",
+  "build": {
+    "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\src\\build.ps1",
+    "exitCode": 0,
+    "log": "evidence/cp1-build-r2.log",
+    "exeSha256": "21F53A2F0FC2AC2544BAA2C47F57E4A9EB2DE6A89A17327015E4337712C7E0BC"
+  },
+  "tests": [
+    {
+      "name": "ITEM-001 CP1 misattribution smoke",
+      "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\tests\\logic-item-cp1.ps1",
+      "exitCode": 0,
+      "result": "8/8 passed"
+    },
+    {
+      "name": "simple composition and late-generation regression",
+      "command": "pwsh.exe -NoProfile -ExecutionPolicy Bypass -File .\\tests\\logic-simple-flow-r11.ps1",
+      "exitCode": 0,
+      "result": "33/33 passed"
+    },
+    {
+      "name": "full ITEM semantic suite",
+      "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\tests\\logic-item-text-001.ps1",
+      "exitCode": 1,
+      "result": "known CP2 failure: identical description shared by several ids is translatable"
+    }
+  ],
+  "controlledOcrReplay": {
+    "F064": {
+      "inputSha256": "BA8649093287E2AF8E183DFAC242DC1599E68669C1E9EBFE2309221C5648BEBE",
+      "outputSha256": "3DDF6EF3191F9F83E3B0972515B5AD61E7FABAD9F0DF39894A9B5FEF87289F7F",
+      "changedPixels": 9330,
+      "changeBounds": "726,551,998,612",
+      "itemResult": "prepared=2 painted=2 preserved=0"
+    },
+    "F065": {
+      "inputSha256": "27F86BC082BE645D5A6B0956FD508B3BF4714B89966007EE1ED480AFE29F3F1F",
+      "outputSha256": "4BDDDF7076609715213AAB92ED0381230F9808CC6F6770F51C38EEFA5CB937B0",
+      "changedPixels": 3440,
+      "changeBounds": "795,287,1160,694",
+      "itemResult": "prepared=1 painted=1 preserved=0"
+    }
+  },
+  "verificationBoundary": {
+    "source": "VERIFIED",
+    "windowsExeBuild": "VERIFIED",
+    "controlledWindowsOcrReplay": "VERIFIED",
+    "realNativeOcrInGame": "UNVERIFIED",
+    "formalRelease": "NOT_PERFORMED"
+  },
+  "wipDependency": "ItemTextIndex.cs and ItemTextSemantics.cs are included for a reproducible build but remain frozen CP2 work; their known shared-description failure is not claimed fixed by CP1.",
+  "untouchedUntrackedFiles": [
+    "main_ui_live_ai.png",
+    "main_ui_live_dashboard.png",
+    "main_ui_live_start.png"
+  ]
+}
