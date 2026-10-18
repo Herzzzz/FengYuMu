@@ -1,3 +1,9 @@
+
+An error has occurred that was not properly handled. Additional information is shown below. The PowerShell process will exit.
+Unhandled exception. System.IO.FileLoadException: The given assembly name was invalid.
+File name: 'ﾫg￭ﾋU^,'
+   at System.Reflection.AssemblyNameParser.Parse(ReadOnlySpan`1 name)
+   at System.Reflection.AssemblyName.ParseAsAssemblySpec(Char* pAssemblyName, Void* pAssemblySpec)
 PASS: independent observed title: Magic Guard
 PASS: independent observed title: Maglc Guard
 PASS: independent observed title: Magic Armor
@@ -11,4 +17,4 @@ PASS: different Chinese variants of one English title require disambiguation
 PASS: scoped class identity selects its own canonical title
 PASS: unrelated prose cannot become a fuzzy skill title
 PASS: known identity retains complete glossary-backed Recovery description
-Skill dictionary: 13/13 passed; candidate SHA256=3A157488643C7DF647488848E261D421FBAEA42A8746490CBD9D64D41801ADA7; real OCR pixels and Windows rendering unverified.
+Skill dictionary: 13/13 passed; candidate SHA256=5A8FE3A85EFCD2837BB45999FB00919B720F0897D04A0DD6F96022DF9B32EBF4; real OCR pixels and Windows rendering unverified.

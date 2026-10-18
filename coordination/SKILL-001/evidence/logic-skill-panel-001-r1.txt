@@ -14,9 +14,36 @@ PASS: truncated name is rejected
 PASS: negated visible sentence is not replaced by the known Recovery overview
 PASS: unrelated visible sentence is not replaced by the known Recovery overview
 PASS: exact visible overview still translates with its 30-second association
+PASS: appended unknown action and fly is not covered
+PASS: appended unknown action and then dash is not covered
+PASS: candidate-only extra action is rejected
+PASS: unless cannot be borrowed from when using a sword
+PASS: before cannot be borrowed from after using a sword
+PASS: condition scope weapon must match
+PASS: negative HP recovery cannot borrow a positive candidate
+PASS: negative HP recovery keeps its raw sign and associated attribute
+PASS: limited single-glyph OCR tolerance remains available
+PASS: matching when condition and scope still translates
+PASS: target unless cannot satisfy a source when relation
+PASS: fallback rejects the wrong when/unless relation
+PASS: fallback rejects a positive translation of a negative fact
+PASS: full-text fallback does not silently drop an unknown action
+PASS: dictionary overview path rejects an appended unknown action
+PASS: dictionary overview path rejects when/unless relation substitution
 PASS: negated body is preserved in the panel plan, not replaced by its known id
 PASS: the plan distinguishes an unsafe overview from an absent one
 PASS: unrelated body is not replaced by a 30-second known overview
+PASS: appended action: body is preserved
+PASS: appended action: safe current and next remain planned
+PASS: appended action: safe current/next still compose
+PASS: appended action: plan records a preserved body
+PASS: condition relation: body is preserved
+PASS: condition relation: safe current and next remain planned
+PASS: condition relation: safe current/next still compose
+PASS: condition relation: plan records a preserved body
+PASS: raw sign: the body never becomes positive 10
+PASS: raw sign: safe current and next remain planned
+PASS: raw sign: safe current/next still compose
 PASS: full panel plans skill-name
 PASS: full panel plans skill-master-level
 PASS: full panel plans skill-body
@@ -89,17 +116,20 @@ PASS: original level-number pixels survive list-name composition
 PASS: corpus baseline matches 264 ids / 3804 effects / 164 multi-effect skills
 PASS: all 41 controlled screenshot-geometry panels compose every planned section
 PASS: visible body/current/next coverage is at least 99 of 104 controlled sections
-INFO: controlledSections=194 body=40 current=26 next=37 preserved=11
+INFO: controlledSections=191 body=40 current=26 next=37 preserved=14
 PRESERVED: 4:skill-body:body-translation-unavailable
+PRESERVED: 6:skill-body:body-translation-unavailable
 PRESERVED: 14:skill-body:body-translation-unavailable
 PRESERVED: 16:skill-body:body-translation-unavailable
 PRESERVED: 19:skill-body:body-translation-unavailable
+PRESERVED: 20a:skill-body:body-numeric-association-unsafe
 PRESERVED: 20b:skill-body:body-translation-unavailable
 PRESERVED: 20e:skill-required:required-skill-unparsed
 PRESERVED: 20f:skill-body:body-translation-unavailable
 PRESERVED: 22:skill-required:required-skill-unparsed
 PRESERVED: 28:skill-required:required-skill-name-ambiguous
 PRESERVED: 30:skill-body:body-translation-unavailable
+PRESERVED: 31:skill-body:body-translation-unavailable
 PRESERVED: 32:skill-body:body-translation-unavailable
 PASS: no Heal-specific branch in the new skill planner
 PASS: no Rush-specific branch in the new skill planner
@@ -113,5 +143,5 @@ PASS: shared planner and explicit list context are wired
 PASS: build includes planner, list policy and overview safety sources
 PASS: planner adds no OCR or AI round
 PASS: main dictionary pass routes bare skill names through explicit list context
-SKILL-001 logic: 103 checks passed; candidate SHA256=3A157488643C7DF647488848E261D421FBAEA42A8746490CBD9D64D41801ADA7
+SKILL-001 logic: 130 checks passed; candidate SHA256=5A8FE3A85EFCD2837BB45999FB00919B720F0897D04A0DD6F96022DF9B32EBF4
 Evidence boundary: controlled OCR geometry, actual built EXE reflection, native GDI+ font measurement; original 36 screenshots and Windows native OCR/real game remain UNVERIFIED.

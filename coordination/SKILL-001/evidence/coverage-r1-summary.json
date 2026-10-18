@@ -5,25 +5,25 @@
   "primaryOverviewIdsExpected": 264,
   "primaryOverviewIdsObserved": 264,
   "supplementalOverviewRows": 394,
-  "bodyPlanned": 232,
-  "bodyPainted": 217,
-  "bodyPreserved": 47,
+  "bodyPlanned": 202,
+  "bodyPainted": 190,
+  "bodyPreserved": 74,
   "bodyAbsent": 0,
-  "bodyPlannedButNotYetPainted": 15,
+  "bodyPlannedButNotYetPainted": 12,
   "multiLevelIdsExpected": 164,
   "multiLevelCombinedPainted": 164,
   "preservedReasons": [
     {
       "Name": "body-translation-unavailable",
-      "Count": 30
+      "Count": 61
     },
     {
       "Name": "skill-section-does-not-fit",
-      "Count": 15
+      "Count": 12
     },
     {
       "Name": "section-boundary-estimated",
-      "Count": 2
+      "Count": 1
     }
   ],
   "note": "Primary overview per id uses Henesys.gg current, then full site, then prose segment. The controlled panel supplies the corpus skill id as panel context to isolate description planning/painting from shared-title ambiguity; R1 covers shared identity. Every selected overview and all available multi-level pairs were planned and composed. Painted requires simpleReady membership, not label existence. Supplemental rows preserve the other visible variants for review.",

@@ -5,15 +5,15 @@
 - Tool: DeepSeek Harness (DSH) on Windows, PowerShell 7, .NET SDK 6.0.410 Roslyn.
 - Branch: `dsh/skill-001`.
 - Base commit: `bb4f9c361d5cc0ddef05d8cbdecfe95772eebe05` (EQUIP-001 R3b).
-- Implementation commit: `b1b0f21cc089ee9f11cdd601687601866e265aba`.
+- Implementation commit: `7dff2c634dc938b6d4c5a05af632ea0517363eef`.
 - Result files commit: reported in the final relay message; this file is committed
   with the result.
 - EXE: `D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe`; SHA-256
-  `3A157488643C7DF647488848E261D421FBAEA42A8746490CBD9D64D41801ADA7`.
+  `5A8FE3A85EFCD2837BB45999FB00919B720F0897D04A0DD6F96022DF9B32EBF4`.
 - Build evidence: `枫语幕.exe.build.json`; SHA-256
-  `190D143DCA301862DBF5C8DA0A42F1006E2685D5270EAC844DD92FFD83D25F8C`;
-  head `b1b0f21`, 68 inputs. The tracked worktree contained the R1-R7 source and
-  test changes; only the pre-existing untracked `main_ui_live_*.png` application
+  `2009867E0FCE77726AC458716D54BFC4565FA5CE466CD7A24685428D1B5B796B`;
+  head `7dff2c6`, 68 inputs. The tracked worktree contained the R1-R7 and R2a
+  source/test changes; only the pre-existing untracked `main_ui_live_*.png` application
   captures were present. Those captures are the app UI, **not** skill-tooltip
   evidence, and were not committed or used as skill-rendering proof.
 
@@ -51,6 +51,36 @@ context, and a trailing level digit had no protected span.
 
 Baseline evidence: `evidence/baseline-skill-panel-probe.txt`.
 
+## R2a follow-up
+
+The third review found three remaining visible-semantics failures in the same
+overview gate:
+
+- A Recovery sentence with `and fly` appended still borrowed the old Chinese
+  because set coverage was above 72%. Coverage is now **ordered and complete**
+  for every visible content token in both directions. A whole-token edit-distance
+  of one character is allowed for OCR glyph noise; an unknown valid action is not
+  covered and preserves the original.
+- `unless using a sword` was treated as equivalent to `when using a sword`
+  because both contain a condition word. Condition markers are now parsed as a
+  signature: relation (`when`/`unless`/`before`/`after`/`if`/`while`/`until`/...)
+  plus clause scope, and the target Chinese must carry the same relation and the
+  associated weapon/scope evidence. `when` vs `unless`, `before` vs `after` and
+  `sword` vs `axe` scope mismatches are rejected.
+- `Recover HP -10 for 30 sec.` could become positive `10` because
+  `Normalize()` discarded `-`. `RawNumberFacts` now runs **before any Normalize**
+  and compares raw sign, canonical value, unit and associated HP/MP/damage
+  attribute for every dictionary candidate and the vocabulary fallback.
+  Negative target Chinese may use `减少/降低`, but the signed value and unit must
+  survive.
+
+The regressions include appended-action variants, `when`/`unless`,
+`before`/`after`, scope swaps, positive/negative sign variants and a controlled
+single-glyph OCR typo. Each negative plan also proves that its safe current and
+next level labels remain painted. The final primary coverage is 264/264 observed,
+202 planned, 190 actually painted, 74 preserved with a reason, 0 absent, and
+164/164 multi-level panels painted together.
+
 ## Cloud review R1-R7 response
 
 The second review returned `NEEDS_CHANGES`; only R1-R7 were handled. Existing
@@ -85,7 +115,7 @@ source changes and ITEM/CAPTURE work were left alone.
   then a prose segment. A `[Master Level]` prefix is not required. Every item is
   classified as expected/observed/planned/painted/preserved/absent; painted
   requires membership in the real `simpleReady` set. The final run has
-  `264/264` observed, `232` planned, `217` painted, `47` preserved with concrete
+  `264/264` observed, `202` planned, `190` painted, `74` preserved with concrete
   reasons, `0` absent, and `164/164` multi-level panels with current and next
   painted together. `394` other visible variants are listed separately as
   supplemental.
@@ -176,7 +206,7 @@ classification, quest matching and equipment grammar were not changed.
 
 ### Identity / semantics
 
-`tests/logic-skill-panel-001.ps1` (103 checks) covers:
+`tests/logic-skill-panel-001.ps1` (130 checks) covers:
 
 - Position-aware names: `Critical Recovery` unique; `Magic Guard Recovery` and
   `Critical Recovery Recovery` ambiguous.
@@ -225,9 +255,9 @@ skill ids                         264
 names translated                  264/264
 primary overview ids expected     264
 primary overview ids observed     264
-primary overviews planned         232
-primary overviews painted         217
-primary overviews preserved        47
+primary overviews planned         202
+primary overviews painted         190
+primary overviews preserved        74
 primary overviews absent            0
 supplemental visible variants     394
 level effects                     3804
@@ -244,8 +274,8 @@ The primary denominator is one visible overview per ID, selected from
 current/next status and `multiLevelCombinedPainted`. `bodyPainted` requires the
 label to be in the real `simpleReady` set, not merely present in the plan.
 
-The 47 preserved primary overviews are accounted for: 30
-`body-translation-unavailable`, 15 `skill-section-does-not-fit` and 2
+The 74 preserved primary overviews are accounted for: 61
+`body-translation-unavailable`, 12 `skill-section-does-not-fit` and 1
 `section-boundary-estimated`. These are safe preserves, not absent rows or
 silent omissions. The 394 non-primary visible variants remain in
 `evidence/coverage-r1-supplemental.tsv` for review; they are not added to the
@@ -259,8 +289,8 @@ and is superseded by this run.
 
 | Command | Result |
 | --- | --- |
-| `pwsh -NoProfile -File tests/logic-skill-panel-001.ps1 -ExePath .\枫语幕.exe` | PASS, 103 checks |
-| `pwsh -NoProfile -File tests/logic-skill-coverage-001.ps1 -ExePath .\枫语幕.exe` | PASS, 8 checks; 217/264 painted, 47 preserved, 164/164 multi-level |
+| `pwsh -NoProfile -File tests/logic-skill-panel-001.ps1 -ExePath .\枫语幕.exe` | PASS, 130 checks |
+| `pwsh -NoProfile -File tests/logic-skill-coverage-001.ps1 -ExePath .\枫语幕.exe` | PASS, 8 checks; 190/264 painted, 74 preserved, 164/164 multi-level |
 | `pwsh -NoProfile -File tests/logic-skill-title-matching.ps1 -ExePath .\枫语幕.exe` | PASS, 13/13 |
 | `pwsh -NoProfile -File tests/logic-skill-detail-semantics.ps1 -ExePath .\枫语幕.exe` | PASS |
 | `pwsh -NoProfile -File tests/logic-equipment-fields.ps1` | PASS, 91 checks |
@@ -327,7 +357,7 @@ screenshot-geometry panels from the current repository instead.
 - `evidence/coverage-r1-summary.json` - aggregate counts and preserved-reason
   breakdown for the primary denominator.
 - `evidence/logic-skill-coverage-001.txt` - coverage run output.
-- `evidence/logic-skill-panel-001-r1.txt` - 103 checks against the final EXE.
+- `evidence/logic-skill-panel-001-r1.txt` - 130 checks against the final EXE.
 - `evidence/skill-title-matching-r1.txt` - 13/13.
 - `evidence/skill-detail-semantics-r1.txt` - existing detail/semantics test.
 - `evidence/logic-equipment-*-r1.txt`, `logic-simple-flow-r11-r1.txt`,
