@@ -27,6 +27,15 @@ PASS: matching when condition and scope still translates
 PASS: target unless cannot satisfy a source when relation
 PASS: fallback rejects the wrong when/unless relation
 PASS: fallback rejects a positive translation of a negative fact
+PASS: or cannot be borrowed from a candidate using and
+PASS: and cannot be borrowed from a candidate using or
+PASS: matching or relation and scope still translates
+PASS: up cannot be borrowed from a candidate using down
+PASS: down cannot be borrowed from a candidate using up
+PASS: matching up direction still translates
+PASS: all party members cannot be borrowed from some
+PASS: some party members cannot be borrowed from all
+PASS: matching all party members still translates
 PASS: full-text fallback does not silently drop an unknown action
 PASS: dictionary overview path rejects an appended unknown action
 PASS: dictionary overview path rejects when/unless relation substitution
@@ -44,6 +53,15 @@ PASS: condition relation: plan records a preserved body
 PASS: raw sign: the body never becomes positive 10
 PASS: raw sign: safe current and next remain planned
 PASS: raw sign: safe current/next still compose
+PASS: production relation: wrong semantic is not drawn
+PASS: production relation: safe current and next remain planned
+PASS: production relation: safe current/next still compose
+PASS: production direction: wrong semantic is not drawn
+PASS: production direction: safe current and next remain planned
+PASS: production direction: safe current/next still compose
+PASS: production scope: wrong semantic is not drawn
+PASS: production scope: safe current and next remain planned
+PASS: production scope: safe current/next still compose
 PASS: full panel plans skill-name
 PASS: full panel plans skill-master-level
 PASS: full panel plans skill-body
@@ -143,5 +161,5 @@ PASS: shared planner and explicit list context are wired
 PASS: build includes planner, list policy and overview safety sources
 PASS: planner adds no OCR or AI round
 PASS: main dictionary pass routes bare skill names through explicit list context
-SKILL-001 logic: 130 checks passed; candidate SHA256=5A8FE3A85EFCD2837BB45999FB00919B720F0897D04A0DD6F96022DF9B32EBF4
+SKILL-001 logic: 148 checks passed; candidate SHA256=7B129A27DD22D30E7B85EBE31920F070B64B0BC3E0B314438C35D12B68D8D16A
 Evidence boundary: controlled OCR geometry, actual built EXE reflection, native GDI+ font measurement; original 36 screenshots and Windows native OCR/real game remain UNVERIFIED.

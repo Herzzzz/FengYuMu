@@ -37,4 +37,4 @@ PASS: painted count comes from ready labels, not from label existence
 PASS: planned labels are not counted as painted labels
 PASS: every preserved primary overview records a reason
 PASS: all multi-level skills compose current and next in one frame
-SKILL-001 coverage: 8 checks; primary=264 painted=190 preserved=74 multiLevel=164/164 supplemental=394; candidate SHA256=5A8FE3A85EFCD2837BB45999FB00919B720F0897D04A0DD6F96022DF9B32EBF4
+SKILL-001 coverage: 8 checks; primary=264 painted=190 preserved=74 multiLevel=164/164 supplemental=394; candidate SHA256=7B129A27DD22D30E7B85EBE31920F070B64B0BC3E0B314438C35D12B68D8D16A

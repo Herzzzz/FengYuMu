@@ -17,4 +17,4 @@ PASS: different Chinese variants of one English title require disambiguation
 PASS: scoped class identity selects its own canonical title
 PASS: unrelated prose cannot become a fuzzy skill title
 PASS: known identity retains complete glossary-backed Recovery description
-Skill dictionary: 13/13 passed; candidate SHA256=5A8FE3A85EFCD2837BB45999FB00919B720F0897D04A0DD6F96022DF9B32EBF4; real OCR pixels and Windows rendering unverified.
+Skill dictionary: 13/13 passed; candidate SHA256=7B129A27DD22D30E7B85EBE31920F070B64B0BC3E0B314438C35D12B68D8D16A; real OCR pixels and Windows rendering unverified.

@@ -1,10 +1,10 @@
 # SKILL-001 evidence index and boundary
 
 Candidate: `枫语幕.exe` SHA-256
-`5A8FE3A85EFCD2837BB45999FB00919B720F0897D04A0DD6F96022DF9B32EBF4`.
+`7B129A27DD22D30E7B85EBE31920F070B64B0BC3E0B314438C35D12B68D8D16A`.
 Build record: `枫语幕.exe.build.json` SHA-256
-`2009867E0FCE77726AC458716D54BFC4565FA5CE466CD7A24685428D1B5B796B`.
-Implementation commit: `7dff2c634dc938b6d4c5a05af632ea0517363eef`; the evidence belongs
+`AD63204550B7EC7A818A7CDD38E92E4EAFCF39B2D9DE7A9B3CC28266CA775823`.
+Implementation commit: `4307b99620053a8f1d627f026603bf6ba50d63f4`; the evidence belongs
 to the SKILL-R2a follow-up review.
 
 ## Evidence classes
@@ -36,7 +36,7 @@ history only and must not be cited as current coverage.
   audit, not added to the 264-ID denominator.
 - `coverage-r1-summary.json` - aggregate counts and preserved-reason breakdown.
 - `logic-skill-coverage-001.txt` - final coverage run output.
-- `logic-skill-panel-001-r1.txt` - 130 checks against the final EXE, including
+- `logic-skill-panel-001-r1.txt` - 148 checks against the final EXE, including
   the R2a negative cases and the safe current/next proof.
 - `skill-title-matching-r1.txt` - 13/13 existing title/identity checks.
 - `skill-detail-semantics-r1.txt` - existing Recovery detail semantics.
@@ -88,7 +88,7 @@ All returned exit code 0 except the pre-existing failures listed in
 ## Deliberate preserves
 
 `coverage-r1.tsv` records every preserve with a reason. The 41-panel replay
-currently preserves 15 sections (body text that cannot be completely covered or
+currently preserves 14 sections (body text that cannot be completely covered or
 fit, plus two prerequisite rows); the safe name/master/current/next sections are
 still painted. No normal positive case is counted as a success merely by
 preserving English.

@@ -5,14 +5,14 @@
 - Tool: DeepSeek Harness (DSH) on Windows, PowerShell 7, .NET SDK 6.0.410 Roslyn.
 - Branch: `dsh/skill-001`.
 - Base commit: `bb4f9c361d5cc0ddef05d8cbdecfe95772eebe05` (EQUIP-001 R3b).
-- Implementation commit: `7dff2c634dc938b6d4c5a05af632ea0517363eef`.
+- Implementation commit: `4307b99620053a8f1d627f026603bf6ba50d63f4`.
 - Result files commit: reported in the final relay message; this file is committed
   with the result.
 - EXE: `D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe`; SHA-256
-  `5A8FE3A85EFCD2837BB45999FB00919B720F0897D04A0DD6F96022DF9B32EBF4`.
+  `7B129A27DD22D30E7B85EBE31920F070B64B0BC3E0B314438C35D12B68D8D16A`.
 - Build evidence: `枫语幕.exe.build.json`; SHA-256
-  `2009867E0FCE77726AC458716D54BFC4565FA5CE466CD7A24685428D1B5B796B`;
-  head `7dff2c6`, 68 inputs. The tracked worktree contained the R1-R7 and R2a
+  `AD63204550B7EC7A818A7CDD38E92E4EAFCF39B2D9DE7A9B3CC28266CA775823`;
+  head `4307b99`, 68 inputs. The tracked worktree contained the R1-R7, R2a and R2b
   source/test changes; only the pre-existing untracked `main_ui_live_*.png` application
   captures were present. Those captures are the app UI, **not** skill-tooltip
   evidence, and were not committed or used as skill-rendering proof.
@@ -80,6 +80,26 @@ single-glyph OCR typo. Each negative plan also proves that its safe current and
 next level labels remain painted. The final primary coverage is 264/264 observed,
 202 planned, 190 actually painted, 74 preserved with a reason, 0 absent, and
 164/164 multi-level panels painted together.
+
+## R2b follow-up
+
+The fourth review found that the shared `ContentTokens` stop list deleted
+meaningful logic, direction and object-scope words:
+
+- `and`/`or`, `up`/`down` and `all`/`some` now remain content tokens. They are
+  compared in order in both directions.
+- These tokens are also in a protected semantic set, so the one-character OCR
+  tolerance cannot replace or skip them.
+- Condition clause scopes use the same tokens, so `when using a sword or a
+  shield` cannot match a candidate using `and`.
+- The regressions include both directions of all three pairs and a positive
+  control for each. A production plan/composition case uses a temporary
+  dictionary candidate and proves the wrong Chinese is not drawn while safe
+  current/next levels still paint.
+
+The coverage statement remains deliberately not "all translated": 264/264
+primary items were checked, 202 planned, 190 actually painted, 74 preserved with
+a reason, 0 absent, and 164/164 multi-level panels painted together.
 
 ## Cloud review R1-R7 response
 
@@ -206,12 +226,21 @@ classification, quest matching and equipment grammar were not changed.
 
 ### Identity / semantics
 
-`tests/logic-skill-panel-001.ps1` (130 checks) covers:
+`tests/logic-skill-panel-001.ps1` (148 checks) covers:
 
 - Position-aware names: `Critical Recovery` unique; `Magic Guard Recovery` and
   `Critical Recovery Recovery` ambiguous.
 - Overview safety: negated and unrelated 30-second sentences are preserved;
-  the exact Recovery sentence still translates with `30秒`.
+  the exact Recovery sentence still translates with `30秒`; appended `and fly`
+  and candidate-only extra actions are rejected.
+- Conditions: `when`/`unless`, `before`/`after`, target relation and weapon scope
+  are distinct; exact relation/scope still translates.
+- Raw numbers: positive/negative sign, unit and HP/MP/damage association are
+  checked before Normalize; exact negative control passes.
+- R2b semantic tokens: `and`/`or`, `up`/`down`, `all`/`some` are bidirectional
+  negatives and protected from one-character OCR tolerance; exact controls pass.
+- Production plan/composition: appended action, condition and R2b semantic
+  mismatches do not draw the wrong body, while safe current/next levels paint.
 - Untranslated effect: header-only label, effect pixels untouched, separate
   header/effect status.
 - Combined single word: estimated title/master/body not applied; a multi-word
@@ -238,10 +267,10 @@ classification, quest matching and equipment grammar were not changed.
 - No per-skill branch in the new planner, no OCR/AI call, no global bare-name
   replacement in the main dictionary pass.
 - 41 controlled screenshot-geometry panels: every planned section composes;
-  body=40, current=26, next=37 across the available rows. Eleven sections are
+  body=40, current=26, next=37 across the available rows. Fourteen sections are
   preserved with reasons:
-  - cases 4/14/16/19/20b/20f/30/32 body: no safe unique body for the visible
-    text;
+  - cases 4/6/14/16/19/20a/20b/20f/30/31/32 body: no safe unique/numeric body
+    for the visible text;
   - cases 20e/22 required row: prerequisite text cannot be parsed safely;
   - case 28 required row: prerequisite name is ambiguous.
 
@@ -289,7 +318,7 @@ and is superseded by this run.
 
 | Command | Result |
 | --- | --- |
-| `pwsh -NoProfile -File tests/logic-skill-panel-001.ps1 -ExePath .\枫语幕.exe` | PASS, 130 checks |
+| `pwsh -NoProfile -File tests/logic-skill-panel-001.ps1 -ExePath .\枫语幕.exe` | PASS, 148 checks |
 | `pwsh -NoProfile -File tests/logic-skill-coverage-001.ps1 -ExePath .\枫语幕.exe` | PASS, 8 checks; 190/264 painted, 74 preserved, 164/164 multi-level |
 | `pwsh -NoProfile -File tests/logic-skill-title-matching.ps1 -ExePath .\枫语幕.exe` | PASS, 13/13 |
 | `pwsh -NoProfile -File tests/logic-skill-detail-semantics.ps1 -ExePath .\枫语幕.exe` | PASS |
@@ -357,7 +386,7 @@ screenshot-geometry panels from the current repository instead.
 - `evidence/coverage-r1-summary.json` - aggregate counts and preserved-reason
   breakdown for the primary denominator.
 - `evidence/logic-skill-coverage-001.txt` - coverage run output.
-- `evidence/logic-skill-panel-001-r1.txt` - 130 checks against the final EXE.
+- `evidence/logic-skill-panel-001-r1.txt` - 148 checks against the final EXE.
 - `evidence/skill-title-matching-r1.txt` - 13/13.
 - `evidence/skill-detail-semantics-r1.txt` - existing detail/semantics test.
 - `evidence/logic-equipment-*-r1.txt`, `logic-simple-flow-r11-r1.txt`,
@@ -387,5 +416,5 @@ verification:
 
 ## Cloud review status
 
-R1-R7 and R2a addressed; resubmitted for review. No push and no release were performed.
+R1-R7, R2a and R2b addressed; resubmitted for review. No push and no release were performed.
 ITEM/CAPTURE work was not touched.
