@@ -15,6 +15,10 @@ namespace MapleOverlay
         internal string MatchSource = "";
         internal string Status = "observed";
         internal string PreservedReason = "";
+        internal string HeaderStatus = "";
+        internal string EffectStatus = "";
+        internal string EffectPreservedReason = "";
+        internal string ObservedEffect = "";
         internal RectangleF RawBounds;
         internal List<RectangleF> RawRows = new List<RectangleF>();
         internal List<RectangleF> OverlayRows = new List<RectangleF>();
@@ -63,6 +67,9 @@ namespace MapleOverlay
             {
                 if (text.Length > 0) text.Append(';');
                 text.Append(section.Role).Append(':').Append(section.Status);
+                if (!String.IsNullOrEmpty(section.EffectStatus))
+                    text.Append("[header=").Append(section.HeaderStatus).Append(",effect=")
+                        .Append(section.EffectStatus).Append(']');
                 if (!String.IsNullOrEmpty(section.PreservedReason))
                     text.Append('/').Append(section.PreservedReason);
             }
@@ -105,6 +112,8 @@ namespace MapleOverlay
             internal string Text = "";
             internal string Normalized = "";
             internal RectangleF Bounds;
+            internal bool Measured = true;
+            internal bool Synthetic;
         }
 
         private sealed class SkillTextSpan
@@ -155,6 +164,7 @@ namespace MapleOverlay
             if (text.Trim().Length == 0) return null;
             bool measured;
             RectangleF bounds = PreciseTextSpan(row.Lines, row.Text, start, length, out measured, true);
+            if (row.Synthetic && !row.Measured) measured = false;
             if (bounds.IsEmpty) bounds = row.Bounds;
             return new SkillTextSpan {
                 Row = row, Start = start, Length = length, Bounds = bounds,
@@ -167,6 +177,7 @@ namespace MapleOverlay
             foreach (SkillTextSpan span in spans)
             {
                 if (span == null || span.Bounds.IsEmpty) continue;
+                section.Measured = section.Measured && span.Measured;
                 section.RawRows.Add(span.Bounds);
                 if (section.RawBounds.IsEmpty) section.RawBounds = span.Bounds;
                 else section.RawBounds = RectangleF.Union(section.RawBounds, span.Bounds);
@@ -227,7 +238,15 @@ namespace MapleOverlay
             });
             foreach (SkillSectionPlan section in plan.Sections)
             {
-                if (section.Status != "planned") continue;
+                if (section.Status != "planned" && section.Status != "header-only") continue;
+                if (!section.Measured)
+                {
+                    section.Status = "preserved";
+                    section.PreservedReason = "section-boundary-estimated";
+                    plan.Preserved++;
+                    plan.AddPreservedReason(section.PreservedReason);
+                    continue;
+                }
                 if (AddSkillSectionLabel(output, plan, section, ocrScale)) plan.Planned++;
                 else
                 {
@@ -455,21 +474,9 @@ namespace MapleOverlay
             {
                 Match required = SkillRequiredMarker.Match(requiredRow.Text);
                 string rest = required.Success ? requiredRow.Text.Substring(required.Index + required.Length).Trim() : "";
-                string requiredName = "", requiredLevel = "";
-                Match atLeast = Regex.Match(rest,
-                    @"(?:at\s*least\s*)?(?:level\s*)?(?<level>\d{1,3})\s*(?:on\s+)?(?<name>.+?)\s*#?\s*$",
-                    RegexOptions.IgnoreCase);
-                if (atLeast.Success)
-                {
-                    requiredLevel = atLeast.Groups["level"].Value;
-                    requiredName = atLeast.Groups["name"].Value.Trim().TrimEnd('#');
-                }
-                else
-                {
-                    Match levelOnly = Regex.Match(rest, @"(?<level>\d{1,3})");
-                    if (levelOnly.Success) requiredLevel = levelOnly.Groups["level"].Value;
-                    requiredName = Regex.Replace(rest, @"\d{1,3}", "").Trim().TrimEnd('#');
-                }
+                string requiredName = "", requiredLevel = "", requiredRelation = "", requiredRelationChinese = "";
+                bool requiredParsed = ParseRequiredSkillCondition(rest, out requiredName,
+                    out requiredLevel, out requiredRelation, out requiredRelationChinese);
                 string requiredChinese = "";
                 List<MatchResult> nameMatches = requiredName.Length == 0 ? new List<MatchResult>() :
                     translations.FindSkillNameMatches(requiredName);
@@ -481,12 +488,15 @@ namespace MapleOverlay
                 SkillTextSpan span = SkillSpan(requiredRow, required.Index,
                     requiredRow.Text.Length - required.Index);
                 if (span != null && span.Measured) AddSpanRows(section, new List<SkillTextSpan> { span });
-                if (span != null && span.Measured && requiredChinese.Length > 0)
+                if (span != null && span.Measured && requiredParsed && requiredChinese.Length > 0)
                 {
                     section.Translation = "需要技能：" + requiredChinese +
-                        (requiredLevel.Length > 0 ? "至少" + requiredLevel + "级" : "");
+                        (String.Equals(requiredRelationChinese, "等级", StringComparison.Ordinal) ?
+                            "等级" + requiredLevel : requiredRelationChinese + requiredLevel + "级");
                     section.NumericAssociations = requiredLevel.Length > 0 ?
-                        "required-level=" + requiredLevel : "required-level-absent";
+                        "required-level=" + requiredLevel + ";relation=" +
+                        (requiredRelation.Length == 0 ? "plain" : requiredRelation) :
+                        "required-level-absent";
                     section.Status = "planned";
                     plan.Sections.Add(section);
                     plan.Observed++;
@@ -497,6 +507,8 @@ namespace MapleOverlay
                     section.Status = "preserved";
                     section.PreservedReason = requiredName.Length == 0 ?
                         "required-skill-unparsed" : "required-skill-name-ambiguous";
+                    if (requiredParsed && requiredChinese.Length == 0 && requiredName.Length > 0)
+                        section.PreservedReason = "required-skill-name-ambiguous";
                     plan.Sections.Add(section);
                     plan.Observed++;
                     plan.Preserved++;
@@ -568,56 +580,43 @@ namespace MapleOverlay
                     out overviewChinese, out similarity) && similarity >= 0.62f)
                 {
                     chinese = CleanSkillBodyChinese(overviewChinese);
-                    if (chinese.Length > 0 && TranslationValueSafety.PreservesNumbers(bodyText, chinese))
+                    if (chinese.Length > 0)
                     {
                         matchSource = "skill-overview-body";
                         fromDictionary = true;
                         return chinese;
                     }
-                    unsafeNumeric = true;
                 }
                 string candidate;
                 if (translations.TryTranslateSkillOverview(bodyText, skillId, out candidate))
                 {
                     candidate = CleanSkillBodyChinese(candidate);
-                    if (candidate.Length > 0 && TranslationValueSafety.PreservesNumbers(bodyText, candidate))
+                    if (candidate.Length > 0)
                     {
                         matchSource = "skill-overview-template";
                         fromDictionary = true;
                         return candidate;
                     }
-                    unsafeNumeric = true;
-                }
-                if (translations.TryGetSkillOverviewBody(skillId, out candidate))
-                {
-                    candidate = CleanSkillBodyChinese(candidate);
-                    if (candidate.Length > 0 && TranslationValueSafety.PreservesNumbers(bodyText, candidate))
-                    {
-                        matchSource = "skill-overview-body";
-                        fromDictionary = true;
-                        return candidate;
-                    }
-                    unsafeNumeric = true;
                 }
             }
             string shared;
             if (translations.TryResolveSharedSkillContent(bodyText, out shared))
             {
                 shared = CleanSkillBodyChinese(shared);
-                if (shared.Length > 0 && TranslationValueSafety.PreservesNumbers(bodyText, shared))
+                if (shared.Length > 0)
                 {
                     matchSource = "skill-shared-content";
                     fromDictionary = true;
                     return shared;
                 }
-                unsafeNumeric = true;
             }
             string vocabulary;
             if (translations.TryTranslateEffectVocabulary(bodyText, out vocabulary))
             {
                 vocabulary = CleanSkillBodyChinese(vocabulary);
+                string fallbackReason;
                 if (vocabulary.Length > 0 &&
-                    TranslationValueSafety.PreservesNumbers(bodyText, vocabulary))
+                    SkillOverviewSafety.IsSafeFallback(bodyText, vocabulary, out fallbackReason))
                 {
                     matchSource = "skill-body-vocabulary";
                     fromDictionary = false;
@@ -645,16 +644,54 @@ namespace MapleOverlay
             return tokens.Length >= 5 && numbers >= 3 && letters <= 2;
         }
 
-        private static SkillTextRow NewSyntheticSkillRow(string text, RectangleF bounds)
+        private static SkillTextRow NewSyntheticSkillRow(SkillTextRow source, int start,
+            int length, bool measured)
         {
+            int end = Math.Min(source.Text.Length, start + length);
+            while (start < end && Char.IsWhiteSpace(source.Text[start])) start++;
+            while (end > start && Char.IsWhiteSpace(source.Text[end - 1])) end--;
+            string text = end > start ? source.Text.Substring(start, end - start) : "";
             SkillTextRow row = new SkillTextRow();
-            row.Text = (text ?? "").Trim();
-            row.Normalized = TranslationStore.Normalize(row.Text);
-            row.Bounds = bounds;
+            row.Text = text;
+            row.Normalized = TranslationStore.Normalize(text);
+            row.Measured = measured;
+            row.Synthetic = true;
             OcrLine line = new OcrLine();
-            line.Text = row.Text;
-            line.Words.Add(new OcrWord { Text = row.Text, BoundingRect = bounds });
-            row.Lines.Add(line);
+            line.Text = text;
+            int cursor = 0;
+            bool found = false;
+            RectangleF bounds = RectangleF.Empty;
+            foreach (OcrLine sourceLine in source.Lines)
+            {
+                if (sourceLine == null || String.IsNullOrEmpty(sourceLine.Text)) continue;
+                int lineStart = source.Text.IndexOf(sourceLine.Text, cursor, StringComparison.Ordinal);
+                if (lineStart < 0) lineStart = cursor;
+                int wordCursor = 0;
+                foreach (OcrWord word in sourceLine.Words)
+                {
+                    string raw = word.Text ?? "";
+                    if (raw.Length == 0) continue;
+                    int local = sourceLine.Text.IndexOf(raw,
+                        Math.Min(wordCursor, sourceLine.Text.Length), StringComparison.Ordinal);
+                    if (local < 0) local = wordCursor;
+                    int absoluteStart = lineStart + local;
+                    int absoluteEnd = absoluteStart + raw.Length;
+                    wordCursor = Math.Min(sourceLine.Text.Length, local + raw.Length);
+                    int left = Math.Max(start, absoluteStart), right = Math.Min(end, absoluteEnd);
+                    if (right <= left) continue;
+                    string clipped = source.Text.Substring(left, right - left);
+                    RectangleF box = word.BoundingRect;
+                    if (left > absoluteStart || right < absoluteEnd)
+                        box = new RectangleF(box.X + box.Width * (left - absoluteStart) / raw.Length,
+                            box.Y, Math.Max(1.0f, box.Width * (right - left) / raw.Length), box.Height);
+                    line.Words.Add(new OcrWord { Text = clipped, BoundingRect = box });
+                    bounds = found ? RectangleF.Union(bounds, box) : box;
+                    found = true;
+                }
+                cursor = lineStart + sourceLine.Text.Length;
+            }
+            row.Bounds = found ? bounds : RectangleF.Empty;
+            if (line.Words.Count > 0) row.Lines.Add(line);
             return row;
         }
 
@@ -687,7 +724,7 @@ namespace MapleOverlay
                     {
                         SkillTextSpan before = SkillSpan(row, cursor, marker[0] - cursor);
                         if (before != null && before.Text.Trim().Length > 0)
-                            split.Add(NewSyntheticSkillRow(before.Text, before.Bounds));
+                            split.Add(NewSyntheticSkillRow(row, cursor, marker[0] - cursor, before.Measured));
                     }
                     int segmentEnd = marker[0] + marker[1];
                     if (marker[2] != 0)
@@ -695,14 +732,14 @@ namespace MapleOverlay
                             markers[markerIndex + 1][0] : row.Text.Length;
                     SkillTextSpan segment = SkillSpan(row, marker[0], segmentEnd - marker[0]);
                     if (segment != null && segment.Text.Trim().Length > 0)
-                        split.Add(NewSyntheticSkillRow(segment.Text, segment.Bounds));
+                        split.Add(NewSyntheticSkillRow(row, marker[0], segmentEnd - marker[0], segment.Measured));
                     cursor = segmentEnd;
                 }
                 if (cursor < row.Text.Length)
                 {
                     SkillTextSpan tail = SkillSpan(row, cursor, row.Text.Length - cursor);
                     if (tail != null && tail.Text.Trim().Length > 0)
-                        split.Add(NewSyntheticSkillRow(tail.Text, tail.Bounds));
+                        split.Add(NewSyntheticSkillRow(row, cursor, row.Text.Length - cursor, tail.Measured));
                 }
             }
             // The last plain row before the first marker is the title slot. If it
@@ -736,8 +773,8 @@ namespace MapleOverlay
                     SkillTextSpan body = SkillSpan(row, at, row.Text.Length - at);
                     if (title == null || body == null) continue;
                     split.RemoveAt(titleCandidate);
-                    split.Insert(titleCandidate, NewSyntheticSkillRow(body.Text, body.Bounds));
-                    split.Insert(titleCandidate, NewSyntheticSkillRow(title.Text, title.Bounds));
+                    split.Insert(titleCandidate, NewSyntheticSkillRow(row, at, row.Text.Length - at, body.Measured));
+                    split.Insert(titleCandidate, NewSyntheticSkillRow(row, 0, at, title.Measured));
                     break;
                 }
             }
@@ -760,6 +797,42 @@ namespace MapleOverlay
                 text.Append(span.Text.Trim());
             }
             return text.ToString();
+        }
+
+        private static bool ParseRequiredSkillCondition(string rest, out string name,
+            out string level, out string relation, out string relationChinese)
+        {
+            name = ""; level = ""; relation = ""; relationChinese = "";
+            string text = (rest ?? "").Trim().TrimEnd('#');
+            if (text.Length == 0) return false;
+            const string relationPattern = @"at\s*least|atleast|at\s*most|atmost|minimum|maximum|no\s+less\s+than|no\s+more\s+than";
+            Match match = Regex.Match(text,
+                @"^\s*(?<rel>" + relationPattern + @")?\s*(?:level|lv\.?)\s*(?<level>\d{1,3})\s*(?:on\s+)?(?<name>.+?)\s*$",
+                RegexOptions.IgnoreCase);
+            bool nameBeforeLevel = false;
+            if (!match.Success)
+            {
+                match = Regex.Match(text,
+                    @"^\s*(?<name>.+?)\s+(?<rel>" + relationPattern + @")\s*(?:level|lv\.?)\s*(?<level>\d{1,3})\s*$",
+                    RegexOptions.IgnoreCase);
+                nameBeforeLevel = true;
+            }
+            if (!match.Success) return false;
+            relation = Regex.Replace(match.Groups["rel"].Value.Trim().ToLowerInvariant(),
+                @"\s+", " ");
+            level = match.Groups["level"].Value;
+            name = match.Groups["name"].Value.Trim().TrimEnd('#');
+            if (nameBeforeLevel && relation.Length == 0) return false;
+            if (level.Length == 0 || name.Length == 0) return false;
+            if (relation.Length == 0) { relationChinese = "等级"; return true; }
+            if (relation == "at least" || relation == "atleast" ||
+                relation == "minimum" || relation == "no less than")
+            { relationChinese = "至少"; return true; }
+            if (relation == "at most" || relation == "atmost" ||
+                relation == "maximum" || relation == "no more than")
+            { relationChinese = "至多"; return true; }
+            relation = ""; relationChinese = "";
+            return false;
         }
 
         private void AddSkillLevelSection(SkillPanelPlan plan, List<SkillTextRow> rows,
@@ -802,11 +875,21 @@ namespace MapleOverlay
             SkillSectionPlan section = new SkillSectionPlan {
                 Role = next ? "skill-next-body" : "skill-current-body",
                 MatchSource = effectMatched ? "skill-effect-template" : "skill-level-header",
-                Status = "observed"
+                Status = "observed",
+                ObservedEffect = effectText,
+                HeaderStatus = "observed",
+                EffectStatus = effectText.Length == 0 ? "absent" :
+                    (effectMatched ? "translated" : "preserved")
             };
-            SkillTextSpan headerSpan = SkillSpan(markerRow, 0, markerRow.Text.Length);
+            SkillTextSpan headerSpan = effectMatched ?
+                SkillSpan(markerRow, 0, markerRow.Text.Length) :
+                SkillSpan(markerRow, header.Index, header.Length);
             List<SkillTextSpan> spans = new List<SkillTextSpan>();
             if (headerSpan != null) spans.Add(headerSpan);
+            // A failed effect keeps its own pixels. Only the measured header span is
+            // replaced; the effect is never hidden behind a successful title. When
+            // the effect is translated, the whole level row is replaced by its own
+            // combined translation, so there is no estimated split inside that row.
             if (effectMatched) foreach (SkillTextSpan span in effectSpans)
                 if (span.Row != markerRow) spans.Add(span);
             if (spans.Count > 0) AddSpanRows(section, spans);
@@ -820,9 +903,9 @@ namespace MapleOverlay
                 plan.AddPreservedReason(section.PreservedReason);
                 return;
             }
-            section.Measured = headerSpan.Measured;
-            foreach (SkillTextSpan effectSpan in effectSpans)
-                section.Measured = section.Measured && effectSpan.Measured;
+            section.Measured = section.Measured && headerSpan.Measured;
+            foreach (SkillTextSpan span in spans)
+                section.Measured = section.Measured && span.Measured;
             // Give a longer Chinese level row a bounded amount of the blank space
             // below the visible effect rows. SourceLineBounds still contains only the
             // measured OCR rows, so no value or neighbour is sampled as text. The
@@ -848,14 +931,24 @@ namespace MapleOverlay
                 (effectMatched ? ";effect-values-preserved" : ";effect-preserved");
             if (effectText.Length > 0 && !effectMatched)
             {
-                section.PreservedReason = "effect-translation-unavailable";
+                section.Status = "header-only";
+                section.HeaderStatus = "planned";
+                section.EffectStatus = "preserved";
+                section.EffectPreservedReason = "effect-translation-unavailable";
+                section.PreservedReason = section.EffectPreservedReason;
                 plan.AddPreservedReason(section.PreservedReason);
+                plan.Sections.Add(section);
+                plan.Observed++;
+                plan.Matched++;
+                plan.Preserved++;
+                return;
             }
             section.Status = "planned";
+            section.HeaderStatus = "planned";
+            section.EffectStatus = effectText.Length == 0 ? "absent" : "translated";
             plan.Sections.Add(section);
             plan.Observed++;
             plan.Matched++;
-            if (effectText.Length > 0 && !effectMatched) plan.Preserved++;
         }
 
         private bool AddSkillSectionLabel(List<OverlayLabel> output, SkillPanelPlan plan,
@@ -863,6 +956,11 @@ namespace MapleOverlay
         {
             if (section == null || section.RawBounds.IsEmpty ||
                 String.IsNullOrEmpty(section.Translation)) return false;
+            if (!section.Measured)
+            {
+                section.PreservedReason = "section-boundary-estimated";
+                return false;
+            }
             RectangleF overlay = OverlaySpan(section.RawBounds, ocrScale);
             if (overlay.IsEmpty || overlay.Width < 4 || overlay.Height < 4) return false;
             RectangleF panel = plan.OverlayBounds;
@@ -916,13 +1014,14 @@ namespace MapleOverlay
                 LayoutFontSize = layoutSize,
                 LayoutMinimumFontSize = layoutSize,
                 LayoutFontFamily = plan.FontFamily,
-                SkillPanel = plan, SkillSection = section
+                SkillPanel = plan, SkillSection = section,
+                SourceBoundaryEstimated = !section.Measured
             };
             if (!section.ProtectedRaw.IsEmpty)
                 label.KeepClearBounds = OverlaySpan(section.ProtectedRaw, ocrScale);
             output.Add(label);
             section.Label = label;
-            section.Status = "planned";
+            if (section.Status != "header-only") section.Status = "planned";
             return true;
         }
     }

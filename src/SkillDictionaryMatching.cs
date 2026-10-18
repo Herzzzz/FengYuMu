@@ -79,32 +79,49 @@ namespace MapleOverlay
         // Exact whole-name spans only. A shorter skill name contained inside a longer
         // visible title ("Recovery" in "Critical Recovery") must not create ambiguity;
         // only the longest exact spans on the line participate.
+        private sealed class SkillNameOccurrence
+        {
+            internal int Start;
+            internal int Length;
+            internal string Id;
+        }
+
+        // Exact whole-name spans only. A short name contained in a longer span at
+        // the same position ("Recovery" in "Critical Recovery") is removed; the
+        // same short name at an independent position still participates and makes
+        // the line ambiguous. No arbitrary first/longest id is selected.
         private HashSet<string> ExactSkillNameIds(string text)
         {
             HashSet<string> ids = new HashSet<string>(StringComparer.Ordinal);
             string normalized = Normalize(text);
-            int bestLength = 0;
+            List<SkillNameOccurrence> occurrences = new List<SkillNameOccurrence>();
             foreach (TranslationEntry entry in skillNamesForMatching)
             {
                 if (entry.Normalized.Length == 0) continue;
-                if (entry.Normalized.Length < bestLength) continue;
                 int position = normalized.IndexOf(entry.Normalized, StringComparison.Ordinal);
                 while (position >= 0)
                 {
                     if (IsBoundary(normalized, position - 1) &&
                         IsBoundary(normalized, position + entry.Normalized.Length))
-                    {
-                        if (entry.Normalized.Length > bestLength)
-                        {
-                            bestLength = entry.Normalized.Length;
-                            ids.Clear();
-                        }
-                        ids.Add(CategoryId(entry.Category));
-                        break;
-                    }
+                        occurrences.Add(new SkillNameOccurrence {
+                            Start = position, Length = entry.Normalized.Length,
+                            Id = CategoryId(entry.Category)
+                        });
                     position = normalized.IndexOf(entry.Normalized,
                         Math.Min(normalized.Length, position + 1), StringComparison.Ordinal);
                 }
+            }
+            foreach (SkillNameOccurrence occurrence in occurrences)
+            {
+                bool contained = false;
+                foreach (SkillNameOccurrence other in occurrences)
+                {
+                    if (other.Length <= occurrence.Length || other.Start > occurrence.Start) continue;
+                    if (other.Start + other.Length < occurrence.Start + occurrence.Length) continue;
+                    contained = true;
+                    break;
+                }
+                if (!contained) ids.Add(occurrence.Id);
             }
             return ids;
         }
@@ -167,6 +184,7 @@ namespace MapleOverlay
         internal sealed class SkillContentMatch
         {
             internal string SkillId = "";
+            internal string English = "";
             internal string Chinese = "";
             internal float Score;
             internal bool Exact;
@@ -193,7 +211,8 @@ namespace MapleOverlay
                 if (!exact.TryGetValue(id, out candidate) || entry.Normalized.Length > candidate.Score)
                 {
                     exact[id] = new SkillContentMatch {
-                        SkillId = id, Chinese = entry.Chinese, Score = entry.Normalized.Length,
+                        SkillId = id, English = SkillContentBody(entry.English),
+                        Chinese = entry.Chinese, Score = entry.Normalized.Length,
                         Exact = true, Source = "dictionary-exact"
                     };
                 }
@@ -229,7 +248,8 @@ namespace MapleOverlay
                 SkillContentMatch candidate;
                 if (!best.TryGetValue(id, out candidate) || score > candidate.Score)
                     best[id] = new SkillContentMatch {
-                        SkillId = id, Chinese = entry.Chinese, Score = score,
+                        SkillId = id, English = SkillContentBody(entry.English),
+                        Chinese = entry.Chinese, Score = score,
                         Exact = false, Source = "dictionary-words"
                     };
             }
@@ -279,9 +299,14 @@ namespace MapleOverlay
             chinese = "";
             List<SkillContentMatch> candidates = FindSkillContentMatches(text);
             if (candidates.Count < 2) return false;
+            string observed = SkillContentBody(text);
             foreach (SkillContentMatch candidate in candidates)
             {
-                if (String.IsNullOrEmpty(candidate.Chinese)) return false;
+                if (String.IsNullOrEmpty(candidate.Chinese) ||
+                    String.IsNullOrEmpty(candidate.English)) return false;
+                string unsafeReason;
+                if (!SkillOverviewSafety.IsSafeOverview(observed, candidate.English,
+                    candidate.Chinese, false, out unsafeReason)) return false;
                 if (chinese.Length == 0) chinese = candidate.Chinese;
                 else if (!String.Equals(chinese, candidate.Chinese, StringComparison.Ordinal)) return false;
             }

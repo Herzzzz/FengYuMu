@@ -159,7 +159,9 @@ namespace MapleOverlay
             if(similarity<.55f)return false;
             chinese=OverviewChinese(overview.Chinese);
             if(chinese.Length==0)return false;
-            if(!TranslationValueSafety.PreservesNumbers(observed,chinese))return false;
+            string unsafeReason;
+            if(!SkillOverviewSafety.IsSafeOverview(observed,overviewEnglish,chinese,false,
+                out unsafeReason))return false;
             return true;
         }
         private static string OverviewEnglish(string text)
@@ -209,20 +211,26 @@ namespace MapleOverlay
             foreach(SkillOverviewEntry entry in skillOverviews) {
                 if(!String.IsNullOrEmpty(skillId)&&entry.Id!=skillId)continue;
                 string english=entry.English,body=entry.Chinese,candidate=entry.Key;
-                string translated="";float score;
+                string translated="";float score;bool templateUsed=false;
                 if(key==candidate){translated=body;score=1;}
                 else {
                     // Add requires identical source/target numbers in order.
                     // The nonnumeric wording must then match exactly. All new
                     // values come from the observed text, for all skill IDs.
-                    if(entry.Template.TryTranslate(OverviewEnglish(main),out translated))score=1;
+                    if(entry.Template.TryTranslate(OverviewEnglish(main),out translated)){score=1;templateUsed=true;}
                     else {
                         if(key.Length<18||candidate.Length<18||properties!=entry.Properties)continue;
                         score=DetailTextSimilarity(main,candidate);if(score<.72f)continue;
-                        if(Regex.IsMatch(main,@"\d")&&!TranslationValueSafety.PreservesNumbers(main,english))continue;
+                        if(Regex.IsMatch(main,@"\d")&&!SkillOverviewSafety.PreservesVisibleNumbers(main,english))continue;
                         translated=body;
                     }
                 }
+                // Identity and numbers alone are not enough. Negation, conditions,
+                // attributes and visible source coverage must also match before a
+                // dictionary sentence may replace the observed sentence.
+                string unsafeReason;
+                if(!SkillOverviewSafety.IsSafeOverview(OverviewEnglish(main),english,translated,
+                    templateUsed,out unsafeReason))continue;
                 if(score<=highest)continue;highest=score;best=translated;
             }
             if(best.Length==0)return false;

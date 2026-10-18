@@ -327,6 +327,10 @@ namespace MapleOverlay
                     {
                         section.Status = "painted";
                         section.PreservedReason = "";
+                        if (!String.IsNullOrEmpty(section.HeaderStatus))
+                            section.HeaderStatus = "painted";
+                        if (section.EffectStatus == "translated")
+                            section.EffectStatus = "painted";
                         foreach (SimpleDraw draw in draws)
                             if (draw.Label == skillLabel)
                             {
@@ -339,6 +343,10 @@ namespace MapleOverlay
                     {
                         section.Status = "preserved";
                         section.PreservedReason = skillLabel.FusionFailureReason;
+                        if (!String.IsNullOrEmpty(section.HeaderStatus))
+                            section.HeaderStatus = "preserved";
+                        if (section.EffectStatus == "translated")
+                            section.EffectStatus = "preserved";
                         if (panel != null)
                         {
                             panel.Preserved++;

@@ -43,6 +43,26 @@ function NewLine([string]$text, [single]$x, [single]$y, [single]$w, [single]$h) 
     [void]$words.Add($word)
     return $line
 }
+function NewLineWords([string]$text, [single]$x, [single]$y, [single]$w, [single]$h) {
+    $line = $lineType.GetConstructors($flags)[0].Invoke(@())
+    $lineType.GetField('Text', $flags).SetValue($line, $text)
+    $words = [Activator]::CreateInstance($wordListType)
+    $lineType.GetField('Words', $flags).SetValue($line, $words)
+    $parts = $text.Split([char[]]@(' '), [StringSplitOptions]::RemoveEmptyEntries)
+    $cursor = 0
+    foreach ($part in $parts) {
+        $at = $text.IndexOf($part, $cursor, [StringComparison]::Ordinal)
+        if ($at -lt 0) { continue }
+        $word = $wordType.GetConstructors($flags)[0].Invoke(@())
+        $wordType.GetField('Text', $flags).SetValue($word, $part)
+        $wordType.GetField('BoundingRect', $flags).SetValue($word,
+            [Drawing.RectangleF]::new($x + $w * $at / [Math]::Max(1, $text.Length),
+                $y, [single]($w * $part.Length / [Math]::Max(1, $text.Length)), $h))
+        [void]$words.Add($word)
+        $cursor = $at + $part.Length
+    }
+    return $line
+}
 function NewLineList([object[]]$rows) {
     $list = [Activator]::CreateInstance($lineListType)
     foreach ($row in $rows) { [void]$list.Add($row) }
@@ -177,6 +197,8 @@ Check ((NewStore (Join-Path $repoRoot '枫语幕词库.tsv')).GetType() -ne $nul
 Check ([string]$storeType.GetMethod('DetectSkillId', $flags).Invoke($store, @('Critical Recovery')) -eq '4100002') 'Critical Recovery keeps its unique id despite containing Recovery'
 Check ([string]$storeType.GetMethod('DetectSkillId', $flags).Invoke($store, @('Rush')) -eq '') 'shared Rush name does not choose one job id'
 Check ([string]$storeType.GetMethod('DetectSkillId', $flags).Invoke($store, @('Sword Mastery')) -eq '') 'shared Sword Mastery name does not choose one job id'
+Check ([string]$storeType.GetMethod('DetectSkillId', $flags).Invoke($store, @('Magic Guard Recovery')) -eq '') 'two independent visible titles are ambiguous, not the longer one'
+Check ([string]$storeType.GetMethod('DetectSkillId', $flags).Invoke($store, @('Critical Recovery Recovery')) -eq '') 'an independent second Recovery still makes the line ambiguous'
 Check ([string]$storeType.GetMethod('DetectSkillContentId', $flags).Invoke($store, @('[Master Level: 20]')) -eq '') 'generic master header does not resolve a skill id'
 Check ([string]$storeType.GetMethod('DetectSkillContentId', $flags).Invoke($store, @('Uses HP and MP to temporarily increase the Attack Speed of the equipped claw. It only applies when the character is equipped with a claw and throwing stars.')) -eq '4101000') 'Claw Booster body resolves its own id'
 Check ([string]$storeType.GetMethod('DetectSkillContentId', $flags).Invoke($store, @('Critical hits sever the enemy''s tendons, slowing them down.')) -eq '') 'ambiguous shared body does not choose one id'
@@ -185,6 +207,41 @@ Check ($arrow.Count -eq 1 -and [string]$arrow[0].Entry.Chinese -eq '爆炸箭') 
 Check (@($storeType.GetMethod('FindSkillNameMatches', $flags).Invoke($store, [object[]]@('Arrow Bomb', ''))).Count -eq 0) 'unresolved shortened name is not guessed'
 Check (@($storeType.GetMethod('FindSkillNameMatches', $flags).Invoke($store, [object[]]@('Fire', '3101004'))).Count -eq 0) 'bare prefix of another skill is rejected'
 Check (@($storeType.GetMethod('FindSkillNameMatches', $flags).Invoke($store, [object[]]@('Arrow Bom...', ''))).Count -eq 0) 'truncated name is rejected'
+$overviewMethod = $storeType.GetMethod('TryTranslateSkillOverview', $flags)
+function TryOverview([string]$text, [string]$id) {
+    $args = New-Object 'object[]' 3
+    $args[0] = $text; $args[1] = $id; $args[2] = ''
+    $ok = [bool]$overviewMethod.Invoke($store, $args)
+    return [pscustomobject]@{ Ok = $ok; Text = [string]$args[2] }
+}
+$never = TryOverview 'Never recover HP constantly for 30 sec.' '1001'
+Check (-not $never.Ok -and $never.Text -eq '') 'negated visible sentence is not replaced by the known Recovery overview'
+$unrelated = TryOverview 'An unrelated story lasts for 30 sec.' '1001'
+Check (-not $unrelated.Ok -and $unrelated.Text -eq '') 'unrelated visible sentence is not replaced by the known Recovery overview'
+$exactOverview = TryOverview 'Enables the user to recover HP constantly for 30 sec.' '1001'
+Check ($exactOverview.Ok -and $exactOverview.Text.Contains('30秒') -and $exactOverview.Text.Contains('恢复HP')) 'exact visible overview still translates with its 30-second association'
+$r2Rows = [object[]]@(
+    (NewLine 'Recovery' 40 30 200 18),
+    (NewLine '[Master Level: 3]' 40 60 160 14),
+    (NewLine 'Never recover HP constantly for 30 sec.' 40 82 500 24)
+)
+$r2 = RunPlan -store $store -rows $r2Rows -width 900 -height 260
+$r2Body = $r2.Labels | Where-Object { (GetLabelField $_ 'SemanticRole') -eq 'skill-body' } | Select-Object -First 1
+Check ($null -eq $r2Body) 'negated body is preserved in the panel plan, not replaced by its known id'
+$r2Plan = $r2.Plan
+$r2Preserved = $false
+foreach ($section in (GetSections $r2Plan)) {
+    if ((GetSectionField $section 'Role') -eq 'skill-body' -and
+        (GetSectionField $section 'Status') -eq 'preserved') { $r2Preserved = $true }
+}
+Check ($r2Preserved) 'the plan distinguishes an unsafe overview from an absent one'
+$r2Unrelated = RunPlan -store $store -rows ([object[]]@(
+    (NewLine 'Recovery' 40 30 200 18),
+    (NewLine '[Master Level: 3]' 40 60 160 14),
+    (NewLine 'An unrelated story lasts for 30 sec.' 40 82 500 24)
+)) -width 900 -height 260
+$r2UnrelatedBody = $r2Unrelated.Labels | Where-Object { (GetLabelField $_ 'SemanticRole') -eq 'skill-body' } | Select-Object -First 1
+Check ($null -eq $r2UnrelatedBody) 'unrelated body is not replaced by a 30-second known overview'
 
 # Full skill panel: name, max level, complete body, prerequisite, current and next.
 $healRows = [object[]]@(
@@ -257,14 +314,83 @@ $rowsNoTitle = [object[]]@(
 )
 $noTitle = RunPlan -store $store -rows $rowsNoTitle -width 900 -height 300
 Check (-not (HasRole (Roles $noTitle.Labels) 'skill-name') -and (HasRole (Roles $noTitle.Labels) 'skill-body') -and (HasRole (Roles $noTitle.Labels) 'skill-current-body')) 'missing title preserves other visible sections'
-$rowsCombined = [object[]]@(
+$rowsCombinedSingle = [object[]]@(
     (NewLine 'Heal [Master Level: 30] Recovers the HP of all party members around the area.' 40 30 700 24),
     (NewLine '[Current Level 1] MP -12; Recovery rate 40%; Range 100%' 40 80 640 20)
 )
-$combined = RunPlan -store $store -rows $rowsCombined -width 1000 -height 260
-Check ((HasRole (Roles $combined.Labels) 'skill-name') -and (HasRole (Roles $combined.Labels) 'skill-master-level') -and (HasRole (Roles $combined.Labels) 'skill-body') -and (HasRole (Roles $combined.Labels) 'skill-current-body')) 'title, master and body on one OCR row split into independent sections'
-AssertNoRowOverlap $combined.Labels 'combined OCR row'
-Check ($combined.Compose -and $combined.Ready -eq $combined.Labels.Count) 'combined OCR row composes all sections'
+$combinedSingle = RunPlan -store $store -rows $rowsCombinedSingle -width 1000 -height 260
+$singleRoles = Roles $combinedSingle.Labels
+Check (-not (HasRole $singleRoles 'skill-name') -and -not (HasRole $singleRoles 'skill-master-level') -and -not (HasRole $singleRoles 'skill-body')) 'one word box containing title/master/body is not split at estimated boundaries'
+$singlePlan = $combinedSingle.Plan
+$estimatedSections = 0
+foreach ($section in (GetSections $singlePlan)) {
+    if ((GetSectionField $section 'Measured') -eq $false) { $estimatedSections++ }
+}
+Check ($estimatedSections -ge 1) 'the plan records the combined-word body as estimated'
+Check ($combinedSingle.Compose -and $combinedSingle.Ready -eq $combinedSingle.Labels.Count) 'estimated combined-word sections are preserved while safe current composes'
+
+$rowsCombinedWords = [object[]]@(
+    (NewLineWords 'Heal [Master Level: 30] Recovers the HP of all party members around the area.' 40 30 700 24),
+    (NewLineWords '[Current Level 1] MP -12; Recovery rate 40%; Range 100%' 40 80 640 20)
+)
+$combinedWords = RunPlan -store $store -rows $rowsCombinedWords -width 1000 -height 260
+Check ((HasRole (Roles $combinedWords.Labels) 'skill-name') -and (HasRole (Roles $combinedWords.Labels) 'skill-master-level') -and (HasRole (Roles $combinedWords.Labels) 'skill-body') -and (HasRole (Roles $combinedWords.Labels) 'skill-current-body')) 'title, master and body on one OCR row split at real word boundaries'
+AssertNoRowOverlap $combinedWords.Labels 'combined word rows'
+Check ($combinedWords.Compose -and $combinedWords.Ready -eq $combinedWords.Labels.Count) 'combined word-row sections compose all planned labels'
+
+# R3: a failed effect keeps its original pixels; a header success is recorded
+# separately and never erases the effect.
+$r3Rows = [object[]]@(
+    (NewLine 'Heal' 40 30 180 18),
+    (NewLine '[Master Level: 30]' 40 60 160 14),
+    (NewLineWords '[Current Level: 1] UnrecognizedEffect 987654321' 40 100 380 18)
+)
+$r3 = RunPlan -store $store -rows $r3Rows -width 1000 -height 400
+$r3Header = $r3.Labels | Where-Object { (GetLabelField $_ 'SemanticRole') -eq 'skill-current-body' } | Select-Object -First 1
+Check ($null -ne $r3Header -and (GetLabelField $r3Header 'Text') -eq '当前等级：1') 'an untranslated effect leaves only the header text in the header label'
+$r3EffectText = '[Current Level: 1] UnrecognizedEffect 987654321'
+$r3EffectStart = 40.0 + 380.0 * $r3EffectText.IndexOf('UnrecognizedEffect') / $r3EffectText.Length
+Check ($null -ne $r3Header -and (GetLabelField $r3Header 'SourceBounds').Right -le $r3EffectStart) 'the header-only source stops before the unrecognized effect'
+$r3Plan = $r3.Plan
+$r3EffectPreserved = $false
+foreach ($section in (GetSections $r3Plan)) {
+    if ((GetSectionField $section 'Role') -eq 'skill-current-body' -and
+        (GetSectionField $section 'EffectStatus') -eq 'preserved') { $r3EffectPreserved = $true }
+}
+Check ($r3EffectPreserved) 'plan records header=planned and effect=preserved separately'
+$r3Form = NewHarnessForm $store 1000 400
+$r3Panel = NewPanel $r3Rows
+$r3Labels = [Activator]::CreateInstance($labelListType)
+AddPanelLabels $r3Form $r3Panel $r3Labels
+$r3Frame = NewFrame 1000 400
+DrawSource $r3Frame $r3Rows
+Check ((Compose $r3Form $r3Labels $r3Frame) -and (ReadyCount $r3Form) -eq $r3Labels.Count) 'header-only R3 panel composes'
+$r3Layer = $formType.GetField('simpleLayer', $flags).GetValue($r3Form)
+Check ($null -ne $r3Layer -and $r3Layer.GetPixel(350, 105).A -eq 0) 'unrecognized effect pixels remain original after composition'
+$r3Frame.Dispose()
+
+# R6: prerequisite relation is preserved, not forced to "at least".
+$r6AtMost = RunPlan -store $store -rows ([object[]]@(
+    (NewLine 'Heal' 40 30 180 18),
+    (NewLine '[Master Level: 30]' 40 60 160 14),
+    (NewLine 'Required Skill: At most Level 5 Heal' 40 90 420 18)
+)) -width 900 -height 240
+$r6Label = $r6AtMost.Labels | Where-Object { (GetLabelField $_ 'SemanticRole') -eq 'skill-required' } | Select-Object -First 1
+Check ($null -ne $r6Label -and (GetLabelField $r6Label 'Text').Contains('至多5级') -and -not (GetLabelField $r6Label 'Text').Contains('至少')) 'at-most prerequisite keeps its relation'
+$r6AtLeast = RunPlan -store $store -rows ([object[]]@(
+    (NewLine 'Heal' 40 30 180 18),
+    (NewLine '[Master Level: 30]' 40 60 160 14),
+    (NewLine 'Required Skill: At least Level 5 Heal' 40 90 420 18)
+)) -width 900 -height 240
+$r6Label = $r6AtLeast.Labels | Where-Object { (GetLabelField $_ 'SemanticRole') -eq 'skill-required' } | Select-Object -First 1
+Check ($null -ne $r6Label -and (GetLabelField $r6Label 'Text').Contains('至少5级')) 'at-least prerequisite still says at least'
+$r6Unsupported = RunPlan -store $store -rows ([object[]]@(
+    (NewLine 'Heal' 40 30 180 18),
+    (NewLine '[Master Level: 30]' 40 60 160 14),
+    (NewLine 'Required Skill: Exactly Level 5 Heal' 40 90 420 18)
+)) -width 900 -height 240
+$r6UnsupportedLabel = $r6Unsupported.Labels | Where-Object { (GetLabelField $_ 'SemanticRole') -eq 'skill-required' } | Select-Object -First 1
+Check ($null -eq $r6UnsupportedLabel) 'unsupported prerequisite relation is preserved, not translated as at least'
 
 # Ambiguous shared name: name may use the shared Chinese, body must not borrow a variant.
 $rushRows = [object[]]@(
@@ -301,9 +427,10 @@ try {
     $synthetic = NewStore $fixture
     $rowsSynthetic = [object[]]@(
         (NewLine 'Cobalt Pulse' 40 30 240 18),
-        (NewLine '[Master Level: 30] Sends a focused wave through nearby targets.' 40 60 620 24),
-        (NewLine '[Current Level 7] MP -19; Basic Attack 217, Mastery level 7' 40 95 620 20),
-        (NewLine '[Next Level 8] MP -23; Basic Attack 239, Mastery level 8' 40 125 620 20)
+        (NewLine '[Master Level: 30]' 40 60 160 14),
+        (NewLine 'Sends a focused wave through nearby targets.' 40 82 620 24),
+        (NewLine '[Current Level 7] MP -19; Basic Attack 217, Mastery level 7' 40 115 620 20),
+        (NewLine '[Next Level 8] MP -23; Basic Attack 239, Mastery level 8' 40 145 620 20)
     )
     $syntheticPanel = RunPlan -store $synthetic -rows $rowsSynthetic -width 1000 -height 300
     $syntheticRoles = Roles $syntheticPanel.Labels
@@ -352,6 +479,23 @@ $result = TryList (NewListContext @('SKILL INVENTORY', 'Arrow Bom...')).Lines 1
 Check (-not $result.Ok -and $result.Labels.Count -eq 0) 'a truncated list name is not guessed'
 $result = TryList (NewListContext @('SKILL INVENTORY', 'Rush')).Lines 1
 Check ($result.Ok -and $result.Labels.Count -eq 1 -and (GetLabelField $result.Labels[0] 'Text') -eq '突进') 'shared list translation is allowed without choosing a job id'
+$farList = NewLineList @(
+    (NewLine 'SKILL INVENTORY' 40 30 240 18),
+    (NewLine 'Heal' 900 590 200 18)
+)
+$result = TryList $farList 1
+Check (-not $result.Ok -and $result.Labels.Count -eq 0) 'a header in one panel does not make a far-away standalone Heal a list row'
+$farWithLocalNames = NewLineList @(
+    (NewLine 'SKILL INVENTORY' 40 30 240 18),
+    (NewLine 'Haste' 40 60 200 18),
+    (NewLine 'Magic Guard' 40 84 200 18),
+    (NewLine 'Heal' 900 590 200 18)
+)
+$result = TryList $farWithLocalNames 3
+Check (-not $result.Ok -and $result.Labels.Count -eq 0) 'a local list elsewhere does not make a distant player name a list row'
+$playerOnly = NewLineList @((NewLine 'Heal' 900 590 200 18))
+$result = TryList $playerOnly 0
+Check (-not $result.Ok -and $result.Labels.Count -eq 0) 'a standalone player name is not a skill-list row'
 $listFrame = NewFrame 400 200
 DrawSource $listFrame @($headerLevel.Lines[1])
 $typedHeaderLevel = [Activator]::CreateInstance($lineListType)
@@ -423,6 +567,7 @@ foreach ($reason in $preservedSections) { Write-Output "PRESERVED: $reason" }
 $planSource = Get-Content (Join-Path $repoRoot 'src\SkillPanelComposition.cs') -Raw -Encoding UTF8
 $listSource = Get-Content (Join-Path $repoRoot 'src\SkillNameListPolicy.cs') -Raw -Encoding UTF8
 $buildSource = Get-Content (Join-Path $repoRoot 'src\build.ps1') -Raw -Encoding UTF8
+$safetySource = Get-Content (Join-Path $repoRoot 'src\SkillOverviewSafety.cs') -Raw -Encoding UTF8
 $mainSource = Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -Encoding UTF8
 foreach ($name in 'Heal', 'Rush', 'Arrow Bomb', 'Sword Mastery', 'Polearm', 'Warrior', 'Magician', 'Scania') {
     Check (-not ($planSource -match [regex]::Escape($name)) -and
@@ -430,7 +575,8 @@ foreach ($name in 'Heal', 'Rush', 'Arrow Bomb', 'Sword Mastery', 'Polearm', 'War
 }
 Check ($planSource.Contains('SplitSkillSemanticRows') -and $listSource.Contains('IsListContext') -and
     $listSource.Contains('TryAddSkillListNameLabel')) 'shared planner and explicit list context are wired'
-Check ($buildSource.Contains('SkillPanelComposition.cs') -and $buildSource.Contains('SkillNameListPolicy.cs')) 'build includes both new source files'
+Check ($buildSource.Contains('SkillPanelComposition.cs') -and $buildSource.Contains('SkillNameListPolicy.cs') -and
+    $buildSource.Contains('SkillOverviewSafety.cs')) 'build includes planner, list policy and overview safety sources'
 Check (-not ($planSource -match '(?i)\b(?:RunOcr|OcrCalls|AiRequest|Prompt|Retry)\b')) 'planner adds no OCR or AI round'
 Check (-not ($mainSource.Contains('independentSkillNames')) -and
     $mainSource.Contains('TryAddSkillListNameLabel(output, line, allLines, ocrScale)')) 'main dictionary pass routes bare skill names through explicit list context'

@@ -11,29 +11,48 @@ namespace MapleOverlay
             TranslationStore translations)
         {
             if (all == null || line == null || translations == null || line.Words.Count == 0) return false;
+            if (scale <= 0.0f) scale = 1.0f;
             string own = TranslationStore.Normalize(line.Text);
             if (own.Length < 3) return false;
-            bool header = false;
+            bool localHeader = false;
             int neighbors = 0;
             RectangleF ownBounds = BoundsOf(line);
+            if (ownBounds.IsEmpty) return false;
             foreach (OcrLine candidate in all)
             {
                 if (candidate == null || candidate == line) continue;
                 string normalized = TranslationStore.Normalize(candidate.Text);
-                if (normalized.Contains("skill inventory") || normalized.Contains("skill book") ||
-                    normalized.Contains("skill point") || normalized == "skills" ||
-                    normalized.EndsWith(" skills", StringComparison.Ordinal))
-                    header = true;
                 RectangleF other = BoundsOf(candidate);
-                if (ownBounds.IsEmpty || other.IsEmpty) continue;
-                if (Math.Abs(other.Left - ownBounds.Left) > Math.Max(28.0f, ownBounds.Width * 0.35f)) continue;
-                if (Math.Abs(other.Height - ownBounds.Height) > Math.Max(6.0f, ownBounds.Height * 0.6f)) continue;
+                if (other.IsEmpty) continue;
+                bool headerText = normalized.Contains("skill inventory") ||
+                    normalized.Contains("skill book") || normalized.Contains("skill point") ||
+                    normalized == "skills" || normalized.EndsWith(" skills", StringComparison.Ordinal);
+                if (headerText && LocallyRelated(other, ownBounds, scale))
+                    localHeader = true;
+                // Neighbour evidence must be in the same local column and close in
+                // both axes. A name in another panel cannot make this row a list row.
+                if (Math.Abs(other.Left - ownBounds.Left) >
+                    Math.Max(28.0f, ownBounds.Width * 0.35f)) continue;
+                if (Math.Abs(other.Height - ownBounds.Height) >
+                    Math.Max(6.0f, ownBounds.Height * 0.6f)) continue;
+                if (Math.Abs(other.Top - ownBounds.Top) >
+                    Math.Max(80.0f, ownBounds.Height * 5.0f) * scale) continue;
                 if (TranslationsOfListRow(candidate, translations)) neighbors++;
             }
-            // A header is explicit list evidence. Without one, at least two other
-            // same-column rows must be exact skill names; a single title in an
-            // arbitrary window never becomes a global skill-name replacement.
-            return header || neighbors >= 2;
+            // A header is explicit list evidence only in the same local region as
+            // the candidate. Without one, at least two nearby same-column exact
+            // skill rows are required.
+            return localHeader || neighbors >= 2;
+        }
+
+        private static bool LocallyRelated(RectangleF header, RectangleF row, float scale)
+        {
+            if (header.IsEmpty || row.IsEmpty) return false;
+            float leftDrift = Math.Abs(row.Left - header.Left);
+            if (leftDrift > Math.Max(80.0f, header.Width * 0.8f)) return false;
+            if (row.Top < header.Top - 24.0f * scale) return false;
+            if (row.Top - header.Bottom > 480.0f * scale) return false;
+            return true;
         }
 
         private static bool TranslationsOfListRow(OcrLine line, TranslationStore translations)
