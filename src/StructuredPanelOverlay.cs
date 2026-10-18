@@ -175,14 +175,14 @@ namespace MapleOverlay
                 " rejected="+rejected+" keys="+keys);
         }
 
-        private void AddSkillEffectSections(List<OverlayLabel> output,List<OcrLine> all,Dictionary<OcrLine,OcrPanelInfo> panels,float scale)
+        private void AddSkillEffectSections(List<OverlayLabel> output,List<OcrLine> all,Dictionary<OcrLine,OcrPanelInfo> panels,float scale,HashSet<OcrPanelInfo> handled=null)
         {
             List<OcrLine> sorted=new List<OcrLine>(all);sorted.Sort(delegate(OcrLine a,OcrLine b){return GetOcrLineBounds(a).Top.CompareTo(GetOcrLineBounds(b).Top);});
             int observed=0,translated=0;
             for(int i=0;i<sorted.Count;i++) {
                 string key=TranslationStore.Normalize(sorted[i].Text);
                 if(SkillSectionMarker(sorted[i].Text)!="current"&&SkillSectionMarker(sorted[i].Text)!="next")continue;
-                observed++;string skillId=ResolveSkillContextId(all,sorted[i],scale);OcrPanelInfo parent;
+                observed++;OcrPanelInfo owner;if(handled!=null&&panels.TryGetValue(sorted[i],out owner)&&handled.Contains(owner))continue;string skillId=ResolveSkillContextId(all,sorted[i],scale);OcrPanelInfo parent;
                 if(skillId.Length==0&&panels.TryGetValue(sorted[i],out parent))skillId=parent.SkillId??"";
                 if(skillId.Length==0)for(int previous=i-1;previous>=0;previous--) {
                     RectangleF prior=GetOcrLineBounds(sorted[previous]);

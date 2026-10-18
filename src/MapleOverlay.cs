@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -1423,15 +1423,11 @@ namespace MapleOverlay
 
         public string DetectSkillContentId(string text)
         {
-            List<MatchResult> exact = FindInBuckets(text, skillTextBuckets, null);
-            MatchResult best = null;
-            foreach (MatchResult match in exact)
-                if (best == null || match.Entry.Normalized.Length > best.Entry.Normalized.Length)
-                    best = match;
-            if (best != null) return CategoryId(best.Entry.Category);
-
-            List<MatchResult> approximate = FindApproximateDetailMatch(text, skillTextEntries);
-            return approximate.Count > 0 ? CategoryId(approximate[0].Entry.Category) : "";
+            // The visible body is the identity evidence, never the generic
+            // "[Master Level : N]" header. The old first-exact-row path resolved
+            // every level-20 tooltip to whichever skill happened to own that
+            // header segment, which then borrowed that skill's description.
+            return DetectUniqueSkillContentId(text);
         }
 
         public string DetectItemId(string text)
@@ -1986,6 +1982,9 @@ namespace MapleOverlay
         // means a longer translation can never widen the erase region over live game values.
         public RectangleF SourceBounds;
         public bool HasSourceBounds;
+        // True when the source span was split inside one OCR word. Never promote
+        // this to a measured boundary in evidence or equipment-style planning.
+        public bool SourceBoundaryEstimated;
         public LabelConfidence Confidence = LabelConfidence.High;
         public string MatchSource = "";
         public float ConfidenceReason = 0.0f;
@@ -2017,6 +2016,14 @@ namespace MapleOverlay
         // pixels into the replacement.
         public EquipmentFieldPlan EquipmentField;
         public EquipmentPanelPlan EquipmentPanel;
+        // Skill panels carry one shared plan and one section owner per source region.
+        // The compositor uses these sizes directly, so prose sections cannot shrink
+        // independently to an unreadable 8px fallback.
+        public SkillPanelPlan SkillPanel;
+        public SkillSectionPlan SkillSection;
+        public float LayoutFontSize;
+        public float LayoutMinimumFontSize;
+        public string LayoutFontFamily = "";
     }
 
     // Windows OCR exposes no usable per-word confidence, so the pipeline derives an
@@ -4508,7 +4515,10 @@ namespace MapleOverlay
 
         private void SetJournalPagingShortcuts(bool active)
         {
-            if (!IsHandleCreated || Program.Benchmark || active == journalPagingShortcuts) return;
+            bool hasHandle = false;
+            try { hasHandle = IsHandleCreated; }
+            catch (NullReferenceException) { hasHandle = false; }
+            if (!hasHandle || Program.Benchmark || active == journalPagingShortcuts) return;
             UnregisterHotKey(Handle, HOTKEY_JOURNAL_PREVIOUS);
             UnregisterHotKey(Handle, HOTKEY_JOURNAL_NEXT);
             journalPagingShortcuts = false;
@@ -6276,6 +6286,8 @@ private Rectangle FindCursorPanelCrop(
                 panel.IsSkillDetail = normalized.Contains("master level") ||
                     (normalized.Contains("current level") && normalized.Contains("next level")) ||
                     normalized.Contains("required skill") ||
+                    ((normalized.Contains("current level") || normalized.Contains("next level")) &&
+                     panel.Lines.Count >= 2 && LooksLikeSkillEffectBody(panel.Text)) ||
                     (skillContentId.Length > 0 && normalized.Length >= 24) ||
                     (panel.SkillId.Length > 0 && normalized.Length >= 35 &&
                      (normalized.Contains("damage") || normalized.Contains("duration") ||
@@ -6468,12 +6480,10 @@ private Rectangle FindCursorPanelCrop(
                     AddSkillPanelLabels(output, currentPanel, ocrScale);
                 }
                 if (currentPanel != null && currentPanel.IsSkillDetail) continue;
-                List<MatchResult> independentSkillNames = translations.FindSkillNameMatches(line.Text);
-                if (independentSkillNames.Count > 0)
-                {
-                    AddExactLabels(output, new List<OcrLine> { line }, line.Text, independentSkillNames, ocrScale);
-                    continue;
-                }
+                // A skill name is translated independently only in an explicit
+                // skill-list/title context. A bare "Heal" in ordinary prose or a
+                // player name must never become a global skill replacement.
+                if (TryAddSkillListNameLabel(output, line, allLines, ocrScale)) continue;
 
                 bool equipmentPanel = currentPanel != null && currentPanel.IsEquipmentDetail;
                 if (equipmentPanel && handledEquipmentPanels.Add(currentPanel))
@@ -6815,8 +6825,8 @@ private Rectangle FindCursorPanelCrop(
             }
             AddStructuredFieldLabels(output, allLines, panelByLine, ocrScale);
             AddCharacterFieldSurfaces(output, allLines, prepared, ocrScale);
-            AddSkillOverviewSections(output, allLines, panelByLine, prepared, ocrScale);
-            AddSkillEffectSections(output, allLines, panelByLine, ocrScale);
+            AddSkillOverviewSections(output, allLines, panelByLine, prepared, ocrScale, handledSkillPanels);
+            AddSkillEffectSections(output, allLines, panelByLine, ocrScale, handledSkillPanels);
             if (prepared != null && questPanelContext)
                 AddObjectiveSurfaceLabels(output, allLines, prepared,
                     ResolveQuestJournalOwner(allLines, prepared.Size, ocrScale, measuredQuestDetails), ocrScale);
@@ -8400,195 +8410,6 @@ private Rectangle FindCursorPanelCrop(
             if (key.Contains("next level")) return "skill-next-level";
             if (key.Contains("master level")) return "skill-master-level";
             return "skill-field";
-        }
-
-        private void AddSkillPanelLabels(List<OverlayLabel> output, OcrPanelInfo panel, float ocrScale)
-        {
-            if (panel == null || panel.Lines.Count == 0) return;
-            int partStart = output.Count;
-            string skillId = panel.SkillId;
-            if (skillId.Length == 0) skillId = ResolveSkillPanelId(panel.Lines);
-
-            List<OcrLine> skillLines = new List<OcrLine>(panel.Lines);
-            skillLines.Sort(delegate(OcrLine left, OcrLine right) {
-                RectangleF a = GetOcrLineBounds(left), b = GetOcrLineBounds(right);
-                int top = a.Top.CompareTo(b.Top); return top == 0 ? a.Left.CompareTo(b.Left) : top;
-            });
-            foreach (List<OcrLine> row in BuildVisualRows(skillLines))
-            {
-                string rowText = CombineVisualRow(row);
-                List<MatchResult> names = translations.FindSkillNameMatches(rowText, skillId);
-                if (names.Count > 0) AddExactLabels(output, row, rowText, names, ocrScale);
-                List<MatchResult> fixedUi = translations.FindMatches(rowText);
-                fixedUi.RemoveAll(delegate(MatchResult match) {
-                    string key = match.Entry.Normalized;
-                    return key != "skill point" && key != "skill points" && key != "skill inventory";
-                });
-                if (fixedUi.Count > 0) AddExactLabels(output, row, rowText, fixedUi, ocrScale);
-                string structured;
-                int beforeStructured = output.Count;
-                if (TryTranslateStructuredLine(rowText, false, true, out structured))
-                {
-                    // A skill header can share one OCR row with its prose, for example
-                    // "[Master Level : 3] Enables ...". Keep the structured field anchored
-                    // to the prefix words only; the prose matcher below owns the remainder.
-                    string body = StripSkillStructuredPrefix(rowText);
-                    int bodyStart = SkillStructuredBodyStart(rowText);
-                    if (bodyStart > 0 && body.Length > 0)
-                    {
-                        RectangleF prefixRaw = GetOcrTextSpanBounds(row, rowText, 0, bodyStart);
-                        AddDetailBlockLabelAt(output, prefixRaw.IsEmpty ? row : null,
-                            prefixRaw.IsEmpty ? GetCombinedLineBounds(row) : prefixRaw,
-                            structured, ocrScale, false);
-                    }
-                    else AddDetailBlockLabel(output, row, structured, ocrScale);
-                    if (output.Count > beforeStructured) output[output.Count - 1].SemanticRole =
-                        SkillFieldRole(rowText);
-                }
-            }
-            // Names and fixed labels (Master/Current/Next Level) are
-            // resolved independently from the long description so one OCR wobble cannot
-            // hide the entire tooltip.
-            Dictionary<string, SkillPanelCandidate> candidates =
-                new Dictionary<string, SkillPanelCandidate>(StringComparer.Ordinal);
-            int lineCount = skillLines.Count;
-            for (int start = 0; start < lineCount; start++)
-            {
-                StringBuilder combined = new StringBuilder();
-                List<OcrLine> window = new List<OcrLine>();
-                RectangleF firstBounds = GetOcrLineBounds(skillLines[start]);
-                string sectionRole = "skill-body";
-                for (int previous = 0; previous <= start; previous++)
-                {
-                    string marker = TranslationStore.Normalize(skillLines[previous].Text);
-                    if (marker.StartsWith("master level", StringComparison.Ordinal)) sectionRole = "skill-body";
-                    else if (marker.StartsWith("current level", StringComparison.Ordinal)) sectionRole = "skill-current-body";
-                    else if (marker.StartsWith("next level", StringComparison.Ordinal)) sectionRole = "skill-next-body";
-                }
-                for (int span = 0; span < 16 && start + span < lineCount; span++)
-                {
-                    OcrLine current = skillLines[start + span];
-                    RectangleF currentBounds = GetOcrLineBounds(current);
-                    string currentKey = TranslationStore.Normalize(current.Text);
-                    if (span > 0 && (currentKey.StartsWith("current level", StringComparison.Ordinal) ||
-                        currentKey.StartsWith("next level", StringComparison.Ordinal))) break;
-                    if (span > 0 && currentBounds.Top - firstBounds.Top > 620.0f) break;
-                    window.Add(current);
-                    if (combined.Length > 0) combined.Append(' ');
-                    combined.Append(current.Text);
-                    // Do not let a leading Master/Current/Next Level field make the
-                    // longest candidate look like a complete prose sentence. It is a
-                    // separate semantic field and has already been emitted above.
-                    string text = StripSkillStructuredPrefix(combined.ToString());
-                    string normalized = TranslationStore.Normalize(text);
-                    if (normalized.Length < 18) continue;
-                    List<MatchResult> detailMatches = translations.FindSkillTextMatches(text, skillId);
-                    foreach (MatchResult match in detailMatches)
-                    {
-                        if (!match.Entry.IsSkillText || match.Entry.Normalized.Length < 18) continue;
-                        int score = ScoreStrongLongTextCandidate(text,normalized,match,1.0f);
-                        if (score == Int32.MinValue) continue;
-                        string key = sectionRole + "\t" + match.Entry.Category + "\t" + match.Entry.English;
-                        SkillPanelCandidate previous;
-                        if (!candidates.TryGetValue(key, out previous) || score > previous.Score)
-                        {
-                            candidates[key] = new SkillPanelCandidate {
-                                Lines = new List<OcrLine>(window), Text = text,
-                                Match = match, Score = score, SemanticRole = sectionRole
-                            };
-                        }
-                    }
-                }
-            }
-
-            List<SkillPanelCandidate> ranked = new List<SkillPanelCandidate>(candidates.Values);
-            ranked.Sort(delegate(SkillPanelCandidate left, SkillPanelCandidate right) {
-                return right.Score.CompareTo(left.Score);
-            });
-            List<RectangleF> used = new List<RectangleF>();
-            int added = 0;
-            foreach (SkillPanelCandidate candidate in ranked)
-            {
-                List<OcrLine> tight = SelectBestDetailLines(candidate.Lines, candidate.Match.Entry);
-                RectangleF raw = GetCombinedLineBounds(tight);
-                string tightText = CombineVisualRow(tight);
-                int bodyStart = SkillStructuredBodyStart(tightText);
-                if (bodyStart > 0)
-                {
-                    int normalizedLength = TranslationStore.Normalize(tightText).Length;
-                    RectangleF bodyRaw = GetOcrTextSpanBounds(tight, tightText, bodyStart,
-                        Math.Max(0, normalizedLength - bodyStart));
-                    if (!bodyRaw.IsEmpty) raw = bodyRaw;
-                }
-                if (raw.IsEmpty) continue;
-                bool overlaps = false;
-                foreach (RectangleF previous in used)
-                {
-                    RectangleF intersection = RectangleF.Intersect(previous, raw);
-                    float smaller = Math.Min(previous.Width * previous.Height, raw.Width * raw.Height);
-                    if (smaller > 0 && intersection.Width * intersection.Height / smaller > 0.38f)
-                    { overlaps = true; break; }
-                }
-                if (overlaps) continue;
-                int beforeBody = output.Count;
-                AddDetailBlockLabelAt(output, tight, raw, candidate.Match.Entry.Chinese, ocrScale,
-                    tight.Count > 1);
-                if (output.Count > beforeBody) output[output.Count - 1].SemanticRole = candidate.SemanticRole;
-                used.Add(raw);
-                if (++added >= 3) break; // description + current level + next level
-            }
-            if (!output.GetRange(partStart,output.Count-partStart).Exists(delegate(OverlayLabel item){return item.SemanticRole=="skill-body";}))
-            {
-                TranslationEntry overview = translations.GetSkillOverview(skillId);
-                List<OcrLine> synopsis=new List<OcrLine>();
-                foreach(OcrLine item in skillLines){string marker=SkillSectionMarker(item.Text);if(marker=="current"||marker=="next")break;synopsis.Add(item);}
-                List<OcrLine> prose = FindBestPanelProseBlock(synopsis);
-                if (overview != null && prose.Count > 0)
-                {
-                    // A structured overview is a useful last-resort source, but its field
-                    // prefix must not be painted as one long sentence over neighboring rows.
-                    TranslationEntry fallback = overview;
-                    bool fallbackAllowed = true;
-                    string overviewNormalized = TranslationStore.Normalize(overview.English);
-                    string overviewBody = StripSkillStructuredPrefix(overview.English);
-                    bool hasStructuredPrefix = overviewNormalized.Contains("master level") ||
-                        overviewNormalized.Contains("current level") ||
-                        overviewNormalized.Contains("next level");
-                    if (hasStructuredPrefix && !String.Equals(overviewBody, (overview.English ?? "").Trim(),
-                        StringComparison.Ordinal))
-                    {
-                        TranslationEntry bodyEntry = null;
-                        foreach (MatchResult bodyMatch in translations.FindSkillTextMatches(
-                            overviewBody, skillId))
-                        {
-                            if (!bodyMatch.Entry.IsSkillText) continue;
-                            if (bodyEntry == null || bodyMatch.Entry.Normalized.Length >
-                                bodyEntry.Normalized.Length)
-                                bodyEntry = bodyMatch.Entry;
-                        }
-                        if (bodyEntry != null) fallback = bodyEntry;
-                        else fallbackAllowed = false;
-                    }
-                    else if (hasStructuredPrefix) fallbackAllowed = false;
-                    if (fallbackAllowed)
-                    {
-                        int beforeBody = output.Count;
-                        AddDetailBlockLabel(output, prose, fallback.Chinese, ocrScale);
-                        if (output.Count > beforeBody) output[output.Count - 1].SemanticRole = "skill-body";
-                    }
-                }
-            }
-            int namesAdded = 0, bodiesAdded = 0, currentAdded = 0, nextAdded = 0;
-            for (int index = partStart; index < output.Count; index++)
-            {
-                string role = output[index].SemanticRole;
-                if (role == "skill-name") namesAdded++;
-                else if (role == "skill-body") bodiesAdded++;
-                else if (role.StartsWith("skill-current", StringComparison.Ordinal)) currentAdded++;
-                else if (role.StartsWith("skill-next", StringComparison.Ordinal)) nextAdded++;
-            }
-            Program.LogRuntimeEvent("skill-parts", "id="+skillId+" idKnown=" + (skillId.Length > 0) + " names=" + namesAdded +
-                " bodies=" + bodiesAdded + " current=" + currentAdded + " next=" + nextAdded);
         }
 
         private void CancelPanelAiRequest()

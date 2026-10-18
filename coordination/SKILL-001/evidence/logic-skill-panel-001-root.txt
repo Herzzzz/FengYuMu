@@ -1,0 +1,90 @@
+PASS: dictionary loads
+PASS: Critical Recovery keeps its unique id despite containing Recovery
+PASS: shared Rush name does not choose one job id
+PASS: shared Sword Mastery name does not choose one job id
+PASS: generic master header does not resolve a skill id
+PASS: Claw Booster body resolves its own id
+PASS: ambiguous shared body does not choose one id
+PASS: resolved qualified name exposes only the visible prefix
+PASS: unresolved shortened name is not guessed
+PASS: bare prefix of another skill is rejected
+PASS: truncated name is rejected
+PASS: full panel plans skill-name
+PASS: full panel plans skill-master-level
+PASS: full panel plans skill-body
+PASS: full panel plans skill-required
+PASS: full panel plans skill-current-body
+PASS: full panel plans skill-next-body
+PASS: complete description includes visible undead effect
+PASS: complete description includes healing effect
+PASS: prerequisite keeps skill name, relation and level
+PASS: current level binds its own level, recovery and range values
+PASS: next level binds its own level and recovery value
+PASS: current and next sections are not exchanged
+PASS: all six sections reach the final composition together
+PASS: every skill section uses a readable pixel font
+PASS: every skill section shares one font family
+PASS: every skill section uses a readable pixel font
+PASS: every skill section shares one font family
+PASS: every skill section uses a readable pixel font
+PASS: every skill section shares one font family
+PASS: every skill section uses a readable pixel font
+PASS: every skill section shares one font family
+PASS: every skill section uses a readable pixel font
+PASS: every skill section shares one font family
+PASS: every skill section uses a readable pixel font
+PASS: every skill section shares one font family
+PASS: title remains a fixed larger hierarchy
+PASS: one panel plan owns its sections
+PASS: plan records painted state for every section
+PASS: only-next panel processes only next
+PASS: only-next panel composes
+PASS: description plus only next has no current section
+PASS: description plus only next composes
+PASS: max-level panel does not invent a next level
+PASS: missing title preserves other visible sections
+PASS: title, master and body on one OCR row split into independent sections
+PASS: combined OCR row composes all sections
+PASS: shared Rush keeps a shared visible name
+PASS: ambiguous Rush body is preserved rather than borrowing another variant
+PASS: a preserved ambiguous body does not block other sections
+PASS: the plan records the ambiguous body as preserved, separate from absent
+PASS: new skill name is translated from the same name index
+PASS: new skill body uses the same overview path
+PASS: new current numbers stay bound to the current level
+PASS: new next numbers stay bound to the next level
+PASS: out-of-corpus skill composes through generic effect vocabulary
+PASS: header plus exact skill row translates the list name
+PASS: list name with a trailing level translates only the name
+PASS: list level digits are outside the replaced name span and protected
+PASS: single-word name/level split is recorded as estimated, not measured
+PASS: a bare skill name without list context is not replaced
+PASS: an ordinary sentence containing heal is not replaced
+PASS: a truncated list name is not guessed
+PASS: shared list translation is allowed without choosing a job id
+PASS: list name paints while its level guard remains protected
+PASS: original level-number pixels survive list-name composition
+PASS: corpus baseline matches 264 ids / 3804 effects / 164 multi-effect skills
+PASS: all 41 controlled screenshot-geometry panels compose every planned section
+PASS: visible body/current/next coverage is at least 99 of 104 controlled sections
+INFO: controlledSections=199 body=40 current=26 next=37 preserved=6
+PRESERVED: 14:skill-body:body-translation-unavailable
+PRESERVED: 19:skill-body:body-translation-unavailable
+PRESERVED: 20b:skill-body:body-translation-unavailable
+PRESERVED: 22:skill-required:required-skill-unparsed
+PRESERVED: 28:skill-required:required-skill-name-ambiguous
+PRESERVED: 32:skill-body:body-translation-unavailable
+PASS: no Heal-specific branch in the new skill planner
+PASS: no Rush-specific branch in the new skill planner
+PASS: no Arrow Bomb-specific branch in the new skill planner
+PASS: no Sword Mastery-specific branch in the new skill planner
+PASS: no Polearm-specific branch in the new skill planner
+PASS: no Warrior-specific branch in the new skill planner
+PASS: no Magician-specific branch in the new skill planner
+PASS: no Scania-specific branch in the new skill planner
+PASS: shared planner and explicit list context are wired
+PASS: build includes both new source files
+PASS: planner adds no OCR or AI round
+PASS: main dictionary pass routes bare skill names through explicit list context
+SKILL-001 logic: 81 checks passed; candidate SHA256=1CF7240654BAC8589FC5F441348381BE88F947280953E6129B35EC194CC4FCB3
+Evidence boundary: controlled OCR geometry, actual built EXE reflection, native GDI+ font measurement; original 36 screenshots and Windows native OCR/real game remain UNVERIFIED.

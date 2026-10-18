@@ -1,0 +1,40 @@
+===== case 1 Claw Booster
+role=skill-name source=exact status= font= bounds={X=36.536232,Y=37.289856,Width=240,Height=14.2029} text=快速暗器
+role=skill-master-level source= status= font= bounds={X=115.666664,Y=63.666668,Width=93.333336,Height=11.666668} text=最高等级：20
+role=skill-field source= status= font= bounds={X=115.666664,Y=127.666664,Width=240.33334,Height=11.333336} text=需要技能：精准暗器至少5级
+role=skill-current-level source= status= font= bounds={X=37,Y=155,Width=87,Height=11} text=当前等级：1
+role=skill-next-level source= status= font= bounds={X=36.666668,Y=192,Width=70.33333,Height=11.333328} text=下一级：2
+role=skill-current-body source= status= font= bounds={X=37,Y=169,Width=389,Height=19} text=HP -30，MP -30；拳套攻击速度提升2档，持续100秒
+role=skill-next-body source= status= font= bounds={X=36.666668,Y=206.33333,Width=389.33334,Height=15.666672} text=HP -29，MP -29；拳套攻击速度提升2档，持续110秒
+role=skill-body source= status= font= bounds={X=115.666664,Y=78.333336,Width=308.33334,Height=60.666664} text=[最高等级：20] 消耗HP和MP，暂时提升已装备拳套的攻击速度。角色装备拳套和飞镖时生效。前置技能：精准暗器至少5级。
+===== case 2 Sword Mastery
+role=skill-name source=exact status= font= bounds={X=44.536232,Y=54.289856,Width=240,Height=14.202896} text=精准剑
+role=skill-master-level source= status= font= bounds={X=123.666664,Y=80.666664,Width=93.333336,Height=11.666664} text=最高等级：20
+role=skill-current-level source= status= font= bounds={X=44.666668,Y=171.66667,Width=94.66666,Height=11.666672} text=当前等级：17
+role=skill-next-level source= status= font= bounds={X=44.666668,Y=208.66667,Width=77.66666,Height=11.666672} text=下一级：18
+role=skill-body source= status= font= bounds={X=123.666664,Y=95.333336,Width=331.33334,Height=59.666664} text=提高剑类武器熟练度和命中率。装备单手剑或双手剑时生效。
+===== case 14 Rush
+role=skill-master-level source= status= font= bounds={X=133,Y=78,Width=93,Height=11} text=最高等级：20
+role=skill-current-level source= status= font= bounds={X=54,Y=208,Width=87,Height=11} text=当前等级：1
+role=skill-next-level source= status= font= bounds={X=53.666668,Y=244.66667,Width=70.66666,Height=11.478256} text=下一级：2
+role=skill-body source= status= font= bounds={X=133,Y=92,Width=355,Height=99} text=提高剑类武器熟练度和命中率。装备单手剑或双手剑时生效。
+===== case 15 Critical Recovery
+role=skill-master-level source= status= font= bounds={X=121.666664,Y=71.666664,Width=93.333336,Height=11.666664} text=最高等级：20
+role=skill-next-level source= status= font= bounds={X=42.666668,Y=162.66667,Width=70.66666,Height=11.666672} text=下一级：1
+role=skill-body source= status= font= bounds={X=121.666664,Y=86.333336,Width=312.33334,Height=59.666664} text=提高剑类武器熟练度和命中率。装备单手剑或双手剑时生效。
+===== case 18 Sword Booster
+role=skill-master-level source= status= font= bounds={X=113.666664,Y=64.666664,Width=93.333336,Height=11.666664} text=最高等级：20
+role=skill-field source= status= font= bounds={X=114,Y=129,Width=247,Height=11} text=需要技能：精准剑至少5级
+role=skill-current-level source= status= font= bounds={X=35,Y=156,Width=87,Height=11} text=当前等级：6
+role=skill-next-level source= status= font= bounds={X=35,Y=193,Width=70,Height=11} text=下一级：7
+role=skill-body source= status= font= bounds={X=113.666664,Y=79.333336,Width=316.33334,Height=46.666664} text=提高剑类武器熟练度和命中率。装备单手剑或双手剑时生效。
+===== case 26 Slow
+role=skill-master-level source= status= font= bounds={X=120.666664,Y=67.666664,Width=93.666664,Height=11.666664} text=最高等级：20
+role=skill-field source= status= font= bounds={X=121,Y=131.66667,Width=212,Height=11.333328} text=需要技能：瞬间移动至少5级
+role=skill-next-level source= status= font= bounds={X=40.52174,Y=158.17392,Width=76.08696,Height=12.17392} text=下一级：1
+role=skill-body source= status= font= bounds={X=120.666664,Y=82.333336,Width=323.33334,Height=46.333336} text=提高剑类武器熟练度和命中率。装备单手剑或双手剑时生效。
+===== case 30 Arrow Bomb
+role=skill-master-level source= status= font= bounds={X=175.5,Y=114.5,Width=146,Height=18} text=最高等级：30
+role=skill-current-level source= status= font= bounds={X=52,Y=257,Width=136.5,Height=17.5} text=当前等级：1
+role=skill-next-level source= status= font= bounds={X=52,Y=314.5,Width=110,Height=18} text=下一级：2
+role=skill-body source= status= font= bounds={X=175.5,Y=135.5,Width=527.5,Height=97.5} text=将对敌人造成的部分伤害吸收为HP。一次最多可吸收角色最大HP的25%，且不能超过敌人的最大HP。

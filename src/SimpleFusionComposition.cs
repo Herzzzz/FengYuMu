@@ -179,14 +179,18 @@ namespace MapleOverlay
                         if (label.EquipmentField != null && label.EquipmentField.BoundaryEstimated)
                         { failures[label] = "equipment-field-boundary-estimated"; continue; }
                         Font font;
-                        if (label.EquipmentField != null)
+                        if (label.LayoutFontSize > 0.0f)
+                            font = FitFixedFont(measure, label.Text, content.Size,
+                                label.LayoutFontSize, label.LayoutFontFamily);
+                        else if (label.EquipmentField != null)
                             font = FitEquipmentFieldFont(measure, label.EquipmentField, label.Text, content.Size);
                         else
                             font = FitSimpleFont(measure, label.Text, content.Size, surface.SourceHeight,
                                 IsQuestPanelRole(label.SemanticRole) ? 14.0f : 8.0f);
                         if (font == null)
                         {
-                            failures[label] = label.EquipmentField != null ?
+                            failures[label] = label.LayoutFontSize > 0.0f ?
+                                "skill-section-does-not-fit" : label.EquipmentField != null ?
                                 "equipment-field-does-not-fit" : "complete-text-does-not-fit";
                             continue;
                         }
@@ -312,6 +316,49 @@ namespace MapleOverlay
                         " preserved=" + equipmentPreserved +
                         " panelSize=" + (equipmentPanelSizes.Length == 0 ? "none" : equipmentPanelSizes) +
                         " preservedReason=" + (equipmentReasons.Length == 0 ? "none" : equipmentReasons));
+                HashSet<SkillPanelPlan> skillPanels = new HashSet<SkillPanelPlan>();
+                foreach (OverlayLabel skillLabel in source)
+                {
+                    if (skillLabel == null || skillLabel.SkillSection == null) continue;
+                    SkillPanelPlan panel = skillLabel.SkillPanel;
+                    if (panel != null) skillPanels.Add(panel);
+                    SkillSectionPlan section = skillLabel.SkillSection;
+                    if (simpleReady.Contains(skillLabel))
+                    {
+                        section.Status = "painted";
+                        section.PreservedReason = "";
+                        foreach (SimpleDraw draw in draws)
+                            if (draw.Label == skillLabel)
+                            {
+                                section.PreparedFontSize = draw.Font.Size;
+                                section.PaintedFontSize = draw.Font.Size;
+                                break;
+                            }
+                    }
+                    else
+                    {
+                        section.Status = "preserved";
+                        section.PreservedReason = skillLabel.FusionFailureReason;
+                        if (panel != null)
+                        {
+                            panel.Preserved++;
+                            panel.AddPreservedReason(section.PreservedReason);
+                        }
+                    }
+                }
+                foreach (SkillPanelPlan panel in skillPanels)
+                {
+                    panel.Prepared = 0;
+                    panel.Painted = 0;
+                    foreach (SkillSectionPlan section in panel.Sections)
+                    {
+                        if (section.Label == null) continue;
+                        panel.Prepared++;
+                        if (section.Status == "painted") panel.Painted++;
+                    }
+                    Program.LogRuntimeEvent("skill-paint", "generation=" + generation +
+                        " " + panel.DescribePaint());
+                }
                 committed = true;
                 return true;
             }
@@ -365,6 +412,26 @@ namespace MapleOverlay
         // Equipment fields use one final panel font size. There is deliberately no
         // per-label shrink loop: a narrow key cannot drag a wide key to a smaller
         // size, and a key that does not fit at the panel size preserves the original.
+        // Skill sections share one readable pixel size from the panel plan. There is
+        // deliberately no shrink loop: a narrow section preserves its original text
+        // instead of becoming an 8px decoration.
+        private static Font FitFixedFont(Graphics graphics, string text, SizeF area,
+            float size, string family)
+        {
+            if (size < 11.0f) size = 11.0f;
+            if (size > 28.0f) size = 28.0f;
+            if (String.IsNullOrEmpty(family)) family = "SimSun";
+            Font font = new Font(family, size, FontStyle.Regular, GraphicsUnit.Pixel);
+            using (StringFormat format = SimpleTextFormat())
+            {
+                int fitted, lines;
+                graphics.MeasureString(text, font, area, format, out fitted, out lines);
+                if (fitted == text.Length) return font;
+            }
+            font.Dispose();
+            return null;
+        }
+
         private static Font FitEquipmentFieldFont(Graphics graphics, EquipmentFieldPlan plan,
             string text, SizeF area)
         {

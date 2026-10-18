@@ -46,6 +46,8 @@ namespace MapleOverlay
             {"for nearby party members", "，对附近队员生效"},
             {"all nearby party members", "附近所有队员"},
             {"all party members", "所有队员"},
+            {"around the area", "附近"},
+            {"of", ""},
             {"non-elemental magic damage", "无属性魔法伤害"},
             {"Magic Attack Damage", "魔法攻击伤害"},{"Basic Attack", "基础攻击"},
             {"Physical damage", "物理伤害"},{"Magic damage", "魔法伤害"},
@@ -139,6 +141,26 @@ namespace MapleOverlay
             if(best==null)return false;
             chinese=Regex.Replace(best.Chinese,@"^\s*[\[【]?\s*(?:最高等级|最大等级)\s*[:：]?\s*\d+\s*[\]】]?\s*","");
             chinese=Regex.Split(chinese,@"(?:前置技能|需要技能)\s*[:：]")[0].Trim();return chinese.Length>0;
+        }
+        // Prefer the glossary's complete overview only when the visible body is
+        // demonstrably the same wording and every visible number survives. This
+        // keeps a known skill's polished description without allowing a partial
+        // tail or another server's values to be substituted.
+        internal bool TryGetVisibleSkillOverviewBody(string observed,string skillId,
+            out string chinese,out float similarity)
+        {
+            chinese="";similarity=0;
+            if(String.IsNullOrWhiteSpace(observed)||String.IsNullOrEmpty(skillId))return false;
+            TranslationEntry overview=GetSkillOverview(skillId);
+            if(overview==null)return false;
+            string overviewEnglish=OverviewEnglish(overview.English);
+            if(overviewEnglish.Length<18)return false;
+            similarity=DetailTextSimilarity(observed,overviewEnglish);
+            if(similarity<.55f)return false;
+            chinese=OverviewChinese(overview.Chinese);
+            if(chinese.Length==0)return false;
+            if(!TranslationValueSafety.PreservesNumbers(observed,chinese))return false;
+            return true;
         }
         private static string OverviewEnglish(string text)
         {

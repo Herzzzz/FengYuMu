@@ -1,4 +1,5 @@
-﻿$ErrorActionPreference = 'Stop'
+param([string]$ExePath = '')
+$ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 # This repository lives under a path with non-ASCII directory names, where the CLR's
 # Assembly.LoadFile rejects the assembly as a "remote" location. The shared loader probes
@@ -6,7 +7,8 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 if (-not (Get-Command Load-TestAssembly -ErrorAction SilentlyContinue)) {
     . (Join-Path $PSScriptRoot 'Load-TestAssembly.ps1')
 }
-$assembly = Load-TestAssembly (Join-Path $repoRoot '枫语幕.exe')
+if (-not $ExePath) { $ExePath = Join-Path $repoRoot '枫语幕.exe' }
+$assembly = Load-TestAssembly ([IO.Path]::GetFullPath($ExePath))
 $flags = [Reflection.BindingFlags]'Instance,Static,NonPublic,Public'
 
 $storeType = $assembly.GetType('MapleOverlay.TranslationStore', $true)
@@ -71,9 +73,9 @@ Assert-SkillText 'Recovery正文说明句' `
     $recoveryId @('可在30秒内持续恢复HP。') | Out-Null
 
 $levels = @(
-    [pscustomobject]@{ English='MP -5; Recover HP 24 in 30 sec. Cooldown: 2 min.'; Values=@('MP -5', '24', '30 秒', '2 分钟') },
-    [pscustomobject]@{ English='MP -10; Recover HP 48 in 30 sec. Cooldown: 2 min.'; Values=@('MP -10', '48', '30 秒', '2 分钟') },
-    [pscustomobject]@{ English='MP -15; Recover HP 72 in 30 sec. Cooldown: 2 min.'; Values=@('MP -15', '72', '30 秒', '2 分钟') }
+    [pscustomobject]@{ English='MP -5; Recover HP 24 in 30 sec. Cooldown: 2 min.'; Values=@('MP -5', '24', '30秒', '2分钟') },
+    [pscustomobject]@{ English='MP -10; Recover HP 48 in 30 sec. Cooldown: 2 min.'; Values=@('MP -10', '48', '30秒', '2分钟') },
+    [pscustomobject]@{ English='MP -15; Recover HP 72 in 30 sec. Cooldown: 2 min.'; Values=@('MP -15', '72', '30秒', '2分钟') }
 )
 foreach ($level in $levels) {
     Assert-SkillText "Recovery动态等级 $($level.English)" $level.English $recoveryId $level.Values | Out-Null
@@ -132,7 +134,9 @@ if ($labels.Count -ne 2) {
     throw '详情说明覆盖框遮掉了相邻结构化等级字段'
 }
 
-$source = Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -Encoding UTF8
+$source = (Get-Content (Join-Path $repoRoot 'src\MapleOverlay.cs') -Raw -Encoding UTF8) +
+    (Get-Content (Join-Path $repoRoot 'src\SkillPanelComposition.cs') -Raw -Encoding UTF8) +
+    (Get-Content (Join-Path $repoRoot 'src\SkillNameListPolicy.cs') -Raw -Encoding UTF8)
 $detailMethod = [regex]::Match($source,
     '(?s)private void AddDetailBlockLabel\(.*?\r?\n\s*\}\r?\n\s*private static void MergeAdjacentLongLabels').Value
 if ($detailMethod.Length -eq 0) { throw '缺少技能详情标签构造方法' }
@@ -143,58 +147,51 @@ if (-not ($detailMethod -match '(?i)Wrap\s*=\s*(?:wrap|isMultiLine|multiLine|lin
     throw '技能详情标签未锁定单行 Wrap=false/多行 Wrap=true 策略'
 }
 $paintMethod = [regex]::Match($source,
-    '(?s)private void PaintOverlayLabel\(.*?\r?\n\s*\}\r?\n\s*private static GraphicsPath RoundedRect').Value
+    '(?s)private (?:void|bool) PaintOverlayLabel\(.*?\r?\n\s*\}\r?\n\s*private void RecordLabelLayoutFailure').Value
 if ($paintMethod.Length -eq 0) { throw '缺少技能详情绘制方法' }
 if ($paintMethod -match '(?m)\br\.Y\s*=') {
     throw '技能详情绘制测量会改写覆盖框 Y，可能把单行原文上移'
 }
 $skillPanel = [regex]::Match($source,
-    '(?s)private void AddSkillPanelLabels\(.*?\r?\n\s*\}\r?\n\s*private static List<OcrLine> FindBestPanelProseBlock').Value
+    '(?s)private void AddSkillPanelLabels\(.*?\r?\n\s*\}\r?\n\s*private SkillPanelPlan BuildSkillPanelPlan').Value
 if ($skillPanel.Length -eq 0) { throw '缺少技能详情面板语义构造方法' }
 foreach ($required in @(
-    'SkillStructuredPrefixLength',
-    'StripSkillStructuredPrefix',
-    'SkillStructuredBodyStart',
-    'GetOcrTextSpanBounds',
-    'GetOcrTextSpanBounds(row, rowText, 0, bodyStart)',
-    'string text = StripSkillStructuredPrefix(combined.ToString())',
-    'GetOcrTextSpanBounds(tight, tightText, bodyStart',
-    'AddDetailBlockLabelAt(output, prefixRaw.IsEmpty ? row : null,',
-    'overviewBody = StripSkillStructuredPrefix(overview.English)',
-    'TranslationEntry fallback = overview',
-    'hasStructuredPrefix',
-    'fallbackAllowed = false')) {
+    'BuildSkillPanelPlan',
+    'SplitSkillSemanticRows',
+    'AddSkillSectionLabel',
+    'SkillPanelPlan',
+    'SkillSectionPlan',
+    'ExpandSkillSectionSlots',
+    'TryTranslateSkillEffect',
+    'TryGetVisibleSkillOverviewBody',
+    'TryResolveSharedSkillContent',
+    'DetectUniqueSkillContentId',
+    'skill-master-level',
+    'skill-current-body',
+    'skill-next-body',
+    'skill-required',
+    'LayoutFontSize',
+    'GraphicsUnit.Pixel')) {
     if (-not $source.Contains($required)) { throw "技能详情结构化字段/正文分离缺少：$required" }
 }
-if ($skillPanel.Contains('AddDetailBlockLabel(output, prose, overview.Chinese')) {
-    throw '带结构字段的技能总览仍会直接作为最长整句覆盖字段'
+if ($source.Contains('AddSkillPanelLabelsLegacy')) {
+    throw '旧的分区互补实现仍保留，可能造成双拥有者'
 }
-if (-not $skillPanel.Contains('AddDetailBlockLabel(output, prose, fallback.Chinese')) {
-    throw '技能总览 fallback 未使用剥离结构字段后的正文译文'
+if (-not $source.Contains('TryAddSkillListNameLabel')) {
+    throw '列表名称缺少显式上下文入口'
 }
 foreach ($required in @(
     'AddSkillPanelLabels',
-    'SelectBestDetailLines(candidate.Lines, candidate.Match.Entry)',
-    'List<RectangleF> used = new List<RectangleF>()',
-    'RectangleF.Intersect(previous, raw)',
-    'AddDetailBlockLabelAt(output, tight, raw, candidate.Match.Entry.Chinese, ocrScale',
-    'OverlayPaintSafety.TryPrepare',
+    'BuildSkillPanelPlan',
+    'SplitSkillSemanticRows',
+    'AddSkillSectionLabel',
+    'internal static bool TryPrepare(OverlayLabel label',
     # The Bounds initializer has to measure the vertical origin through ToOverlayY as well: a
     # regression there silently moves every skill/quest row away from the text it replaces.
     'ToOverlayY(raw.Top, ocrScale)',
-    # v4.0 measures and draws with the label font the renderer actually uses. Long prose may pick
-    # a smaller cached variant of that same font to fit its measured block, so the guard follows
-    # the chosen font variable instead of pinning overlayFont itself.
-    'graphics.MeasureString(labelText, paintFont',
-    'Font paintFont = overlayFont;',
-    'new Font(overlayFont.FontFamily',
-    'graphics.DrawString(labelText, paintFont',
-    'StringFormat.GenericTypographic',
-    'IsStructuredPanelFieldLabel(labels[i].Text)',
-    'covered >= 0.80f',
-    # v4.0 unifies the OCR-to-overlay conversion in ToOverlayX/ToOverlayY. The guard follows
-    # the helper so it still proves "the label box is measured from the OCR line at the
-    # overlay origin" instead of pinning the old inline arithmetic.
+    # The shared compositor measures and draws with the actual selected pixel font.
+    # The per-label font choice moved out of PaintOverlayLabel when Option 2 stopped
+    # painting substitute cards; composition coverage is asserted by the SKILL-001 test.
     'Bounds = new RectangleF(ToOverlayX(raw.Left, ocrScale)',
     'private float ToOverlayX(float ocrX, float ocrScale)',
     'private float ToOverlayY(float ocrY, float ocrScale)')) {
@@ -220,7 +217,7 @@ if (-not $buildLabels.Contains('equipmentPanel') -or
 if (-not $buildLabels.Contains('PanelContextPolicy.UseEquipmentSemantics')) {
     throw '任务与背包并存时未通过 PanelContextPolicy 隔离装备语义'
 }
-if (-not $buildLabels.Contains('taskTextContext = scope == LabelBuildScope.FocusedPanel')) {
+if (-not $buildLabels.Contains('bool taskTextContext = (scope == LabelBuildScope.FocusedPanel')) {
     throw '任务行缺少聚焦面板上下文策略'
 }
 

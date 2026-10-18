@@ -79,11 +79,12 @@ namespace MapleOverlay
             }
             return RectangleF.Empty;
         }
-        private void AddSkillOverviewSections(List<OverlayLabel> output,List<OcrLine> all,Dictionary<OcrLine,OcrPanelInfo> panels,Bitmap prepared,float scale)
+        private void AddSkillOverviewSections(List<OverlayLabel> output,List<OcrLine> all,Dictionary<OcrLine,OcrPanelInfo> panels,Bitmap prepared,float scale,HashSet<OcrPanelInfo> handled=null)
         {
             int observed=0,planned=0;int[] pixels=null;
             foreach(OcrLine master in all) {
                 if(SkillSectionMarker(master.Text)!="master")continue;observed++;
+                OcrPanelInfo owner;if(handled!=null&&panels.TryGetValue(master,out owner)&&handled.Contains(owner))continue;
                 if(pixels==null&&prepared!=null)pixels=ReadSimplePixels(prepared);
                 RectangleF header=GetOcrLineBounds(master);OcrLine level=null;float levelTop=Single.MaxValue;
                 foreach(OcrLine line in all){string marker=SkillSectionMarker(line.Text);RectangleF r=GetOcrLineBounds(line);

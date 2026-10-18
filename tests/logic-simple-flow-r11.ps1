@@ -1,4 +1,4 @@
-﻿param([string]$OutputSource,[switch]$GenerateOnly)
+param([string]$OutputSource,[switch]$GenerateOnly)
 $ErrorActionPreference='Stop'
 $root=Split-Path -Parent $PSScriptRoot
 Add-Type -Path (Join-Path $PSHOME 'Microsoft.CodeAnalysis.dll')
@@ -54,7 +54,9 @@ namespace MapleOverlay {
  static class TranslationStore{public static string Normalize(string s){return (s??"").Trim().ToLowerInvariant();}}
  static class QuestDetailGeometry{public static bool IsSummaryKey(string s){return s=="quest summary"||s=="questsummary";}}
  static class QuestObjectiveSurface{public static Match Counter(string s){return Regex.Match(s??"",@"[0-9IlOo]+(?:\s*/\s*|\s+)[0-9IlOo]+\s*$");}}
- class OverlayLabel{public RectangleF Bounds,SourceBounds,KeepClearBounds,PanelBounds;public List<RectangleF> SourceLineBounds;public QuestJournalDocument Journal;public EquipmentFieldPlan EquipmentField;public EquipmentPanelPlan EquipmentPanel;public bool Wrap,HasSourceBounds=true,PaintedLastPass;public string MatchSource="";public string Text="中文",SemanticRole="task-name",FusionFailureReason="";public LabelConfidence Confidence=LabelConfidence.High;public LabelRenderMode RenderMode;}
+ class OverlayLabel{public RectangleF Bounds,SourceBounds,KeepClearBounds,PanelBounds;public List<RectangleF> SourceLineBounds;public QuestJournalDocument Journal;public EquipmentFieldPlan EquipmentField;public EquipmentPanelPlan EquipmentPanel;public SkillPanelPlan SkillPanel;public SkillSectionPlan SkillSection;public float LayoutFontSize,LayoutMinimumFontSize;public string LayoutFontFamily="";public bool Wrap,HasSourceBounds=true,PaintedLastPass;public string MatchSource="";public string Text="中文",SemanticRole="task-name",FusionFailureReason="";public LabelConfidence Confidence=LabelConfidence.High;public LabelRenderMode RenderMode;}
+ class SkillSectionPlan{public string Role="",Status="",PreservedReason="";public float PreparedFontSize,PaintedFontSize;public OverlayLabel Label;}
+ class SkillPanelPlan{public int Prepared,Painted,Preserved;public List<SkillSectionPlan> Sections=new List<SkillSectionPlan>();public void AddPreservedReason(string r){}public string DescribePaint(){return "";}}
  static class OverlayPaintSafety{
 '@
 $stub+=(Method 'MapleOverlay.cs' 'IsFinite')+(Method 'MapleOverlay.cs' 'IsFiniteRect')+(Method 'MapleOverlay.cs' 'IsSafeSeamlessGeometry')+@'

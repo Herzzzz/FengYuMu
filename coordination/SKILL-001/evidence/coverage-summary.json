@@ -1,0 +1,29 @@
+{
+  "scope": "ShippedHenesysSkillCorpus",
+  "ids": 264,
+  "namesPass": 264,
+  "masterOverviewRows": 95,
+  "overviewAbsent": 169,
+  "overviewTranslationPass": 95,
+  "overviewTranslationFail": 0,
+  "levelEffects": 3804,
+  "levelPass": 3804,
+  "levelFail": 0,
+  "multiEffectSkills": 164,
+  "classCounts": {
+    "Magician": 73,
+    "Bowman": 53,
+    "Thief": 50,
+    "Beginner": 3,
+    "Warrior": 85
+  },
+  "stageCounts": {
+    "2nd": 70,
+    "1st": 93,
+    "3rd": 98,
+    "Beginner": 3
+  },
+  "note": "Overview absence means the shipped corpus has no non-level overview row for that id; it is not a translation failure. Level rows are validated against the same generic effect grammar and ordered numeric preservation.",
+  "originalScreenshots": "UNVERIFIED: private originals are not in the repository",
+  "windowsOcrAndGame": "UNVERIFIED"
+}
