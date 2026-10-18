@@ -37,42 +37,88 @@ namespace MapleOverlay
         private void AddStructuredFieldLabels(List<OverlayLabel> output,List<OcrLine> all,
             Dictionary<OcrLine,OcrPanelInfo> panels,float scale)
         {
-            int parsed=0,added=0;HashSet<OcrPanelInfo> used=new HashSet<OcrPanelInfo>();
+            int parsed=0,added=0,recognizedPanels=0,recognizedRows=0;
+            int valuePixels=0,partialValues=0,mergedText=0,preservedSafety=0,rejected=0;
+            string keys="",preservedReasons="";
+            HashSet<OcrPanelInfo> used=new HashSet<OcrPanelInfo>();
             foreach(OcrLine origin in all) {
                 OcrPanelInfo panel;panels.TryGetValue(origin,out panel);
                 bool equipment=panel!=null&&panel.IsEquipmentDetail;
                 if(panel!=null&&!used.Add(panel))continue;
                 List<OcrLine> source=panel!=null?panel.Lines:new List<OcrLine>{origin};
-                foreach(List<OcrLine> row in BuildVisualRows(source)) {
-                    string text=CombineVisualRow(row);List<EquipmentField> fields=EquipmentFieldGrammar.Parse(text,equipment);
+                List<List<OcrLine>> visualRows=BuildVisualRows(source);
+                RectangleF rawPanel=panel!=null?GetCombinedLineBounds(source):GetOcrLineBounds(origin);
+                RectangleF panelBounds=rawPanel.IsEmpty?RectangleF.Empty:OverlaySpan(rawPanel,scale);
+                List<RectangleF> rowGeometry=new List<RectangleF>();
+                foreach(List<OcrLine> geometryRow in visualRows) {
+                    RectangleF raw=GetCombinedLineBounds(geometryRow);
+                    if(!raw.IsEmpty)rowGeometry.Add(OverlaySpan(raw,scale));
+                }
+                EquipmentPanelTypography typography=EquipmentPanelTypography.ForRows(rowGeometry,panelBounds);
+                EquipmentPanelPlan panelPlan=new EquipmentPanelPlan{PanelBounds=panelBounds,
+                    Typography=typography,RecognitionReason=equipment?(panel.EquipmentReason??""):""};
+                if(equipment)recognizedPanels++;
+                foreach(List<OcrLine> row in visualRows) {
+                    string text=CombineVisualRow(row);
+                    bool rowEquipment=equipment||EquipmentFieldGrammar.LooksLikeEquipmentRow(text);
+                    List<EquipmentField> fields=EquipmentFieldGrammar.Parse(text,rowEquipment);
                     if(fields.Count==0)continue;parsed+=fields.Count;
+                    if(rowEquipment)recognizedRows++;
                     RectangleF rawRow=GetCombinedLineBounds(row),localRow=OverlaySpan(rawRow,scale);
                     List<OverlayLabel> replacements=new List<OverlayLabel>();
                     foreach(EquipmentField field in fields) {
                         RectangleF name=PreciseTextSpan(row,text,field.Start,field.Length);
-                        if(name.IsEmpty)continue;
+                        if(name.IsEmpty){rejected++;continue;}
                         RectangleF value=field.ValueLength>0?PreciseTextSpan(row,text,field.ValueStart,field.ValueLength):RectangleF.Empty;
-                        string chinese=field.Chinese;RectangleF sourceBox=name;RectangleF guard=value;
-                        // A truly merged key/value word has no clean geometric gap. Render
-                        // that complete observed field, including its unchanged raw number.
-                        if(!value.IsEmpty&&value.Left-name.Right<2*scale) {
-                            sourceBox=RectangleF.Union(name,value);guard=RectangleF.Empty;
-                            chinese+="："+text.Substring(field.ValueStart,field.ValueLength);
+                        EquipmentFieldPlan fieldPlan=EquipmentPanelLayout.BuildField(field,text,
+                            OverlaySpan(name,scale),value.IsEmpty?RectangleF.Empty:OverlaySpan(value,scale),
+                            localRow,panelPlan.PanelBounds,panelPlan.Typography);
+                        if(fieldPlan==null){rejected++;continue;}
+                        panelPlan.Add(fieldPlan);
+                        if(fieldPlan.ValuePixelsPreserved)valuePixels++;
+                        if(fieldPlan.PartialValue)partialValues++;
+                        if(fieldPlan.MergedValueBaked)mergedText++;
+                        if(keys.Length<=180)keys+=(keys.Length>0?",":"")+field.Key;
+                        else if(!keys.EndsWith("...",StringComparison.Ordinal))keys+="...";
+                        if(fieldPlan.Status!="prepared"){
+                            preservedSafety++;
+                            if(preservedReasons.Length<160){
+                                if(preservedReasons.Length>0)preservedReasons+=",";
+                                preservedReasons+=field.Key+":"+fieldPlan.PreservedReason;
+                            }
+                            continue;
                         }
-                        RectangleF box=OverlaySpan(sourceBox,scale);
+                        RectangleF box=fieldPlan.KeySourceBounds;
                         replacements.Add(new OverlayLabel{Bounds=box,SourceBounds=box,HasSourceBounds=true,
-                            SourceLineBounds=new List<RectangleF>{box},Text=chinese,SemanticRole="item-field",
-                            MatchSource="field:"+field.Key,KeepClearBounds=guard.IsEmpty?RectangleF.Empty:OverlaySpan(guard,scale),
-                            Confidence=LabelConfidence.High});
+                            SourceLineBounds=new List<RectangleF>{box},Text=fieldPlan.Translation,
+                            SemanticRole="item-field",MatchSource=fieldPlan.MatchSource,
+                            KeepClearBounds=fieldPlan.ValueGuardBounds,PanelBounds=fieldPlan.PanelBounds,
+                            Confidence=LabelConfidence.High,EquipmentField=fieldPlan,EquipmentPanel=panelPlan});
                     }
-                    if(replacements.Count==0)continue;
+                    // Even when every field is preserved (for example an unsafe
+                    // merged value word), remove the old whole-row translation so
+                    // the original value pixels stay exactly as captured.
                     output.RemoveAll(delegate(OverlayLabel label){return label.MatchSource!="stage-journal" &&
                         (label.SemanticRole=="item-field"||String.IsNullOrEmpty(label.SemanticRole)) &&
                         localRow.IntersectsWith(label.HasSourceBounds?label.SourceBounds:label.Bounds);});
-                    output.AddRange(replacements);added+=replacements.Count;
+                    if(replacements.Count>0){output.AddRange(replacements);added+=replacements.Count;}
+                }
+                int panelAdded=panelPlan.Prepared;
+                if(panelAdded>0||equipment) {
+                    string reason=panelPlan.RecognitionReason;
+                    if(reason.Length==0&&panelAdded>0)reason="field-row-fallback";
+                    Program.LogRuntimeEvent("equipment-panel",panelPlan.Describe()+
+                        " reason="+(reason.Length==0?"unrecognized":reason)+
+                        " sourceRows="+visualRows.Count);
                 }
             }
             Program.LogRuntimeEvent("field-coverage","parsed="+parsed+" planned="+added);
+            Program.LogRuntimeEvent("equipment-coverage","recognizedPanels="+recognizedPanels+
+                " recognizedRows="+recognizedRows+" parsed="+parsed+" prepared="+added+
+                " valuePixels="+valuePixels+" partialValues="+partialValues+
+                " mergedText="+mergedText+" preserved="+preservedSafety+
+                " preservedReason="+(preservedReasons.Length==0?"none":preservedReasons)+
+                " rejected="+rejected+" keys="+keys);
         }
 
         private void AddSkillEffectSections(List<OverlayLabel> output,List<OcrLine> all,Dictionary<OcrLine,OcrPanelInfo> panels,float scale)

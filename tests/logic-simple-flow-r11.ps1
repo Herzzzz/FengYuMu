@@ -54,7 +54,7 @@ namespace MapleOverlay {
  static class TranslationStore{public static string Normalize(string s){return (s??"").Trim().ToLowerInvariant();}}
  static class QuestDetailGeometry{public static bool IsSummaryKey(string s){return s=="quest summary"||s=="questsummary";}}
  static class QuestObjectiveSurface{public static Match Counter(string s){return Regex.Match(s??"",@"[0-9IlOo]+(?:\s*/\s*|\s+)[0-9IlOo]+\s*$");}}
- class OverlayLabel{public RectangleF Bounds,SourceBounds,KeepClearBounds,PanelBounds;public List<RectangleF> SourceLineBounds;public QuestJournalDocument Journal;public bool Wrap,HasSourceBounds=true,PaintedLastPass;public string MatchSource="";public string Text="中文",SemanticRole="task-name",FusionFailureReason="";public LabelConfidence Confidence=LabelConfidence.High;public LabelRenderMode RenderMode;}
+ class OverlayLabel{public RectangleF Bounds,SourceBounds,KeepClearBounds,PanelBounds;public List<RectangleF> SourceLineBounds;public QuestJournalDocument Journal;public EquipmentFieldPlan EquipmentField;public EquipmentPanelPlan EquipmentPanel;public bool Wrap,HasSourceBounds=true,PaintedLastPass;public string MatchSource="";public string Text="中文",SemanticRole="task-name",FusionFailureReason="";public LabelConfidence Confidence=LabelConfidence.High;public LabelRenderMode RenderMode;}
  static class OverlayPaintSafety{
 '@
 $stub+=(Method 'MapleOverlay.cs' 'IsFinite')+(Method 'MapleOverlay.cs' 'IsFiniteRect')+(Method 'MapleOverlay.cs' 'IsSafeSeamlessGeometry')+@'
@@ -91,7 +91,7 @@ $stub+=(Method 'MapleOverlay.cs' 'IsFinite')+(Method 'MapleOverlay.cs' 'IsFinite
 }
 '@
 $source=$stub
-foreach($file in @('FusionRowEvidence.cs','FusionPatchMask.cs','TextSurfaceReconstruction.cs','SimpleBackgroundFill.cs','QuestJournalGeometry.cs','QuestJournalComposition.cs','SimpleFusionComposition.cs','SimpleTranslationFlow.cs')){
+foreach($file in @('FusionRowEvidence.cs','FusionPatchMask.cs','TextSurfaceReconstruction.cs','SimpleBackgroundFill.cs','EquipmentFieldGrammar.cs','EquipmentPanelLayout.cs','QuestJournalGeometry.cs','QuestJournalComposition.cs','SimpleFusionComposition.cs','SimpleTranslationFlow.cs')){
  $source+="`n"+([IO.File]::ReadAllText((Join-Path $root ('src/'+$file))) -replace '(?m)^using .*;\r?\n','')
 }
 $source+="`nnamespace MapleOverlay { static class FusionBitmapRenderer {"+(Method 'FusionBitmapRenderer.cs' 'MakeTransparent')+"`n"

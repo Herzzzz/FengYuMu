@@ -176,9 +176,18 @@ namespace MapleOverlay
                             if (guard.Bottom > area.Top && guard.Top < area.Bottom && guard.Left >= area.Right)
                                 right = Math.Min(right, guard.Left - 1);
                         content.Width = Math.Max(area.Width, right - area.Left);
-                        Font font = FitSimpleFont(measure, label.Text, content.Size, surface.SourceHeight,
-                            IsQuestPanelRole(label.SemanticRole) ? 14.0f : 8.0f);
-                        if (font == null) { failures[label] = "complete-text-does-not-fit"; continue; }
+                        Font font;
+                        if (label.EquipmentField != null)
+                            font = FitEquipmentFieldFont(measure, label.EquipmentField, label.Text, content.Size);
+                        else
+                            font = FitSimpleFont(measure, label.Text, content.Size, surface.SourceHeight,
+                                IsQuestPanelRole(label.SemanticRole) ? 14.0f : 8.0f);
+                        if (font == null)
+                        {
+                            failures[label] = label.EquipmentField != null ?
+                                "equipment-field-does-not-fit" : "complete-text-does-not-fit";
+                            continue;
+                        }
                         // Shrink the reservation to actual measured text width for single rows.
                         if (rows.Count == 1)
                         {
@@ -260,6 +269,43 @@ namespace MapleOverlay
                     label.FusionFailureReason = simpleReady.Contains(label) ? "" : failures.TryGetValue(label, out failure) ? failure : "duplicate-source";
                     if (!simpleReady.Contains(label)) Program.LogRuntimeEvent("replacement-preserved", "generation=" + generation + " role="+label.SemanticRole+" source="+label.MatchSource+" reason=" + label.FusionFailureReason);
                 }
+                int equipmentPrepared = 0, equipmentPainted = 0, equipmentPreserved = 0;
+                string equipmentReasons = "";
+                foreach (OverlayLabel equipmentLabel in source)
+                {
+                    if (equipmentLabel == null || equipmentLabel.EquipmentField == null) continue;
+                    equipmentPrepared++;
+                    if (simpleReady.Contains(equipmentLabel))
+                    {
+                        equipmentPainted++;
+                        equipmentLabel.EquipmentField.Status = "painted";
+                        equipmentLabel.EquipmentField.PreservedReason = "";
+                        foreach (SimpleDraw draw in draws)
+                            if (draw.Label == equipmentLabel)
+                            { equipmentLabel.EquipmentField.PreparedFontSize = draw.Font.Size; break; }
+                        if (equipmentLabel.EquipmentPanel != null)
+                            equipmentLabel.EquipmentPanel.Painted++;
+                    }
+                    else
+                    {
+                        equipmentPreserved++;
+                        equipmentLabel.EquipmentField.Status = "preserved";
+                        equipmentLabel.EquipmentField.PreservedReason = equipmentLabel.FusionFailureReason;
+                        if (equipmentLabel.EquipmentPanel != null)
+                            equipmentLabel.EquipmentPanel.Preserved++;
+                        string reason = equipmentLabel.FusionFailureReason ?? "";
+                        if (reason.Length > 0 && equipmentReasons.IndexOf(reason, StringComparison.Ordinal) < 0)
+                        {
+                            if (equipmentReasons.Length > 0) equipmentReasons += ",";
+                            if (equipmentReasons.Length < 160) equipmentReasons += reason;
+                        }
+                    }
+                }
+                if (equipmentPrepared > 0)
+                    Program.LogRuntimeEvent("equipment-paint", "generation=" + generation +
+                        " prepared=" + equipmentPrepared + " painted=" + equipmentPainted +
+                        " preserved=" + equipmentPreserved +
+                        " preservedReason=" + (equipmentReasons.Length == 0 ? "none" : equipmentReasons));
                 committed = true;
                 return true;
             }
@@ -302,6 +348,30 @@ namespace MapleOverlay
             for (float size = start; size >= minimumSize; size -= 1)
             {
                 Font font = new Font("SimSun", size, FontStyle.Regular, GraphicsUnit.Pixel);
+                int fitted, lines;
+                graphics.MeasureString(text, font, area, format, out fitted, out lines);
+                if (fitted == text.Length) return font;
+                font.Dispose();
+            }
+            return null;
+        }
+
+        // Equipment fields use the panel's shared family/size (FONT-001 principle)
+        // instead of independently squeezing every key to 8px. If the complete key
+        // cannot fit at the shared floor, the original pixels are preserved.
+        private static Font FitEquipmentFieldFont(Graphics graphics, EquipmentFieldPlan plan,
+            string text, SizeF area)
+        {
+            EquipmentPanelTypography type = plan == null ? null : plan.Typography;
+            if (type == null || String.IsNullOrEmpty(type.Family) ||
+                Single.IsNaN(type.FieldSize) || Single.IsInfinity(type.FieldSize))
+                return FitSimpleFont(graphics, text, area, 14.0f, 11.0f);
+            float floor = Math.Max(11.0f, type.MinimumSize);
+            float start = Math.Max(floor, Math.Min(22.0f, type.FieldSize));
+            using (StringFormat format = SimpleTextFormat())
+            for (float size = start; size >= floor; size -= 1)
+            {
+                Font font = new Font(type.Family, size, FontStyle.Regular, GraphicsUnit.Pixel);
                 int fitted, lines;
                 graphics.MeasureString(text, font, area, format, out fitted, out lines);
                 if (fitted == text.Length) return font;

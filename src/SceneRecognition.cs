@@ -265,7 +265,7 @@ namespace MapleOverlay
                 normalized == "item" || normalized == "list";
             evidence.ItemDetail = (!playerChat && translations != null &&
                 translations.LooksLikeItemDetailText(text)) ||
-                LooksLikeEquipmentStructure(normalized);
+                LooksLikeEquipmentStructure(text);
             if (evidence.ItemHeader || evidence.ItemDetail)
                 evidence.Kinds |= SceneKind.Item;
             if (normalized.Contains("item inventory") || normalized.Contains("equipment inventory"))
@@ -440,9 +440,11 @@ namespace MapleOverlay
             return false;
         }
 
-        private static bool LooksLikeEquipmentStructure(string normalized)
+        private static bool LooksLikeEquipmentStructure(string text)
         {
-            return normalized.Contains("req lev") || normalized.Contains("required level") ||
+            string normalized = TranslationStore.Normalize(text);
+            return EquipmentFieldGrammar.LooksLikeEquipmentStructure(text) ||
+                normalized.Contains("req lev") || normalized.Contains("required level") ||
                 normalized.Contains("remaining enhancements") ||
                 normalized.Contains("number of upgrades") ||
                 (normalized.Contains("weapon def") && normalized.Contains("magic def")) ||

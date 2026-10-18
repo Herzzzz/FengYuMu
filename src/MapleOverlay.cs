@@ -2012,6 +2012,11 @@ namespace MapleOverlay
         public string SemanticRole = "";
         public RectangleF KeepClearBounds;
         public QuestJournalDocument Journal;
+        // Equipment fields carry the shared panel plan and their own protected value
+        // rectangle. Composition uses the plan's typography and never samples the value
+        // pixels into the replacement.
+        public EquipmentFieldPlan EquipmentField;
+        public EquipmentPanelPlan EquipmentPanel;
     }
 
     // Windows OCR exposes no usable per-word confidence, so the pipeline derives an
@@ -2359,6 +2364,7 @@ namespace MapleOverlay
         public bool IsCharacterStats;
         public bool IsCharacterInfo;
         public bool IsEquipmentDetail;
+        public string EquipmentReason = "";
         public bool IsSettings;
         public string TaskId = "";
         public string SkillId = "";
@@ -5668,7 +5674,7 @@ private Rectangle FindCursorPanelCrop(
                 bool questHeader = evidence.QuestHeader;
                 bool quest = (evidence.Kinds & SceneKind.Quest) != 0;
                 bool itemHeader = evidence.ItemHeader;
-                bool itemDetail = evidence.ItemDetail || LooksLikeEquipmentStatText(line.Text);
+                bool itemDetail = evidence.ItemDetail || LooksLikeEquipmentFieldText(line.Text);
                 bool item = (evidence.Kinds & (SceneKind.Item | SceneKind.Shop | SceneKind.Inventory)) != 0 ||
                     itemDetail;
                 bool dialogue = (evidence.Kinds & SceneKind.Dialogue) != 0;
@@ -5745,7 +5751,7 @@ private Rectangle FindCursorPanelCrop(
                     (skillHeader ? 120 : (questHeader ? 115 :
                     (itemHeader ? 110 : (taskId.Length > 0 ? 88 :
                     (mainInterface ? SceneClassifier.EvidenceScore(evidence, SceneKind.Interface) :
-                    (dialogue ? 100 : (LooksLikeEquipmentStatText(line.Text) ? 82 : 60)))))))));
+                    (dialogue ? 100 : (LooksLikeEquipmentFieldText(line.Text) ? 82 : 60)))))))));
                 // A main quest/equipment/skill window is more useful than the small tracker
                 // at the right edge. Sort all proposals before de-duplication so OCR line order
                 // can never consume the three high-resolution passes on low-value fragments.
@@ -6276,9 +6282,20 @@ private Rectangle FindCursorPanelCrop(
                       normalized.Contains("seconds") || normalized.Contains(" mp ")));
                 panel.IsCharacterInfo = CharacterPanelPolicy.IsInformation(normalized);
                 panel.IsCharacterStats = CharacterPanelPolicy.IsStatistics(normalized);
-                panel.IsEquipmentDetail = normalized.Contains("req lev") ||
-                    normalized.Contains("required level") || normalized.Contains("remaining enhancements") ||
-                    (normalized.Contains("weapon def") && normalized.Contains("magic def"));
+                // Equipment recognition is grammar-based rather than a short list of
+                // literal labels. A partially OCR'd tooltip (req row missing, only one
+                // defence line recovered, Evasion/Attack Speed present) still reaches the
+                // structured field path. Character-stat windows are explicitly excluded
+                // because they share Attack/Def/Accuracy/Speed vocabulary.
+                bool characterShape = normalized.Contains("character stat") ||
+                    normalized.Contains("ability point") ||
+                    (normalized.Contains("accuracy") && normalized.Contains("jump") &&
+                     normalized.Contains("speed"));
+                panel.EquipmentReason = "";
+                if (!panel.IsSkillDetail && !panel.IsCharacterStats && !characterShape &&
+                    EquipmentFieldGrammar.LooksLikeEquipmentStructure(panel.Text))
+                    panel.EquipmentReason = "grammar-structure";
+                panel.IsEquipmentDetail = panel.EquipmentReason.Length > 0;
                 panel.IsSettings = SettingsPanelPolicy.IsSettingsWindow(panel.Text);
             }
             return byLine;
@@ -6463,7 +6480,7 @@ private Rectangle FindCursorPanelCrop(
                     AddEquipmentPanelLabels(output, currentPanel, ocrScale);
 
                 string structuredLine;
-                bool lineEquipmentStructure = LooksLikeEquipmentStatText(line.Text);
+                bool lineEquipmentStructure = LooksLikeEquipmentFieldText(line.Text);
                 bool questObjectiveContext = mainQuestShell || questInterface ||
                     visibleScene.IsStrong(SceneKind.Quest);
                 if (settingsPanel || focusedSettingsWindow || lineInsideSettingsWindow)
@@ -6528,7 +6545,7 @@ private Rectangle FindCursorPanelCrop(
                     }
                 }
                 bool earlyEquipmentStats = lineEquipmentStructure || characterStatLine;
-                if (equipmentPanel && LooksLikeEquipmentStatText(line.Text)) continue;
+                if (equipmentPanel && LooksLikeEquipmentFieldText(line.Text)) continue;
                 if (earlyEquipmentStats)
                 {
                     List<MatchResult> statMatches = characterStatLine
@@ -6595,7 +6612,7 @@ private Rectangle FindCursorPanelCrop(
                         return false;
                     });
                     string normalizedSecondaryLine = TranslationStore.Normalize(bestInterfaceText);
-                    bool secondaryEquipmentStats = LooksLikeEquipmentStatText(bestInterfaceText);
+                    bool secondaryEquipmentStats = LooksLikeEquipmentFieldText(bestInterfaceText);
                     if (normalizedSecondaryLine.Length > 28 && !secondaryEquipmentStats)
                         secondaryMatches.RemoveAll(delegate(MatchResult match) {
                             return match.Length < 12 || match.Length * 3 < normalizedSecondaryLine.Length;
@@ -6658,7 +6675,7 @@ private Rectangle FindCursorPanelCrop(
                     }
                 }
                 string normalizedCurrentLine = TranslationStore.Normalize(line.Text);
-                bool equipmentStatLine = LooksLikeEquipmentStatText(line.Text);
+                bool equipmentStatLine = LooksLikeEquipmentFieldText(line.Text);
                 bool taskTextContext = (scope == LabelBuildScope.FocusedPanel || !measuredQuestDetails.IsEmpty) &&
                     scopedTaskId.Length > 0 &&
                     normalizedCurrentLine.Length >= 18 &&
@@ -6786,7 +6803,7 @@ private Rectangle FindCursorPanelCrop(
                 string structured;
                 OcrPanelInfo fieldOwner;
                 panelByLine.TryGetValue(line, out fieldOwner);
-                if ((fieldOwner == null || !fieldOwner.IsSkillDetail) && LooksLikeEquipmentStatText(line.Text) &&
+                if ((fieldOwner == null || !fieldOwner.IsSkillDetail) && LooksLikeEquipmentFieldText(line.Text) &&
                     TryTranslateStructuredLine(line.Text, true, false, out structured))
                     AddWholeLineLabel(output, line, structured, ocrScale,
                         structured.Length > 24);
@@ -6864,7 +6881,7 @@ private Rectangle FindCursorPanelCrop(
                 string structured;
                 if (TryTranslateStructuredLine(line.Text,
                     PanelContextPolicy.UseEquipmentSemantics(equipmentContext,
-                        !skillTooltip && LooksLikeEquipmentStatText(line.Text)), skillTooltip, out structured))
+                        !skillTooltip && LooksLikeEquipmentFieldText(line.Text)), skillTooltip, out structured))
                 {
                     AddStrongBlockLabel(output, new List<StrongOcrLine> { line },
                         structured, structured.Length > 24, "strong-structured");
@@ -8311,8 +8328,18 @@ private Rectangle FindCursorPanelCrop(
         {
             foreach (List<OcrLine> row in BuildVisualRows(panel.Lines))
             {
+                string rowText = CombineVisualRow(row);
+                List<EquipmentField> fields = EquipmentFieldGrammar.Parse(rowText, true);
+                if (fields.Count > 0)
+                {
+                    // The structured field path owns every attribute row. It replaces
+                    // only the translated key and protects the measured value, so this
+                    // whole-row translation must not erase the value first.
+                    AddEquipmentRowPrefixLabel(output, row, rowText, fields[0].Start, ocrScale);
+                    continue;
+                }
                 string translated;
-                if (!TryTranslateStructuredLine(CombineVisualRow(row), true, false, out translated)) continue;
+                if (!TryTranslateStructuredLine(rowText, true, false, out translated)) continue;
                 int beforeField = output.Count;
                 AddDetailBlockLabel(output, row, translated, ocrScale);
                 if (output.Count > beforeField) output[output.Count-1].SemanticRole = "item-field";
@@ -8335,6 +8362,35 @@ private Rectangle FindCursorPanelCrop(
             int beforeBody = output.Count;
             AddDetailBlockLabel(output,SelectBestDetailLines(prose,best.Entry),best.Entry.Chinese,ocrScale);
             if (output.Count > beforeBody) output[output.Count-1].SemanticRole = "item-body";
+        }
+
+        private void AddEquipmentRowPrefixLabel(List<OverlayLabel> output, List<OcrLine> row,
+            string rowText, int firstFieldStart, float ocrScale)
+        {
+            if (firstFieldStart <= 0 || firstFieldStart > rowText.Length) return;
+            string prefix = rowText.Substring(0, firstFieldStart).Trim();
+            if (prefix.Length == 0) return;
+            string translated;
+            if (!TryTranslateStructuredLine(prefix, true, false, out translated)) return;
+            int prefixLength = TranslationStore.Normalize(prefix).Length;
+            if (prefixLength <= 0) return;
+            RectangleF span = GetOcrTextSpanBounds(row, rowText, 0, prefixLength);
+            if (span.IsEmpty) return;
+            int before = output.Count;
+            AddDetailBlockLabelAt(output, row, span, translated, ocrScale, false);
+            if (output.Count > before)
+            {
+                OverlayLabel label = output[output.Count - 1];
+                label.SemanticRole = "item-type";
+                label.MatchSource = "equipment-prefix";
+                // The prefix translation ("类型：帽子") must not grow into the
+                // attribute columns that the structured plan replaces separately.
+                // A per-label boundary is sufficient here; a global live-value guard
+                // would wrongly block the field rows on the same OCR line.
+                RectangleF prefixBox = OverlaySpan(span, ocrScale);
+                label.PanelBounds = new RectangleF(prefixBox.Left - 2, prefixBox.Top - 2,
+                    prefixBox.Width + 10, prefixBox.Height + 4);
+            }
         }
 
         private static string SkillFieldRole(string text)
@@ -9688,6 +9744,9 @@ private Rectangle FindCursorPanelCrop(
                 (normalized.Contains("current level") && normalized.Contains("next level"));
         }
 
+        // Chat classification and the optional prose-AI eligibility gate deliberately
+        // keep the pre-EQUIP vocabulary unchanged. Equipment-only paths use the
+        // grammar-aware wrapper below.
         private static bool LooksLikeEquipmentStatText(string text)
         {
             string normalized = TranslationStore.Normalize(text);
@@ -9707,6 +9766,22 @@ private Rectangle FindCursorPanelCrop(
                 normalized.Contains(" type ") ||
                 normalized.StartsWith("category ", StringComparison.Ordinal) ||
                 normalized.Contains(" category ");
+        }
+
+        // Grammar-backed recognition covers Evasion, Attack Speed, Critical, upgrade
+        // slots and partial tooltips without naming any item. It is used only where the
+        // equipment label path is already being built, never to change chat or AI gating.
+        private static bool LooksLikeEquipmentFieldText(string text)
+        {
+            if (EquipmentFieldGrammar.LooksLikeEquipmentRow(text)) return true;
+            string normalized = TranslationStore.Normalize(text);
+            return LooksLikeEquipmentStatText(text) ||
+                normalized.Contains("upgrade slots") || normalized.Contains("remaining upgrades") ||
+                normalized.Contains("evasion") ||
+                normalized.StartsWith("speed ", StringComparison.Ordinal) ||
+                normalized.StartsWith("crit ", StringComparison.Ordinal) ||
+                normalized.Contains("crit rate") || normalized.Contains("critical rate") ||
+                normalized.Contains("critical damage");
         }
 
         private static bool LooksLikeItemPanelText(string text)

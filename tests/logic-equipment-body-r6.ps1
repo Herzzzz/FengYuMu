@@ -13,6 +13,8 @@ namespace EquipmentBodyProbe {
  class OcrLine{public string Text;}
  class OcrPanelInfo{public string Text="known item";public List<OcrLine> Lines=new List<OcrLine>();}
  class OverlayLabel{public string Text="",SemanticRole="";}
+ class EquipmentField{public int Start=0;}
+ static class EquipmentFieldGrammar{public static List<EquipmentField> Parse(string text,bool equipment){return new List<EquipmentField>();}}
  class TranslationEntry{public string Chinese="已观察的物品说明";}
  class MatchResult{public TranslationEntry Entry=new TranslationEntry();}
  class TranslationStore{
@@ -30,6 +32,7 @@ namespace EquipmentBodyProbe {
   static List<OcrLine> FindBestPanelProseBlock(List<OcrLine> source){return source.FindAll(x=>x.Text.StartsWith("DESCRIPTION"));}
   static List<OcrLine> SelectBestDetailLines(List<OcrLine> lines,TranslationEntry entry){return lines;}
   void AddDetailBlockLabel(List<OverlayLabel> output,List<OcrLine> rows,string text,float scale){output.Add(new OverlayLabel{Text=text});}
+  void AddEquipmentRowPrefixLabel(List<OverlayLabel> output,List<OcrLine> row,string text,int firstFieldStart,float scale){}
   int ScoreStrongLongTextCandidate(string source,string normalized,MatchResult match,float confidence){return translations.Accepted?100:Int32.MinValue;}
 '@
 $suffix=@'
