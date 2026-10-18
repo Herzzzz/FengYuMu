@@ -1,12 +1,12 @@
 {
   "schema": 2,
   "taskId": "EQUIP-001",
-  "state": "R1A_R3A_IMPLEMENTED_BUILD_AND_TESTS_COMMITTED_PENDING_CLOUD_REVIEW",
+  "state": "R3B_IMPLEMENTED_BUILD_AND_TESTS_COMMITTED_PENDING_CLOUD_REVIEW",
   "branch": "dsh/equip-001",
   "baseCommit": "399cc8e",
   "initialImplementationCommit": "ce945b0947f7b1e81b8ac2e5e2d43c1ef9874669",
-  "previousImplementationCommit": "7736051f2d290683e83d7b5a6a95fdc1562ea5fe",
-  "implementationCommit": "41ab324913ce12665cd3f4620468c102b8c1b2b3",
+  "previousImplementationCommit": "41ab324913ce12665cd3f4620468c102b8c1b2b3",
+  "implementationCommit": "2e4d83ab97ca4f9951a37ad2df9678639ab960ef",
   "resultFilesCommit": "reported in the final relay message; this file is committed with the result",
   "inherits": [
     "CHAT-001 accepted",
@@ -64,7 +64,10 @@
     "extraOcrOrAiRounds": false
   },
   "reviewFixes": {
-    "EQUIP-R1a": {
+    "EQUIP-R3b": {
+      "status": "FIXED",
+      "detail": "The whole segment between the previous confirmed field and a following key must match the canonical numeric-value grammar, not merely contain a digit. STR:+1POINT:+3 and STR:+1FOOINT:+3 reject the inner INT; STR:+1PO INT:+3 is cleared as prose because it has no strong equipment anchor. A key box that clipped letters remains estimated even when its value box lies to the right, so it is preserved/not painted. STR:+1OINT:+3 remains a valid two-field control."
+    },    "EQUIP-R1a": {
       "status": "FIXED",
       "detail": "PreciseTextSpan maps raw word offsets, so an independent Unicode/ASCII sign word is part of the measured value box. Key words may ignore attached punctuation only; clipped value words are estimated and preserved. WDEF: − 5 and WDEF : - 5 regressions protect the entire sign+digit region, and composition refuses estimated boundaries."
     },
@@ -87,33 +90,33 @@
   "build": {
     "command": "pwsh -NoProfile -File src/build.ps1",
     "status": "PASS",
-    "head": "41ab324913ce12665cd3f4620468c102b8c1b2b3",
+    "head": "2e4d83ab97ca4f9951a37ad2df9678639ab960ef",
     "worktreeCleanAtBuild": true,
     "inputs": 65,
     "exePath": "枫语幕.exe",
-    "exeSha256": "FE3D8AC939767BA38CC5F240F05313F1E6031CDB5404DAABF7BE94970740D0EF",
+    "exeSha256": "32AB92CFCC8402B4A28491A0626ED6D250B923B4C9230AEBD810797FCF18DE20",
     "buildEvidencePath": "枫语幕.exe.build.json",
-    "buildEvidenceSha256": "2A9FC3AFA2F134BC89A8E0E61326EAA226F1C3E91543270D26AF547603AE19E8",
+    "buildEvidenceSha256": "9C9C55184DB76EF9964859593286AB1F8926ED62A5B9674B77D98F3EDEABB42E",
     "compiler": "dotnet SDK 6.0.410 Roslyn csc.dll with .NET Framework 4.8 reference assemblies"
   },
   "tests": {
     "equipmentFields": {
       "command": "pwsh -NoProfile -File tests/logic-equipment-fields.ps1",
-      "checks": 80,
+      "checks": 91,
       "kind": "actual built EXE grammar/plan API; synthetic rectangles",
       "status": "PASS",
       "evidence": "evidence/equipment-fields.txt"
     },
     "equipmentPaint": {
       "command": "pwsh -NoProfile -File tests/logic-equipment-paint.ps1",
-      "checks": 40,
+      "checks": 42,
       "kind": "generated-source substitute Font/Graphics harness",
       "status": "PASS",
       "evidence": "evidence/equipment-paint.txt"
     },
     "equipmentPanel": {
       "command": "pwsh -NoProfile -File tests/logic-equipment-panel-r6.ps1",
-      "checks": 49,
+      "checks": 56,
       "kind": "exact production structured builder with controlled OCR geometry",
       "status": "PASS",
       "evidence": "evidence/equipment-panel.txt"

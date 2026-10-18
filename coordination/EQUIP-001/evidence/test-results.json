@@ -3,19 +3,19 @@
   "branch": "dsh/equip-001",
   "baseCommit": "399cc8e",
   "initialImplementationCommit": "ce945b0947f7b1e81b8ac2e5e2d43c1ef9874669",
-  "previousImplementationCommit": "7736051f2d290683e83d7b5a6a95fdc1562ea5fe",
-  "implementationCommit": "41ab324913ce12665cd3f4620468c102b8c1b2b3",
+  "previousImplementationCommit": "41ab324913ce12665cd3f4620468c102b8c1b2b3",
+  "implementationCommit": "2e4d83ab97ca4f9951a37ad2df9678639ab960ef",
   "build": {
     "command": "pwsh -NoProfile -File src/build.ps1",
     "status": "PASS",
-    "head": "41ab324913ce12665cd3f4620468c102b8c1b2b3",
+    "head": "2e4d83ab97ca4f9951a37ad2df9678639ab960ef",
     "worktreeEntries": 0,
     "inputs": 65,
     "compiler": "dotnet SDK 6.0.410 Roslyn csc.dll with .NET Framework 4.8 reference assemblies",
     "exePath": "枫语幕.exe",
-    "exeSha256": "FE3D8AC939767BA38CC5F240F05313F1E6031CDB5404DAABF7BE94970740D0EF",
+    "exeSha256": "32AB92CFCC8402B4A28491A0626ED6D250B923B4C9230AEBD810797FCF18DE20",
     "buildEvidencePath": "枫语幕.exe.build.json",
-    "buildEvidenceSha256": "2A9FC3AFA2F134BC89A8E0E61326EAA226F1C3E91543270D26AF547603AE19E8"
+    "buildEvidenceSha256": "9C9C55184DB76EF9964859593286AB1F8926ED62A5B9674B77D98F3EDEABB42E"
   },
   "stageDefinitions": {
     "recognized": "equipment panel (grammar structure) or equipment field row is identified from OCR geometry/text",
@@ -36,7 +36,9 @@
     "paintR3a": "equipment-paint generation=1 prepared=2 painted=2 preserved=0 panelSize=13 preservedReason=none",
     "planPreserved": "merged-value-region-unsafe (field test; original pixels kept instead of recolouring an unsplittable key/value word)",
     "r1aCoverage": "equipment-coverage recognizedPanels=1 recognizedRows=1 parsed=1 prepared=1 measuredValues=1 estimatedValues=0 valuePixels=1 partialValues=0 mergedText=0 preserved=0 preservedReason=none rejected=0 keys=weapon-defense",
-    "r3aCoverage": "equipment-coverage recognizedPanels=1 recognizedRows=1 parsed=2 prepared=2 measuredValues=2 estimatedValues=0 valuePixels=2 partialValues=0 mergedText=0 preserved=0 preservedReason=none rejected=0 keys=strength,intelligence"
+    "r3aCoverage": "equipment-coverage recognizedPanels=1 recognizedRows=1 parsed=2 prepared=2 measuredValues=2 estimatedValues=0 valuePixels=2 partialValues=0 mergedText=0 preserved=0 preservedReason=none rejected=0 keys=strength,intelligence",
+    "r3bCoverage": "equipment-coverage recognizedPanels=0 recognizedRows=0 parsed=0 prepared=0 measuredValues=0 estimatedValues=0 valuePixels=0 partialValues=0 mergedText=0 preserved=0 preservedReason=none rejected=0 keys=",
+    "r3bPaint": "equipment-paint generation=1 prepared=2 painted=1 preserved=1 panelSize=13 preservedReason=equipment-field-boundary-estimated (clipped-letter key)"
   },
   "reviewFixes": {
     "EQUIP-R1": {
@@ -53,31 +55,74 @@
     },
     "EQUIP-R3a": {
       "status": "FIXED",
-      "detail": "Key-start filtering permits INT after an OCR digit O only when the preceding run is a numeric value immediately following a previous confirmed field, so STR:+1OINT:+3 parses STR=+1O and INT=+3 while POINT is not split. Parsing, planning and painting regressions cover the combined form."
+      "detail": "Key-start filtering permits INT after an OCR digit O only when the preceding run is a complete numeric value immediately following a previous confirmed field, so STR:+1OINT:+3 parses STR=+1O and INT=+3 while POINT is not split. Parsing, planning and painting regressions cover the combined form."
+    },
+    "EQUIP-R3b": {
+      "status": "FIXED",
+      "detail": "The whole segment between the previous field and a following key must match the canonical numeric-value grammar; a digit-containing prefix such as +1PO is rejected. Outside an equipment panel, any unconsumed prose clears the parse unless a strong equipment anchor exists. Both key and value boxes must be measured; a right-side value box cannot upgrade a clipped-letter key. STR:+1POINT:+3, STR:+1FOOINT:+3 and STR:+1PO INT:+3 plan/paint nothing, while STR:+1OINT:+3 still parses and paints both fields."
     },
     "EQUIP-R3": {
       "status": "FIXED",
       "detail": "Key matches are collected before value extraction. Each value range is bounded by the next confirmed field start, so STR+5INT+3 parses STR=+5 and INT=+3, while legitimate OCR tolerance such as +1O remains. Parsing, planning and painting regressions cover the no-space and spaced forms."
     }
   },
+  "commandExits": {
+    "build": 0,
+    "equipmentFields": 0,
+    "equipmentPaint": 0,
+    "equipmentPanel": 0,
+    "equipmentBody": 0,
+    "equipmentScope": 0,
+    "simpleFlow": 0,
+    "questFont": 0,
+    "questPanel": 0,
+    "journalItem": 0,
+    "questTextScope": 0,
+    "questMatching": 0,
+    "observedQuestWording": 0,
+    "chatCategoryFiltering": 0,
+    "chatContinuity": 0,
+    "chatMegaphonePixels": 0,
+    "uiDpiScaling": 0,
+    "visualPanelDetection": 0,
+    "independentWindow": 0,
+    "settingsNpcDialogue": 0,
+    "releaseSafety": 0,
+    "followupSafety": 0,
+    "sceneFeedbackSafety": 0,
+    "captureFramePolicy": 0,
+    "userFeedbackSafety": 0,
+    "expectedFailures": {
+      "overlayLabelLayout": 1,
+      "overlayPaintSafety": 1,
+      "overlayDualRendering": 1,
+      "panelContextIsolation": 1,
+      "questBodyAndSummary": 1,
+      "questTitleGroups": 1,
+      "questShellResilience": 1,
+      "charactersStalePath": 1,
+      "hotkeyToggle": 1,
+      "see": "evidence/expected-failures.json"
+    }
+  },
   "testsPass": [
     {
       "script": "tests/logic-equipment-fields.ps1",
-      "checks": 80,
+      "checks": 91,
       "kind": "actual built EXE grammar and plan API; synthetic rectangles",
       "exit": 0,
       "evidence": "evidence/equipment-fields.txt"
     },
     {
       "script": "tests/logic-equipment-paint.ps1",
-      "checks": 40,
+      "checks": 42,
       "kind": "generated-source substitute Font/Graphics composition harness",
       "exit": 0,
       "evidence": "evidence/equipment-paint.txt"
     },
     {
       "script": "tests/logic-equipment-panel-r6.ps1",
-      "checks": 49,
+      "checks": 56,
       "kind": "exact production structured builder with controlled OCR geometry",
       "exit": 0,
       "evidence": "evidence/equipment-panel.txt"

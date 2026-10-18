@@ -30,6 +30,8 @@ PASS: EQUIP-R3 both complete value regions stay original
 PASS: EQUIP-R3a STR:+1OINT:+3 paints both fields
 PASS: EQUIP-R3a STR keeps +1O and INT is not blocked
 PASS: EQUIP-R3a both complete value regions stay original
+PASS: EQUIP-R3b clipped-letter key is not painted
+PASS: EQUIP-R3b complete value region stays original
 PASS: EQUIP-R2 fixture shares a 16px panel size
 PASS: EQUIP-R2 narrow and wide keys both paint at the shared size
 PASS: EQUIP-R2 narrow 智力 and wide 物理防御力 both use 16px, not 16/14
@@ -51,4 +53,4 @@ EVIDENCE: equipment-paint generation=1 prepared=2 painted=2 preserved=0 panelSiz
 EVIDENCE: equipment-paint generation=1 prepared=2 painted=2 preserved=0 panelSize=16 preservedReason=none
 EVIDENCE: equipment-paint generation=1 prepared=2 painted=1 preserved=1 panelSize=16 preservedReason=equipment-field-does-not-fit
 EVIDENCE: equipment-paint generation=1 prepared=1 painted=0 preserved=1 panelSize=13 preservedReason=equipment-field-does-not-fit
-Equipment field paint: 40 checks passed; generated-source substitute Font/Graphics harness; real game pixels unverified.
+Equipment field paint: 42 checks passed; generated-source substitute Font/Graphics harness; real game pixels unverified.

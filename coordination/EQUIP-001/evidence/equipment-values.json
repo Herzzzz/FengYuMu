@@ -27,9 +27,11 @@
     {"category": "key-only-partial", "row": "Weapon Def.", "plan": "HasValue=false, no invented guard or number"},
     {"category": "EQUIP-R1-estimated-boundary", "row": "WeaponDef-5", "plan": "BoundaryMode=estimated, status=preserved, ValuePixelsPreserved=false, preservedReason=estimated-value-region; 48-marker composition guard keeps every pixel"},
     {"category": "EQUIP-R1a-independent-sign", "rows": ["WDEF : \u2212 5", "WDEF: \u2212 5", "WDEF : - 5", "WDEF: - 5"], "keys": ["weapon-defense"], "values": ["\u2212 5", "\u2212 5", "- 5", "- 5"], "plan": "raw sign word included in measured guard; entire sign+digit region preserved"},
-    {"category": "EQUIP-R3a-ocr-digit-boundary", "row": "STR:+1OINT:+3", "keys": ["strength", "intelligence"], "values": ["+1O", "+3"], "plan": "INT accepted after the numeric +1O run; both measured boxes prepare and paint; POINT remains prose"},
+    {"category": "EQUIP-R3a-ocr-digit-boundary", "row": "STR:+1OINT:+3", "keys": ["strength", "intelligence"], "values": ["+1O", "+3"], "plan": "INT accepted after the complete numeric +1O run; both measured boxes prepare and paint"},
     {"category": "EQUIP-R3-contiguous-no-space", "row": "STR+5INT+3", "keys": ["strength", "intelligence"], "values": ["+5", "+3"], "plan": "STR value bounded before INT; both measured key/value boxes prepare and paint"},
-    {"category": "EQUIP-R3-contiguous-ocr-tolerance", "row": "Weapon Def.: +1O INT: +5", "keys": ["weapon-defense", "intelligence"], "values": ["+1O", "+5"], "plan": "next-field boundary does not erase legitimate OCR O"}
+    {"category": "EQUIP-R3-contiguous-ocr-tolerance", "row": "Weapon Def.: +1O INT: +5", "keys": ["weapon-defense", "intelligence"], "values": ["+1O", "+5"], "plan": "next-field boundary does not erase legitimate OCR O"},
+    {"category": "EQUIP-R3b-invalid-numeric-prefix", "rows": ["STR:+1POINT:+3", "STR:+1FOOINT:+3", "STR:+1PO INT:+3"], "keys": [], "values": [], "plan": "no non-equipment fields; row/structure false; non-equipment panel plans/paints zero; STR:+1POINT/+1FOOINT reject inner INT, prose-interposed form clears"},
+    {"category": "EQUIP-R3b-clipped-letter-key", "row": "POINT", "plan": "PreciseTextSpan key span 2,3 with allowPunctuationTrim=true stays measured=false; right-side value cannot upgrade it"},
   ],
   "colorPreservation": "The measured value region is the guard and is never sampled into the replacement. The composition test checks every pixel of every value rectangle (not a centre point) stays transparent/original, including signs, corrections and colour markers. Estimated merged-word regions are never painted.",
   "typography": {

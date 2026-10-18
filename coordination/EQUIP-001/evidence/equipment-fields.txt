@@ -28,6 +28,17 @@ PASS: next-field boundary keeps legitimate OCR +1O
 PASS: R3a INT follows OCR digit O and is still recognized
 PASS: R3a STR keeps +1O and INT keeps +3
 PASS: R3a prose POINT is not split into an INT field
+PASS: R3b no non-equipment fields from STR:+1POINT:+3
+PASS: R3b row is not equipment: STR:+1POINT:+3
+PASS: R3b panel is not equipment: STR:+1POINT:+3
+PASS: R3b INT inside POINT is rejected: STR:+1POINT:+3
+PASS: R3b no non-equipment fields from STR:+1FOOINT:+3
+PASS: R3b row is not equipment: STR:+1FOOINT:+3
+PASS: R3b panel is not equipment: STR:+1FOOINT:+3
+PASS: R3b INT inside POINT is rejected: STR:+1FOOINT:+3
+PASS: R3b no non-equipment fields from STR:+1PO INT:+3
+PASS: R3b row is not equipment: STR:+1PO INT:+3
+PASS: R3b panel is not equipment: STR:+1PO INT:+3
 PASS: R3a key boundary does not duplicate inner HP
 PASS: Upgrade Slots maps to the upgrade attribute
 PASS: Upgrades Available accepts a zero value
@@ -78,4 +89,4 @@ PASS: the unsplittable fallback still retains the exact value text
 PASS: an unsafe merged value preserves the original instead of recolouring it
 PASS: partial OCR without a value rectangle is marked partial
 PASS: partial value still protects the rest of the row
-Equipment fields: 80 checks passed; actual built EXE grammar/plan API; synthetic rectangles; real CW pixels unverified.
+Equipment fields: 91 checks passed; actual built EXE grammar/plan API; synthetic rectangles; real CW pixels unverified.
