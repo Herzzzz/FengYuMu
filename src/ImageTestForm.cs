@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,6 +15,7 @@ namespace MapleOverlay
     {
         internal Bitmap Image;
         internal string RecognizedText;
+        internal string ItemPlanReport;
         internal int OcrLines,Matched,Painted;
         public void Dispose(){if(Image!=null){Image.Dispose();Image=null;}}
     }
@@ -69,6 +71,19 @@ namespace MapleOverlay
                     {
                         using(Graphics g=Graphics.FromImage(output.Image))g.DrawImageUnscaled(simpleLayer,0,0);
                         output.Painted=simpleReady.Count;
+                        int itemLabels=0;foreach(OverlayLabel itemLabel in found)if(itemLabel.ItemPanel!=null)itemLabels++;
+                        Program.LogRuntimeEvent("item-picture-labels","labels="+found.Count+" item="+itemLabels+" ready="+simpleReady.Count);
+                        lastItemPaintLogGeneration=-1;
+                        MarkItemPlansPainted(found,"picture",true);
+                        StringBuilder itemPlans=new StringBuilder();
+                        HashSet<ItemPanelPlan> seenPlans=new HashSet<ItemPanelPlan>();
+                        foreach(OverlayLabel itemLabel in found)
+                        {
+                            if(itemLabel.ItemPanel==null||!seenPlans.Add(itemLabel.ItemPanel))continue;
+                            if(itemPlans.Length>0)itemPlans.Append(" | ");
+                            itemPlans.Append(itemLabel.ItemPanel.Describe());
+                        }
+                        output.ItemPlanReport=itemPlans.ToString();
                     }
                     token.ThrowIfCancellationRequested();
                     Program.LogRuntimeEvent("picture-test","engine="+primaryOcr.EngineLabel+

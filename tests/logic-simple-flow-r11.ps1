@@ -54,7 +54,9 @@ namespace MapleOverlay {
  static class TranslationStore{public static string Normalize(string s){return (s??"").Trim().ToLowerInvariant();}}
  static class QuestDetailGeometry{public static bool IsSummaryKey(string s){return s=="quest summary"||s=="questsummary";}}
  static class QuestObjectiveSurface{public static Match Counter(string s){return Regex.Match(s??"",@"[0-9IlOo]+(?:\s*/\s*|\s+)[0-9IlOo]+\s*$");}}
- class OverlayLabel{public RectangleF Bounds,SourceBounds,KeepClearBounds,PanelBounds;public List<RectangleF> SourceLineBounds;public QuestJournalDocument Journal;public EquipmentFieldPlan EquipmentField;public EquipmentPanelPlan EquipmentPanel;public SkillPanelPlan SkillPanel;public SkillSectionPlan SkillSection;public float LayoutFontSize,LayoutMinimumFontSize;public string LayoutFontFamily="";public bool Wrap,HasSourceBounds=true,PaintedLastPass;public string MatchSource="";public string Text="中文",SemanticRole="task-name",FusionFailureReason="";public LabelConfidence Confidence=LabelConfidence.High;public LabelRenderMode RenderMode;}
+ class ItemTextPart{public OverlayLabel Label;public string Status="",Reason="";}
+ class ItemPanelPlan{public List<ItemTextPart> Parts=new List<ItemTextPart>();public int Prepared,Painted,Preserved;public void AddPreservedReason(string reason){}public string Describe(){return "fixture";}}
+ class OverlayLabel{public RectangleF Bounds,SourceBounds,KeepClearBounds,PanelBounds;public List<RectangleF> SourceLineBounds;public QuestJournalDocument Journal;public EquipmentFieldPlan EquipmentField;public EquipmentPanelPlan EquipmentPanel;public SkillPanelPlan SkillPanel;public SkillSectionPlan SkillSection;public ItemPanelPlan ItemPanel;public ItemTextPart ItemTextPart;public float LayoutFontSize,LayoutMinimumFontSize;public string LayoutFontFamily="";public bool Wrap,HasSourceBounds=true,PaintedLastPass;public string MatchSource="";public string Text="中文",SemanticRole="task-name",FusionFailureReason="";public LabelConfidence Confidence=LabelConfidence.High;public LabelRenderMode RenderMode;}
  class SkillSectionPlan{public string Role="",Status="",PreservedReason="",HeaderStatus="",EffectStatus="";public float PreparedFontSize,PaintedFontSize;public OverlayLabel Label;}
  class SkillPanelPlan{public int Prepared,Painted,Preserved;public List<SkillSectionPlan> Sections=new List<SkillSectionPlan>();public void AddPreservedReason(string r){}public string DescribePaint(){return "";}}
  static class OverlayPaintSafety{
@@ -76,7 +78,8 @@ $stub+=(Method 'MapleOverlay.cs' 'IsFinite')+(Method 'MapleOverlay.cs' 'IsFinite
   public long benchmarkConvergedMs,benchmarkFirstVisibleMs;public Stopwatch visibleRequestWatch;public CancellationTokenSource panelAiCancellation;
   Primary primaryOcr=new Primary();Tray tray=new Tray();Timer continuousTranslationTimer=new Timer();public int Captures,OcrCalls,MatchCalls,Publishes,ComposeCalls;public TaskCompletionSource<OcrResult> OcrGate;
   public List<OverlayLabel> MatchFixture=Rows();
-  void SetJournalPagingShortcuts(bool active){}void CancelPanelAiRequest(){}void SetInteractionStatus(string s){}void Invalidate(){}void Update(){}void ShowWindowScanIndicator(){}void HideWindowScanIndicator(){}
+   void SetJournalPagingShortcuts(bool active){}void CancelPanelAiRequest(){}void SetInteractionStatus(string s){}void Invalidate(){}void Update(){}void ShowWindowScanIndicator(){}void HideWindowScanIndicator(){}
+   void TraceItemStage(OverlayLabel label,int generation,string stage,string reason){}void MarkItemPlansPainted(string phase,bool readyIsPainted){}
   IntPtr GetForegroundWindow(){return new IntPtr(1);}bool ResolveCaptureBounds(out Rectangle r){r=new Rectangle(0,0,120,100);return true;}
   bool RecognitionWasCancelled(bool a,int id,int g){return shuttingDown||g!=recognitionGeneration;}
   void ClearFusionAssets(){ClearSimpleFusion();}

@@ -597,6 +597,7 @@ namespace MapleOverlay
         public bool IsTaskText;
         public bool IsSkillText;
         public bool IsItemText;
+        public bool IsOrdinaryItemText;
         public bool IsInterfaceText;
         public bool IsSettingsText;
         public bool IsNpcDialogue;
@@ -606,6 +607,10 @@ namespace MapleOverlay
         // task id when one wording is shared by a whole chain.
         public bool IsQuestTarget;
         public HashSet<string> DetailWords;
+        // Item prose is usable only after the shared semantic guard verifies that the
+        // complete visible effect/limit/number semantics agree on both sides.
+        public ItemSemanticStatus ItemStatus = ItemSemanticStatus.Undecidable;
+        public string ItemStatusReason = "";
     }
 
     internal sealed partial class TranslationStore
@@ -634,6 +639,19 @@ namespace MapleOverlay
         private readonly List<TranslationEntry> iconEntries = new List<TranslationEntry>();
         private readonly List<TranslationEntry> skillTextEntries = new List<TranslationEntry>();
         private readonly List<TranslationEntry> itemTextEntries = new List<TranslationEntry>();
+        // Ordinary-item context needs its own trusted indexes: the generic bucket excludes
+        // duplicate names, while a tooltip may still be resolvable from its visible body.
+        private readonly List<TranslationEntry> itemNameEntries = new List<TranslationEntry>();
+        private readonly Dictionary<string, List<TranslationEntry>> itemNamesByNormalized =
+            new Dictionary<string, List<TranslationEntry>>(StringComparer.Ordinal);
+        private readonly Dictionary<string, List<TranslationEntry>> itemDescriptionsById =
+            new Dictionary<string, List<TranslationEntry>>(StringComparer.Ordinal);
+        private readonly List<ItemSentenceReference> itemSentenceReferences =
+            new List<ItemSentenceReference>();
+        private readonly Dictionary<string, List<ItemSentenceReference>> itemSentenceIndex =
+            new Dictionary<string, List<ItemSentenceReference>>(StringComparer.Ordinal);
+        private readonly Dictionary<string, string> itemPlaces =
+            new Dictionary<string, string>(StringComparer.Ordinal);
         private readonly List<TranslationEntry> interfaceTextEntries = new List<TranslationEntry>();
         private readonly List<TranslationEntry> settingsTextEntries = new List<TranslationEntry>();
         private readonly List<TranslationEntry> dialogueTextEntries = new List<TranslationEntry>();
@@ -662,6 +680,10 @@ namespace MapleOverlay
             List<TranslationEntry> entries = ReadTsv(sourcePath);
             AddSupplementalGlossary(entries);
             RefreshSkillNameIndex(entries);
+            // The item semantic guard runs once per dictionary load. Every later path
+            // (exact, sentence, template, shared description and auxiliary vocabulary)
+            // consults this same verdict; a conflicting row is never drawable.
+            ItemTextSemantics.AuditEntries(entries);
 
             // The classic data contains legitimate same-English-name variants (hair colours,
             // job-specific skills, duplicate transport NPCs, and so on).  If their Chinese
@@ -700,6 +722,12 @@ namespace MapleOverlay
             interfaceTextEntries.Clear();
             settingsTextEntries.Clear();
             dialogueTextEntries.Clear();
+            itemNameEntries.Clear();
+            itemNamesByNormalized.Clear();
+            itemDescriptionsById.Clear();
+            itemSentenceReferences.Clear();
+            itemSentenceIndex.Clear();
+            itemPlaces.Clear();
             uiEntries.Clear();
             TaskTextCount = 0;
             SkillTextCount = 0;
@@ -788,6 +816,7 @@ namespace MapleOverlay
             BuildJournalIndex(entries);
             BuildSkillEffectTemplates();
             BuildObjectiveNameIndex(entries);
+            BuildItemTextIndex(entries);
             Count = entries.Count; Revision++;
         }
 
@@ -964,7 +993,24 @@ namespace MapleOverlay
         {
             List<MatchResult> exact = FindInBuckets(text, itemTextBuckets, null);
             if (!String.IsNullOrEmpty(detailId)) exact.RemoveAll(delegate(MatchResult match) { return CategoryId(match.Entry.Category) != detailId; });
-            return exact.Count > 0 ? exact : FindApproximateDetailMatch(text, itemTextEntries, detailId);
+            // An ordinary-item row whose English/Chinese semantics conflict is never
+            // drawable, even when the English side matches byte for byte. Equipment
+            // descriptions keep their existing path so EQUIP-001 semantics are untouched.
+            bool ordinaryConflict = false;
+            exact.RemoveAll(delegate(MatchResult match) {
+                if (match.Entry == null || !match.Entry.IsOrdinaryItemText) return false;
+                if (match.Entry.ItemStatus == ItemSemanticStatus.Trusted) return false;
+                ordinaryConflict = true;
+                return true;
+            });
+            if (ordinaryConflict) return new List<MatchResult>();
+            if (exact.Count > 0) return exact;
+            List<MatchResult> approximate = FindApproximateDetailMatch(text, itemTextEntries, detailId);
+            approximate.RemoveAll(delegate(MatchResult match) {
+                return match.Entry != null && match.Entry.IsOrdinaryItemText &&
+                    match.Entry.ItemStatus != ItemSemanticStatus.Trusted;
+            });
+            return approximate;
         }
 
         public List<MatchResult> FindInterfaceTextMatches(string text)
@@ -1708,6 +1754,14 @@ namespace MapleOverlay
             return TextSimilarity(Normalize(text), normalizedCandidate ?? String.Empty);
         }
 
+        // Item prose compares using the scoped Restore/Recover canonical form. The raw
+        // similarity is still used everywhere else (tasks, skills, dialogue, names).
+        internal static float ItemCanonicalSimilarity(string text, string candidateEnglish)
+        {
+            return TextSimilarity(ItemTextSemantics.CanonicalSentence(text),
+                ItemTextSemantics.CanonicalSentence(candidateEnglish ?? String.Empty));
+        }
+
         public static string Normalize(string value)
         {
             if (String.IsNullOrEmpty(value)) return String.Empty;
@@ -1768,7 +1822,7 @@ namespace MapleOverlay
             return normalized;
         }
 
-        private static bool IsBoundary(string text, int at)
+        internal static bool IsBoundary(string text, int at)
         {
             if (at < 0 || at >= text.Length) return true;
             char c = text[at];
@@ -1827,7 +1881,6 @@ namespace MapleOverlay
                 string english = parts[0].Trim();
                 string category = parts.Length > 2 ? parts[2].Trim() : "";
                 string chinese = PolishChinese(parts[1].Trim());
-                string normalized = Normalize(english);
                 bool isTaskName = category.StartsWith("怀旧服-任务#", StringComparison.Ordinal) ||
                     category == "怀旧服-任务别名";
                 // Task prose may be scoped to one quest (the #id form) or deliberately
@@ -1846,6 +1899,16 @@ namespace MapleOverlay
                 bool isSkillText = category.StartsWith("怀旧服-技能说明#", StringComparison.Ordinal);
                 bool isItemText = category.StartsWith("怀旧服-装备说明#", StringComparison.Ordinal) ||
                     category.StartsWith("怀旧服-物品说明#", StringComparison.Ordinal);
+                bool isOrdinaryItemText = category.StartsWith("怀旧服-物品说明#", StringComparison.Ordinal);
+                if (isItemText)
+                {
+                    // Item rows frequently use literal "\n" as a soft line break. The
+                    // ordinary matcher works on visible sentences, so decode those escapes
+                    // before Normalize instead of leaving a bogus "n" token in the source.
+                    english = ItemTextSemantics.DecodeLineBreaks(english);
+                    chinese = ItemTextSemantics.DecodeLineBreaks(chinese);
+                }
+                string normalized = Normalize(english);
                 bool isInterfaceText = category.StartsWith("怀旧服-界面长句", StringComparison.Ordinal);
                 bool isSettingsText = category.StartsWith("怀旧服-设置", StringComparison.Ordinal);
                 bool isNpcDialogue = category.StartsWith("怀旧服-NPC对白#", StringComparison.Ordinal);
@@ -1868,6 +1931,7 @@ namespace MapleOverlay
                     IconHash = hasIcon ? iconHash : 0, HasIcon = hasIcon,
                     TaskId = taskId, IsTaskName = isTaskName, IsTaskText = isTaskText,
                     IsSkillText = isSkillText, IsItemText = isItemText,
+                    IsOrdinaryItemText = isOrdinaryItemText,
                     IsInterfaceText = isInterfaceText, IsSettingsText = isSettingsText,
                     IsNpcDialogue = isNpcDialogue,
                     IsQuestTarget = isQuestTarget,
@@ -2016,6 +2080,10 @@ namespace MapleOverlay
         // pixels into the replacement.
         public EquipmentFieldPlan EquipmentField;
         public EquipmentPanelPlan EquipmentPanel;
+        // Ordinary item tooltips carry one shared plan so the name, description and
+        // auxiliary rows are measured as one panel while still failing independently.
+        public ItemPanelPlan ItemPanel;
+        public ItemTextPart ItemTextPart;
         // Skill panels carry one shared plan and one section owner per source region.
         // The compositor uses these sizes directly, so prose sections cannot shrink
         // independently to an unreadable 8px fallback.
@@ -3392,6 +3460,7 @@ namespace MapleOverlay
         private int changedSceneChecks;
         private int displayedSceneRevision;
         private int lastRenderModeLogGeneration = -1;
+        private int lastItemPaintLogGeneration = -1;
         private bool visibleTranslation;
         private bool shuttingDown;
         private OcrEngine ocr;
@@ -6459,9 +6528,14 @@ private Rectangle FindCursorPanelCrop(
             }
             HashSet<OcrPanelInfo> handledSkillPanels = new HashSet<OcrPanelInfo>();
             HashSet<OcrPanelInfo> handledEquipmentPanels = new HashSet<OcrPanelInfo>();
+            HashSet<OcrLine> handledItemLines = new HashSet<OcrLine>();
+            List<ItemPanelPlan> itemPlans = new List<ItemPanelPlan>();
+            AddOrdinaryItemPanels(output, allLines, panelByLine, ocrScale,
+                handledItemLines, itemPlans);
             for (int lineIndex = 0; lineIndex < allLines.Count; lineIndex++)
             {
                 OcrLine line = allLines[lineIndex];
+                if (handledItemLines.Contains(line)) continue;
                 if (hasJournal && JournalOwnsLine(ownedJournal, line, ocrScale)) continue;
                 OcrPanelInfo currentPanel;
                 panelByLine.TryGetValue(line, out currentPanel);
@@ -6633,7 +6707,13 @@ private Rectangle FindCursorPanelCrop(
                     lineIndex += bestInterfaceSpan - 1; continue;
                 }
                 bool skillDetailStart = !questInterface && translations.LooksLikeSkillTextStart(line.Text);
-                bool itemDetailStart = !questInterface && !skillDetailStart && translations.LooksLikeItemTextStart(line.Text);
+                bool itemDetailAllowed = !questPanelContext &&
+                    !visibleScene.IsStrong(SceneKind.Quest) &&
+                    (currentPanel == null || (!currentPanel.IsQuest && !currentPanel.IsSkillDetail &&
+                     !currentPanel.IsCharacterStats && !currentPanel.IsCharacterInfo &&
+                     !currentPanel.IsSettings && !currentPanel.IsEquipmentDetail));
+                bool itemDetailStart = itemDetailAllowed && !skillDetailStart &&
+                    translations.LooksLikeItemTextStart(line.Text);
                 if (skillDetailStart || itemDetailStart)
                 {
                     string detailId = skillDetailStart ? translations.DetectSkillId(line.Text) :
@@ -6823,10 +6903,11 @@ private Rectangle FindCursorPanelCrop(
                 if (skillLevel && TryTranslateStructuredLine(line.Text, false, true, out structured))
                     AddWholeLineLabel(output, line, structured, ocrScale, false);
             }
-            AddStructuredFieldLabels(output, allLines, panelByLine, ocrScale);
+            AddStructuredFieldLabels(output, allLines, panelByLine, ocrScale, handledItemLines);
             AddCharacterFieldSurfaces(output, allLines, prepared, ocrScale);
             AddSkillOverviewSections(output, allLines, panelByLine, prepared, ocrScale, handledSkillPanels);
-            AddSkillEffectSections(output, allLines, panelByLine, ocrScale, handledSkillPanels);
+            AddSkillEffectSections(output, allLines, panelByLine, ocrScale, handledSkillPanels,
+                handledItemLines);
             if (prepared != null && questPanelContext)
                 AddObjectiveSurfaceLabels(output, allLines, prepared,
                     ResolveQuestJournalOwner(allLines, prepared.Size, ocrScale, measuredQuestDetails), ocrScale);
@@ -7026,6 +7107,8 @@ private Rectangle FindCursorPanelCrop(
             MatchResult match, float confidence)
         {
             if (match == null || match.Entry == null) return Int32.MinValue;
+            if (match.Entry.IsOrdinaryItemText &&
+                match.Entry.ItemStatus != ItemSemanticStatus.Trusted) return Int32.MinValue;
             int entryLength = match.Entry.Normalized == null ? 0 : match.Entry.Normalized.Length;
             if (entryLength < 24 || String.IsNullOrEmpty(normalized)) return Int32.MinValue;
             float similarity = TranslationStore.DetailTextSimilarity(text,

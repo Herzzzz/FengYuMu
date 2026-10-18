@@ -50,6 +50,7 @@ namespace MapleOverlay
             graphics.DrawImageUnscaled(simpleLayer, simpleLayerBounds.Location);
             foreach (OverlayLabel label in labels) label.PaintedLastPass = simpleReady.Contains(label);
             lastPaintedTranslationCount = simpleReady.Count;
+            MarkItemPlansPainted("window", false);
             if (!firstPaintRecorded && simpleReady.Count > 0 && visibleRequestWatch != null)
             {
                 firstPaintRecorded = true;
@@ -98,6 +99,7 @@ namespace MapleOverlay
                         if (generation != recognitionGeneration || shuttingDown) return false;
                         string reason = "missing-source-geometry";
                         if (label == null) continue;
+                        TraceItemStage(label, generation, "prepareAttempt", "");
                         if (!label.HasSourceBounds || !OverlayPaintSafety.IsFiniteRect(label.SourceBounds) ||
                             !OverlayPaintSafety.IsFiniteRect(label.Bounds) || String.IsNullOrWhiteSpace(label.Text) || label.Text.Length > 4096)
                         { failures[label] = reason; continue; }
@@ -205,6 +207,7 @@ namespace MapleOverlay
                         foreach (SimpleDraw previous in draws) if (reservation.IntersectsWith(Rectangle.Ceiling(previous.Content))) blocked = true;
                         if (blocked) { font.Dispose(); failures[label] = "translation-layout-conflict"; continue; }
                         draws.Add(new SimpleDraw { Label = label, Surface = surface, Rows = rows, Content = content, Font = font });
+                        TraceItemStage(label, generation, "ready", "");
                         if (!smooth) approximated++;
                         Program.LogRuntimeEvent("replacement-ready", "generation=" + generation + " background=" + (smooth ? "smooth" : "local-fill") + " role=" + label.SemanticRole);
                     }
@@ -236,9 +239,11 @@ namespace MapleOverlay
                             DrawJournalPage(graphics, draw.JournalLayout, 0, draw.Font, draw.JournalTitleFont);
                         else
                         {
+                            TraceItemStage(draw.Label, generation, "drawAttempt", "");
                             graphics.SetClip(draw.Content);
                             graphics.DrawString(draw.Label.Text, draw.Font, ink, draw.Content, format);
                             graphics.ResetClip();
+                            TraceItemStage(draw.Label, generation, "drawSuccess", "");
                         }
                     }
                 }
@@ -273,6 +278,7 @@ namespace MapleOverlay
                     string failure;
                     label.RenderMode = simpleReady.Contains(label) ? LabelRenderMode.Seamless : LabelRenderMode.PreserveOriginal;
                     label.FusionFailureReason = simpleReady.Contains(label) ? "" : failures.TryGetValue(label, out failure) ? failure : "duplicate-source";
+                    if (!simpleReady.Contains(label)) TraceItemStage(label, generation, "rejected", label.FusionFailureReason);
                     if (!simpleReady.Contains(label)) Program.LogRuntimeEvent("replacement-preserved", "generation=" + generation + " role="+label.SemanticRole+" source="+label.MatchSource+" reason=" + label.FusionFailureReason);
                 }
                 int equipmentPrepared = 0, equipmentPainted = 0, equipmentPreserved = 0;
@@ -367,6 +373,42 @@ namespace MapleOverlay
                     Program.LogRuntimeEvent("skill-paint", "generation=" + generation +
                         " " + panel.DescribePaint());
                 }
+                HashSet<ItemPanelPlan> itemPanels = new HashSet<ItemPanelPlan>();
+                foreach (OverlayLabel itemLabel in source)
+                {
+                    if (itemLabel == null || itemLabel.ItemTextPart == null ||
+                        itemLabel.ItemPanel == null) continue;
+                    ItemPanelPlan plan = itemLabel.ItemPanel;
+                    ItemTextPart part = itemLabel.ItemTextPart;
+                    if (itemPanels.Add(plan))
+                    {
+                        plan.Prepared = 0;
+                        plan.Painted = 0;
+                        plan.Preserved = 0;
+                        foreach (ItemTextPart existing in plan.Parts)
+                            if (existing.Label == null && existing.Status == "preserved")
+                                plan.Preserved++;
+                    }
+                    plan.Prepared++;
+                    if (simpleReady.Contains(itemLabel))
+                    {
+                        // Composition has produced the measured replacement. The actual
+                        // window paint pass is recorded separately by MarkItemPlansPainted.
+                        part.Status = "prepared";
+                        part.Reason = "";
+                    }
+                    else
+                    {
+                        part.Status = "preserved";
+                        part.Reason = String.IsNullOrEmpty(itemLabel.FusionFailureReason)
+                            ? "composition-preserved" : itemLabel.FusionFailureReason;
+                        plan.Preserved++;
+                        plan.AddPreservedReason(part.Reason);
+                    }
+                }
+                foreach (ItemPanelPlan itemPanel in itemPanels)
+                    Program.LogRuntimeEvent("item-compose", "generation=" + generation + " " +
+                        itemPanel.Describe());
                 committed = true;
                 return true;
             }

@@ -78,7 +78,7 @@ namespace MapleOverlay
         }
 
         private void AddStructuredFieldLabels(List<OverlayLabel> output,List<OcrLine> all,
-            Dictionary<OcrLine,OcrPanelInfo> panels,float scale)
+            Dictionary<OcrLine,OcrPanelInfo> panels,float scale,HashSet<OcrLine> excluded=null)
         {
             int parsed=0,added=0,recognizedPanels=0,recognizedRows=0;
             int valuePixels=0,partialValues=0,mergedText=0,preservedSafety=0,rejected=0;
@@ -89,7 +89,9 @@ namespace MapleOverlay
                 OcrPanelInfo panel;panels.TryGetValue(origin,out panel);
                 bool equipment=panel!=null&&panel.IsEquipmentDetail;
                 if(panel!=null&&!used.Add(panel))continue;
-                List<OcrLine> source=panel!=null?panel.Lines:new List<OcrLine>{origin};
+                List<OcrLine> source=new List<OcrLine>(panel!=null?panel.Lines:new List<OcrLine>{origin});
+                if(excluded!=null)source.RemoveAll(delegate(OcrLine line){return excluded.Contains(line);});
+                if(source.Count==0)continue;
                 List<List<OcrLine>> visualRows=BuildVisualRows(source);
                 RectangleF rawPanel=panel!=null?GetCombinedLineBounds(source):GetOcrLineBounds(origin);
                 RectangleF panelBounds=rawPanel.IsEmpty?RectangleF.Empty:OverlaySpan(rawPanel,scale);
@@ -175,11 +177,12 @@ namespace MapleOverlay
                 " rejected="+rejected+" keys="+keys);
         }
 
-        private void AddSkillEffectSections(List<OverlayLabel> output,List<OcrLine> all,Dictionary<OcrLine,OcrPanelInfo> panels,float scale,HashSet<OcrPanelInfo> handled=null)
+        private void AddSkillEffectSections(List<OverlayLabel> output,List<OcrLine> all,Dictionary<OcrLine,OcrPanelInfo> panels,float scale,HashSet<OcrPanelInfo> handled=null,HashSet<OcrLine> excluded=null)
         {
             List<OcrLine> sorted=new List<OcrLine>(all);sorted.Sort(delegate(OcrLine a,OcrLine b){return GetOcrLineBounds(a).Top.CompareTo(GetOcrLineBounds(b).Top);});
             int observed=0,translated=0;
             for(int i=0;i<sorted.Count;i++) {
+                if(excluded!=null&&excluded.Contains(sorted[i]))continue;
                 string key=TranslationStore.Normalize(sorted[i].Text);
                 if(SkillSectionMarker(sorted[i].Text)!="current"&&SkillSectionMarker(sorted[i].Text)!="next")continue;
                 observed++;OcrPanelInfo owner;if(handled!=null&&panels.TryGetValue(sorted[i],out owner)&&handled.Contains(owner))continue;string skillId=ResolveSkillContextId(all,sorted[i],scale);OcrPanelInfo parent;
