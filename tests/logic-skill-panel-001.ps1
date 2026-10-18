@@ -254,6 +254,27 @@ function IsSafeFallbackProbe([string]$observed, [string]$translated) {
 }
 Check (-not (IsSafeFallbackProbe $unlessSword $whenSwordChinese)) 'fallback rejects the wrong when/unless relation'
 Check (-not (IsSafeFallbackProbe 'Recover HP -10 for 30 sec.' '恢复HP 10，持续30秒')) 'fallback rejects a positive translation of a negative fact'
+$relationOr = 'Increases attack speed when using a sword or a shield.'
+$relationAnd = 'Increases attack speed when using a sword and a shield.'
+$relationOrChinese = '同时使用剑或盾时提高攻击速度。'
+$relationAndChinese = '同时使用剑和盾时提高攻击速度。'
+Check (-not (IsSafeOverviewProbe $relationOr $relationAnd $relationAndChinese)) 'or cannot be borrowed from a candidate using and'
+Check (-not (IsSafeOverviewProbe $relationAnd $relationOr $relationOrChinese)) 'and cannot be borrowed from a candidate using or'
+Check (IsSafeOverviewProbe $relationOr $relationOr $relationOrChinese) 'matching or relation and scope still translates'
+$moveUp = 'Moves the user up.'
+$moveDown = 'Moves the user down.'
+$moveUpChinese = '使角色向上移动。'
+$moveDownChinese = '使角色向下移动。'
+Check (-not (IsSafeOverviewProbe $moveUp $moveDown $moveDownChinese)) 'up cannot be borrowed from a candidate using down'
+Check (-not (IsSafeOverviewProbe $moveDown $moveUp $moveUpChinese)) 'down cannot be borrowed from a candidate using up'
+Check (IsSafeOverviewProbe $moveUp $moveUp $moveUpChinese) 'matching up direction still translates'
+$partyAll = 'Recovers HP for all party members for 30 sec.'
+$partySome = 'Recovers HP for some party members for 30 sec.'
+$partyAllChinese = '30秒内为所有队员恢复HP。'
+$partySomeChinese = '30秒内为部分队员恢复HP。'
+Check (-not (IsSafeOverviewProbe $partyAll $partySome $partySomeChinese)) 'all party members cannot be borrowed from some'
+Check (-not (IsSafeOverviewProbe $partySome $partyAll $partyAllChinese)) 'some party members cannot be borrowed from all'
+Check (IsSafeOverviewProbe $partyAll $partyAll $partyAllChinese) 'matching all party members still translates'
 $vocabularyMethod = $storeType.GetMethod('TryTranslateEffectVocabulary', $flags)
 $vocabularyArg = New-Object 'object[]' 2
 $vocabularyArg[0] = ($baseRecovery + ' and fly.'); $vocabularyArg[1] = ''
@@ -288,6 +309,12 @@ function AssertLevelsPainted([object]$run, [string]$label) {
     $roles = Roles $run.Labels
     Check ((HasRole $roles 'skill-current-body') -and (HasRole $roles 'skill-next-body')) "${label}: safe current and next remain planned"
     Check ($run.Compose -and $run.Ready -eq $run.Labels.Count) "${label}: safe current/next still compose"
+}
+function AssertBodyNotWrong([object]$run, [string]$wrong, [string]$label) {
+    $body = $run.Labels | Where-Object { (GetLabelField $_ 'SemanticRole') -eq 'skill-body' } | Select-Object -First 1
+    $text = if ($null -eq $body) { '' } else { [string](GetLabelField $body 'Text') }
+    Check ($null -eq $body -or -not $text.Contains($wrong)) "${label}: wrong semantic is not drawn"
+    AssertLevelsPainted $run $label
 }
 function AssertBodyRejectedLevelsPainted([object]$run, [string]$label) {
     $roles = Roles $run.Labels
@@ -349,6 +376,39 @@ try {
 }
 finally {
     Remove-Item -LiteralPath $signTsv -Force -ErrorAction SilentlyContinue
+}
+
+$r2bTsv = Join-Path $env:TEMP ('skill-r2b-semantics-' + [Guid]::NewGuid().ToString('N') + '.tsv')
+Copy-Item (Join-Path $repoRoot '枫语幕词库.tsv') $r2bTsv
+$r2bRowsText =
+    "Relation Probe`t关系探针`t怀旧服-技能#9999991`t`r`n" +
+    "Increases attack speed when using a sword or a shield.`t同时使用剑或盾时提高攻击速度。`t怀旧服-技能说明#9999991`tHenesys.gg当前技能说明`r`n" +
+    "Direction Probe`t方向探针`t怀旧服-技能#9999992`t`r`n" +
+    "Moves the user down.`t使角色向下移动。`t怀旧服-技能说明#9999992`tHenesys.gg当前技能说明`r`n" +
+    "Scope Probe`t范围探针`t怀旧服-技能#9999993`t`r`n" +
+    "Recovers HP for some party members for 30 sec.`t30秒内为部分队员恢复HP。`t怀旧服-技能说明#9999993`tHenesys.gg当前技能说明`r`n"
+[IO.File]::AppendAllText($r2bTsv, $r2bRowsText, (New-Object Text.UTF8Encoding($false)))
+$r2bStore = NewStore $r2bTsv
+try {
+    $r2bCases = @(
+        @('Relation Probe', 'Increases attack speed when using a sword and a shield.', '或', 'relation'),
+        @('Direction Probe', 'Moves the user up.', '向下', 'direction'),
+        @('Scope Probe', 'Recovers HP for all party members for 30 sec.', '部分', 'scope')
+    )
+    foreach ($case in $r2bCases) {
+        $rows = [object[]]@(
+            (NewLine $case[0] 40 20 240 18),
+            (NewLine '[Master Level: 3]' 40 48 160 14),
+            (NewLine $case[1] 40 70 700 30),
+            (NewLine '[Current Level 1] MP -12; Recovery rate 40%' 40 110 640 20),
+            (NewLine '[Next Level 2] MP -14; Recovery rate 42%' 40 140 640 20)
+        )
+        $run = RunPlan -store $r2bStore -rows $rows -width 900 -height 280
+        AssertBodyNotWrong $run $case[2] ("production " + $case[3])
+    }
+}
+finally {
+    Remove-Item -LiteralPath $r2bTsv -Force -ErrorAction SilentlyContinue
 }
 
 # Full skill panel: name, max level, complete body, prerequisite, current and next.

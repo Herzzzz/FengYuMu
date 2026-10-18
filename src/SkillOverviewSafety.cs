@@ -33,12 +33,18 @@ namespace MapleOverlay
             "burn", "element", "weapon", "magic", "physical"
         };
         private static readonly HashSet<string> StopWords = new HashSet<string>(
-            new string[] { "a", "an", "the", "of", "for", "to", "in", "on", "with",
-                "and", "or", "is", "are", "be", "by", "at", "from", "this", "that",
-                "it", "its", "as", "up", "down", "all", "any", "some", "user",
-                "can", "will", "has", "have", "into", "their", "they", "them",
-                "character", "skill", "effect", "level", "sec", "second", "seconds",
+            new string[] { "a", "an", "the", "of", "for", "to", "in", "on",
+                "is", "are", "be", "by", "at", "this", "that",
+                "it", "its", "as", "can", "will", "has", "have",
+                "their", "they", "them", "level", "sec", "second", "seconds",
                 "min", "minute", "minutes" }, StringComparer.Ordinal);
+        private static readonly HashSet<string> SemanticTokens = new HashSet<string>(
+            new string[] { "and", "or", "up", "down", "all", "any", "some",
+                "both", "each", "every", "only", "with", "without", "from",
+                "into", "before", "after", "when", "unless", "if", "while",
+                "until", "once", "not", "no", "never", "cannot", "can't",
+                "cant", "won't", "wont", "user", "character", "enemy",
+                "enemies", "party", "member", "members" }, StringComparer.Ordinal);
 
         internal static bool IsSafeOverview(string observed, string candidateEnglish,
             string translated, bool templateSubstitution, out string reason)
@@ -155,6 +161,9 @@ namespace MapleOverlay
         private static bool TokenEquivalent(string left, string right)
         {
             if (String.Equals(left, right, StringComparison.Ordinal)) return true;
+            // Logic relations, direction and object scope are never OCR noise.
+            // They may not be swapped or skipped by a one-glyph tolerance.
+            if (SemanticTokens.Contains(left) || SemanticTokens.Contains(right)) return false;
             if (left == null || right == null || left.Length < 4 || right.Length < 4) return false;
             if (left.Length != right.Length) return false;
             return EditDistance(left, right) <= 1;
