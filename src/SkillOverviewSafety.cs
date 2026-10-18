@@ -44,6 +44,22 @@ namespace MapleOverlay
             string translated, bool templateSubstitution, out string reason)
         {
             reason = "";
+            if (String.IsNullOrWhiteSpace(observed) || String.IsNullOrWhiteSpace(candidateEnglish) ||
+                String.IsNullOrWhiteSpace(translated))
+            { reason = "empty-source"; return false; }
+
+            // Signs, values, units and their attributes must be checked on the raw
+            // text. Normalize() intentionally discards punctuation such as '-', so
+            // checking after it would turn Recover HP -10 into Recover HP 10.
+            if (!RawNumericsPreserved(observed, candidateEnglish))
+            { reason = "raw-numeric-candidate-mismatch"; return false; }
+            if (!RawNumericsPreserved(observed, translated, true))
+            { reason = "raw-numeric-translation-mismatch"; return false; }
+            if (!ConditionsMatch(observed, candidateEnglish))
+            { reason = "condition-relation-mismatch"; return false; }
+            if (!TargetConditionsMatch(observed, translated))
+            { reason = "condition-translation-mismatch"; return false; }
+
             string source = TranslationStore.Normalize(observed ?? "");
             string candidate = TranslationStore.Normalize(candidateEnglish ?? "");
             string target = TranslationStore.Normalize(translated ?? "");
@@ -83,25 +99,365 @@ namespace MapleOverlay
             if (!templateSubstitution && !PreservesVisibleNumbers(source, candidate, exactCandidate))
             { reason = "numeric-candidate-mismatch"; return false; }
 
-            string sourceWords = NumberPattern.Replace(source, " # ");
-            string candidateWords = NumberPattern.Replace(candidate, " # ");
-            HashSet<string> sourceSignificant = SignificantWords(sourceWords);
-            HashSet<string> candidateSignificant = SignificantWords(candidateWords);
-            if (sourceSignificant.Count == 0) { reason = "no-significant-source"; return false; }
-            int common = 0;
-            foreach (string word in sourceSignificant) if (candidateSignificant.Contains(word)) common++;
-            float coverage = (float)common / sourceSignificant.Count;
-            if (coverage < 0.72f) { reason = "source-coverage-low"; return false; }
-            if (candidateSignificant.Count > 0)
-            {
-                int reverse = 0;
-                foreach (string word in candidateSignificant) if (sourceSignificant.Contains(word)) reverse++;
-                float reverseCoverage = (float)reverse / candidateSignificant.Count;
-                if (reverseCoverage < 0.58f) { reason = "candidate-overreach"; return false; }
-            }
-            if (TranslationStore.DetailTextSimilarity(source, candidate) < 0.68f)
+            // Complete ordered visible coverage. A set-based percentage threshold
+            // accepted "and fly" because one new action was only a small fraction of
+            // a long sentence. Every visible content token must be covered in
+            // sequence; a limited edit-distance tolerance absorbs OCR glyph noise.
+            List<string> sourceTokens = ContentTokens(source);
+            List<string> candidateTokens = ContentTokens(candidate);
+            if (sourceTokens.Count == 0) { reason = "no-significant-source"; return false; }
+            if (!OrderedTokenCoverage(sourceTokens, candidateTokens))
+            { reason = "source-content-missing"; return false; }
+            if (!OrderedTokenCoverage(candidateTokens, sourceTokens))
+            { reason = "candidate-content-extra"; return false; }
+            if (TranslationStore.DetailTextSimilarity(source, candidate) < 0.62f)
             { reason = "sequence-similarity-low"; return false; }
             return true;
+        }
+
+        private static List<string> ContentTokens(string normalized)
+        {
+            List<string> tokens = new List<string>();
+            foreach (string raw in (normalized ?? "").Split(
+                new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                if (raw == "#" || StopWords.Contains(raw)) continue;
+                if (Regex.IsMatch(raw, @"^\d+$")) continue;
+                tokens.Add(raw);
+            }
+            return tokens;
+        }
+
+        private static bool OrderedTokenCoverage(List<string> observed, List<string> candidate)
+        {
+            int cursor = 0;
+            foreach (string wanted in observed)
+            {
+                bool found = false;
+                while (cursor < candidate.Count)
+                {
+                    if (TokenEquivalent(wanted, candidate[cursor]))
+                    {
+                        cursor++;
+                        found = true;
+                        break;
+                    }
+                    cursor++;
+                }
+                if (!found) return false;
+            }
+            return true;
+        }
+
+        // Limited OCR tolerance only: a whole content word may differ by one
+        // character. This is not a synonym/paraphrase allowance; unknown actions
+        // such as "fly" remain uncovered and force the original to be preserved.
+        private static bool TokenEquivalent(string left, string right)
+        {
+            if (String.Equals(left, right, StringComparison.Ordinal)) return true;
+            if (left == null || right == null || left.Length < 4 || right.Length < 4) return false;
+            if (left.Length != right.Length) return false;
+            return EditDistance(left, right) <= 1;
+        }
+
+        private static int EditDistance(string left, string right)
+        {
+            int[] previous = new int[right.Length + 1];
+            int[] current = new int[right.Length + 1];
+            for (int j = 0; j <= right.Length; j++) previous[j] = j;
+            for (int i = 1; i <= left.Length; i++)
+            {
+                current[0] = i;
+                for (int j = 1; j <= right.Length; j++)
+                {
+                    int cost = left[i - 1] == right[j - 1] ? 0 : 1;
+                    int a = current[j - 1] + 1;
+                    int b = previous[j] + 1;
+                    int c = previous[j - 1] + cost;
+                    current[j] = Math.Min(a, Math.Min(b, c));
+                }
+                int[] swap = previous; previous = current; current = swap;
+            }
+            return previous[right.Length];
+        }
+
+        private sealed class ConditionClause
+        {
+            internal string Relation = "";
+            internal string Scope = "";
+        }
+
+        private static readonly Regex ConditionMarkerPattern = new Regex(
+            @"\b(?:unless|whenever|when|while|only\s+if|before|after|until|if|once|during)\b",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        private static bool ConditionsMatch(string observed, string candidate)
+        {
+            List<ConditionClause> left = ConditionClauses(observed);
+            List<ConditionClause> right = ConditionClauses(candidate);
+            if (left.Count != right.Count) return false;
+            for (int i = 0; i < left.Count; i++)
+            {
+                if (!String.Equals(left[i].Relation, right[i].Relation, StringComparison.Ordinal))
+                    return false;
+                List<string> a = ContentTokens(TranslationStore.Normalize(left[i].Scope));
+                List<string> b = ContentTokens(TranslationStore.Normalize(right[i].Scope));
+                if (!OrderedTokenCoverage(a, b) || !OrderedTokenCoverage(b, a)) return false;
+            }
+            return true;
+        }
+
+        private static List<ConditionClause> ConditionClauses(string text)
+        {
+            List<ConditionClause> clauses = new List<ConditionClause>();
+            string raw = VisibleRaw(text);
+            MatchCollection markers = ConditionMarkerPattern.Matches(raw);
+            for (int i = 0; i < markers.Count; i++)
+            {
+                Match marker = markers[i];
+                int start = marker.Index + marker.Length;
+                int end = raw.Length;
+                if (i + 1 < markers.Count) end = markers[i + 1].Index;
+                int punctuation = raw.IndexOfAny(new char[] { ',', '.', ';', ':', '!', '?' }, start);
+                if (punctuation >= 0 && punctuation < end) end = punctuation;
+                string scope = raw.Substring(start, Math.Max(0, end - start)).Trim();
+                if (scope.Length == 0) continue;
+                string relation = marker.Value.ToLowerInvariant()
+                    .Replace("  ", " ").Trim();
+                if (relation == "whenever") relation = "when";
+                if (relation == "during") relation = "while";
+                if (relation == "only if") relation = "only-if";
+                clauses.Add(new ConditionClause { Relation = relation, Scope = scope });
+            }
+            return clauses;
+        }
+
+        private static bool TargetConditionsMatch(string observed, string translated)
+        {
+            List<ConditionClause> clauses = ConditionClauses(observed);
+            string target = translated ?? "";
+            foreach (ConditionClause clause in clauses)
+            {
+                if (!Regex.IsMatch(target, ChineseConditionPattern(clause.Relation)))
+                    return false;
+                foreach (KeyValuePair<string, string> weapon in ScopeTargetPatterns)
+                {
+                    if (!Regex.IsMatch(TranslationStore.Normalize(clause.Scope),
+                        weapon.Key, RegexOptions.IgnoreCase)) continue;
+                    if (!Regex.IsMatch(target, weapon.Value, RegexOptions.IgnoreCase)) return false;
+                }
+            }
+            return true;
+        }
+
+        private static string ChineseConditionPattern(string relation)
+        {
+            switch (relation)
+            {
+                case "unless": return @"(?:除非|若不|如果不|否则)";
+                case "if": return @"(?:如果|若|假如|要是|倘若)";
+                case "when": return @"(?:当|时|一旦)";
+                case "while": return @"(?:同时|期间|过程|在.{0,10}时|一边|并)";
+                case "before": return @"(?:之前|以前|前)";
+                case "after": return @"(?:之后|以后|后)";
+                case "until": return @"(?:直到|直至)";
+                case "once": return @"(?:一旦|一经)";
+                case "only-if": return @"(?:只有|仅当|仅在|除非)";
+                default: return @"(?:如果|若|当|时|除非|之前|之后|直到|一旦)";
+            }
+        }
+
+        // English scope token -> required Chinese evidence. The condition relation
+        // itself is checked above; this keeps the associated weapon/scope visible.
+        private static readonly KeyValuePair<string, string>[] ScopeTargetPatterns =
+            new KeyValuePair<string, string>[] {
+                new KeyValuePair<string,string>("crossbow", @"(?:弩|十字弓)"),
+                new KeyValuePair<string,string>("polearm", @"(?:矛|枪|长柄)"),
+                new KeyValuePair<string,string>("blunt weapon", @"(?:钝器|钝武)"),
+                new KeyValuePair<string,string>("one-handed sword", @"剑"),
+                new KeyValuePair<string,string>("two-handed sword", @"剑"),
+                new KeyValuePair<string,string>("sword", @"剑"),
+                new KeyValuePair<string,string>("axe", @"斧"),
+                new KeyValuePair<string,string>("spear", @"(?:矛|枪)"),
+                new KeyValuePair<string,string>("bow", @"弓"),
+                new KeyValuePair<string,string>("claw", @"(?:爪|拳套)"),
+                new KeyValuePair<string,string>("dagger", @"(?:匕首|短剑)"),
+                new KeyValuePair<string,string>("wand", @"杖"),
+                new KeyValuePair<string,string>("staff", @"杖"),
+                new KeyValuePair<string,string>("shield", @"盾")
+            };
+
+        private static string VisibleRaw(string text)
+        {
+            string body = Regex.Replace(text ?? "",
+                @"^\s*\[?Master\s+Level\s*:?\s*\d+\]?\s*", "", RegexOptions.IgnoreCase);
+            return Regex.Split(body, @"\bRequired\s+Skill\s*:", RegexOptions.IgnoreCase)[0].Trim();
+        }
+
+        private sealed class RawNumberFact
+        {
+            internal string Sign = "+";
+            internal string Value = "";
+            internal string Unit = "";
+            internal string Attribute = "";
+        }
+
+        private static readonly Regex RawNumberPattern = new Regex(
+            @"(?<![A-Za-z0-9])(?<sign>[+\-\u2212])?\s*(?<value>\d+(?:[.,]\d+)?)" +
+            @"\s*(?<unit>%|％|max\s*hp|max\s*mp|hp|mp|seconds?|secs?|minutes?|mins?|levels?|lv\.?|级|秒|分钟)?",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        private static bool RawNumericsPreserved(string observed, string translated)
+        {
+            return RawNumericsPreserved(observed, translated, false);
+        }
+
+        private static bool RawNumericsPreserved(string observed, string translated,
+            bool allowClauseReorder)
+        {
+            List<RawNumberFact> left = RawNumberFacts(observed);
+            List<RawNumberFact> right = RawNumberFacts(translated);
+            if (left.Count != right.Count) return false;
+            if (allowClauseReorder)
+            {
+                if (!RawTargetAttributesVisible(observed, translated)) return false;
+                List<string> a = new List<string>();
+                List<string> b = new List<string>();
+                foreach (RawNumberFact fact in left) a.Add(RawValueKey(fact));
+                foreach (RawNumberFact fact in right) b.Add(RawValueKey(fact));
+                a.Sort(StringComparer.Ordinal);
+                b.Sort(StringComparer.Ordinal);
+                for (int i = 0; i < a.Count; i++)
+                    if (a[i] != b[i]) return false;
+                return true;
+            }
+            for (int i = 0; i < left.Count; i++)
+            {
+                if (left[i].Sign != right[i].Sign ||
+                    left[i].Value != right[i].Value ||
+                    left[i].Unit != right[i].Unit ||
+                    left[i].Attribute != right[i].Attribute) return false;
+            }
+            return true;
+        }
+
+        private static string RawFactKey(RawNumberFact fact)
+        {
+            return fact.Sign + "|" + fact.Value + "|" + fact.Unit + "|" + fact.Attribute;
+        }
+
+        private static string RawValueKey(RawNumberFact fact)
+        {
+            return fact.Sign + "|" + fact.Value + "|" + fact.Unit;
+        }
+
+        private static bool RawTargetAttributesVisible(string observed, string translated)
+        {
+            string target = translated ?? "";
+            foreach (RawNumberFact fact in RawNumberFacts(observed))
+            {
+                if (fact.Attribute == "hp" &&
+                    !Regex.IsMatch(target, @"(?:hp|生命|血量)", RegexOptions.IgnoreCase)) return false;
+                if (fact.Attribute == "mp" &&
+                    !Regex.IsMatch(target, @"(?:mp|魔力|魔法)", RegexOptions.IgnoreCase)) return false;
+                if (fact.Attribute == "damage" &&
+                    !Regex.IsMatch(target, @"(?:伤害|损伤)")) return false;
+            }
+            return true;
+        }
+
+        private static List<RawNumberFact> RawNumberFacts(string text)
+        {
+            List<RawNumberFact> facts = new List<RawNumberFact>();
+            string raw = VisibleRaw(text);
+            foreach (Match match in RawNumberPattern.Matches(raw))
+            {
+                int next = match.Index + match.Length;
+                string rest = raw.Substring(next, Math.Min(4, raw.Length - next));
+                if (Regex.IsMatch(rest, @"^\s*(?:st|nd|rd|th)\b", RegexOptions.IgnoreCase)) continue;
+                string value = Regex.Replace(match.Groups["value"].Value, ",", "");
+                decimal number;
+                if (!Decimal.TryParse(value, System.Globalization.NumberStyles.Number,
+                    System.Globalization.CultureInfo.InvariantCulture, out number)) continue;
+                string sign = match.Groups["sign"].Value;
+                if (sign == "\u2212") sign = "-";
+                if (sign.Length == 0)
+                {
+                    string before = raw.Substring(Math.Max(0, match.Index - 6),
+                        Math.Min(6, match.Index));
+                    sign = Regex.IsMatch(before, @"(?:减少|降低|扣除|损失|减|负)\s*$") ? "-" : "+";
+                }
+                string unit = RawUnit(match.Groups["unit"].Value);
+                string attribute = RawAttribute(raw, match.Index, next, unit);
+                facts.Add(new RawNumberFact {
+                    Sign = sign == "-" ? "-" : "+",
+                    Value = number.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                    Unit = unit,
+                    Attribute = attribute
+                });
+            }
+            return facts;
+        }
+
+        private static string RawUnit(string unit)
+        {
+            string value = (unit ?? "").Trim().ToLowerInvariant();
+            if (value == "%" || value == "％") return "%";
+            if (value == "hp" || value == "max hp") return "hp";
+            if (value == "mp" || value == "max mp") return "mp";
+            if (value.StartsWith("sec") || value == "秒") return "sec";
+            if (value.StartsWith("min") || value == "分钟") return "min";
+            if (value.StartsWith("level") || value.StartsWith("lv") || value == "级") return "level";
+            return "";
+        }
+
+        private static string RawAttribute(string raw, int index, int next, string unit)
+        {
+            if (unit == "hp" || unit == "mp" || unit == "sec" || unit == "min" || unit == "level")
+                return unit == "sec" || unit == "min" ? "time" : unit;
+            string lower = raw.ToLowerInvariant();
+            bool percent = raw.Substring(index, Math.Max(0, next - index))
+                .IndexOf('%') >= 0 || raw.Substring(index, Math.Max(0, next - index))
+                .IndexOf('％') >= 0;
+            string direct = DirectFollowingCategory(lower, next);
+            if (direct.Length > 0) return direct;
+            if (percent)
+            {
+                string before = lower.Substring(Math.Max(0, index - 28),
+                    Math.Min(28, index));
+                if (Regex.IsMatch(before, @"(?:chance|rate|probability|几率|概率)",
+                    RegexOptions.IgnoreCase)) return "chance";
+            }
+            string category = "unbound";
+            int following = Int32.MaxValue, preceding = Int32.MaxValue;
+            string followingKey = "", precedingKey = "";
+            foreach (string key in AttributeKeys)
+            {
+                if (percent && (key == "level" || key == "等级" || key == "级")) continue;
+                int at = lower.IndexOf(key, StringComparison.Ordinal);
+                while (at >= 0)
+                {
+                    int end = at + key.Length;
+                    if (at >= next)
+                    {
+                        int distance = at - next;
+                        if (distance < following) { following = distance; followingKey = key; }
+                    }
+                    else if (end <= index)
+                    {
+                        int distance = index - end;
+                        if (distance < preceding) { preceding = distance; precedingKey = key; }
+                    }
+                    at = lower.IndexOf(key, at + 1, StringComparison.Ordinal);
+                }
+            }
+            if (following <= 30 && following <= preceding)
+                category = AttributeCategory(followingKey);
+            else if (preceding <= 30)
+                category = AttributeCategory(precedingKey);
+            if (category == "unbound" && unit.Length > 0)
+                category = unit == "sec" || unit == "min" ? "time" : unit;
+            return category;
         }
 
         // Ordinal words such as "4th" are routinely localized as 第四. They are
@@ -116,6 +472,12 @@ namespace MapleOverlay
         internal static bool IsSafeFallback(string observed, string translated, out string reason)
         {
             reason = "";
+            if (String.IsNullOrWhiteSpace(observed) || String.IsNullOrWhiteSpace(translated))
+            { reason = "empty-source"; return false; }
+            if (!RawNumericsPreserved(observed, translated, true))
+            { reason = "raw-numeric-translation-mismatch"; return false; }
+            if (!TargetConditionsMatch(observed, translated))
+            { reason = "condition-translation-mismatch"; return false; }
             string source = TranslationStore.Normalize(observed ?? "");
             string target = TranslationStore.Normalize(translated ?? "");
             if (source.Length == 0 || target.Length == 0) { reason = "empty-source"; return false; }
@@ -191,10 +553,11 @@ namespace MapleOverlay
             "range", "范围", "duration", "持续", "cooldown", "冷却",
             "defense", "defence", "防御", "attack", "攻击", "speed", "速度",
             "accuracy", "命中", "targets", "target", "enemies", "enemy", "目标", "敌人",
+            "monsters", "monster", "怪物",
             "times", "次", "mastery", "熟练度", "recovery", "recover", "恢复",
             "heal", "治疗", "critical", "暴击", "stun", "眩晕", "poison", "中毒",
             "burn", "burning", "燃烧", "freeze", "冻结", "jump", "跳跃",
-            "combo", "combos", "连击", "orb", "orbs", "连击点",
+            "combo", "combos", "连击", "组合攻击", "orb", "orbs", "连击点",
             "stats", "stat", "属性"
         };
 
@@ -303,7 +666,8 @@ namespace MapleOverlay
                 case "speed": case "速度": return "speed";
                 case "accuracy": case "命中": return "accuracy";
                 case "targets": case "target": case "enemies": case "enemy":
-                case "目标": case "敌人": return "target";
+                case "monsters": case "monster": case "目标": case "敌人": case "怪物":
+                    return "target";
                 case "times": case "次": return "times";
                 case "mastery": case "熟练度": return "mastery";
                 case "recovery": case "recover": case "恢复":
@@ -314,7 +678,7 @@ namespace MapleOverlay
                 case "burn": case "burning": case "燃烧": return "burn";
                 case "freeze": case "冻结": return "freeze";
                 case "jump": case "跳跃": return "jump";
-                case "combo": case "combos": case "连击":
+                case "combo": case "combos": case "连击": case "组合攻击":
                 case "orb": case "orbs": case "连击点": return "combo";
                 case "stats": case "stat": case "属性": return "stats";
                 default: return "unbound";
@@ -357,9 +721,18 @@ namespace MapleOverlay
             foreach (string token in AttributeTokens)
             {
                 string expression = Regex.Escape(token).Replace(@"\ ", @"\s+");
-                signature.Append(Regex.IsMatch(" " + text + " ",
+                bool present = Regex.IsMatch(" " + text + " ",
                     @"(?<![a-z0-9])" + expression + @"(?![a-z0-9])",
-                    RegexOptions.IgnoreCase) ? '1' : '0');
+                    RegexOptions.IgnoreCase);
+                if (!present && token.Length >= 4)
+                {
+                    foreach (string word in (text ?? "").Split(
+                        new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        if (TokenEquivalent(token, word)) { present = true; break; }
+                    }
+                }
+                signature.Append(present ? '1' : '0');
             }
             return signature.ToString();
         }

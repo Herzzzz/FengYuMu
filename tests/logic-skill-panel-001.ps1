@@ -220,6 +220,48 @@ $unrelated = TryOverview 'An unrelated story lasts for 30 sec.' '1001'
 Check (-not $unrelated.Ok -and $unrelated.Text -eq '') 'unrelated visible sentence is not replaced by the known Recovery overview'
 $exactOverview = TryOverview 'Enables the user to recover HP constantly for 30 sec.' '1001'
 Check ($exactOverview.Ok -and $exactOverview.Text.Contains('30秒') -and $exactOverview.Text.Contains('恢复HP')) 'exact visible overview still translates with its 30-second association'
+$safetyType = $assembly.GetType('MapleOverlay.SkillOverviewSafety', $true)
+$safetyMethod = $safetyType.GetMethod('IsSafeOverview', $flags)
+function IsSafeOverviewProbe([string]$observed, [string]$candidate, [string]$translated) {
+    $arg = New-Object 'object[]' 5
+    $arg[0] = $observed; $arg[1] = $candidate; $arg[2] = $translated
+    $arg[3] = $false; $arg[4] = ''
+    return [bool]$safetyMethod.Invoke($null, $arg)
+}
+$baseRecovery = 'Enables the user to recover HP constantly for 30 sec.'
+$baseRecoveryChinese = '可在30秒内持续恢复HP。'
+Check (-not (IsSafeOverviewProbe ($baseRecovery + ' and fly.') $baseRecovery $baseRecoveryChinese)) 'appended unknown action and fly is not covered'
+Check (-not (IsSafeOverviewProbe ($baseRecovery + ' and then dash.') $baseRecovery $baseRecoveryChinese)) 'appended unknown action and then dash is not covered'
+Check (-not (IsSafeOverviewProbe $baseRecovery ($baseRecovery + ' and fly.') $baseRecoveryChinese)) 'candidate-only extra action is rejected'
+$whenSword = 'Enables the user to recover HP constantly for 30 sec. when using a sword.'
+$unlessSword = 'Enables the user to recover HP constantly for 30 sec. unless using a sword.'
+$whenSwordChinese = '使用剑时，可在30秒内持续恢复HP。'
+Check (-not (IsSafeOverviewProbe $unlessSword $whenSword $whenSwordChinese)) 'unless cannot be borrowed from when using a sword'
+$beforeSword = 'Enables the user to recover HP constantly for 30 sec. before using a sword.'
+$afterSword = 'Enables the user to recover HP constantly for 30 sec. after using a sword.'
+Check (-not (IsSafeOverviewProbe $beforeSword $afterSword '使用剑后，可在30秒内持续恢复HP。')) 'before cannot be borrowed from after using a sword'
+Check (-not (IsSafeOverviewProbe $whenSword 'Enables the user to recover HP constantly for 30 sec. when using an axe.' $whenSwordChinese)) 'condition scope weapon must match'
+Check (-not (IsSafeOverviewProbe 'Recover HP -10 for 30 sec.' 'Recover HP 10 for 30 sec.' '恢复HP 10，持续30秒')) 'negative HP recovery cannot borrow a positive candidate'
+Check (IsSafeOverviewProbe 'Recover HP -10 for 30 sec.' 'Recover HP -10 for 30 sec.' '减少10点HP，持续30秒。') 'negative HP recovery keeps its raw sign and associated attribute'
+Check (IsSafeOverviewProbe 'Enables the user to recoves HP constantly for 30 sec.' $baseRecovery $baseRecoveryChinese) 'limited single-glyph OCR tolerance remains available'
+Check (IsSafeOverviewProbe $whenSword $whenSword $whenSwordChinese) 'matching when condition and scope still translates'
+Check (-not (IsSafeOverviewProbe $whenSword $whenSword '除非使用剑，可在30秒内持续恢复HP。')) 'target unless cannot satisfy a source when relation'
+$fallbackMethod = $safetyType.GetMethod('IsSafeFallback', $flags)
+function IsSafeFallbackProbe([string]$observed, [string]$translated) {
+    $arg = New-Object 'object[]' 3
+    $arg[0] = $observed; $arg[1] = $translated; $arg[2] = ''
+    return [bool]$fallbackMethod.Invoke($null, $arg)
+}
+Check (-not (IsSafeFallbackProbe $unlessSword $whenSwordChinese)) 'fallback rejects the wrong when/unless relation'
+Check (-not (IsSafeFallbackProbe 'Recover HP -10 for 30 sec.' '恢复HP 10，持续30秒')) 'fallback rejects a positive translation of a negative fact'
+$vocabularyMethod = $storeType.GetMethod('TryTranslateEffectVocabulary', $flags)
+$vocabularyArg = New-Object 'object[]' 2
+$vocabularyArg[0] = ($baseRecovery + ' and fly.'); $vocabularyArg[1] = ''
+Check (-not [bool]$vocabularyMethod.Invoke($store, $vocabularyArg)) 'full-text fallback does not silently drop an unknown action'
+$flyOverview = TryOverview ($baseRecovery + ' and fly.') '1001'
+Check (-not $flyOverview.Ok -and $flyOverview.Text -eq '') 'dictionary overview path rejects an appended unknown action'
+$unlessOverview = TryOverview 'Increases Claw Mastery and Attack Power, and gives a chance to recover used throwing stars unless using throwing star attacks. Only applies when a claw is equipped.' '4100000'
+Check (-not $unlessOverview.Ok -and $unlessOverview.Text -eq '') 'dictionary overview path rejects when/unless relation substitution'
 $r2Rows = [object[]]@(
     (NewLine 'Recovery' 40 30 200 18),
     (NewLine '[Master Level: 3]' 40 60 160 14),
@@ -242,6 +284,72 @@ $r2Unrelated = RunPlan -store $store -rows ([object[]]@(
 )) -width 900 -height 260
 $r2UnrelatedBody = $r2Unrelated.Labels | Where-Object { (GetLabelField $_ 'SemanticRole') -eq 'skill-body' } | Select-Object -First 1
 Check ($null -eq $r2UnrelatedBody) 'unrelated body is not replaced by a 30-second known overview'
+function AssertLevelsPainted([object]$run, [string]$label) {
+    $roles = Roles $run.Labels
+    Check ((HasRole $roles 'skill-current-body') -and (HasRole $roles 'skill-next-body')) "${label}: safe current and next remain planned"
+    Check ($run.Compose -and $run.Ready -eq $run.Labels.Count) "${label}: safe current/next still compose"
+}
+function AssertBodyRejectedLevelsPainted([object]$run, [string]$label) {
+    $roles = Roles $run.Labels
+    Check (-not (HasRole $roles 'skill-body')) "${label}: body is preserved"
+    AssertLevelsPainted $run $label
+    $preserved = $false
+    foreach ($section in (GetSections $run.Plan)) {
+        if ((GetSectionField $section 'Role') -eq 'skill-body' -and
+            (GetSectionField $section 'Status') -eq 'preserved') { $preserved = $true }
+    }
+    Check ($preserved) "${label}: plan records a preserved body"
+}
+$r2aFlyRows = [object[]]@(
+    (NewLine 'Recovery' 40 20 200 18),
+    (NewLine '[Master Level: 3]' 40 48 160 14),
+    (NewLine 'Enables the user to recover HP constantly for 30 sec. and fly.' 40 70 700 30),
+    (NewLine '[Current Level 1] MP -12; Recovery rate 40%' 40 110 640 20),
+    (NewLine '[Next Level 2] MP -14; Recovery rate 42%' 40 140 640 20)
+)
+$r2aFly = RunPlan -store $store -rows $r2aFlyRows -width 900 -height 260
+AssertBodyRejectedLevelsPainted $r2aFly 'appended action'
+$r2aConditionRows = [object[]]@(
+    (NewLine 'Claw Mastery' 40 20 240 18),
+    (NewLine '[Master Level: 20]' 40 48 160 14),
+    (NewLine 'Increases Claw Mastery and Attack Power, and gives a chance to recover used throwing stars unless using throwing star attacks. Only applies when a claw is equipped.' 40 70 760 40),
+    (NewLine '[Current Level 1] MP -12; Recovery rate 40%' 40 120 640 20),
+    (NewLine '[Next Level 2] MP -14; Recovery rate 42%' 40 150 640 20)
+)
+$r2aCondition = RunPlan -store $store -rows $r2aConditionRows -width 900 -height 280
+AssertBodyRejectedLevelsPainted $r2aCondition 'condition relation'
+$signTsv = Join-Path $env:TEMP ('skill-r2a-sign-' + [Guid]::NewGuid().ToString('N') + '.tsv')
+Copy-Item (Join-Path $repoRoot '枫语幕词库.tsv') $signTsv
+$signRowsText = "Sign Probe`t符号探针`t怀旧服-技能#9999998`t`r`n" +
+    "Recover HP 10 for 30 sec.`t恢复HP 10，持续30秒`t怀旧服-技能说明#9999998`tHenesys.gg当前技能说明`r`n"
+[IO.File]::AppendAllText($signTsv, $signRowsText, (New-Object Text.UTF8Encoding($false)))
+$signStore = NewStore $signTsv
+try {
+    $r2aSignRows = [object[]]@(
+        (NewLine 'Sign Probe' 40 20 240 18),
+        (NewLine '[Master Level: 3]' 40 48 160 14),
+        (NewLine 'Recover HP -10 for 30 sec.' 40 70 500 24),
+        (NewLine '[Current Level 1] MP -12; Recovery rate 40%' 40 110 640 20),
+        (NewLine '[Next Level 2] MP -14; Recovery rate 42%' 40 140 640 20)
+    )
+    $r2aSign = RunPlan -store $signStore -rows $r2aSignRows -width 900 -height 260
+    $signBody = $r2aSign.Labels | Where-Object { (GetLabelField $_ 'SemanticRole') -eq 'skill-body' } | Select-Object -First 1
+    $signText = if ($null -eq $signBody) { '' } else { [string](GetLabelField $signBody 'Text') }
+    Check ($null -eq $signBody -or $signText.Contains('-10') -or $signText.Contains('减少10')) 'raw sign: the body never becomes positive 10'
+    AssertLevelsPainted $r2aSign 'raw sign'
+    if ($null -eq $signBody) {
+        $signPlan = $r2aSign.Plan
+        $signPreserved = $false
+        foreach ($section in (GetSections $signPlan)) {
+            if ((GetSectionField $section 'Role') -eq 'skill-body' -and
+                (GetSectionField $section 'Status') -eq 'preserved') { $signPreserved = $true }
+        }
+        Check ($signPreserved) 'raw sign: rejected body is recorded as preserved'
+    }
+}
+finally {
+    Remove-Item -LiteralPath $signTsv -Force -ErrorAction SilentlyContinue
+}
 
 # Full skill panel: name, max level, complete body, prerequisite, current and next.
 $healRows = [object[]]@(
