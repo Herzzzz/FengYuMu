@@ -1,7 +1,7 @@
 {
   "workItem": "ITEM-001",
   "checkpoint": "CP1",
-  "state": "READY_FOR_CLOUD_REVIEW",
+  "state": "CP1_ACCEPTED",
   "branch": "dsh/item-001",
   "baselineCommit": "68094394080a6c951f6c3fd998150fc4266f992c",
   "implementationCommit": "ea7439a",
@@ -57,6 +57,12 @@
     "formalRelease": "NOT_PERFORMED"
   },
   "wipDependency": "ItemTextIndex.cs and ItemTextSemantics.cs are included for a reproducible build but remain frozen CP2 work; their known shared-description failure is not claimed fixed by CP1.",
+  "cloudAcceptance": {
+    "decision": "CP1 PASS",
+    "reviewedCommits": ["ea7439a", "cf98099", "7a6634e"],
+    "blockingIssues": 0,
+    "note": "Cloud independently checked source, crop evidence and trace ordering, and reran simple-flow 33/33. F065 crop-only delta is 1578 pixels; 3440 is the full-frame delta recorded locally."
+  },
   "untouchedUntrackedFiles": [
     "main_ui_live_ai.png",
     "main_ui_live_dashboard.png",
