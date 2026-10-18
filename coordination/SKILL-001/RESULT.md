@@ -5,17 +5,17 @@
 - Tool: DeepSeek Harness (DSH) on Windows, PowerShell 7, .NET SDK 6.0.410 Roslyn.
 - Branch: `dsh/skill-001`.
 - Base commit: `bb4f9c361d5cc0ddef05d8cbdecfe95772eebe05` (EQUIP-001 R3b).
-- Implementation commit: `5b6c9b07e2f870f1d626f7060eca76e0436da100`.
+- Implementation commit: `b1b0f21cc089ee9f11cdd601687601866e265aba`.
 - Result files commit: reported in the final relay message; this file is committed
   with the result.
 - EXE: `D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe`; SHA-256
-  `45ED9F51C4274AD80977A99122CDECD58455F27A105C0A600B58F5DCF865DFE1`.
+  `3A157488643C7DF647488848E261D421FBAEA42A8746490CBD9D64D41801ADA7`.
 - Build evidence: `枫语幕.exe.build.json`; SHA-256
-  `437EECC71DAB158302B31B57BE59A0C50B6B6E7BCF98CBF1F2E0699FBEB7CC5F`;
-  head `5b6c9b0`, 67 inputs. The tracked worktree was clean; only the pre-existing
-  untracked `main_ui_live_*.png` application captures were present. Those captures
-  are the app UI, **not** skill-tooltip evidence, and were not committed or used as
-  skill-rendering proof.
+  `190D143DCA301862DBF5C8DA0A42F1006E2685D5270EAC844DD92FFD83D25F8C`;
+  head `b1b0f21`, 68 inputs. The tracked worktree contained the R1-R7 source and
+  test changes; only the pre-existing untracked `main_ui_live_*.png` application
+  captures were present. Those captures are the app UI, **not** skill-tooltip
+  evidence, and were not committed or used as skill-rendering proof.
 
 ## Diagnosis
 
@@ -51,13 +51,53 @@ context, and a trailing level digit had no protected span.
 
 Baseline evidence: `evidence/baseline-skill-panel-probe.txt`.
 
+## Cloud review R1-R7 response
+
+The second review returned `NEEDS_CHANGES`; only R1-R7 were handled. Existing
+source changes and ITEM/CAPTURE work were left alone.
+
+- **R1 identity:** exact name occurrences are stored with start/length. Only a
+  shorter occurrence contained inside a longer occurrence is discarded;
+  independently positioned names remain in the ambiguity set. Therefore
+  `Magic Guard Recovery` and `Critical Recovery Recovery` return no id, while
+  `Critical Recovery` remains `4100002`.
+- **R2 overview safety:** every candidate and the full-text fallback passes
+  `SkillOverviewSafety` for visible-source coverage, negation, conditions,
+  restriction classes, attribute set and numeric association. A known id can no
+  longer replace `Never recover HP constantly for 30 sec.` or
+  `An unrelated story lasts for 30 sec.`; unsafe prose keeps its original pixels.
+- **R3 header/effect:** a failed effect uses only a measured header span. The
+  effect region is untouched and recorded as `preserved`; the header is recorded
+  separately. A successful header cannot mean a successful section.
+- **R4 measured confidence:** `SkillTextRow` carries `Measured`/`Synthetic`, the
+  splitter rebuilds synthetic rows from word-level slices, and `AddSpanRows`
+  ANDs the confidence. A proportional split inside one word remains estimated;
+  final labels refuse estimated sections. Wrapping cannot upgrade it.
+- **R5 list locality:** title, candidate row and neighbouring names must share a
+  local region. A header at `(40,30)` plus a standalone `Heal` at `(900,590)`,
+  a distant local list, or a player name cannot authorize replacement.
+- **R6 prerequisite relation:** the parser reads the whole relation
+  (`level N`, `at least`, `at most`, common OCR spellings). `At most Level 5
+  Heal` becomes `至多5级`; unsupported relations preserve the original instead of
+  defaulting to `至少`.
+- **R7 coverage:** the denominator is one primary visible overview per id,
+  selected from the current server description, then the full site description,
+  then a prose segment. A `[Master Level]` prefix is not required. Every item is
+  classified as expected/observed/planned/painted/preserved/absent; painted
+  requires membership in the real `simpleReady` set. The final run has
+  `264/264` observed, `232` planned, `217` painted, `47` preserved with concrete
+  reasons, `0` absent, and `164/164` multi-level panels with current and next
+  painted together. `394` other visible variants are listed separately as
+  supplemental.
+
 ## What changed
 
 ### 1. Unique identity (`src/SkillDictionaryMatching.cs`, `src/MapleOverlay.cs`)
 
-- Exact whole-name spans are now resolved with maximal-length matching. A name
-  contained inside a longer visible title no longer creates ambiguity:
-  `Critical Recovery` -> `4100002`; `Recovery` inside it is ignored.
+- Exact whole-name spans are now resolved with position-aware maximal matching.
+  A name contained inside a longer visible title no longer creates ambiguity:
+  `Critical Recovery` -> `4100002`. A second independently positioned name does:
+  `Magic Guard Recovery` and `Critical Recovery Recovery` -> no id.
 - `DetectSkillContentId` strips `[Master Level: N]`, prerequisite and
   current/next markers and resolves only from a meaningful visible body. The
   generic master row can never select a skill.
@@ -75,12 +115,19 @@ Baseline evidence: `evidence/baseline-skill-panel-probe.txt`.
   role: `skill-name`, `skill-master-level`, `skill-body`, `skill-required`,
   `skill-current-body`, `skill-next-body`.
 - `SplitSkillSemanticRows` handles a title, master header, body, prerequisite,
-  current and next sharing one OCR line. It splits at measured marker boundaries
-  and exact whole-name prefixes; proportional splits inside one OCR word are
-  recorded as estimated and never upgraded to measured.
+  current and next sharing one OCR line. It rebuilds synthetic rows from
+  word-level slices; a proportional split inside one OCR word is recorded as
+  estimated and never upgraded to measured, applied, planned or painted.
 - Description source rows stop before the prerequisite/current/next rows. The
   master and prerequisite are separate labels and are never duplicated inside
   the description.
+- A current/next header whose effect cannot be translated replaces only a
+  measured header span. The effect pixels stay original and the section records
+  header and effect status separately. A successful header is not a successful
+  section.
+- The prerequisite parser reads plain level, `at least`, `at most` and common
+  OCR spellings. Unsupported relations preserve the row rather than defaulting
+  to `至少`.
 - Only visible sections are created. A next section is not invented at max
   level; a missing title does not suppress the body or level effects; a missing
   description does not suppress the effects.
@@ -108,11 +155,11 @@ Baseline evidence: `evidence/baseline-skill-panel-probe.txt`.
 
 ### 4. Explicit list names (`src/SkillNameListPolicy.cs`, new)
 
-- A skill name is translated outside a detail panel only when there is an
-  explicit header (`SKILL INVENTORY`, `SKILL BOOK`, `SKILL POINT(S)`, `SKILLS`)
-  or at least two same-column exact skill-name rows.
-- A bare `Heal` with no list context, an ordinary sentence, a truncated name and
-  a player line are rejected.
+- A skill name is translated outside a detail panel only when the title,
+  candidate row and neighbouring names are in one local list region with an
+  explicit header, or at least two nearby same-column exact skill-name rows.
+- A bare `Heal` with no list context, an ordinary sentence, a truncated name, a
+  player line, a distant header/list, and a same-column but far row are rejected.
 - A trailing list level (`Magic Guard 3`) is excluded from the replaced name
   span and protected with `KeepClearBounds`. The single-word split is marked
   `SourceBoundaryEstimated`; it is not promoted to measured.
@@ -129,8 +176,20 @@ classification, quest matching and equipment grammar were not changed.
 
 ### Identity / semantics
 
-`tests/logic-skill-panel-001.ps1` (81 checks) covers:
+`tests/logic-skill-panel-001.ps1` (103 checks) covers:
 
+- Position-aware names: `Critical Recovery` unique; `Magic Guard Recovery` and
+  `Critical Recovery Recovery` ambiguous.
+- Overview safety: negated and unrelated 30-second sentences are preserved;
+  the exact Recovery sentence still translates with `30秒`.
+- Untranslated effect: header-only label, effect pixels untouched, separate
+  header/effect status.
+- Combined single word: estimated title/master/body not applied; a multi-word
+  row splits and composes.
+- Prerequisite: `at most` -> `至多`, `at least` -> `至少`, unsupported relation
+  preserved.
+- List locality: far header, distant local list and standalone player name
+  rejected; local list name still translates with its level guard.
 - `Critical Recovery` unique ID despite the contained `Recovery`.
 - Shared `Rush` / `Sword Mastery` names do not choose a job ID.
 - Generic master header alone does not resolve an ID.
@@ -149,42 +208,59 @@ classification, quest matching and equipment grammar were not changed.
 - No per-skill branch in the new planner, no OCR/AI call, no global bare-name
   replacement in the main dictionary pass.
 - 41 controlled screenshot-geometry panels: every planned section composes;
-  body=40, current=26, next=37 across the available rows. Six sections are
+  body=40, current=26, next=37 across the available rows. Eleven sections are
   preserved with reasons:
-  - case 14/19 Rush body: no unique shared description;
-  - case 20b/32 Amazon's Judgement body: shared description variants differ;
-  - case 22 required row: prerequisite text cannot be parsed safely;
+  - cases 4/14/16/19/20b/20f/30/32 body: no safe unique body for the visible
+    text;
+  - cases 20e/22 required row: prerequisite text cannot be parsed safely;
   - case 28 required row: prerequisite name is ambiguous.
 
   These are visible-but-unsafe sections, not normal positive cases. The
-  corpus-wide coverage below covers all shipped unique records separately.
+  corpus-wide coverage below covers all 264 primary overviews separately.
 
-### Corpus coverage (recomputed)
+### Corpus coverage (recomputed, R7)
 
 ```
 skill ids                         264
 names translated                  264/264
-overview rows available            95
-overview translations               95/95
-ids with no overview row           169  (not a translation failure)
+primary overview ids expected     264
+primary overview ids observed     264
+primary overviews planned         232
+primary overviews painted         217
+primary overviews preserved        47
+primary overviews absent            0
+supplemental visible variants     394
 level effects                     3804
 level effects translated           3804/3804
 skills with >=2 distinct effects   164
-Warrior / Magician / Bowman        85 / 73 / 53
-Thief / Beginner / Pirate          50 / 3 / 0
-1st / 2nd / 3rd                    93 / 70 / 98
+multi-level current+next painted   164/164
 ```
 
-`evidence/skill-coverage.tsv` lists every ID with class/stage band, name status,
-overview status and per-ID level-pass counts. `evidence/coverage-summary.json`
-contains the aggregate. The class/stage bands are derived from the shipped ID
-prefix only; this is not a claim of complete game coverage.
+The primary denominator is one visible overview per ID, selected from
+`Henesys.gg当前技能说明`, then `资料站完整技能说明`, then a prose segment. No
+`[Master Level]` prefix is required. Each row in
+`evidence/coverage-r1.tsv` has `expectedOverview`, `observedOverview`,
+`bodyStatus`, `bodyPlanned`, `bodyPainted`, `bodyPreserved`, `bodyReason`,
+current/next status and `multiLevelCombinedPainted`. `bodyPainted` requires the
+label to be in the real `simpleReady` set, not merely present in the plan.
+
+The 47 preserved primary overviews are accounted for: 30
+`body-translation-unavailable`, 15 `skill-section-does-not-fit` and 2
+`section-boundary-estimated`. These are safe preserves, not absent rows or
+silent omissions. The 394 non-primary visible variants remain in
+`evidence/coverage-r1-supplemental.tsv` for review; they are not added to the
+denominator as if each were a separate skill.
+
+`evidence/coverage-r1.tsv` and `evidence/coverage-r1-summary.json` are generated from the
+shipped corpus; the old 95-row master-prefix table is retained only as history
+and is superseded by this run.
 
 ### Test commands / results
 
 | Command | Result |
 | --- | --- |
-| `pwsh -NoProfile -File tests/logic-skill-panel-001.ps1 -ExePath .\枫语幕.exe` | PASS, 81 checks |
+| `pwsh -NoProfile -File tests/logic-skill-panel-001.ps1 -ExePath .\枫语幕.exe` | PASS, 103 checks |
+| `pwsh -NoProfile -File tests/logic-skill-coverage-001.ps1 -ExePath .\枫语幕.exe` | PASS, 8 checks; 217/264 painted, 47 preserved, 164/164 multi-level |
 | `pwsh -NoProfile -File tests/logic-skill-title-matching.ps1 -ExePath .\枫语幕.exe` | PASS, 13/13 |
 | `pwsh -NoProfile -File tests/logic-skill-detail-semantics.ps1 -ExePath .\枫语幕.exe` | PASS |
 | `pwsh -NoProfile -File tests/logic-equipment-fields.ps1` | PASS, 91 checks |
@@ -245,15 +321,18 @@ screenshot-geometry panels from the current repository instead.
   sectionRole/recognized/matched/planned/prepared/painted/preservedReason/
   source/content/protected/fontFamily/fontSize/fontUnit/scale/observed/expected/
   numericAssociations.
-- `evidence/skill-coverage.tsv` - 264 IDs, per-ID name/overview/effect status.
-- `evidence/coverage-summary.json` - aggregate corpus counts and UNVERIFIED
-  markers.
-- `evidence/logic-skill-panel-001-root.txt` - 81 checks against the final EXE.
-- `evidence/skill-title-matching-root.txt` - 13/13.
-- `evidence/skill-detail-semantics-root.txt` - existing detail/semantics test.
-- `evidence/logic-equipment-paint.txt`, `logic-simple-flow-r11.txt`,
-  `logic-quest-font-layout.txt`, `logic-journal-and-item-r6.txt`,
-  `logic-equipment-fields.txt` - accompanying regression logs.
+- `evidence/coverage-r1.tsv` - 264 primary rows with expected/observed/planned/
+  painted/preserved/absent, per-section status and reasons.
+- `evidence/coverage-r1-supplemental.tsv` - 394 non-primary visible variants.
+- `evidence/coverage-r1-summary.json` - aggregate counts and preserved-reason
+  breakdown for the primary denominator.
+- `evidence/logic-skill-coverage-001.txt` - coverage run output.
+- `evidence/logic-skill-panel-001-r1.txt` - 103 checks against the final EXE.
+- `evidence/skill-title-matching-r1.txt` - 13/13.
+- `evidence/skill-detail-semantics-r1.txt` - existing detail/semantics test.
+- `evidence/logic-equipment-*-r1.txt`, `logic-simple-flow-r11-r1.txt`,
+  `logic-quest-font-layout-r1.txt`, `logic-journal-and-item-r6-r1.txt` -
+  accompanying regression logs.
 
 ## Evidence boundary / UNVERIFIED
 
@@ -278,4 +357,5 @@ verification:
 
 ## Cloud review status
 
-PENDING. No push and no release were performed.
+R1-R7 addressed; resubmitted for review. No push and no release were performed.
+ITEM/CAPTURE work was not touched.

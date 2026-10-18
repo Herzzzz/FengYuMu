@@ -1,0 +1,14 @@
+PASS: independent observed title: Magic Guard
+PASS: independent observed title: Maglc Guard
+PASS: independent observed title: Magic Armor
+PASS: independent observed title: Magic Claw
+PASS: independent observed title: Recovery
+PASS: independent observed title: Magic Guard 3
+PASS: OCR spelling repair resolves unique skill identity
+PASS: multiple visible skill names cannot lend one arbitrary identity
+PASS: shared skill name does not choose an arbitrary job ID
+PASS: different Chinese variants of one English title require disambiguation
+PASS: scoped class identity selects its own canonical title
+PASS: unrelated prose cannot become a fuzzy skill title
+PASS: known identity retains complete glossary-backed Recovery description
+Skill dictionary: 13/13 passed; candidate SHA256=3A157488643C7DF647488848E261D421FBAEA42A8746490CBD9D64D41801ADA7; real OCR pixels and Windows rendering unverified.

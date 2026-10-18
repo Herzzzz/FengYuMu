@@ -1,0 +1,395 @@
+skillId	note	selectedPrimary	overview
+1000	资料站完整技能说明	True	[Master Level : 3] Hurls snail shells to attack monsters from long distance.
+1000	资料站技能说明分段	False	Hurls snail shells to attack monsters from long distance.
+1000000	资料站完整技能说明	False	[Master Level: 15] HP naturally regenerates over time, not just when standing still. Also, HP recovery from items and skills is boosted.
+1000000	资料站技能说明分段	False	HP naturally regenerates over time, not just when standing still. Also, HP recovery from items and skills is boosted.
+1000000	Henesys.gg当前技能说明	True	HP naturally regenerates over time, not just when standing still. Also, HP recovery from items is boosted.
+1000001	资料站完整技能说明	True	[Master Level: 15] Max HP increases. Required Skill: At least Level 3 on Improved HP Recovery#
+1000001	资料站技能说明分段	False	Max HP increases.
+1000002	资料站完整技能说明	True	[Master Level: 15] Repeated practice with your weapon has increased your Accuracy and Critical Rate.
+1000002	资料站技能说明分段	False	Repeated practice with your weapon has increased your Accuracy and Critical Rate.
+1001	资料站完整技能说明	True	[Master Level : 3] Enables the user to recover HP constantly for 30 sec.
+1001	资料站技能说明分段	False	Enables the user to recover HP constantly for 30 sec.
+1001000	资料站完整技能说明	True	[Master Level: 20] Temporarily increases your Weapon Defense. Required Skill: At least Level 3 on Max HP Increase#
+1001000	资料站技能说明分段	False	Temporarily increases your Weapon Defense.
+1001001	资料站完整技能说明	True	[Master Level: 20] Use MP to deliver a killer blow to a single monster with your weapon.
+1001001	资料站技能说明分段	False	Use MP to deliver a killer blow to a single monster with your weapon.
+1001002	资料站完整技能说明	True	[Master Level: 20] Use HP and MP to attack up to 4 enemies around you with your weapon. Required Skill: At least Level 1 on Power Strike#
+1001002	资料站技能说明分段	False	Use HP and MP to attack up to 4 enemies around you with your weapon.
+1002	资料站完整技能说明	True	[Master Level: 3] Enables the character to move around quickly for a short amount of time.
+1002	资料站技能说明分段	False	Enables the character to move around quickly for a short amount of time.
+1100000	资料站完整技能说明	False	[Master Level : 20] Increases Sword Mastery and Accuracy. It only applies when a one-handed or two-handed sword is equipped.
+1100000	资料站技能说明分段	False	Increases Sword Mastery and Accuracy. It only applies when a one-handed or two-handed sword is equipped.
+1100000	Henesys.gg当前技能说明	True	Increases Sword Mastery and Weapon Defense. It only applies when a one-handed or two-handed sword is equipped.
+1100001	资料站完整技能说明	True	[Master Level : 20] Increases Axe Mastery, and attacks have a chance to inflict a bleeding effect on the target when attacking. It only applies when a one-handed or two-handed axe is equipped.
+1100001	资料站技能说明分段	False	Increases Axe Mastery, and attacks have a chance to inflict a bleeding effect on the target when attacking. It only applies when a one-handed or two-handed axe is equipped.
+1101000	资料站完整技能说明	False	[Master Level : 30] While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to up to three enemies. This skill only activates when a one-handed or two-handed sword is equipped. Using the skill activates the effect, and using it again deactivates it. Required Skill : At least Level 3 on Sword Mastery#
+1101000	资料站技能说明分段	False	While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to up to three enemies. This skill only activates when a one-handed or two-handed sword is equipped. Using the skill activates the effect, and using it again deactivates it.
+1101000	Henesys.gg当前技能说明	True	While the effect is active, using attack skills has a chance to activate Final Attack when there are targets within range, dealing heavy damage to up to three enemies. This skill only activates when a one-handed or two-handed sword is equipped. Using the skill activates the effect, and using it again deactivates it.
+1101001	资料站完整技能说明	False	[Master Level : 30] While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to up to three enemies. This skill only activates when a one-handed or two-handed axe is equipped. Using the skill activates the effect, and using it again deactivates it. Required Skill : At least Level 3 on Axe Mastery#
+1101001	资料站技能说明分段	False	While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to up to three enemies. This skill only activates when a one-handed or two-handed axe is equipped. Using the skill activates the effect, and using it again deactivates it.
+1101001	Henesys.gg当前技能说明	True	While the effect is active, using attack skills has a chance to activate Final Attack when there are targets within range, dealing heavy damage to up to three enemies. This skill only activates when a one-handed or two-handed axe is equipped. Using the skill activates the effect, and using it again deactivates it.
+1101002	资料站完整技能说明	True	[Master Level : 20] Uses HP and MP to temporarily increase the Attack Speed of the equipped sword. It only applies when a one-handed or two-handed sword is equipped. Required Skill : At least Level 5 on Sword Mastery#
+1101002	资料站技能说明分段	False	Uses HP and MP to temporarily increase the Attack Speed of the equipped sword. It only applies when a one-handed or two-handed sword is equipped.
+1101003	资料站完整技能说明	True	[Master Level : 20] Uses HP and MP to temporarily increase the Attack Speed of the equipped axe. It only applies when a one-handed or a two-handed axe is equipped. Required Skill : At least Level 5 on Axe Mastery#
+1101003	资料站技能说明分段	False	Uses HP and MP to temporarily increase the Attack Speed of the equipped axe. It only applies when a one-handed or a two-handed axe is equipped.
+1101004	资料站完整技能说明	True	[Master Level : 30] Temporarily increases the Attack Power of everyone in the party around the area, but also decreases Weapon Def.
+1101004	资料站技能说明分段	False	Temporarily increases the Attack Power of everyone in the party around the area, but also decreases Weapon Def.
+1101005	资料站完整技能说明	False	[Master Level : 20] Reflects a portion of the physical damage received from enemies. If incoming damage is guarded with a shield, 100% of the damage is reflected instead. However, the reflected damage cannot exceed 10% of the enemy’s Max HP at once. Required Skill : At least Level 3 on Rage#
+1101005	资料站技能说明分段	False	Reflects a portion of the physical damage received from enemies. If incoming damage is guarded with a shield, 100% of the damage is reflected instead. However, the reflected damage cannot exceed 10% of the enemy’s Max HP at once.
+1101005	Henesys.gg当前技能说明	True	Rushes forward a certain distance in the direction you are facing. If there are monsters within the rush range, you can deal damage to up to 4 of them and knock them back a certain distance. While rushing, you will not be knocked back even if attacked by monsters.
+1110000	Henesys.gg当前技能说明	True	The amount of MP that naturally regenerates over time increases.
+1111000	Henesys.gg当前技能说明	True	Gain 1 combo for all attacks that do not consume combos, and the power of all attacks increases as long as at least 1 combo is maintained. Combos are consumed and disappear when using specific skills. The effect is activated when used and deactivated when used again.
+1111001	Henesys.gg当前技能说明	True	Consume combo count to attack a single enemy with a sword or an axe, with a certain chance to inflict Darkness and decrease the enemy's accuracy. The power of the attack increases based on the number of Combo Counts consumed.
+1111002	Henesys.gg当前技能说明	True	Consume combo count to attack multiple enemies in front with a sword or an axe, with a certain chance to inflict a bleeding effect. The bleed chance increases by 20% for each Combo Count consumed, and the power of the attack also increases.
+1111003	Henesys.gg当前技能说明	True	Shouts loudly to damage multiple nearby enemies while lowering their Evasion. If Combo Attack is active, successful hits with this skill have a chance to grant 2 combos.
+1111004	Henesys.gg当前技能说明	True	Reduces the Physical Defense of multiple nearby monsters to 0 for a certain duration.
+1111005	Henesys.gg当前技能说明	True	Reflects a portion of the physical damage received from enemies. If incoming damage is guarded with a shield, 100% of the damage is reflected instead. However, the reflected damage cannot exceed 10% of the enemy’s Max HP at once.
+1120003	Henesys.gg当前技能说明	True	Passively enhances the Combo Attack system with increased damage multiplier per orb and higher maximum orb count. At max level, each orb provides +150% damage and you can accumulate up to 10 orbs. Requires Combo Attack maxed at Lv30. This passive is what makes Hero's combo system devastating at endgame.
+1120004	Henesys.gg当前技能说明	True	Permanently reduces all physical damage taken by a flat percentage. At max level reduces damage by 17%. This is a multiplicative reduction applied after defense calculations, making it extremely powerful for survivability in boss fights.
+1120005	Henesys.gg当前技能说明	True	Passively grants a chance to completely nullify damage when your HP falls below a threshold. The proc chance and HP threshold both increase with level. At max level, 30% chance to block damage when HP is below 70%. Acts as a safety net against lethal hits.
+1121000	Henesys.gg当前技能说明	True	Powerful party buff that increases all base stats (STR, DEX, INT, LUK) of every party member by a percentage. At max level grants +15% to all stats for 900 seconds (15 minutes). One of the most important endgame buffs — every 4th-job class has this skill.
+1121001	Henesys.gg当前技能说明	True	Pulls distant monsters toward your position with 100% success rate. Useful for grouping enemies for AoE attacks. Targets scale from 3 to 7 monsters. Also works on some bosses to reposition them.
+1121002	Henesys.gg当前技能说明	True	Grants a passive chance to resist knockback when hit by enemies. At max level provides 90% knockback resistance for 300 seconds. Essential for bossing where knockback interrupts attack combos. Works with all weapon types.
+1121006	Henesys.gg当前技能说明	True	Charges forward through enemies, dealing damage and pushing them to the edge of the platform. Hits up to 15 monsters in the charge path. Low damage (72–130%) but the knockback and positioning utility is invaluable for grouping mobs or repositioning during boss fights.
+1121008	Henesys.gg当前技能说明	True	The Hero's signature attack skill. Swings sword in a powerful arc, hitting 2 times per cast against 1–3 enemies (targets increase at higher levels). Damage scales from 135% to 260% per hit. At max level with 2 hits × 260% = 520% total damage, making it one of the highest-DPS melee skills in the game when combined with combo orbs.
+1121010	Henesys.gg当前技能说明	True	Consumes ALL accumulated combo orbs to grant a massive weapon attack (PAD) boost. The ATK bonus scales from +11 to +26 at max level. Has a 360-second (6-minute) cooldown. Requires Advanced Combo Attack Lv25. Use when you have maximum combo orbs for the biggest DPS window, then rebuild orbs during cooldown.
+1121011	Henesys.gg当前技能说明	True	Removes all abnormal status effects (seduce, stun, curse, etc.) from yourself. Has a long cooldown that decreases with level (600s → 360s). Essential for boss fights where status effects can be lethal. Every 4th-job class has this skill.
+1200000	资料站完整技能说明	False	[Master Level : 20] Increases Sword Mastery and Accuracy. It only applies when a one-handed or two-handed sword is equipped.
+1200000	资料站技能说明分段	False	Increases Sword Mastery and Accuracy. It only applies when a one-handed or two-handed sword is equipped.
+1200000	Henesys.gg当前技能说明	True	Increases Sword Mastery and Weapon Defense. It only applies when a one-handed or two-handed sword is equipped.
+1200001	资料站完整技能说明	False	[Master Level : 20] Increases Blunt Weapon Mastery and Attack Power, with a chance to stun the target when attacking. This skill only applies when a one-handed or two-handed blunt weapon is equipped.
+1200001	资料站技能说明分段	False	Increases Blunt Weapon Mastery and Attack Power, with a chance to stun the target when attacking. This skill only applies when a one-handed or two-handed blunt weapon is equipped.
+1200001	Henesys.gg当前技能说明	True	Increases Blunt Weapon Mastery and gives a chance to deal damage that ignores the target’s Weapon Def. This skill only applies when a one-handed or two-handed blunt weapon is equipped.
+1201000	资料站完整技能说明	False	[Master Level : 30] While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to a single enemy. This skill only activates when a one-handed or two-handed sword is equipped. Using the skill activates the effect, and using it again deactivates it. Required Skill : At least Level 3 on Sword Mastery#
+1201000	资料站技能说明分段	False	While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to a single enemy. This skill only activates when a one-handed or two-handed sword is equipped. Using the skill activates the effect, and using it again deactivates it.
+1201000	Henesys.gg当前技能说明	True	While the effect is active, using attack skills has a chance to activate Final Attack when there are targets within range, dealing heavy damage to a single enemy. This skill only activates when a one-handed or two-handed sword is equipped. Using the skill activates the effect, and using it again deactivates it.
+1201001	资料站完整技能说明	False	[Master Level : 30] While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to a single enemy. This skill only activates when a one-handed or two-handed blunt weapon is equipped. Using the skill activates the effect, and using it again deactivates it. Required Skill : At least Level 3 on Blunt Weapon Mastery#
+1201001	资料站技能说明分段	False	While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to a single enemy. This skill only activates when a one-handed or two-handed blunt weapon is equipped. Using the skill activates the effect, and using it again deactivates it.
+1201001	Henesys.gg当前技能说明	True	While the effect is active, using attack skills has a chance to activate Final Attack when there are targets within range, dealing heavy damage to a single enemy. This skill only activates when a one-handed or two-handed blunt weapon is equipped. Using the skill activates the effect, and using it again deactivates it.
+1201002	资料站完整技能说明	True	[Master Level : 20] Uses HP and MP to temporarily increase the Attack Speed of the equipped sword. It only applies when a one-handed or two-handed sword is equipped. Required Skill : At least Level 5 on Sword Mastery#
+1201002	资料站技能说明分段	False	Uses HP and MP to temporarily increase the Attack Speed of the equipped sword. It only applies when a one-handed or two-handed sword is equipped.
+1201003	资料站完整技能说明	True	[Master Level : 20] Uses HP and MP to temporarily increase the Attack Speed of the equipped blunt weapon. It only applies when a one-handed or two-handed blunt weapon is equipped. Required Skill : At least Level 5 on Blunt Weapon Mastery#
+1201003	资料站技能说明分段	False	Uses HP and MP to temporarily increase the Attack Speed of the equipped blunt weapon. It only applies when a one-handed or two-handed blunt weapon is equipped.
+1201004	资料站完整技能说明	False	[Master Level : 30] Use MP to temporarily threaten monsters. Decreases the Movement Speed, Weapon Attack, and Weapon Def. of up to 4 monsters around the area.
+1201004	资料站技能说明分段	False	Use MP to temporarily threaten monsters. Decreases the Movement Speed, Weapon Attack, and Weapon Def. of up to 4 monsters around the area.
+1201004	Henesys.gg当前技能说明	True	Use MP to temporarily threaten monsters. Decreases the Movement Speed and Weapon Def. of up to 4 monsters around the area.
+1201005	资料站完整技能说明	False	[Master Level : 20] Reflects a portion of the physical damage received from enemies. If incoming damage is guarded with a shield, 100% of the damage is reflected instead. However, the reflected damage cannot exceed 10% of the enemy’s Max HP at once. Required Skill : At least Level 3 on Threaten#
+1201005	资料站技能说明分段	False	Reflects a portion of the physical damage received from enemies. If incoming damage is guarded with a shield, 100% of the damage is reflected instead. However, the reflected damage cannot exceed 10% of the enemy’s Max HP at once.
+1201005	Henesys.gg当前技能说明	True	Rushes forward a certain distance in the direction you are facing. If there are monsters within the rush range, you can deal damage to up to 4 of them and knock them back a certain distance. While rushing, you will not be knocked back even if attacked by monsters.
+1210000	Henesys.gg当前技能说明	True	The amount of MP that naturally regenerates over time increases.
+1211000	Henesys.gg当前技能说明	True	Consumes Charged state to attack up to 4 enemies within a certain range with elemental-imbued power. Has a chance to maintain the Charged state after use.
+1211001	Henesys.gg当前技能说明	True	Imbues your sword or blunt weapon with the Fire element for a set duration to increase its power, granting a chance to burn enemies to inflict continuous damage every second for 3 seconds. Deals increased damage to fire-weak enemies, but deals reduced damage to fire-resistant enemies and cannot burn them. The effect is removed immediately if you equip a weapon other than a sword or blunt weapon, or use a charge skill of a different element, and has a chance to be removed when using Charge Blow.
+1211002	Henesys.gg当前技能说明	True	Imbues your sword or blunt weapon with the Ice element for a set duration to increase its power, granting a chance to Freeze enemies, greatly reducing their Movement Speed for 2 seconds. Deals increased damage to ice-weak enemies, but deals reduced damage to ice-resistant enemies and cannot freeze them. The effect is removed immediately if you equip a different weapon type or use a charge skill of a different element, and has a chance to be removed when using Charge Blow.
+1211003	Henesys.gg当前技能说明	True	Imbues your sword or blunt weapon with the Lightning element for a set duration to increase its power, granting a chance to electrocute enemies to stun them. Deals increased damage to lightning-weak enemies, but deals reduced damage to lightning-resistant enemies and cannot electrocute them. The effect is removed immediately if you equip a different weapon type or use a charge skill of a different element, and has a chance to be removed when using Charge Blow.
+1211004	Henesys.gg当前技能说明	True	Removes enemies' resistance to Fire, Lightning, and Ice elements for a set duration.
+1211005	Henesys.gg当前技能说明	True	Reflects a portion of the physical damage received from enemies. If incoming damage is guarded with a shield, 100% of the damage is reflected instead. However, the reflected damage cannot exceed 10% of the enemy’s Max HP at once.
+1220005	Henesys.gg当前技能说明	True	Permanently reduces all physical damage taken by a flat percentage. At max level reduces damage by 17%. Applied after defense calculations for strong survivability.
+1220006	Henesys.gg当前技能说明	True	Passively grants a chance to completely nullify damage when your HP falls below a threshold. At max level: 30% chance to block when HP is below 70%.
+1220010	Henesys.gg当前技能说明	True	Passively enhances all elemental charge skills (Fire, Ice, Lightning, Holy) with additional damage and improved elemental effectiveness. At max level adds +68% to charge damage. Stacks multiplicatively with charge skill damage, significantly boosting Paladin DPS.
+1221000	Henesys.gg当前技能说明	True	Powerful party buff that increases all base stats (STR, DEX, INT, LUK) of every party member by a percentage. At max level grants +15% to all stats for 900 seconds. Essential endgame party buff.
+1221001	Henesys.gg当前技能说明	True	Pulls distant monsters toward your position with 100% success rate. Targets 3–7 monsters depending on level. Useful for grouping enemies for AoE attacks and repositioning during boss fights.
+1221002	Henesys.gg当前技能说明	True	Grants a passive chance to resist knockback when hit. At max level provides 90% knockback resistance for 300 seconds. Essential for maintaining attack positioning during boss fights.
+1221003	Henesys.gg当前技能说明	True	Enchants your sword with the holy element, dealing bonus holy damage on all attacks. Holy is uniquely effective against undead monsters (1.5x damage) and has no elemental weaknesses. The strongest charge available to Paladins, scaling from +110% to +255% bonus damage.
+1221004	Henesys.gg当前技能说明	True	Enchants your blunt weapon with holy element. Blunt weapon variant of Holy Charge with identical damage scaling. Extremely effective against undead monsters.
+1221007	Henesys.gg当前技能说明	True	Charges forward through enemies, dealing damage and pushing them to the edge of the platform. Hits up to 15 monsters. Damage 72–130%. Invaluable for mob grouping and boss repositioning.
+1221009	Henesys.gg当前技能说明	True	The Paladin's signature attack skill. Delivers a devastating 2-hit strike to up to 6 enemies. At max level deals 374% × 2 per target. Synergizes with elemental charges for massive damage output. One of the strongest multi-target melee skills in the game.
+1221011	Henesys.gg当前技能说明	True	Summons a massive holy hammer from the sky that crashes down on all enemies in range. Hits up to 15 targets with devastating damage (300–590%). Has a cooldown that decreases with level. One of the highest-damage single-hit AoE skills in the game, but the cooldown limits sustained use.
+1221012	Henesys.gg当前技能说明	True	Removes all abnormal status effects (seduce, stun, curse, etc.) from yourself. Has a long cooldown that decreases with level (600s → 360s). Essential for boss fights where status effects can be lethal. Every 4th-job class has this skill.
+1300000	资料站完整技能说明	False	[Master Level : 20] Increases Spear Mastery and Avoidability. It only applies when a spear is equipped.
+1300000	资料站技能说明分段	False	Increases Spear Mastery and Avoidability. It only applies when a spear is equipped.
+1300000	Henesys.gg当前技能说明	True	Increases Spear Mastery and Critical Rate. It only applies when a spear is equipped.
+1300001	资料站完整技能说明	True	[Master Level : 20] Increases Polearm Mastery and movement speed. It only applies when a polearm is equipped.
+1300001	资料站技能说明分段	False	Increases Polearm Mastery and movement speed. It only applies when a polearm is equipped.
+1301000	资料站完整技能说明	False	[Master Level : 30] While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to the enemy and absorbing a portion of the damage dealt as HP. The amount absorbed per activation cannot exceed 25% of the character’s Max HP or the enemy’s Max HP. This skill only activates when a spear is equipped. Using the skill activates the effect, and using it again deactivates it. Required Skill : At least Level 3 on Spear Mastery#
+1301000	资料站技能说明分段	False	While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to the enemy and absorbing a portion of the damage dealt as HP. The amount absorbed per activation cannot exceed 25% of the character’s Max HP or the enemy’s Max HP. This skill only activates when a spear is equipped. Using the skill activates the effect, and using it again deactivates it.
+1301000	Henesys.gg当前技能说明	True	While the effect is active, using attack skills has a chance to activate Final Attack when there are targets within range, dealing heavy damage to the enemy and absorbing a portion of the damage dealt as HP. The amount absorbed per activation cannot exceed 25% of the character's Max HP or the enemy's Max HP. This skill only activates when a spear is equipped. Using the skill activates the effect, and using it again deactivates it.
+1301001	资料站完整技能说明	False	[Master Level : 30] While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to the enemy and absorbing a portion of the damage dealt as HP. The amount absorbed per activation cannot exceed 25% of the character’s Max HP or the enemy’s Max HP. This skill only activates when a polearm is equipped. Using the skill activates the effect, and using it again deactivates it. Required Skill : At least Level 3 on Polearm Mastery#
+1301001	资料站技能说明分段	False	While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to the enemy and absorbing a portion of the damage dealt as HP. The amount absorbed per activation cannot exceed 25% of the character’s Max HP or the enemy’s Max HP. This skill only activates when a polearm is equipped. Using the skill activates the effect, and using it again deactivates it.
+1301001	Henesys.gg当前技能说明	True	While the effect is active, using attack skills has a chance to activate Final Attack when there are targets within range, dealing heavy damage to the enemy and absorbing a portion of the damage dealt as HP. The amount absorbed per activation cannot exceed 25% of the character's Max HP or the enemy's Max HP. This skill only activates when a polearm is equipped. Using the skill activates the effect, and using it again deactivates it.
+1301002	资料站完整技能说明	True	[Master Level : 20] Uses HP and MP to temporarily increase the Attack Speed of the equipped spear. It only applies when a spear is equipped. Required Skill : At least Level 5 on Spear Mastery#
+1301002	资料站技能说明分段	False	Uses HP and MP to temporarily increase the Attack Speed of the equipped spear. It only applies when a spear is equipped.
+1301003	资料站完整技能说明	True	[Master Level : 20] Uses HP and MP to temporarily increase the Attack Speed of the equipped polearm. It only applies when a polearm is equipped. Required Skill : At least Level 5 on Polearm Mastery#
+1301003	资料站技能说明分段	False	Uses HP and MP to temporarily increase the Attack Speed of the equipped polearm. It only applies when a polearm is equipped.
+1301004	资料站完整技能说明	True	[Master Level : 30] Temporarily increases the user's Weapon Defense and grants a chance to ignore knockback effects.
+1301004	资料站技能说明分段	False	Temporarily increases the user's Weapon Defense and grants a chance to ignore knockback effects.
+1301005	资料站完整技能说明	False	[Master Level : 20] Temporarily increases the Max HP of all party members around the area. Required Skill : At least Level 3 on Iron Will#
+1301005	资料站技能说明分段	False	Temporarily increases the Max HP of all party members around the area.
+1301005	Henesys.gg当前技能说明	True	Rushes forward a certain distance in the direction you are facing. If there are monsters within the rush range, you can deal damage to up to 4 of them and knock them back a certain distance. While rushing, you will not be knocked back even if attacked by monsters.
+1310000	Henesys.gg当前技能说明	True	Gain resistance against Fire, Ice, and Lightning elemental attacks from enemies.
+1311000	Henesys.gg当前技能说明	True	Attacks multiple monsters several times by thrusting the spear or polearm.
+1311001	Henesys.gg当前技能说明	True	Swings a spear or polearm to attack multiple enemies from a distance. Can attack up to 4 enemies at once.
+1311002	Henesys.gg当前技能说明	True	Attacks up to 8 enemies in the surrounding area with a massive dragon's roar. The sheer shock of the roar stuns you upon activation.
+1311003	Henesys.gg当前技能说明	True	Reduces the Physical Attack of multiple nearby monsters significantly for a certain duration.
+1311004	Henesys.gg当前技能说明	True	Increases Attack Power but HP gradually decreases. The buff is removed if current HP is lower than the amount of HP consumed every 3 seconds. Activating the skill enables the effect, and using it again disables it.
+1311005	Henesys.gg当前技能说明	True	Temporarily increases the Max HP of all party members around the area.
+1320005	Henesys.gg当前技能说明	True	Permanently reduces all physical damage taken by a flat percentage. At max level reduces damage by 17%. Applied after defense calculations for strong survivability.
+1320006	Henesys.gg当前技能说明	True	The Dark Knight's signature and most powerful skill. While active, multiplies ALL damage dealt by a massive percentage — but ONLY when your HP is below a threshold. At max level: 300% damage multiplier when HP is below 45%. This is the single highest damage multiplier in the game, making Dark Knights the top single-target DPS class, but requires constant HP management to stay in the "danger zone".
+1320008	Henesys.gg当前技能说明	True	Passive skill that commands the summoned Beholder to periodically heal the Dark Knight and nearby party members. Heals 10 to 68 HP every 4 seconds at max level. Synergizes with Berserk by helping manage HP levels. Requires Beholder to be summoned.
+1320009	Henesys.gg当前技能说明	True	Passive skill that commands the summoned Beholder to periodically buff the Dark Knight and nearby party members with increased accuracy and avoidability. Provides +5 to +19 ACC/AVOID at max level. Requires Beholder to be summoned.
+1321000	Henesys.gg当前技能说明	True	Powerful party buff that increases all base stats (STR, DEX, INT, LUK) of every party member by a percentage. At max level grants +15% to all stats for 900 seconds. Essential endgame party buff.
+1321001	Henesys.gg当前技能说明	True	Pulls distant monsters toward your position with 100% success rate. Targets 3–7 monsters depending on level. Useful for grouping enemies for AoE attacks and repositioning during boss fights.
+1321002	Henesys.gg当前技能说明	True	Grants a passive chance to resist knockback when hit. At max level provides 90% knockback resistance for 300 seconds. Essential for maintaining attack positioning during boss fights.
+1321003	GMS Classic World 实测详情全文	False	Rush Rushes forward a certain distance in the direction you are facing. If there are monsters within the rush range, you can deal damage to up to 4 of them and knock them back a certain distance. While rushing, you will not be knocked back even if attacked by monsters.
+1321003	Henesys.gg当前技能说明	True	Charges forward through enemies, dealing damage and pushing them to the edge of the platform. Hits up to 15 monsters. Damage 72–130%. Invaluable for mob grouping and boss repositioning.
+1321004	Henesys.gg当前技能说明	True	Summons a dark Beholder familiar that autonomously attacks nearby enemies. Deals 200–345% damage per attack and lasts 60–234 seconds. Also serves as the prerequisite for Aura of the Beholder (healing) and Hex of the Beholder (stat buffs). Keep this summoned at all times for passive DPS and party support.
+1321007	Henesys.gg当前技能说明	True	Delivers a devastating 2-hit melee strike against a single target. The Dark Knight's primary bossing skill. At max level deals 325% × 2 = 650% total damage per cast. When combined with Berserk, this becomes one of the highest single-target DPS skills in the game.
+1321008	Henesys.gg当前技能说明	True	Powerful 2-hit AoE spear/polearm attack hitting up to 6 enemies. The Dark Knight's primary mobbing skill at 4th job. At max level deals 276% × 2 = 552% total damage per target. Slightly less per-hit damage than Crusher but hits multiple enemies, making it superior for training.
+1321010	Henesys.gg当前技能说明	True	Removes all abnormal status effects (seduce, stun, curse, etc.) from yourself. Has a long cooldown that decreases with level (600s → 360s). Essential for boss fights where status effects can be lethal. Every 4th-job class has this skill.
+2000000	资料站完整技能说明	False	[Master Level : 15] The amount of MP that naturally regenerates over time increases. Also, MP recovery from items and skills is boosted.
+2000000	资料站技能说明分段	False	The amount of MP that naturally regenerates over time increases. Also, MP recovery from items and skills is boosted.
+2000000	Henesys.gg当前技能说明	True	The amount of MP that naturally regenerates over time increases. Also, MP recovery from items is boosted.
+2000001	资料站完整技能说明	True	[Master Level: 15] Max MP increases. Required Skill: At least Level 3 on Improved MP Recovery#
+2000001	资料站技能说明分段	False	Max MP increases.
+2001000	资料站完整技能说明	True	[Master Level :15] Replaces a portion of incoming damage with MP instead of HP. If MP reaches 0, all damage is received as HP damage. The effect is activated when used and deactivated when used again.
+2001000	资料站技能说明分段	False	Replaces a portion of incoming damage with MP instead of HP. If MP reaches 0, all damage is received as HP damage. The effect is activated when used and deactivated when used again.
+2001001	资料站完整技能说明	True	[Master Level: 20] Temporarily boosts Weapon Def. and Magic Def. by concentrating magic into your armor. Required Skill: At least Level 3 on Magic Guard#
+2001001	资料站技能说明分段	False	Temporarily boosts Weapon Def. and Magic Def. by concentrating magic into your armor.
+2001002	资料站完整技能说明	True	[Master Level : 20] Use MP to attack one enemy. The higher the Mastery, the lower the damage variation.
+2001002	资料站技能说明分段	False	Use MP to attack one enemy. The higher the Mastery, the lower the damage variation.
+2001003	资料站完整技能说明	True	[Master Level : 20] Use MP to attack an enemy twice. The higher the Mastery, the lower the damage variation. Required Skill : At least Level 1 on Energy Bolt#
+2001003	资料站技能说明分段	False	Use MP to attack an enemy twice. The higher the Mastery, the lower the damage variation.
+2100000	资料站完整技能说明	False	[Master Level: 20] Absorbs the enemy's MP when attacking with Magic skills, but only once every 5 seconds. Cannot absorb if the enemy’s MP is 0.
+2100000	资料站技能说明分段	False	Absorbs the enemy's MP when attacking with Magic skills, but only once every 5 seconds. Cannot absorb if the enemy’s MP is 0.
+2100000	Henesys.gg当前技能说明	True	Absorbs the enemy's MP when attacking with Magic skills, but only once every 5 seconds. Cannot absorb if the enemy's MP is 0.
+2101000	资料站完整技能说明	True	[Master Level: 20] Meditate for a bit to temporarily increase the Magic Attack of party members around the area. Required Skill : At least Level 3 on MP Eater#
+2101000	资料站技能说明分段	False	Meditate for a bit to temporarily increase the Magic Attack of party members around the area.
+2101001	资料站完整技能说明	True	[Master Level: 20] Use the arrow keys to teleport a set distance within the same map.
+2101001	资料站技能说明分段	False	Use the arrow keys to teleport a set distance within the same map.
+2101002	资料站完整技能说明	False	[Master Level: 20] Temporarily slows down the movement of up to 4 monsters. Cannot be used on the same monsters more than twice in a row. Required Skill : At least Level 5 on Teleport#
+2101002	资料站技能说明分段	False	Temporarily slows down the movement of up to 4 monsters. Cannot be used on the same monsters more than twice in a row.
+2101002	Henesys.gg当前技能说明	True	Temporarily slows down the movement of up to 6 monsters. Cannot be used on monsters that are already affected.
+2101003	资料站完整技能说明	False	[Master Level: 30] Creates a fire arrow using magic power and fires it at a single enemy. The enemy hit takes fire-elemental damage and is burned, receiving continuous damage every second for 3 seconds. Deals reduced damage to fire-based enemies and increased damage to ice-based enemies.
+2101003	资料站技能说明分段	False	Creates a fire arrow using magic power and fires it at a single enemy. The enemy hit takes fire-elemental damage and is burned, receiving continuous damage every second for 3 seconds. Deals reduced damage to fire-based enemies and increased damage to ice-based enemies.
+2101003	Henesys.gg当前技能说明	True	Fires a fire arrow created with magic power at a single enemy, dealing fire-elemental damage and burning them to inflict continuous damage every second for 3 seconds. Deals increased damage to fire-weak enemies, but deals reduced damage to fire-resistant enemies and cannot burn them.
+2101004	资料站完整技能说明	False	[Master Level: 30] Creates a poison droplet and fires it at a single enemy. When it hits, the droplet explodes on contact, dealing poison-elemental damage to up to 4 nearby enemies. Enemies hit have a chance to become poisoned for a certain duration.
+2101004	资料站技能说明分段	False	Creates a poison droplet and fires it at a single enemy. When it hits, the droplet explodes on contact, dealing poison-elemental damage to up to 4 nearby enemies.
+2101004	资料站技能说明分段	False	Enemies hit have a chance to become poisoned for a certain duration.
+2101004	Henesys.gg当前技能说明	True	Fires a poison droplet at a single enemy. The droplet explodes on contact, dealing poison-elemental damage to up to 4 nearby enemies and granting a chance to poison them. Deals increased damage to poison-weak enemies, but deals reduced damage to poison-resistant enemies and cannot poison them.
+2110000	Henesys.gg当前技能说明	True	Gain resistance against Fire, Ice, Lightning and Poison elemental attacks from enemies.
+2111000	Henesys.gg当前技能说明	True	Use additional MP to increase the damage dealt by all Magic attacks. The effect is activated when used and deactivated when used again.
+2111001	Henesys.gg当前技能说明	True	Causes a massive explosion around oneself, dealing Fire element damage to up to 4 monsters. In addition, if the target is afflicted with the Poison status, deals the remaining damage of the status duration all at once and removes the Poison status. Deals increased damage to fire-weak enemies, but deals reduced damage to fire-resistant enemies.
+2111002	Henesys.gg当前技能说明	True	Summons a poison mist at the location of the nearest monster in front that lasts for 5 seconds. Enemies within the poison mist area have a certain chance to become poisoned for a certain period of time. Deals increased damage to poison-weak enemies, but deals reduced damage to poison-resistant enemies and cannot poison them. Cooldown: 15 sec
+2111003	Henesys.gg当前技能说明	True	Fires a magical arrow blending Fire and Poison elements to attack the single nearest enemy in front. Deals additional damage to enemies weak to either Fire or Poison, and if the enemy is weak to both elements, the damage increases up to 1.5 times.
+2111004	Henesys.gg当前技能说明	True	Temporarily Seals surrounding monsters. Once sealed, monsters can't use skills. Does not work against boss-level monsters.
+2111005	Henesys.gg当前技能说明	True	Use a Magic Rock to increase the attacking speed for spells.
+2121000	Henesys.gg当前技能说明	True	Powerful party buff that increases all base stats (STR, DEX, INT, LUK) by a percentage. At max level grants +16% to all stats for 320 seconds. Essential endgame party buff shared by all 4th-job classes.
+2121001	Henesys.gg当前技能说明	True	Charges up for a devastating magic explosion.
+2121002	Henesys.gg当前技能说明	True	Temporarily reflects magic damage back to the attacking monster. At max level reflects up to 780 damage with 69% proc chance for 234s. Provides passive retaliation damage during training.
+2121003	Henesys.gg当前技能说明	True	Summons a fire demon that attacks enemies.
+2121004	Henesys.gg当前技能说明	True	Temporarily removes all MP costs and provides a damage multiplier to all magic attacks. One of the strongest DPS buffs for Mages. At max level: +20% damage for 34 seconds with 180s cooldown. Time your biggest attacks during Infinity for maximum output.
+2121005	Henesys.gg当前技能说明	True	Summons Elquines to attack enemies.
+2121006	Henesys.gg当前技能说明	True	Powerful fire attack that can stun enemies.
+2121007	Henesys.gg当前技能说明	True	The F/P Arch Mage's ultimate attack. Rains meteors down on ALL enemies on screen (up to 15 targets). Deals massive fire damage (280–510%) with a cooldown. One of the strongest AoE attacks in the game. MP cost is a flat 500.
+2121008	Henesys.gg当前技能说明	True	Removes all abnormal status effects (seduce, stun, curse, etc.) from yourself. Cooldown decreases with level (600s → 360s). Essential for boss fights. Every 4th-job class has this skill.
+2200000	资料站完整技能说明	False	[Master Level: 20] Absorbs the enemy's MP when attacking with Magic skills, but only once every 5 seconds. Cannot absorb if the enemy’s MP is 0.
+2200000	资料站技能说明分段	False	Absorbs the enemy's MP when attacking with Magic skills, but only once every 5 seconds. Cannot absorb if the enemy’s MP is 0.
+2200000	Henesys.gg当前技能说明	True	Absorbs the enemy's MP when attacking with Magic skills, but only once every 5 seconds. Cannot absorb if the enemy's MP is 0.
+2201000	资料站完整技能说明	True	[Master Level: 20] Meditate for a bit to temporarily increase the Magic Attack of party members around the area. Required Skill : At least Level 3 on MP Eater#
+2201000	资料站技能说明分段	False	Meditate for a bit to temporarily increase the Magic Attack of party members around the area.
+2201001	资料站完整技能说明	True	[Master Level: 20] Use the arrow keys to teleport a set distance within the same map.
+2201001	资料站技能说明分段	False	Use the arrow keys to teleport a set distance within the same map.
+2201002	资料站完整技能说明	False	[Master Level: 20] Temporarily slows down the movement of up to 4 monsters. Cannot be used on the same monsters more than twice in a row. Required Skill : At least Level 5 on Teleport#
+2201002	资料站技能说明分段	False	Temporarily slows down the movement of up to 4 monsters. Cannot be used on the same monsters more than twice in a row.
+2201002	Henesys.gg当前技能说明	True	Temporarily slows down the movement of up to 6 monsters. Cannot be used on the same monsters more than twice in a row.
+2201003	资料站完整技能说明	False	[Master Level: 30] Attacks a single monster with a sharp piece of ice. dealing ice-elemental damage. All monsters except those strong against ice will be briefly slowed when hit. Deals reduced damage to ice-based enemies and increased damage to fire-based enemies.
+2201003	资料站技能说明分段	False	Attacks a single monster with a sharp piece of ice. dealing ice-elemental damage. All monsters except those strong against ice will be briefly slowed when hit. Deals reduced damage to ice-based enemies and increased damage to fire-based enemies.
+2201003	Henesys.gg当前技能说明	True	Attacks a single enemy with a sharp piece of ice, dealing ice-elemental damage. Enemies hit are briefly frozen, slowing their actions. Deals increased damage to ice-weak enemies, but deals reduced damage to ice-resistant enemies and cannot slow them.
+2201004	资料站完整技能说明	True	[Master Level: 30] Attacks surrounding monsters with a thunderbolt, dealing lightning-elemental damage. All monsters, except those resistant to lightning, have a chance to be stunned by electrocution.
+2201004	资料站技能说明分段	False	Attacks surrounding monsters with a thunderbolt, dealing lightning-elemental damage. All monsters, except those resistant to lightning, have a chance to be stunned by electrocution.
+2210000	Henesys.gg当前技能说明	True	Gain resistance against Fire, Ice, Lightning and Poison elemental attacks from enemies.
+2211000	Henesys.gg当前技能说明	True	Use additional MP to increase the damage dealt by all Magic attacks. The effect is activated when used and deactivated when used again.
+2211001	Henesys.gg当前技能说明	True	Summons sharp ice fragments above the heads of multiple nearby enemies, dealing Ice-elemental damage. All monsters except those strong against ice will be briefly slowed when hit. Deals increased damage to ice-weak enemies, but deals reduced damage to ice-resistant enemies and cannot slow them.
+2211002	Henesys.gg当前技能说明	True	Gathers the power of lightning to create a spear, throwing it at up to two enemies in front to deal Lightning element damage. Deals increased damage to lightning-weak enemies, but deals reduced damage to lightning-resistant enemies and cannot electrocute them.
+2211003	Henesys.gg当前技能说明	True	Fires a magical arrow blending Ice and Lightning elements to attack the single nearest enemy in front. Deals increased damage to enemies weak to either Ice or Lightning, and if the enemy is weak to both elements, the damage increases up to 1.5 times.
+2211004	Henesys.gg当前技能说明	True	Temporarily Seals surrounding monsters. Once sealed, monsters can't use skills. Does not work against boss-level monsters.
+2211005	Henesys.gg当前技能说明	True	Use a Magic Rock to increase the attacking speed for spells.
+2221000	Henesys.gg当前技能说明	True	Powerful party buff that increases all base stats (STR, DEX, INT, LUK) by a percentage. At max level grants +16% to all stats for 320 seconds. Essential endgame party buff shared by all 4th-job classes.
+2221001	Henesys.gg当前技能说明	True	Charges up for a devastating ice explosion.
+2221002	Henesys.gg当前技能说明	True	Temporarily reflects magic damage back to the attacking monster. At max level reflects up to 780 damage with 69% proc chance for 234s. Provides passive retaliation damage during training.
+2221003	Henesys.gg当前技能说明	True	Summons an ice demon that attacks enemies.
+2221004	Henesys.gg当前技能说明	True	Temporarily removes all MP costs and provides a damage multiplier to all magic attacks. One of the strongest DPS buffs for Mages. At max level: +20% damage for 34 seconds with 180s cooldown. Time your biggest attacks during Infinity for maximum output.
+2221005	Henesys.gg当前技能说明	True	Summons Ifrit to attack enemies with fire.
+2221006	Henesys.gg当前技能说明	True	Unleashes a bolt of lightning that chains between up to 6 enemies. The I/L Arch Mage's primary multi-target attack. Damage scales from 250% to 424% per target. No cooldown — can be spammed for sustained AoE DPS.
+2221007	Henesys.gg当前技能说明	True	The I/L Arch Mage's ultimate attack. Rains ice down on ALL enemies on screen (up to 15 targets). Deals massive ice damage (280–510%) with a freeze chance. Has a cooldown. MP cost is a flat 500.
+2221008	Henesys.gg当前技能说明	True	Removes all abnormal status effects (seduce, stun, curse, etc.) from yourself. Cooldown decreases with level (600s → 360s). Essential for boss fights. Every 4th-job class has this skill.
+2300000	资料站完整技能说明	False	[Master Level: 20] Absorbs the enemy's MP when attacking with Magic skills, but only once every 5 seconds. Cannot absorb if the enemy’s MP is 0.
+2300000	资料站技能说明分段	False	Absorbs the enemy's MP when attacking with Magic skills, but only once every 5 seconds. Cannot absorb if the enemy’s MP is 0.
+2300000	Henesys.gg当前技能说明	True	Absorbs the enemy's MP when attacking with Magic skills, but only once every 5 seconds. Cannot absorb if the enemy's MP is 0.
+2301000	资料站完整技能说明	True	[Master Level: 20] Use the arrow keys to teleport a set distance within the same map.
+2301000	资料站技能说明分段	False	Use the arrow keys to teleport a set distance within the same map.
+2301001	资料站完整技能说明	True	[Master Level: 30] Recovers the HP of all party members around the area. The amount of healing depends on the number of people being healed, and undead monsters around the area will receive damage.
+2301001	资料站技能说明分段	False	Recovers the HP of all party members around the area. The amount of healing depends on the number of people being healed, and undead monsters around the area will receive damage.
+2301002	资料站完整技能说明	True	[Master Level: 20] Reduces physical damage taken for a certain duration, and deals non-elemental magic damage to any monster that takes contact damage from the caster. Required Skill : At least Level 5 on Heal#
+2301002	资料站技能说明分段	False	Reduces physical damage taken for a certain duration, and deals non-elemental magic damage to any monster that takes contact damage from the caster.
+2301003	资料站完整技能说明	False	[Master Level: 20] Temporarily increases the Accuracy, Avoidability, and HP recovery from items and skills of all party members around the area. Required Skill : At least Level 5 on Invincible#
+2301003	资料站技能说明分段	False	Temporarily increases the Accuracy, Avoidability, and HP recovery from items and skills of all party members around the area.
+2301003	Henesys.gg当前技能说明	True	Temporarily increases the Accuracy, Evasion, and HP recovery from the Heal skill for all nearby party members. Required Skill : At least Level 5 on Invincible
+2301004	资料站完整技能说明	True	[Master Level: 30] Attacks monsters by firing holy arrows. Very effective against the undead or devil-based monsters.
+2301004	资料站技能说明分段	False	Attacks monsters by firing holy arrows. Very effective against the undead or devil-based monsters.
+2310000	Henesys.gg当前技能说明	True	Gain resistance against Fire, Ice, Lightning and Poison elemental attacks from enemies.
+2311000	Henesys.gg当前技能说明	True	[Master Level : 20] Cure nearby party members of certain abnormal status conditions.
+2311001	Henesys.gg当前技能说明	True	Use a Magic Rock to create a portal leading to the nearest town. Only party members can use it multiple times until the portal disappears, and it can be accessed by pressing the up arrow key while standing on it.
+2311002	Henesys.gg当前技能说明	True	Protect yourself with a Holy Symbol, allowing you to resurrect on the spot if you die while the effect is active.
+2311003	Henesys.gg当前技能说明	True	Deal Holy-attribute damage to up to 4 enemies with holy light. Deals massive damage to Undead and Demon targets.
+2311004	Henesys.gg当前技能说明	True	Turn up to 6 monsters into snails. Changes the appearance, attacking capacity, and movement speed. Cannot be used against boss monsters. Cooldown: 30 sec
+2311005	Henesys.gg当前技能说明	True	Summon a holy dragon for a certain amount of time. The dragon will stay beside you and attack nearby enemies while summoned. The higher the skill level, the stronger the summoned dragon is.
+2321000	Henesys.gg当前技能说明	True	Powerful party buff that increases all base stats (STR, DEX, INT, LUK) by a percentage. At max level grants +16% to all stats for 320 seconds. Essential endgame party buff shared by all 4th-job classes.
+2321001	Henesys.gg当前技能说明	True	Charges up for a devastating holy explosion.
+2321002	Henesys.gg当前技能说明	True	Temporarily reflects magic damage back to the attacking monster. At max level reflects up to 780 damage with 69% proc chance for 234s. Provides passive retaliation damage during training.
+2321003	Henesys.gg当前技能说明	True	Summons the legendary Bahamut dragon.
+2321004	Henesys.gg当前技能说明	True	Temporarily removes all MP costs and provides a damage multiplier to all magic attacks. One of the strongest DPS buffs for Mages. At max level: +20% damage for 34 seconds with 180s cooldown. Time your biggest attacks during Infinity for maximum output.
+2321005	Henesys.gg当前技能说明	True	Grants party members immunity to status effects.
+2321006	Henesys.gg当前技能说明	True	Revives a fallen party member at the location where they died, restoring a percentage of their EXP that was lost on death. At max level recovers 78% of lost EXP. Bishop-exclusive skill — one of the most valuable abilities in the game for endgame content.
+2321007	Henesys.gg当前技能说明	True	Holy ray that damages enemies and heals allies.
+2321008	Henesys.gg当前技能说明	True	The Bishop's ultimate attack. Unleashes a devastating holy explosion that damages ALL enemies on screen (up to 15 targets). Deals 320–552% holy damage with a cooldown. Holy element makes it particularly devastating against undead. MP cost is a flat 600.
+2321009	Henesys.gg当前技能说明	True	Removes all abnormal status effects (seduce, stun, curse, etc.) from yourself. Cooldown decreases with level (600s → 360s). Essential for boss fights. Every 4th-job class has this skill.
+3000000	资料站完整技能说明	True	[Master Level : 15] Increases Critical Rate and Critical Damage.
+3000000	资料站技能说明分段	False	Increases Critical Rate and Critical Damage.
+3000001	资料站完整技能说明	False	[Master Level : 15] Critical hits sever the enemy's tendons, slowing them down. Required Skill : At least Level 3 on Critical Shot#
+3000001	资料站技能说明分段	False	Critical hits sever the enemy's tendons, slowing them down.
+3000001	Henesys.gg当前技能说明	True	Increases attack range for bows and crossbows.
+3000002	资料站完整技能说明	True	[Master Level: 15] Increases attack range for bows and crossbows.
+3000002	资料站技能说明分段	False	Increases attack range for bows and crossbows.
+3001000	资料站完整技能说明	False	[Master Level : 20] Focus to temporarily increase Accuracy and Avoidability. Required Skill: At least Level 3 on The Eye of Amazon#
+3001000	资料站技能说明分段	False	Focus to temporarily increase Accuracy and Avoidability.
+3001000	Henesys.gg当前技能说明	True	Focus to temporarily increase Accuracy and Evasion.
+3001001	资料站完整技能说明	True	[Master Level: 20] Fires an arrow with authority. Applies more damage than usual.
+3001001	资料站技能说明分段	False	Fires an arrow with authority. Applies more damage than usual.
+3001002	资料站完整技能说明	True	[Master Level: 20] Fires two arrows at once to attack up to two enemies. Required Skill: At least Level 1 on Arrow Blow#
+3001002	资料站技能说明分段	False	Fires two arrows at once to attack up to two enemies.
+3001003	Henesys.gg当前技能说明	True	Swings the bow widely to push multiple enemies far back. This attack always hits as a critical, and as the level rises, the number of monsters that one can push back with one swing increases.
+3100000	资料站完整技能说明	False	[Master Level: 20] Increases Bow Mastery and Avoidability. This effect only applies when a bow is equipped.
+3100000	资料站技能说明分段	False	Increases Bow Mastery and Avoidability. This effect only applies when a bow is equipped.
+3100000	Henesys.gg当前技能说明	True	Increases Bow Mastery and Evasion. This effect only applies when a bow is equipped.
+3100001	Henesys.gg当前技能说明	True	Critical hits sever the enemy's tendons, slowing them down.
+3101000	资料站完整技能说明	False	[Master Level: 30] While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to up to three enemies. This skill only activates when a bow is equipped. Using the skill activates the effect, and using it again deactivates it. Required Skill: At least Level 3 on Bow Mastery#
+3101000	资料站技能说明分段	False	While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to up to three enemies. This skill only activates when a bow is equipped. Using the skill activates the effect, and using it again deactivates it.
+3101000	Henesys.gg当前技能说明	True	While the effect is active, using attack skills has a chance to activate Final Attack when there are targets within range, dealing heavy damage to up to three enemies. This skill only activates when a bow is equipped. Using the skill activates the effect, and using it again deactivates it.
+3101001	资料站完整技能说明	True	[Master Level: 20] Uses HP and MP to temporarily increase the Attack Speed of the equipped bow. It only applies when a bow is equipped. Required Skill: At least Level 5 on Bow Mastery#
+3101001	资料站技能说明分段	False	Uses HP and MP to temporarily increase the Attack Speed of the equipped bow. It only applies when a bow is equipped.
+3101002	资料站完整技能说明	True	[Master Level: 20] Swings the bow widely to push multiple enemies far back. This attack always hits as a critical, and as the level rises, the number of monsters that one can push back with one swing increases.
+3101002	资料站技能说明分段	False	Swings the bow widely to push multiple enemies far back. This attack always hits as a critical, and as the level rises, the number of monsters that one can push back with one swing increases.
+3101003	资料站完整技能说明	True	[Master Level: 20] Temporarily allows the character to fire bow arrows without using up arrows. Only works with a bow equipped. Required Skill: At least Level 5 on Bow Booster#
+3101003	资料站技能说明分段	False	Temporarily allows the character to fire bow arrows without using up arrows. Only works with a bow equipped.
+3101004	资料站完整技能说明	True	[Master Level: 30] Fires an arrow with a bomb attached to it. If struck cleanly, the bomb explodes on the enemy, stunning some enemies around with a certain success rate. Can't attack more than 4 at once, and it only works with a bow equipped.
+3101004	资料站技能说明分段	False	Fires an arrow with a bomb attached to it. If struck cleanly, the bomb explodes on the enemy, stunning some enemies around with a certain success rate. Can't attack more than 4 at once, and it only works with a bow equipped.
+3110000	Henesys.gg当前技能说明	True	Enables shooting arrows at a very close range with a certain success rate. May instantly kill a monster with a single shot, but Bosses cannot be instantly killed.
+3111000	Henesys.gg当前技能说明	True	Temporarily summons a puppet in front. While the puppet is summoned, monsters will attack the puppet instead of yourself.
+3111001	Henesys.gg当前技能说明	True	Fires a flaming arrow at an enemy in front that incinerates the surrounding area on impact, dealing Fire-elemental damage to up to 4 enemies. Targets hit will suffer from a Burn effect that inflicts continuous damage every second for 3 seconds. Deals increased damage to fire-weak enemies, but deals reduced damage to fire-resistant enemies and cannot burn them.
+3111002	Henesys.gg当前技能说明	True	Fires multiple arrows into the sky to attack up to 4 enemies in the surrounding area 2 times. Can be used even when monsters are close by.
+3111003	Henesys.gg当前技能说明	True	Fires multiple arrows in rapid succession to attack a single enemy.
+3111004	Henesys.gg当前技能说明	True	Summons a silver hawk. The hawk flies around the player for a certain period of time, attacking nearby monsters, and a more powerful hawk can be summoned as the skill level increases.
+3111005	Henesys.gg当前技能说明	True	Leaps forward a certain distance in the direction you are facing. As the skill level increases, the jump distance increases.
+3120005	Henesys.gg当前技能说明	True	Increases bow mastery and minimum damage.
+3121000	Henesys.gg当前技能说明	True	Powerful party buff that increases all base stats (STR, DEX, INT, LUK) by a percentage. At max level grants +16% to all stats for 320 seconds. Essential endgame party buff.
+3121002	Henesys.gg当前技能说明	True	Party buff that increases critical hit rate and critical damage for all nearby party members. At max level provides +15% critical rate and +20% critical damage for 320 seconds. One of the most valuable party buffs in the game — essential for all boss runs.
+3121003	Henesys.gg当前技能说明	True	Knocks back enemies with a powerful gust.
+3121004	Henesys.gg当前技能说明	True	The Bowmaster's signature skill. Rapidly fires arrows at a blinding rate, dealing continuous damage to a single target. The fastest-attacking skill in the game — holds down the key to maintain a stream of arrows. At max level deals 133% per hit with extremely fast attack speed. The premier single-target DPS skill for endgame bossing.
+3121006	Henesys.gg当前技能说明	True	Summons a phoenix that damages enemies.
+3121007	Henesys.gg当前技能说明	True	Slows enemy movement with each attack.
+3121008	Henesys.gg当前技能说明	True	Increases attack power temporarily.
+3121009	Henesys.gg当前技能说明	True	Removes all abnormal status effects (seduce, stun, curse, etc.) from yourself. Cooldown decreases with level (600s → 360s). Essential for boss fights.
+3200000	资料站完整技能说明	False	[Master Level: 20] Increases Crossbow Mastery and gives a chance to deal damage that ignores the target’s Weapon Def. This effect only applies when a crossbow is equipped.
+3200000	资料站技能说明分段	False	Increases Crossbow Mastery and gives a chance to deal damage that ignores the target’s Weapon Def. This effect only applies when a crossbow is equipped.
+3200000	Henesys.gg当前技能说明	True	Increases Crossbow Mastery and gives a chance to deal damage that ignores the target's Weapon Def. This effect only applies when a crossbow is equipped.
+3200001	Henesys.gg当前技能说明	True	Critical hits sever the enemy's tendons, slowing them down.
+3201000	资料站完整技能说明	False	[Master Level: 30] While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to a single enemy. This skill only activates when a crossbow is equipped. Using the skill activates the effect, and using it again deactivates it. Required Skill: At least Level 3 on Crossbow Mastery#
+3201000	资料站技能说明分段	False	While the effect is active, using attack skills has a chance to activate Final Attack, dealing heavy damage to a single enemy. This skill only activates when a crossbow is equipped. Using the skill activates the effect, and using it again deactivates it.
+3201000	Henesys.gg当前技能说明	True	While the effect is active, using attack skills has a chance to activate Final Attack when there are targets within range, dealing heavy damage to a single enemy. This skill only activates when a crossbow is equipped. Using the skill activates the effect, and using it again deactivates it.
+3201001	资料站完整技能说明	True	[Master Level: 20] Uses HP and MP to temporarily increase the Attack Speed of the equipped crossbow. It only applies when a crossbow is equipped. Required Skill: At least Level 5 on Crossbow Mastery#
+3201001	资料站技能说明分段	False	Uses HP and MP to temporarily increase the Attack Speed of the equipped crossbow. It only applies when a crossbow is equipped.
+3201002	资料站完整技能说明	True	[Master Level: 20] Swings the crossbow widely to push multiple enemies far back. This attack always hits as a critical, and as the level rises, the number of monsters that one can push back with one swing increases.
+3201002	资料站技能说明分段	False	Swings the crossbow widely to push multiple enemies far back. This attack always hits as a critical, and as the level rises, the number of monsters that one can push back with one swing increases.
+3201003	资料站完整技能说明	True	[Master Level: 20] Temporarily allows the character to fire crossbow arrows without using up arrows. Only works with a crossbow equipped. Required Skill: At least Level 5 on Crossbow Booster#
+3201003	资料站技能说明分段	False	Temporarily allows the character to fire crossbow arrows without using up arrows. Only works with a crossbow equipped.
+3201004	资料站完整技能说明	True	[Master Level: 30] Attacks up to 4 monsters at once with a powerful arrow, which penetrates through them. Damage decreases as the arrow flies through each monster.
+3201004	资料站技能说明分段	False	Attacks up to 4 monsters at once with a powerful arrow, which penetrates through them. Damage decreases as the arrow flies through each monster.
+3210000	Henesys.gg当前技能说明	True	Enables shooting arrows at a very close range with a certain success rate. May instantly kill a monster with a single shot, but Bosses cannot be instantly killed.
+3211000	Henesys.gg当前技能说明	True	Temporarily summons a puppet in front. While the puppet is summoned, monsters will attack the puppet instead of yourself.
+3211001	Henesys.gg当前技能说明	True	Fires an ice arrow at an enemy in front that freezes the surrounding area on impact, dealing Ice-elemental damage to up to 4 enemies. Targets hit will suffer from a Slow effect that reduces movement speed for 2 seconds. Deals increased damage to ice-weak enemies, but deals reduced damage to ice-resistant enemies and cannot slow them.
+3211002	Henesys.gg当前技能说明	True	[Master Level : 30] Fires multiple arrows into the ground that erupt to attack up to 4 enemies in the surrounding area. Can be used even when monsters are close by.
+3211003	Henesys.gg当前技能说明	True	Fires multiple arrows in rapid succession to attack a single enemy.
+3211004	Henesys.gg当前技能说明	True	Summons a golden eagle. The eagle flies around the player for a certain period of time, attacking nearby monsters, and a more powerful eagle can be summoned as the skill level increases. Required Skill : At least Level 5 on Puppet
+3211005	Henesys.gg当前技能说明	True	Moves a certain distance in the opposite direction you are facing. As the skill level increases, the move distance increases.
+3220004	Henesys.gg当前技能说明	True	Increases crossbow mastery and damage.
+3221000	Henesys.gg当前技能说明	True	Powerful party buff that increases all base stats (STR, DEX, INT, LUK) by a percentage. At max level grants +16% to all stats for 320 seconds. Essential endgame party buff.
+3221001	Henesys.gg当前技能说明	True	Powerful piercing shot that hits multiple enemies.
+3221002	Henesys.gg当前技能说明	True	Party buff that increases critical hit rate and critical damage for all nearby party members. At max level provides +15% critical rate and +20% critical damage for 320 seconds. One of the most valuable party buffs in the game — essential for all boss runs.
+3221003	Henesys.gg当前技能说明	True	Knocks back enemies with a powerful gust.
+3221005	Henesys.gg当前技能说明	True	Summons an ice bird that damages enemies.
+3221006	Henesys.gg当前技能说明	True	Reduces enemy accuracy with each attack.
+3221007	Henesys.gg当前技能说明	True	The Marksman's ultimate single-target attack. Fires a single devastating shot that always deals 199,999 damage (effectively a fixed-damage skill). Has a cooldown that decreases with level. The only skill in the game with guaranteed fixed damage, making it uniquely powerful against high-defense bosses.
+3221008	Henesys.gg当前技能说明	True	Removes all abnormal status effects (seduce, stun, curse, etc.) from yourself. Cooldown decreases with level (600s → 360s). Essential for boss fights.
+4000000	资料站完整技能说明	False	[Master Level : 15] Increases Accuracy and Avoidability.
+4000000	资料站技能说明分段	False	Increases Accuracy and Avoidability.
+4000000	Henesys.gg当前技能说明	True	Increases Accuracy and Evasion.
+4000001	资料站完整技能说明	False	[Master Level: 15] Increases attack range for throwing weapons such as throwing stars & knives. Required Skill: At least Level 3 on Nimble Body#
+4000001	资料站技能说明分段	False	Increases attack range for throwing weapons such as throwing stars & knives.
+4000001	Henesys.gg当前技能说明	True	Increases attack range for throwing weapons such as Throwing Stars and Knives.
+4001000	资料站完整技能说明	False	[Master Level: 20] Temporarily decreases the Attack Power and Weapon Def. of an enemy and dissuades it from attacking you. Has no effect on a monster that's already in "Disorder."
+4001000	资料站技能说明分段	True	Temporarily decreases the Attack Power and Weapon Def. of an enemy and dissuades it from attacking you. Has no effect on a monster that's already in "Disorder."
+4001000	Henesys.gg当前技能说明	True	Temporarily decreases the Attack Power and Weapon Def. of an enemy and dissuades it from attacking you. Has no effect on a monster that's already in "Disorder."
+4001001	资料站完整技能说明	True	[Master Level : 20] Use MP to hide behind the shadows. Can't be attacked, and can't attack either. The effect is activated when used and deactivated when used again. Required Skill : At least Level 3 on Disorder#
+4001001	资料站技能说明分段	False	Use MP to hide behind the shadows. Can't be attacked, and can't attack either. The effect is activated when used and deactivated when used again.
+4001002	资料站完整技能说明	True	[Master Level: 20] Use MP to quickly stab a monster twice in one turn using a dagger.
+4001002	资料站技能说明分段	False	Use MP to quickly stab a monster twice in one turn using a dagger.
+4001003	资料站完整技能说明	True	[Master Level : 20] Use MP to throw 2 throwing stars and apply damage based on LUK, regardless of the rate of Claw Mastery.
+4001003	资料站技能说明分段	False	Use MP to throw 2 throwing stars and apply damage based on LUK, regardless of the rate of Claw Mastery.
+4100000	资料站完整技能说明	True	[Master Level: 20] Increases Claw Mastery and Attack Power, and gives a chance to recover used throwing stars when using throwing star attacks. Only applies when a claw is equipped.
+4100000	资料站技能说明分段	False	Increases Claw Mastery and Attack Power, and gives a chance to recover used throwing stars when using throwing star attacks. Only applies when a claw is equipped.
+4100001	资料站完整技能说明	True	[Master Level: 30] Increases Critical Rate and Critical Damage. Required Skill: At least Level 3 on Claw Mastery#
+4100001	资料站技能说明分段	False	Increases Critical Rate and Critical Damage.
+4100002	资料站完整技能说明	True	[Master Level: 20] Recovers additional HP and MP with a certain chance when landing a critical hit. Cannot recover again within 30 seconds after a recovery.
+4100002	资料站技能说明分段	False	Recovers additional HP and MP with a certain chance when landing a critical hit. Cannot recover again within 30 seconds after a recovery.
+4101000	资料站完整技能说明	True	[Master Level: 20] Uses HP and MP to temporarily increase the Attack Speed of the equipped claw. It only applies when the character is equipped with a claw and throwing stars. Required Skill : At least Level 5 on Claw Mastery#
+4101000	资料站技能说明分段	False	Uses HP and MP to temporarily increase the Attack Speed of the equipped claw. It only applies when the character is equipped with a claw and throwing stars.
+4101001	资料站完整技能说明	True	[Master Level: 20] Temporarily increases the speed and jump of all party members around the area.
+4101001	资料站技能说明分段	False	Temporarily increases the speed and jump of all party members around the area.
+4101002	资料站完整技能说明	True	[Master Level: 30] Absorbs some of the damage dished out to the enemy as HP. The most one can absorb at once is 25% of the character's Max HP, and can't absorb more than the Max HP of the enemy. Required Skill : At least Level 3 on Critical Recovery#
+4101002	资料站技能说明分段	False	Absorbs some of the damage dished out to the enemy as HP. The most one can absorb at once is 25% of the character's Max HP, and can't absorb more than the Max HP of the enemy.
+4110000	Henesys.gg当前技能说明	True	Increases Weapon Defense, with a chance to perfectly block enemy attacks. It only applies when a claw is equipped.
+4111000	Henesys.gg当前技能说明	True	Protects yourself with Meso. While the effect is active, it prevents death once when in critical danger and recovers a certain amount of HP.
+4111001	Henesys.gg当前技能说明	True	Summons a shadow partner for a certain period of time. The partner follows you and mimics your throwing star attacks to deal extra damage, but all attacks consume twice as many throwing stars.
+4111002	Henesys.gg当前技能说明	True	Throws a shadow spiderweb forward. Temporarily snares caught enemies, dealing damage every second.
+4111003	Henesys.gg当前技能说明	True	Replaces MP with mesos and attacks enemies with the damage based on the amount of mesos thrown. Nullifies the monsters' "weapon def. up" and "magic guard up."
+4111004	Henesys.gg当前技能说明	True	Consumes MP to create and throw a massive throwing star. The thrown star pierces through enemies to attack up to 4 targets.
+4111005	Henesys.gg当前技能说明	True	While in the air after a jump, use this skill to perform a second jump in the direction you are facing.
+4120002	Henesys.gg当前技能说明	True	Chance to dodge attacks.
+4120005	Henesys.gg当前技能说明	True	Stars have a chance to poison enemies.
+4121000	Henesys.gg当前技能说明	True	Powerful party buff that increases all base stats (STR, DEX, INT, LUK) by a percentage. At max level grants +16% to all stats for 320 seconds. Essential endgame party buff.
+4121003	Henesys.gg当前技能说明	True	Taunts enemies, increasing their attack but also the EXP they give.
+4121004	Henesys.gg当前技能说明	True	Damages all enemies on screen over time.
+4121006	Henesys.gg当前技能说明	True	Creates unlimited throwing stars temporarily.
+4121007	Henesys.gg当前技能说明	True	The Night Lord's signature attack. Throws 3 throwing stars simultaneously at a single target. At max level deals 187% × 3 = 561% total damage. Combined with Shadow Partner, this effectively becomes 6 hits per cast. The highest sustained single-target DPS for ranged classes.
+4121008	Henesys.gg当前技能说明	True	Damages all nearby enemies and knocks them back.
+4121009	Henesys.gg当前技能说明	True	Removes all abnormal status effects (seduce, stun, curse, etc.) from yourself. Cooldown decreases with level (600s → 360s). Essential for boss fights.
+4200000	资料站完整技能说明	True	[Master Level: 20] Increases Dagger Mastery and Critical Rate, with a chance to ignore knockback effects. It only applies when a dagger is equipped.
+4200000	资料站技能说明分段	False	Increases Dagger Mastery and Critical Rate, with a chance to ignore knockback effects. It only applies when a dagger is equipped.
+4200001	资料站完整技能说明	True	[Master Level: 20] Recover HP and MP with a certain chance when evading. Cannot recover again within 30 seconds after a recovery.
+4200001	资料站技能说明分段	False	Recover HP and MP with a certain chance when evading. Cannot recover again within 30 seconds after a recovery.
+4201000	资料站完整技能说明	True	[Master Level: 20] Uses HP and MP to temporarily increase the Attack Speed of the equipped dagger. It only applies when a dagger is equipped. Required Skill : At least Level 5 on Dagger Mastery#
+4201000	资料站技能说明分段	False	Uses HP and MP to temporarily increase the Attack Speed of the equipped dagger. It only applies when a dagger is equipped.
+4201001	资料站完整技能说明	True	[Master Level: 20] Temporarily increases the speed and jump of all party members around the area.
+4201001	资料站技能说明分段	False	Temporarily increases the speed and jump of all party members around the area.
+4201002	资料站完整技能说明	False	[Master Level: 30] Steals one of the monster's items with a given success rate. On success, stuns the enemy for 1.5 seconds and increases Attack Power for 30 seconds. Stealing works only once against the same monster, and can be attempted until successful. Required Skill : At least Level 5 on Haste#
+4201002	资料站技能说明分段	False	Steals one of the monster's items with a given success rate. On success, stuns the enemy for 1.5 seconds and increases Attack Power for 30 seconds. Stealing works only once against the same monster, and can be attempted until successful.
+4201002	Henesys.gg当前技能说明	True	Attempts to steal an item from up to 2 monsters at once with a given success rate. On a successful steal, stuns the enemies for 1.5 seconds and increases Attack Power for 30 seconds. Stealing works only once per monster and can be attempted until successful.
+4201003	资料站完整技能说明	True	[Master Level: 30] Use MP to attack an enemy up to 6 times in a row with a dagger.
+4201003	资料站技能说明分段	False	Use MP to attack an enemy up to 6 times in a row with a dagger.
+4210000	Henesys.gg当前技能说明	True	Using Dark Sight while below a certain HP threshold slowly restores HP. The recovery cancels if the Dark Sight effect ends, and cannot trigger again for a certain duration after activation.
+4211000	Henesys.gg当前技能说明	True	While active, use Meso to block a portion of incoming damage. The effect is deactivated if you lack the required Meso. The effect is activated when used and deactivated when used again. Required Skill : At least Level 3 on Chakra
+4211001	Henesys.gg当前技能说明	True	Instantly deals powerful damage to a single enemy in front and moves behind their back. Has a chance to stun the attacked enemy.
+4211002	Henesys.gg当前技能说明	True	Upon a successful attack, summons fellow thieves to sweep enemies in front with a coordinated strike.
+4211003	Henesys.gg当前技能说明	True	Temporarily causes monsters to drop mesos when attacked with an offensive skill. The effect is activated when used and deactivated when used again.
+4211004	Henesys.gg当前技能说明	True	Explodes the mesos dropped on the ground around you to attack monsters. The mesos from the monsters killed by someone else will not be able to be used for this. Required Skill : At least Level 3 on Pickpocket
+4211005	Henesys.gg当前技能说明	True	While in the air after a jump, use this skill to perform a second jump in the direction you are facing.
+4220002	Henesys.gg当前技能说明	True	Chance to dodge attacks.
+4220005	Henesys.gg当前技能说明	True	Daggers have a chance to poison enemies.
+4221000	Henesys.gg当前技能说明	True	Powerful party buff that increases all base stats (STR, DEX, INT, LUK) by a percentage. At max level grants +16% to all stats for 320 seconds. Essential endgame party buff.
+4221001	Henesys.gg当前技能说明	True	The Shadower's signature skill. Delivers a devastating 2-hit assassination strike that deals bonus damage when attacking from Dark Sight. At max level deals 590% × 2 = 1180% total damage. The highest per-cast damage in the game when used from Dark Sight.
+4221003	Henesys.gg当前技能说明	True	Taunts enemies, increasing their attack but also the EXP they give.
+4221004	Henesys.gg当前技能说明	True	Damages all enemies on screen over time.
+4221006	Henesys.gg当前技能说明	True	Creates an area where party members cannot be hit.
+4221007	Henesys.gg当前技能说明	True	Rushes through enemies multiple times.
+4221008	Henesys.gg当前技能说明	True	Removes all abnormal status effects (seduce, stun, curse, etc.) from yourself. Cooldown decreases with level (600s → 360s). Essential for boss fights.

@@ -1,10 +1,10 @@
 {
   "schema": 2,
   "taskId": "SKILL-001",
-  "state": "IMPLEMENTED_BUILD_AND_TESTS_COMMITTED_PENDING_CLOUD_REVIEW",
+  "state": "R1_R7_RESPONDED_SOURCE_AND_TESTS_COMMITTED_PENDING_CLOUD_REVIEW",
   "branch": "dsh/skill-001",
   "baseCommit": "bb4f9c361d5cc0ddef05d8cbdecfe95772eebe05",
-  "implementationCommit": "5b6c9b07e2f870f1d626f7060eca76e0436da100",
+  "implementationCommit": "b1b0f21cc089ee9f11cdd601687601866e265aba",
   "resultFilesCommit": "reported in the final relay message; this file is committed with the result",
   "inherits": [
     "CHAT-001 accepted",
@@ -17,6 +17,7 @@
       "src/SkillNameListPolicy.cs",
       "src/SkillDictionaryMatching.cs",
       "src/SkillEffectVocabulary.cs",
+      "src/SkillOverviewSafety.cs",
       "src/SkillSectionOverlay.cs",
       "src/StructuredPanelOverlay.cs",
       "src/MapleOverlay.cs",
@@ -25,6 +26,7 @@
     ],
     "testFiles": [
       "tests/logic-skill-panel-001.ps1",
+      "tests/logic-skill-coverage-001.ps1",
       "tests/logic-skill-title-matching.ps1",
       "tests/logic-skill-detail-semantics.ps1",
       "tests/logic-simple-flow-r11.ps1"
@@ -38,7 +40,8 @@
   },
   "diagnosis": {
     "genericMasterHeader": "DetectSkillContentId took the first exact dictionary row. Every panel beginning with the generic '[Master Level: 20]' segment resolved to 1200000, so Rush, Critical Recovery, Sword Booster and Slow could borrow Sword Mastery's or another skill's description; Arrow Bomb borrowed Drain.",
-    "containedName": "DetectUniqueSkillNameId scanned every short name contained in the line. 'Recovery' inside 'Critical Recovery' made the unique title ambiguous and prevented the correct id.",
+    "containedName": "DetectUniqueSkillNameId now records every whole-name occurrence with its start and length, discards only shorter occurrences contained inside a longer occurrence, and keeps independently positioned names in the ambiguity set. 'Magic Guard Recovery' and 'Critical Recovery Recovery' therefore return no arbitrary id, while 'Critical Recovery' remains 4100002.",
+    "cloudReviewR2toR7": "The second review found five further unsafe paths: a known id could replace negated/unrelated prose; an untranslated current effect was erased when the header succeeded; a proportional split inside one OCR word could become measured; a distant list header could authorize a player name; 'at most' was rendered as 'at least'; and coverage counted only master-prefixed rows. Each is addressed below and covered by regressions.",
     "sectionOwnership": "The old AddSkillPanelLabels ranked at most three long-text candidates, let the body union include the master and prerequisite rows, and the independent overview/effect passes could add competing owners for the same panel. A successful section could suppress or overlap another.",
     "listNames": "The main dictionary pass called FindSkillNameMatches on every ordinary line, so a bare skill name in prose or a player name could be replaced outside a skill list. Trailing level digits had no protected span.",
     "evidence": "coordination/SKILL-001/evidence/baseline-skill-panel-probe.txt"
@@ -47,9 +50,14 @@
     "identity": "Maximal exact skill-name spans are resolved first. A unique visible body is the second source of identity. The generic '[Master Level: N]' row never resolves an id. Contained short names do not create ambiguity, and a shared Chinese body is used only when every candidate supplies the identical Chinese; otherwise the original body is preserved.",
     "onePanelPlan": "BuildSkillPanelPlan creates one SkillPanelPlan per visible panel. It owns name, master level, description, prerequisite, current and next as separate sections with exact source spans. One section cannot suppress another; absent sections are not invented; a failed section is preserved without blocking the others.",
     "combinedRows": "SplitSkillSemanticRows separates title, master header, body, prerequisite, current and next when they share one OCR line. Splits are measured where possible and recorded; a proportional split inside one OCR word is marked estimated and never upgraded to measured.",
-    "numericSafety": "Every level section keeps the observed level number. Current and next effects use the shared effect grammar with TranslationValueSafety ordered numeric preservation. Values are never swapped between levels. A description from another server's numbers is rejected rather than borrowed.",
+    "numericSafety": "SkillOverviewSafety validates every overview candidate and the full-text fallback against the observed sentence: source coverage, negation, conditions, restriction classes, attribute set, numeric associations, and reverse overreach. Exact dictionary sentences use a multiset of visible numbers (human Chinese may reorder clauses); templates and approximate borrowings use attribute-associated numerators. Unsafe means the original pixels are preserved. Level effects keep ordered numeric preservation.",
+    "overviewSafety": "SkillOverviewSafety.cs is a shared gate used by TryGetVisibleSkillOverviewBody, TryTranslateSkillOverview and TryResolveSharedSkillContent. It never chooses an id; it can only accept or reject a translation for a supplied/verified id.",
+    "headerEffectSplit": "When a current/next effect cannot be translated, only a measured header span is replaced. The effect pixels stay original. The plan records headerStatus and effectStatus separately (planned/painted/preserved), so a successful header cannot stand in for a preserved effect.",
+    "measuredConfidence": "SkillTextRow carries Measured and Synthetic. Every split receives the source boundary confidence; a synthetic row is built from word-level slices so a header/effect split at real word boundaries stays measured, while a proportional split inside one word stays estimated. AddSpanRows ANDs the confidence. Final labels refuse !Measured; estimated labels are not promoted by wrapping or slot expansion.",
+    "requiredRelation": "ParseRequiredSkillCondition parses the complete prerequisite relation: plain level, at least, at most and common OCR spellings. Unsupported relations preserve the original row instead of defaulting to '至少'. A name that is absent or ambiguous also preserves it.",
+    "listLocalContext": "SkillNameListPolicy requires the title, candidate row and neighbouring name rows to be in one local region. A header in another panel, a same-column but far row, or a standalone player name cannot authorize a replacement.",
+    "combinedRows": "SplitSkillSemanticRows separates title, master header, body, prerequisite, current and next when they share one OCR line. Splits use word-level slices where possible. A proportional split inside one OCR word is marked estimated and never upgraded to measured, applied, planned or painted.",
     "typography": "SkillPanelTypography is shared: SimSun, GraphicsUnit.Pixel, body floor 11px, body cap 16px, title body+3 with a narrow-name readable fallback. Section slots expand only into blank space before the next measured section. There is no per-section 8px shrink loop.",
-    "listNames": "SkillNameListPolicy requires an explicit skill-list header or at least two same-column exact skill-name rows. Bare names in ordinary prose are rejected. A trailing level number is excluded from the replaced span and protected by KeepClearBounds; the split is marked estimated.",
     "composition": "SimpleFusionComposition uses the plan's fixed pixel size, refuses a section that does not fit, and records skill-panel/skill-paint status. Generic overview/effect passes skip panels owned by the plan.",
     "taskSpecificRuntimeBranches": false,
     "extraOcrOrAiRounds": false
@@ -58,13 +66,24 @@
     "corpus": "shipped 枫语幕词库.tsv",
     "skillIds": 264,
     "namesTranslated": "264/264",
-    "overviewRowsAvailable": 95,
-    "overviewTranslationsPassed": "95/95",
-    "overviewAbsent": 169,
-    "overviewAbsentMeaning": "The shipped corpus has no non-level overview row for these ids; this is not a translation failure.",
+    "primaryOverviewIdsExpected": 264,
+    "primaryOverviewIdsObserved": 264,
+    "overviewAbsent": 0,
+    "overviewPlanned": 232,
+    "overviewPainted": 217,
+    "overviewPreserved": 47,
+    "overviewPlannedButNotPainted": 15,
+    "overviewPreservedReasons": {
+      "body-translation-unavailable": 30,
+      "skill-section-does-not-fit": 15,
+      "section-boundary-estimated": 2
+    },
+    "supplementalOverviewRows": 394,
     "levelEffects": 3804,
     "levelEffectsPassed": "3804/3804",
     "multiEffectSkills": 164,
+    "multiLevelCombinedPainted": "164/164",
+    "denominatorRule": "One primary visible overview per id: Henesys.gg current, then full site, then a prose segment. A [Master Level] prefix is not required. All other visible variants are listed as supplemental, not counted as absent.",
     "classCounts": {
       "Warrior": 85,
       "Magician": 73,
@@ -80,85 +99,101 @@
       "3rd": 98,
       "4th": 0
     },
-    "table": "evidence/skill-coverage.tsv",
-    "summary": "evidence/coverage-summary.json"
+    "table": "evidence/coverage-r1.tsv",
+    "supplementalTable": "evidence/coverage-r1-supplemental.tsv",
+    "summary": "evidence/coverage-r1-summary.json"
   },
   "build": {
     "command": "pwsh -NoProfile -File src/build.ps1",
     "status": "PASS",
-    "head": "5b6c9b07e2f870f1d626f7060eca76e0436da100",
-    "worktreeAtBuild": "tracked worktree clean; only the pre-existing untracked main_ui_live_*.png application captures were present",
-    "inputs": 67,
+    "head": "b1b0f21cc089ee9f11cdd601687601866e265aba",
+    "worktreeAtBuild": "tracked worktree contained the R1-R7 source/test changes; untracked main_ui_live_*.png application captures were present and untouched",
+    "inputs": 68,
     "exePath": "枫语幕.exe",
-    "exeSha256": "45ED9F51C4274AD80977A99122CDECD58455F27A105C0A600B58F5DCF865DFE1",
+    "exeSha256": "3A157488643C7DF647488848E261D421FBAEA42A8746490CBD9D64D41801ADA7",
     "buildEvidencePath": "枫语幕.exe.build.json",
-    "buildEvidenceSha256": "437EECC71DAB158302B31B57BE59A0C50B6B6E7BCF98CBF1F2E0699FBEB7CC5F",
+    "buildEvidenceSha256": "190D143DCA301862DBF5C8DA0A42F1006E2685D5270EAC844DD92FFD83D25F8C",
     "compiler": "dotnet SDK 6.0.410 Roslyn csc.dll with .NET Framework 4.8 reference assemblies"
   },
   "tests": {
     "skillPanel": {
       "command": "pwsh -NoProfile -File tests/logic-skill-panel-001.ps1 -ExePath .\\枫语幕.exe",
-      "checks": 81,
+      "checks": 103,
       "kind": "actual built EXE reflection; controlled OCR geometry; native GDI+ font measurement and stand-in pixel composition",
       "status": "PASS",
-      "evidence": "evidence/logic-skill-panel-001-root.txt"
+      "evidence": "evidence/logic-skill-panel-001-r1.txt"
+    },
+    "skillCoverage": {
+      "command": "pwsh -NoProfile -File tests/logic-skill-coverage-001.ps1 -ExePath .\\枫语幕.exe",
+      "checks": 8,
+      "kind": "264 controlled primary overview panels, each with current/next effects where available; per-id expected/observed/planned/painted/preserved/absent accounting",
+      "status": "PASS",
+      "painted": 217,
+      "preserved": 47,
+      "multiLevelCombined": "164/164",
+      "evidence": "evidence/logic-skill-coverage-001.txt",
+      "table": "evidence/coverage-r1.tsv"
     },
     "skillTitleMatching": {
       "command": "pwsh -NoProfile -File tests/logic-skill-title-matching.ps1 -ExePath .\\枫语幕.exe",
       "checks": 13,
       "status": "PASS",
-      "evidence": "evidence/skill-title-matching-root.txt"
+      "evidence": "evidence/skill-title-matching-r1.txt"
     },
     "skillDetailSemantics": {
       "command": "pwsh -NoProfile -File tests/logic-skill-detail-semantics.ps1 -ExePath .\\枫语幕.exe",
       "status": "PASS",
-      "evidence": "evidence/skill-detail-semantics-root.txt"
+      "evidence": "evidence/skill-detail-semantics-r1.txt"
     },
     "controlledPanels": {
       "command": "included in logic-skill-panel-001",
       "fixtures": 41,
       "plannedSectionLabelsComposed": "all planned labels across 41/41 panels",
-      "visibleRoleCoverage": "body=40, current=26, next=37; 6 preserved sections with concrete reasons",
+      "visibleRoleCoverage": "body=40, current=26, next=37; 11 preserved sections with concrete reasons",
+      "preservedReasons": "4/14/16/19/20b/20f/30/32 body unavailable; 20e/22 required unparsed; 28 required name ambiguous",
       "evidence": "evidence/skill-panel-cases.json"
     },
     "equipmentFields": {
       "command": "pwsh -NoProfile -File tests/logic-equipment-fields.ps1",
       "checks": 91,
       "status": "PASS",
-      "evidence": "evidence/logic-equipment-fields.txt"
+      "evidence": "evidence/logic-equipment-fields-r1.txt"
     },
     "equipmentPaint": {
       "command": "pwsh -NoProfile -File tests/logic-equipment-paint.ps1",
       "checks": 42,
       "status": "PASS",
-      "evidence": "evidence/logic-equipment-paint.txt"
+      "evidence": "evidence/logic-equipment-paint-r1.txt"
     },
     "equipmentPanel": {
       "command": "pwsh -NoProfile -File tests/logic-equipment-panel-r6.ps1",
       "checks": 56,
-      "status": "PASS"
+      "status": "PASS",
+      "evidence": "evidence/logic-equipment-panel-r6-r1.txt"
     },
     "equipmentBody": {
       "command": "pwsh -NoProfile -File tests/logic-equipment-body-r6.ps1",
       "checks": 7,
-      "status": "PASS"
+      "status": "PASS",
+      "evidence": "evidence/logic-equipment-body-r6-r1.txt"
     },
     "equipmentScope": {
       "command": "pwsh -NoProfile -File tests/logic-equipment-scope.ps1",
       "checks": 27,
-      "status": "PASS"
+      "status": "PASS",
+      "evidence": "evidence/logic-equipment-scope-r1.txt"
     },
     "simpleFlow": {
       "command": "pwsh -NoProfile -File tests/logic-simple-flow-r11.ps1",
       "checks": 33,
       "status": "PASS",
-      "evidence": "evidence/logic-simple-flow-r11.txt"
+      "evidence": "evidence/logic-simple-flow-r11-r1.txt"
     },
     "questFont": {
       "command": "pwsh -NoProfile -File tests/logic-quest-font-layout.ps1",
       "checks": 51,
       "status": "PASS",
-      "evidence": "evidence/logic-quest-font-layout.txt"
+      "evidence": "evidence/logic-quest-font-layout-r1.txt"
     },
     "questPanel": {
       "command": "pwsh -NoProfile -File tests/logic-quest-panel-layout.ps1",
@@ -169,7 +204,7 @@
       "command": "pwsh -NoProfile -File tests/logic-journal-and-item-r6.ps1 -ExePath .\\枫语幕.exe",
       "checks": 23,
       "status": "PASS",
-      "evidence": "evidence/logic-journal-and-item-r6.txt"
+      "evidence": "evidence/logic-journal-and-item-r6-r1.txt"
     },
     "chatCategoryFiltering": {
       "command": "pwsh -NoProfile -File tests/logic-chat-category-filtering.ps1",
@@ -239,5 +274,22 @@
     "Private user screenshots, video and chat evidence (intentionally not committed)",
     "Whether every aesthetically imperfect generic fallback is acceptable to the user; unsafe/ambiguous bodies were preserved rather than guessed"
   ],
+  "cloudReviewResponse": {
+    "verdict": "NEEDS_CHANGES",
+    "handled": [
+      "R1 position-aware whole-name occurrences; independently positioned names stay ambiguous",
+      "R2 overview/full-text safety gate for coverage, negation, conditions and numeric association; unsafe preserves original",
+      "R3 measured header-only replacement when the effect is untranslated; header and effect status recorded separately",
+      "R4 measured confidence carried through row/split/plan/composition; estimated labels are never applied or painted",
+      "R5 local title/candidate/neighbour list region; distant header and player-name negatives",
+      "R6 complete prerequisite relation parse; unsupported relation preserves the original",
+      "R7 primary overview denominator 264/264, per-item status table, 217 painted, 47 preserved with reasons, 164/164 multi-level combined painted"
+    ],
+    "untouched": [
+      "ITEM/CAPTURE work",
+      "OCR/AI providers, prompts and rounds",
+      "main_ui_live_*.png"
+    ]
+  },
   "cloudAcceptance": "PENDING"
 }
