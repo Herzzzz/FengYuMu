@@ -25,10 +25,16 @@ PASS: signed no-colon speed and Evasion both survive
 PASS: contiguous STR+5INT+3 yields two fields
 PASS: STR value stops before INT and INT keeps +3
 PASS: next-field boundary keeps legitimate OCR +1O
+PASS: R3a INT follows OCR digit O and is still recognized
+PASS: R3a STR keeps +1O and INT keeps +3
+PASS: R3a prose POINT is not split into an INT field
+PASS: R3a key boundary does not duplicate inner HP
 PASS: Upgrade Slots maps to the upgrade attribute
 PASS: Upgrades Available accepts a zero value
 PASS: OCR-confusable digit is preserved verbatim
 PASS: Unicode minus is preserved verbatim
+PASS: independent Unicode sign and digit are one raw value
+PASS: independent ASCII minus and digit are one raw value
 PASS: decimal negative percentage is preserved
 PASS: generic fields work for Hat
 PASS: generic fields work for Overall
@@ -72,4 +78,4 @@ PASS: the unsplittable fallback still retains the exact value text
 PASS: an unsafe merged value preserves the original instead of recolouring it
 PASS: partial OCR without a value rectangle is marked partial
 PASS: partial value still protects the rest of the row
-Equipment fields: 74 checks passed; actual built EXE grammar/plan API; synthetic rectangles; real CW pixels unverified.
+Equipment fields: 80 checks passed; actual built EXE grammar/plan API; synthetic rectangles; real CW pixels unverified.

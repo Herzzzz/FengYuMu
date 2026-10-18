@@ -1,12 +1,12 @@
 {
   "schema": 2,
   "taskId": "EQUIP-001",
-  "state": "R1_R2_R3_IMPLEMENTED_BUILD_AND_TESTS_COMMITTED_PENDING_CLOUD_REVIEW",
+  "state": "R1A_R3A_IMPLEMENTED_BUILD_AND_TESTS_COMMITTED_PENDING_CLOUD_REVIEW",
   "branch": "dsh/equip-001",
   "baseCommit": "399cc8e",
   "initialImplementationCommit": "ce945b0947f7b1e81b8ac2e5e2d43c1ef9874669",
-  "previousImplementationCommit": "e12156425afb6ba3c96d44cd6f50854be144cfb4",
-  "implementationCommit": "7736051f2d290683e83d7b5a6a95fdc1562ea5fe",
+  "previousImplementationCommit": "7736051f2d290683e83d7b5a6a95fdc1562ea5fe",
+  "implementationCommit": "41ab324913ce12665cd3f4620468c102b8c1b2b3",
   "resultFilesCommit": "reported in the final relay message; this file is committed with the result",
   "inherits": [
     "CHAT-001 accepted",
@@ -64,7 +64,14 @@
     "extraOcrOrAiRounds": false
   },
   "reviewFixes": {
-    "EQUIP-R1": {
+    "EQUIP-R1a": {
+      "status": "FIXED",
+      "detail": "PreciseTextSpan maps raw word offsets, so an independent Unicode/ASCII sign word is part of the measured value box. Key words may ignore attached punctuation only; clipped value words are estimated and preserved. WDEF: − 5 and WDEF : - 5 regressions protect the entire sign+digit region, and composition refuses estimated boundaries."
+    },
+    "EQUIP-R3a": {
+      "status": "FIXED",
+      "detail": "A key may start after OCR digit O only when that character run is a numeric value immediately following a previous confirmed field. STR:+1OINT:+3 parses STR=+1O and INT=+3, while POINT is not split. Parsing, planning and painting regressions cover the combined form."
+    },    "EQUIP-R1": {
       "status": "FIXED",
       "detail": "PreciseTextSpan distinguishes whole-word measured boundaries from proportional estimates. ValuePixelsPreserved is true only for measured boundaries; estimated merged key/value words are preserved and composition also refuses equipment-field-boundary-estimated. The 48-marker regression checks every value-region pixel (sign, correction, colour), not a centre point."
     },
@@ -80,33 +87,33 @@
   "build": {
     "command": "pwsh -NoProfile -File src/build.ps1",
     "status": "PASS",
-    "head": "7736051f2d290683e83d7b5a6a95fdc1562ea5fe",
+    "head": "41ab324913ce12665cd3f4620468c102b8c1b2b3",
     "worktreeCleanAtBuild": true,
     "inputs": 65,
     "exePath": "枫语幕.exe",
-    "exeSha256": "4D39DB71D6E7CFEDF4CA81E3F7BDCC605FAB2AA459724D4FF6109C4C7BDD5EC3",
+    "exeSha256": "FE3D8AC939767BA38CC5F240F05313F1E6031CDB5404DAABF7BE94970740D0EF",
     "buildEvidencePath": "枫语幕.exe.build.json",
-    "buildEvidenceSha256": "EE7F31BEB38B665577C3900878CB511CC50497378A94944701633E2CB74A2CA6",
+    "buildEvidenceSha256": "2A9FC3AFA2F134BC89A8E0E61326EAA226F1C3E91543270D26AF547603AE19E8",
     "compiler": "dotnet SDK 6.0.410 Roslyn csc.dll with .NET Framework 4.8 reference assemblies"
   },
   "tests": {
     "equipmentFields": {
       "command": "pwsh -NoProfile -File tests/logic-equipment-fields.ps1",
-      "checks": 74,
+      "checks": 80,
       "kind": "actual built EXE grammar/plan API; synthetic rectangles",
       "status": "PASS",
       "evidence": "evidence/equipment-fields.txt"
     },
     "equipmentPaint": {
       "command": "pwsh -NoProfile -File tests/logic-equipment-paint.ps1",
-      "checks": 34,
+      "checks": 40,
       "kind": "generated-source substitute Font/Graphics harness",
       "status": "PASS",
       "evidence": "evidence/equipment-paint.txt"
     },
     "equipmentPanel": {
       "command": "pwsh -NoProfile -File tests/logic-equipment-panel-r6.ps1",
-      "checks": 34,
+      "checks": 49,
       "kind": "exact production structured builder with controlled OCR geometry",
       "status": "PASS",
       "evidence": "evidence/equipment-panel.txt"

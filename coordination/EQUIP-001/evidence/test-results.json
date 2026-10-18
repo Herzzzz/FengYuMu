@@ -3,19 +3,19 @@
   "branch": "dsh/equip-001",
   "baseCommit": "399cc8e",
   "initialImplementationCommit": "ce945b0947f7b1e81b8ac2e5e2d43c1ef9874669",
-  "previousImplementationCommit": "e12156425afb6ba3c96d44cd6f50854be144cfb4",
-  "implementationCommit": "7736051f2d290683e83d7b5a6a95fdc1562ea5fe",
+  "previousImplementationCommit": "7736051f2d290683e83d7b5a6a95fdc1562ea5fe",
+  "implementationCommit": "41ab324913ce12665cd3f4620468c102b8c1b2b3",
   "build": {
     "command": "pwsh -NoProfile -File src/build.ps1",
     "status": "PASS",
-    "head": "7736051f2d290683e83d7b5a6a95fdc1562ea5fe",
+    "head": "41ab324913ce12665cd3f4620468c102b8c1b2b3",
     "worktreeEntries": 0,
     "inputs": 65,
     "compiler": "dotnet SDK 6.0.410 Roslyn csc.dll with .NET Framework 4.8 reference assemblies",
     "exePath": "枫语幕.exe",
-    "exeSha256": "4D39DB71D6E7CFEDF4CA81E3F7BDCC605FAB2AA459724D4FF6109C4C7BDD5EC3",
+    "exeSha256": "FE3D8AC939767BA38CC5F240F05313F1E6031CDB5404DAABF7BE94970740D0EF",
     "buildEvidencePath": "枫语幕.exe.build.json",
-    "buildEvidenceSha256": "EE7F31BEB38B665577C3900878CB511CC50497378A94944701633E2CB74A2CA6"
+    "buildEvidenceSha256": "2A9FC3AFA2F134BC89A8E0E61326EAA226F1C3E91543270D26AF547603AE19E8"
   },
   "stageDefinitions": {
     "recognized": "equipment panel (grammar structure) or equipment field row is identified from OCR geometry/text",
@@ -31,8 +31,12 @@
     "paintAll": "equipment-paint generation=1 prepared=12 painted=12 preserved=0 panelSize=13 preservedReason=none",
     "paintPreserved": "equipment-paint generation=1 prepared=2 painted=1 preserved=1 panelSize=16 preservedReason=equipment-field-does-not-fit",
     "paintEstimated": "equipment-paint generation=1 prepared=2 painted=1 preserved=1 panelSize=13 preservedReason=equipment-field-boundary-estimated",
+    "paintR1a": "equipment-paint generation=1 prepared=1 painted=1 preserved=0 panelSize=13 preservedReason=none",
     "paintR3": "equipment-paint generation=1 prepared=2 painted=2 preserved=0 panelSize=13 preservedReason=none",
-    "planPreserved": "merged-value-region-unsafe (field test; original pixels kept instead of recolouring an unsplittable key/value word)"
+    "paintR3a": "equipment-paint generation=1 prepared=2 painted=2 preserved=0 panelSize=13 preservedReason=none",
+    "planPreserved": "merged-value-region-unsafe (field test; original pixels kept instead of recolouring an unsplittable key/value word)",
+    "r1aCoverage": "equipment-coverage recognizedPanels=1 recognizedRows=1 parsed=1 prepared=1 measuredValues=1 estimatedValues=0 valuePixels=1 partialValues=0 mergedText=0 preserved=0 preservedReason=none rejected=0 keys=weapon-defense",
+    "r3aCoverage": "equipment-coverage recognizedPanels=1 recognizedRows=1 parsed=2 prepared=2 measuredValues=2 estimatedValues=0 valuePixels=2 partialValues=0 mergedText=0 preserved=0 preservedReason=none rejected=0 keys=strength,intelligence"
   },
   "reviewFixes": {
     "EQUIP-R1": {
@@ -43,6 +47,14 @@
       "status": "FIXED",
       "detail": "FitEquipmentFieldFont no longer loops/shrinks per label. Every field uses the panel typography's final FieldSize; a key that cannot fit keeps the original. Real GDI+ checks confirm 智力 and 物理防御力 both use the same 16px panel size, with a too-wide key preserved instead of painted at 14px."
     },
+    "EQUIP-R1a": {
+      "status": "FIXED",
+      "detail": "PreciseTextSpan now maps raw word offsets instead of normalized characters, so separate sign words (Unicode minus and ASCII minus) are included in the measured value box. The value span is strict about clipped words; a key word may only ignore attached punctuation. The WDEF: − 5 and WDEF : - 5 variants protect the complete sign+digit region, and composition rejects estimated boundaries."
+    },
+    "EQUIP-R3a": {
+      "status": "FIXED",
+      "detail": "Key-start filtering permits INT after an OCR digit O only when the preceding run is a numeric value immediately following a previous confirmed field, so STR:+1OINT:+3 parses STR=+1O and INT=+3 while POINT is not split. Parsing, planning and painting regressions cover the combined form."
+    },
     "EQUIP-R3": {
       "status": "FIXED",
       "detail": "Key matches are collected before value extraction. Each value range is bounded by the next confirmed field start, so STR+5INT+3 parses STR=+5 and INT=+3, while legitimate OCR tolerance such as +1O remains. Parsing, planning and painting regressions cover the no-space and spaced forms."
@@ -51,21 +63,21 @@
   "testsPass": [
     {
       "script": "tests/logic-equipment-fields.ps1",
-      "checks": 74,
+      "checks": 80,
       "kind": "actual built EXE grammar and plan API; synthetic rectangles",
       "exit": 0,
       "evidence": "evidence/equipment-fields.txt"
     },
     {
       "script": "tests/logic-equipment-paint.ps1",
-      "checks": 34,
+      "checks": 40,
       "kind": "generated-source substitute Font/Graphics composition harness",
       "exit": 0,
       "evidence": "evidence/equipment-paint.txt"
     },
     {
       "script": "tests/logic-equipment-panel-r6.ps1",
-      "checks": 34,
+      "checks": 49,
       "kind": "exact production structured builder with controlled OCR geometry",
       "exit": 0,
       "evidence": "evidence/equipment-panel.txt"

@@ -26,6 +26,8 @@
     {"category": "partial-value-rectangle", "row": "Weapon Def.: +16", "plan": "PartialValue=true, ValueMode=value-bounds-unmeasured, rest of row guarded"},
     {"category": "key-only-partial", "row": "Weapon Def.", "plan": "HasValue=false, no invented guard or number"},
     {"category": "EQUIP-R1-estimated-boundary", "row": "WeaponDef-5", "plan": "BoundaryMode=estimated, status=preserved, ValuePixelsPreserved=false, preservedReason=estimated-value-region; 48-marker composition guard keeps every pixel"},
+    {"category": "EQUIP-R1a-independent-sign", "rows": ["WDEF : \u2212 5", "WDEF: \u2212 5", "WDEF : - 5", "WDEF: - 5"], "keys": ["weapon-defense"], "values": ["\u2212 5", "\u2212 5", "- 5", "- 5"], "plan": "raw sign word included in measured guard; entire sign+digit region preserved"},
+    {"category": "EQUIP-R3a-ocr-digit-boundary", "row": "STR:+1OINT:+3", "keys": ["strength", "intelligence"], "values": ["+1O", "+3"], "plan": "INT accepted after the numeric +1O run; both measured boxes prepare and paint; POINT remains prose"},
     {"category": "EQUIP-R3-contiguous-no-space", "row": "STR+5INT+3", "keys": ["strength", "intelligence"], "values": ["+5", "+3"], "plan": "STR value bounded before INT; both measured key/value boxes prepare and paint"},
     {"category": "EQUIP-R3-contiguous-ocr-tolerance", "row": "Weapon Def.: +1O INT: +5", "keys": ["weapon-defense", "intelligence"], "values": ["+1O", "+5"], "plan": "next-field boundary does not erase legitimate OCR O"}
   ],

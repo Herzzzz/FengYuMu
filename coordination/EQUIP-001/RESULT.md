@@ -5,11 +5,11 @@
 - Branch: `dsh/equip-001`.
 - Base commit: `399cc8e` (accepted CHAT-001 + QUEST-001/FONT-001 records).
 - Initial implementation commit: `ce945b0947f7b1e81b8ac2e5e2d43c1ef9874669`.
-- Previous implementation commit: `e12156425afb6ba3c96d44cd6f50854be144cfb4`.
-- Final implementation commit: `7736051f2d290683e83d7b5a6a95fdc1562ea5fe`.
+- Previous implementation commit: `7736051f2d290683e83d7b5a6a95fdc1562ea5fe`.
+- Final implementation commit: `41ab324913ce12665cd3f4620468c102b8c1b2b3`.
 - Result files commit: reported in the final relay message; this file is committed with the result.
-- EXE: `D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe`; SHA-256 `4D39DB71D6E7CFEDF4CA81E3F7BDCC605FAB2AA459724D4FF6109C4C7BDD5EC3`.
-- Build evidence: `枫语幕.exe.build.json`; SHA-256 `EE7F31BEB38B665577C3900878CB511CC50497378A94944701633E2CB74A2CA6`; head `7736051`, 65 inputs, clean worktree at build.
+- EXE: `D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe`; SHA-256 `FE3D8AC939767BA38CC5F240F05313F1E6031CDB5404DAABF7BE94970740D0EF`.
+- Build evidence: `枫语幕.exe.build.json`; SHA-256 `2A9FC3AFA2F134BC89A8E0E61326EAA226F1C3E91543270D26AF547603AE19E8`; head `41ab324`, 65 inputs, clean worktree at build.
 
 ## Diagnosis
 
@@ -129,17 +129,17 @@ ink colour.
 
 ### 7. Tests
 
-- `tests/logic-equipment-fields.ps1` (74 checks): actual built EXE grammar and
+- `tests/logic-equipment-fields.ps1` (80 checks): actual built EXE grammar and
   plan API plus real GDI+ font measurement over requirements, defences, attacks,
   critical, evasion, speed, attack speed, slots, positive/negative/Unicode/
   percent/corrected values, partial OCR, merged words, multiple equipment types,
   measured-vs-estimated boundaries and shared 16px panel typography.
-- `tests/logic-equipment-paint.ps1` (34 checks): generated-source substitute
+- `tests/logic-equipment-paint.ps1` (40 checks): generated-source substitute
   Font/Graphics composition. Paints a synthetic 12-row equipment panel, checks
   every pixel of every value region (sign, correction and colour), one shared
   panel size, the R1 48-pixel estimated-boundary preservation, the R2 16/16
   wide/narrow decision and the R3 contiguous-field paint.
-- `tests/logic-equipment-panel-r6.ps1` (34 checks): exact production
+- `tests/logic-equipment-panel-r6.ps1` (49 checks): exact production
   `AddStructuredFieldLabels` with controlled OCR geometry. Verifies recognised/
   matched/prepared counts, measured/estimated boundaries, all fields survive on
   combined rows, one panel plan, one typography, key-before-guard geometry,
@@ -153,6 +153,33 @@ ink colour.
 
 ## Cloud review fixes (EQUIP-R1/R2/R3)
 
+### EQUIP-R1a — independent sign word boxes
+
+`PreciseTextSpan` now walks raw OCR word offsets instead of normalized character
+positions. A sign word (`−`, `-`, `＋`, `－`) normalizes to an empty string, but
+its measured box is still part of the requested value range. The value range is
+strict: any clipped value word is estimated and preserved. A key word may ignore
+only attached punctuation (for example the colon in `WDEF:`) when its measured
+value starts after the key box.
+
+Regression: both `WDEF : − 5` and `WDEF: − 5` (and ASCII `-` variants) prepare a
+measured field whose guard covers the sign and the digit. The paint harness checks
+the complete sign+digit rectangle remains original; the 48-pixel merged-word test
+and every-value-pixel panel test remain in place.
+
+### EQUIP-R3a — INT after an OCR digit O
+
+Key matches are collected without the old letter lookbehind, then filtered by
+context. A key preceded by a letter/digit is accepted only when that run is a
+numeric value immediately following a previously confirmed field, and the run
+contains a real digit. `STR:+1OINT:+3` therefore parses `+1O` and `+3`; `POINT`
+and the inner `HP` of `MaxHP` remain rejected. This is generic boundary logic, not
+an INT special case.
+
+Regression: parsing, planning and painting cover `STR:+1OINT:+3`; both fields
+prepare, both paint, both value regions remain original, and there is no
+`source-or-live-value-conflict`. The spaced control and `+1O` OCR tolerance remain
+covered.
 ### EQUIP-R1 — measured boundaries and the 48-pixel value region
 
 `PreciseTextSpan` now has an out `measured` flag. It is false whenever the span
@@ -229,6 +256,14 @@ equipment-paint generation=1 prepared=12 painted=12 preserved=0 panelSize=13
 equipment-paint generation=1 prepared=2 painted=1 preserved=1 panelSize=13
  preservedReason=equipment-field-boundary-estimated
 
+equipment-paint generation=1 prepared=1 painted=1 preserved=0 panelSize=13
+ preservedReason=none
+ (EQUIP-R1a independent sign word; complete signed region guarded)
+
+equipment-paint generation=1 prepared=2 painted=2 preserved=0 panelSize=13
+ preservedReason=none
+ (EQUIP-R3a STR:+1OINT:+3; both fields paint)
+
 equipment-paint generation=1 prepared=2 painted=1 preserved=1 panelSize=16
  preservedReason=equipment-field-does-not-fit
 
@@ -249,12 +284,12 @@ percentage and parenthesized correction) remains attached to the field evidence.
 ## Tests
 
 See `evidence/test-results.json` and the individual logs. All PASS results
-below are against the clean-build EXE `4D39DB71...` (implementation head
-`7736051`, 65 build inputs, clean worktree).
+below are against the clean-build EXE `FE3D8AC9...` (implementation head
+`41ab324`, 65 build inputs, clean worktree).
 
 Passing on this host/build:
 
-- new equipment tests: 74 + 34 + 34 + 7 + 27 = **176 checks**;
+- new equipment tests: 80 + 40 + 49 + 7 + 27 = **203 checks**;
 - `tests/logic-simple-flow-r11.ps1` — 33 checks;
 - `tests/logic-quest-font-layout.ps1` — 51 checks (substitute Font/Graphics);
 - `tests/logic-quest-panel-layout.ps1` — 164 checks (actual GDI+);
@@ -309,8 +344,8 @@ Stale-path tests not run: `logic-quest-paragraph-pipeline-r12.ps1`,
 - Shared FONT-001 principles: one equipment-panel family/unit/size, measured
   field wrappers, and original preservation when the complete key cannot fit.
 - Real in-game visual acceptance (live game tooltip, real coloured modifiers,
-  physical F8, actual 100/125/150/200% game scaling) is **UNVERIFIED**. The 63
+  physical F8, actual 100/125/150/200% game scaling) is **UNVERIFIED**. The 80
   field checks use the built EXE's grammar/plan API with synthetic rectangles;
-  the 28 panel checks use the exact production structured builder compiled from
-  source with controlled OCR geometry; the 22 paint checks use a generated-source
+  the 49 panel checks use the exact production structured builder compiled from
+  source with controlled OCR geometry; the 40 paint checks use a generated-source
   substitute Font/Graphics harness.

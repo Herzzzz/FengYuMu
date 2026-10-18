@@ -21,9 +21,15 @@ PASS: paint counters identify the actual equipment labels
 PASS: EQUIP-R1 estimated boundary label is not painted
 PASS: EQUIP-R1 estimated boundary records its preserve reason
 PASS: EQUIP-R1 all 48 numeric marker pixels stay original
+PASS: EQUIP-R1a independent sign field paints from the measured range
+PASS: EQUIP-R1a the complete signed value region stays original
+PASS: EQUIP-R1a composition guard covers the independent sign
 PASS: EQUIP-R3 contiguous STR+5INT+3 paints both fields
 PASS: EQUIP-R3 no source-or-live-value-conflict for contiguous fields
 PASS: EQUIP-R3 both complete value regions stay original
+PASS: EQUIP-R3a STR:+1OINT:+3 paints both fields
+PASS: EQUIP-R3a STR keeps +1O and INT is not blocked
+PASS: EQUIP-R3a both complete value regions stay original
 PASS: EQUIP-R2 fixture shares a 16px panel size
 PASS: EQUIP-R2 narrow and wide keys both paint at the shared size
 PASS: EQUIP-R2 narrow 智力 and wide 物理防御力 both use 16px, not 16/14
@@ -40,8 +46,9 @@ PASS: partial OCR still retains the observed value text
 PASS: parenthesized correction is preserved byte-for-byte
 EVIDENCE: equipment-paint generation=1 prepared=12 painted=12 preserved=0 panelSize=13 preservedReason=none
 EVIDENCE: equipment-paint generation=1 prepared=2 painted=1 preserved=1 panelSize=13 preservedReason=equipment-field-boundary-estimated
+EVIDENCE: equipment-paint generation=1 prepared=1 painted=1 preserved=0 panelSize=13 preservedReason=none
 EVIDENCE: equipment-paint generation=1 prepared=2 painted=2 preserved=0 panelSize=13 preservedReason=none
 EVIDENCE: equipment-paint generation=1 prepared=2 painted=2 preserved=0 panelSize=16 preservedReason=none
 EVIDENCE: equipment-paint generation=1 prepared=2 painted=1 preserved=1 panelSize=16 preservedReason=equipment-field-does-not-fit
 EVIDENCE: equipment-paint generation=1 prepared=1 painted=0 preserved=1 panelSize=13 preservedReason=equipment-field-does-not-fit
-Equipment field paint: 34 checks passed; generated-source substitute Font/Graphics harness; real game pixels unverified.
+Equipment field paint: 40 checks passed; generated-source substitute Font/Graphics harness; real game pixels unverified.
