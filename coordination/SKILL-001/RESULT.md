@@ -387,5 +387,5 @@ verification:
 
 ## Cloud review status
 
-R1-R7 addressed; resubmitted for review. No push and no release were performed.
+R1-R7 and R2a addressed; resubmitted for review. No push and no release were performed.
 ITEM/CAPTURE work was not touched.
