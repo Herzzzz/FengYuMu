@@ -3,4 +3,4 @@ Line |
  168 |  if($OutputSource){[IO.File]::WriteAllText($OutputSource,$source)}
      |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
      | Exception calling "WriteAllText" with "2" argument(s): "Could not find a part of the path
-     | 'D:\workspace\work\release-v4.0\JournalBase-43f1bda7608747d3b72166c41696f180.cs'."
+     | 'D:\workspace\work\release-v4.0\JournalBase-aba7f2b697444e10aba4a7616dcddeac.cs'."

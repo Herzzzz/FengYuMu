@@ -4,10 +4,11 @@
 - Tool: DeepSeek Harness (DSH) on Windows, PowerShell 7.6.5, .NET SDK 6.0.410 Roslyn.
 - Branch: `dsh/equip-001`.
 - Base commit: `399cc8e` (accepted CHAT-001 + QUEST-001/FONT-001 records).
-- Implementation commit: `ce945b0947f7b1e81b8ac2e5e2d43c1ef9874669`.
+- Initial implementation commit: `ce945b0947f7b1e81b8ac2e5e2d43c1ef9874669`.
+- Final implementation commit: `e12156425afb6ba3c96d44cd6f50854be144cfb4`.
 - Result files commit: reported in the final relay message; this file is committed with the result.
-- EXE: `D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe`; SHA-256 `638A2B3E2F57D43A8899E766B0F5A94901D4110844529D4A86D99861788D2B7D`.
-- Build evidence: `枫语幕.exe.build.json`; SHA-256 `50720CBBB639116C724A5C657220481499C7BAB4FECBEFA120C1AB89498DDA61`; head `ce945b0`, 65 inputs, clean worktree at build.
+- EXE: `D:\GPT\文件\枫语幕\work\dsh-chat-001\枫语幕.exe`; SHA-256 `57EC956CC490DA8E5D442A030F9C1D8BDFDAF453CAC3B24D58F1250B0D66CAF1`.
+- Build evidence: `枫语幕.exe.build.json`; SHA-256 `D9F96BD19622B023857579ABE96CB6270D0945DD78CD57589886D68FCD9BFFAB`; head `e121564`, 65 inputs, clean worktree at build.
 
 ## Diagnosis
 
@@ -126,7 +127,7 @@ ink colour.
 
 ### 7. Tests
 
-- `tests/logic-equipment-fields.ps1` (63 checks): actual built EXE grammar and
+- `tests/logic-equipment-fields.ps1` (64 checks): actual built EXE grammar and
   plan API over requirements, defences, attacks, critical, evasion, speed,
   attack speed, slots, positive/negative/Unicode/percent/corrected values,
   partial OCR, merged words, multiple equipment types and shared typography.
@@ -191,12 +192,12 @@ two-pixel gap before the value; unsafe splits are not painted at all.
 ## Tests
 
 See `evidence/test-results.json` and the individual logs. All PASS results
-below are against the clean-build EXE `638A2B3E...` (implementation head
-`ce945b0`, 65 build inputs, clean worktree).
+below are against the clean-build EXE `57EC956C...` (implementation head
+`e121564`, 65 build inputs, clean worktree).
 
 Passing on this host/build:
 
-- new equipment tests: 63 + 22 + 28 + 7 + 27 = **147 checks**;
+- new equipment tests: 64 + 22 + 28 + 7 + 27 = **148 checks**;
 - `tests/logic-simple-flow-r11.ps1` — 33 checks;
 - `tests/logic-quest-font-layout.ps1` — 51 checks (substitute Font/Graphics);
 - `tests/logic-quest-panel-layout.ps1` — 164 checks (actual GDI+);

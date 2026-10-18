@@ -21,6 +21,7 @@ PASS: Speed keeps its exact modifier
 PASS: Movement Speed is a generic speed alias
 PASS: Attack Speed is parsed and its Fast value is preserved
 PASS: multi-word attack speed value is preserved
+PASS: signed no-colon speed and Evasion both survive
 PASS: Upgrade Slots maps to the upgrade attribute
 PASS: Upgrades Available accepts a zero value
 PASS: OCR-confusable digit is preserved verbatim
@@ -61,4 +62,4 @@ PASS: the unsplittable fallback still retains the exact value text
 PASS: an unsafe merged value preserves the original instead of recolouring it
 PASS: partial OCR without a value rectangle is marked partial
 PASS: partial value still protects the rest of the row
-Equipment fields: 63 checks passed; actual built EXE grammar/plan API; synthetic rectangles; real CW pixels unverified.
+Equipment fields: 64 checks passed; actual built EXE grammar/plan API; synthetic rectangles; real CW pixels unverified.

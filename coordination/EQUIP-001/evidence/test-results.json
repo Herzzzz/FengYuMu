@@ -2,18 +2,19 @@
   "taskId": "EQUIP-001",
   "branch": "dsh/equip-001",
   "baseCommit": "399cc8e",
-  "implementationCommit": "ce945b0947f7b1e81b8ac2e5e2d43c1ef9874669",
+  "previousImplementationCommit": "ce945b0947f7b1e81b8ac2e5e2d43c1ef9874669",
+  "implementationCommit": "e12156425afb6ba3c96d44cd6f50854be144cfb4",
   "build": {
     "command": "pwsh -NoProfile -File src/build.ps1",
     "status": "PASS",
-    "head": "ce945b0947f7b1e81b8ac2e5e2d43c1ef9874669",
+    "head": "e12156425afb6ba3c96d44cd6f50854be144cfb4",
     "worktreeEntries": 0,
     "inputs": 65,
     "compiler": "dotnet SDK 6.0.410 Roslyn csc.dll with .NET Framework 4.8 reference assemblies",
     "exePath": "枫语幕.exe",
-    "exeSha256": "638A2B3E2F57D43A8899E766B0F5A94901D4110844529D4A86D99861788D2B7D",
+    "exeSha256": "57EC956CC490DA8E5D442A030F9C1D8BDFDAF453CAC3B24D58F1250B0D66CAF1",
     "buildEvidencePath": "枫语幕.exe.build.json",
-    "buildEvidenceSha256": "50720CBBB639116C724A5C657220481499C7BAB4FECBEFA120C1AB89498DDA61"
+    "buildEvidenceSha256": "D9F96BD19622B023857579ABE96CB6270D0945DD78CD57589886D68FCD9BFFAB"
   },
   "stageDefinitions": {
     "recognized": "equipment panel (grammar structure) or equipment field row is identified from OCR geometry/text",
@@ -33,7 +34,7 @@
   "testsPass": [
     {
       "script": "tests/logic-equipment-fields.ps1",
-      "checks": 63,
+      "checks": 64,
       "kind": "actual built EXE grammar and plan API; synthetic rectangles",
       "exit": 0,
       "evidence": "evidence/equipment-fields.txt"
