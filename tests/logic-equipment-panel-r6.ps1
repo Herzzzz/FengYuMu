@@ -154,6 +154,10 @@ $suffix=@'
     form.Build(kindLines,kindPanels,out output);
     Check(output.Count==2,"equipment type "+kind+" uses the same field path");
    }
+   var seen=new HashSet<string>();
+   foreach(var log in Program.Logs)
+    if((log.StartsWith("equipment-coverage")||log.StartsWith("equipment-panel"))&&seen.Add(log))
+     Console.WriteLine("EVIDENCE: "+log);
    Console.WriteLine("Equipment panel plan: "+count+" checks passed; exact production structured builder with controlled OCR geometry; real CW pixels unverified.");
    return count;
   }

@@ -1,0 +1,25 @@
+PASS: all generic equipment rows produce a prepared label
+PASS: equipment composition commits
+PASS: all equipment fields that fit are painted
+PASS: every measured numeric value stays transparent/original
+PASS: every equipment label records a painted stage and readable font size
+PASS: one shared field font size is used across the panel
+PASS: equipment typography keeps the shared FONT family/pixel unit
+PASS: every prepared field retains the exact observed value string
+PASS: every value has a measured pixel guard
+PASS: the shared panel plan accounts for painted and preserved fields
+PASS: equipment composition adds no capture or OCR round
+PASS: equipment paint evidence distinguishes painted and preserved
+PASS: one paint pass publishes every prepared equipment field
+PASS: paint counters identify the actual equipment labels
+PASS: unfitting equipment key preserves the original
+PASS: unfitting equipment key records equipment-field-does-not-fit
+PASS: preservedReason is attached to the equipment field plan
+PASS: unfitting key leaves its value pixels untouched
+PASS: equipment paint evidence records the preserved reason
+PASS: partial OCR without a value rectangle protects the rest of the row
+PASS: partial OCR still retains the observed value text
+PASS: parenthesized correction is preserved byte-for-byte
+EVIDENCE: equipment-paint generation=1 prepared=12 painted=12 preserved=0 preservedReason=none
+EVIDENCE: equipment-paint generation=1 prepared=1 painted=0 preserved=1 preservedReason=equipment-field-does-not-fit
+Equipment field paint: 22 checks passed; generated-source substitute Font/Graphics harness; real game pixels unverified.

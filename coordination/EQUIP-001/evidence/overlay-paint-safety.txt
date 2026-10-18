@@ -1,0 +1,11 @@
+
+An error has occurred that was not properly handled. Additional information is shown below. The PowerShell process will exit.
+Unhandled exception. System.IO.FileLoadException: The given assembly name was invalid.
+File name: 'ﾫg￭ﾋU^,'
+   at System.Reflection.AssemblyNameParser.Parse(ReadOnlySpan`1 name)
+   at System.Reflection.AssemblyName.ParseAsAssemblySpec(Char* pAssemblyName, Void* pAssemblySpec)
+Exception: D:\GPT\文件\枫语幕\work\dsh-chat-001\tests\logic-overlay-paint-safety.ps1:74
+Line |
+  74 |  … if (-not $source.Contains($required)) { throw "悬浮层绘制保护缺少：$required" }
+     |                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | 悬浮层绘制保护缺少：OverlayLabel[] snapshot = labels.ToArray()

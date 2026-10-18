@@ -1,0 +1,6 @@
+ParentContainsErrorRecordException: D:\GPT\文件\枫语幕\work\dsh-chat-001\tests\logic-simple-flow-r11.ps1:168
+Line |
+ 168 |  if($OutputSource){[IO.File]::WriteAllText($OutputSource,$source)}
+     |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Exception calling "WriteAllText" with "2" argument(s): "Could not find a part of the path
+     | 'D:\workspace\work\release-v4.0\JournalBase-43f1bda7608747d3b72166c41696f180.cs'."

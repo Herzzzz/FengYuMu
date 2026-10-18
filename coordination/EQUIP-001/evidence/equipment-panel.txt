@@ -1,0 +1,37 @@
+PASS: all parsed equipment columns are planned
+PASS: coverage evidence distinguishes recognized and prepared fields
+PASS: panel evidence records the recognition reason
+PASS: every planned label carries an equipment field plan
+PASS: every planned field is marked prepared
+PASS: all fields share one panel typography
+PASS: all fields share one panel plan
+PASS: planned fields keep high confidence and source geometry
+PASS: every numeric/modifier value has a protection guard
+PASS: guards begin after the key replacement region
+PASS: every field stays inside its equipment panel boundary
+PASS: defence, INT/LUK and upgrade values survive planning
+PASS: attack, critical, evasion, attack speed and slot values survive planning
+PASS: numeric values are pixel-protected
+PASS: Evasion is planned as the generic avoidability field
+PASS: complete fixture has no partial values
+PASS: complete fixture has no text-baked merged values
+PASS: unrecognized equipment rows still plan every parsed field
+PASS: fallback evidence records recognized rows
+PASS: fallback rows retain their observed value strings
+PASS: fallback preserves OCR-confusable digits
+PASS: a key-only partial row still yields one field
+PASS: a missing value does not invent a guard or number
+PASS: equipment type Hat uses the same field path
+PASS: equipment type Overall uses the same field path
+PASS: equipment type Shoes uses the same field path
+PASS: equipment type Gloves uses the same field path
+PASS: equipment type One-Handed Sword uses the same field path
+EVIDENCE: equipment-panel recognized=1 matched=13 prepared=13 painted=0 preserved=0 keys=level,strength,intelligence,weapon-defense,magic-defense,intelligence,luck,upgrades,weapon-attack,critical-rate,avoidability,attack-speed,upgrades panel=100,100,269,184 typography=family=Microsoft YaHei unit=Pixel size=12 floor=11 reason=grammar-structure sourceRows=8
+EVIDENCE: equipment-coverage recognizedPanels=1 recognizedRows=8 parsed=13 prepared=13 valuePixels=13 partialValues=0 mergedText=0 preserved=0 preservedReason=none rejected=0 keys=level,strength,intelligence,weapon-defense,magic-defense,intelligence,luck,upgrades,weapon-attack,critical-rate,avoidability,attack-speed,upgrades
+EVIDENCE: equipment-panel recognized=0 matched=3 prepared=3 painted=0 preserved=0 keys=weapon-defense,magic-defense,avoidability panel=100,300,202,40 typography=family=Microsoft YaHei unit=Pixel size=12 floor=11 reason=field-row-fallback sourceRows=2
+EVIDENCE: equipment-coverage recognizedPanels=0 recognizedRows=2 parsed=3 prepared=3 valuePixels=3 partialValues=0 mergedText=0 preserved=0 preservedReason=none rejected=0 keys=weapon-defense,magic-defense,avoidability
+EVIDENCE: equipment-panel recognized=1 matched=1 prepared=1 painted=0 preserved=0 keys=weapon-defense panel=100,400,74,16 typography=family=Microsoft YaHei unit=Pixel size=12 floor=11 reason=grammar-structure sourceRows=1
+EVIDENCE: equipment-coverage recognizedPanels=1 recognizedRows=1 parsed=1 prepared=1 valuePixels=0 partialValues=0 mergedText=0 preserved=0 preservedReason=none rejected=0 keys=weapon-defense
+EVIDENCE: equipment-panel recognized=1 matched=2 prepared=2 painted=0 preserved=0 keys=weapon-defense,magic-defense panel=100,450,209,40 typography=family=Microsoft YaHei unit=Pixel size=12 floor=11 reason=grammar-structure sourceRows=2
+EVIDENCE: equipment-coverage recognizedPanels=1 recognizedRows=1 parsed=2 prepared=2 valuePixels=2 partialValues=0 mergedText=0 preserved=0 preservedReason=none rejected=0 keys=weapon-defense,magic-defense
+Equipment panel plan: 28 checks passed; exact production structured builder with controlled OCR geometry; real CW pixels unverified.

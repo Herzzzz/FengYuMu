@@ -1,0 +1,193 @@
+PASS: pink row 1 (top): band PinkBroadcast (expected PinkBroadcast)
+PASS: pink row 1 (top): dark stroke matches band
+PASS: pink row 1 (top): category Megaphone
+PASS: pink row 1 (top): kind SuperMegaphone (expected SuperMegaphone)
+PASS: pink row 1 (top): coloured background retained
+  evidence: band=PinkBroadcast cov=0.651 row=0.559 inkPixels=385
+PASS: pink row 2 (middle): band PinkBroadcast (expected PinkBroadcast)
+PASS: pink row 2 (middle): dark stroke matches band
+PASS: pink row 2 (middle): category Megaphone
+PASS: pink row 2 (middle): kind SuperMegaphone (expected SuperMegaphone)
+PASS: pink row 2 (middle): coloured background retained
+  evidence: band=PinkBroadcast cov=0.746 row=0.680 inkPixels=145
+PASS: pink row 3 (last): band PinkBroadcast (expected PinkBroadcast)
+PASS: pink row 3 (last): dark stroke matches band
+PASS: pink row 3 (last): category Megaphone
+PASS: pink row 3 (last): kind SuperMegaphone (expected SuperMegaphone)
+PASS: pink row 3 (last): coloured background retained
+  evidence: band=PinkBroadcast cov=0.741 row=0.700 inkPixels=391
+PASS: pink row 4 (adjacent blue): band BlueBroadcast (expected BlueBroadcast)
+PASS: pink row 4 (adjacent blue): dark stroke matches band
+PASS: pink row 4 (adjacent blue): category Megaphone
+PASS: pink row 4 (adjacent blue): kind Megaphone (expected Megaphone)
+PASS: pink row 4 (adjacent blue): coloured background retained
+  evidence: band=BlueBroadcast cov=0.674 row=0.670 inkPixels=348
+PASS: blue row: band BlueBroadcast (expected BlueBroadcast)
+PASS: blue row: dark stroke matches band
+PASS: blue row: category Megaphone
+PASS: blue row: kind Megaphone (expected Megaphone)
+PASS: blue row: coloured background retained
+  evidence: band=BlueBroadcast cov=0.637 row=0.638 inkPixels=258
+PASS: pink row 1 (top) at 75%: band PinkBroadcast (expected PinkBroadcast)
+PASS: pink row 1 (top) at 75%: dark stroke matches band
+PASS: pink row 1 (top) at 75%: category Megaphone
+PASS: pink row 1 (top) at 75%: kind SuperMegaphone (expected SuperMegaphone)
+PASS: pink row 1 (top) at 75%: coloured background retained
+  evidence: band=PinkBroadcast cov=0.610 row=0.538 inkPixels=264
+PASS: pink row 2 (middle) at 75%: band PinkBroadcast (expected PinkBroadcast)
+PASS: pink row 2 (middle) at 75%: dark stroke matches band
+PASS: pink row 2 (middle) at 75%: category Megaphone
+PASS: pink row 2 (middle) at 75%: kind SuperMegaphone (expected SuperMegaphone)
+PASS: pink row 2 (middle) at 75%: coloured background retained
+  evidence: band=PinkBroadcast cov=0.739 row=0.666 inkPixels=142
+PASS: pink row 3 (last) at 75%: band PinkBroadcast (expected PinkBroadcast)
+PASS: pink row 3 (last) at 75%: dark stroke matches band
+PASS: pink row 3 (last) at 75%: category Megaphone
+PASS: pink row 3 (last) at 75%: kind SuperMegaphone (expected SuperMegaphone)
+PASS: pink row 3 (last) at 75%: coloured background retained
+  evidence: band=PinkBroadcast cov=0.732 row=0.684 inkPixels=214
+PASS: pink row 4 (adjacent blue) at 75%: band BlueBroadcast (expected BlueBroadcast)
+PASS: pink row 4 (adjacent blue) at 75%: dark stroke matches band
+PASS: pink row 4 (adjacent blue) at 75%: category Megaphone
+PASS: pink row 4 (adjacent blue) at 75%: kind Megaphone (expected Megaphone)
+PASS: pink row 4 (adjacent blue) at 75%: coloured background retained
+  evidence: band=BlueBroadcast cov=0.667 row=0.657 inkPixels=245
+PASS: blue row at 75%: band BlueBroadcast (expected BlueBroadcast)
+PASS: blue row at 75%: dark stroke matches band
+PASS: blue row at 75%: category Megaphone
+PASS: blue row at 75%: kind Megaphone (expected Megaphone)
+PASS: blue row at 75%: coloured background retained
+  evidence: band=BlueBroadcast cov=0.636 row=0.608 inkPixels=221
+PASS: pink row 1 (top) at 125%: band PinkBroadcast (expected PinkBroadcast)
+PASS: pink row 1 (top) at 125%: dark stroke matches band
+PASS: pink row 1 (top) at 125%: category Megaphone
+PASS: pink row 1 (top) at 125%: kind SuperMegaphone (expected SuperMegaphone)
+PASS: pink row 1 (top) at 125%: coloured background retained
+  evidence: band=PinkBroadcast cov=0.642 row=0.553 inkPixels=589
+PASS: pink row 2 (middle) at 125%: band PinkBroadcast (expected PinkBroadcast)
+PASS: pink row 2 (middle) at 125%: dark stroke matches band
+PASS: pink row 2 (middle) at 125%: category Megaphone
+PASS: pink row 2 (middle) at 125%: kind SuperMegaphone (expected SuperMegaphone)
+PASS: pink row 2 (middle) at 125%: coloured background retained
+  evidence: band=PinkBroadcast cov=0.741 row=0.675 inkPixels=313
+PASS: pink row 3 (last) at 125%: band PinkBroadcast (expected PinkBroadcast)
+PASS: pink row 3 (last) at 125%: dark stroke matches band
+PASS: pink row 3 (last) at 125%: category Megaphone
+PASS: pink row 3 (last) at 125%: kind SuperMegaphone (expected SuperMegaphone)
+PASS: pink row 3 (last) at 125%: coloured background retained
+  evidence: band=PinkBroadcast cov=0.737 row=0.689 inkPixels=585
+PASS: pink row 4 (adjacent blue) at 125%: band BlueBroadcast (expected BlueBroadcast)
+PASS: pink row 4 (adjacent blue) at 125%: dark stroke matches band
+PASS: pink row 4 (adjacent blue) at 125%: category Megaphone
+PASS: pink row 4 (adjacent blue) at 125%: kind Megaphone (expected Megaphone)
+PASS: pink row 4 (adjacent blue) at 125%: coloured background retained
+  evidence: band=BlueBroadcast cov=0.668 row=0.665 inkPixels=584
+PASS: blue row at 125%: band BlueBroadcast (expected BlueBroadcast)
+PASS: blue row at 125%: dark stroke matches band
+PASS: blue row at 125%: category Megaphone
+PASS: blue row at 125%: kind Megaphone (expected Megaphone)
+PASS: blue row at 125%: coloured background retained
+  evidence: band=BlueBroadcast cov=0.633 row=0.633 inkPixels=421
+PASS: : band PinkBroadcast (expected PinkBroadcast)
+PASS: : dark stroke matches band
+PASS: : category Megaphone
+PASS: : kind SuperMegaphone (expected SuperMegaphone)
+PASS: : coloured background retained
+  evidence: band=PinkBroadcast cov=0.651 row=0.559 inkPixels=456
+PASS: : band PinkBroadcast (expected PinkBroadcast)
+PASS: : dark stroke matches band
+PASS: : category Megaphone
+PASS: : kind SuperMegaphone (expected SuperMegaphone)
+PASS: : coloured background retained
+  evidence: band=PinkBroadcast cov=0.746 row=0.680 inkPixels=173
+PASS: : band PinkBroadcast (expected PinkBroadcast)
+PASS: : dark stroke matches band
+PASS: : category Megaphone
+PASS: : kind SuperMegaphone (expected SuperMegaphone)
+PASS: : coloured background retained
+  evidence: band=PinkBroadcast cov=0.742 row=0.702 inkPixels=489
+PASS: : band BlueBroadcast (expected BlueBroadcast)
+PASS: : dark stroke matches band
+PASS: : category Megaphone
+PASS: : kind Megaphone (expected Megaphone)
+PASS: : coloured background retained
+  evidence: band=BlueBroadcast cov=0.673 row=0.671 inkPixels=358
+PASS: : band BlueBroadcast (expected BlueBroadcast)
+PASS: : dark stroke matches band
+PASS: : category Megaphone
+PASS: : kind Megaphone (expected Megaphone)
+PASS: : coloured background retained
+  evidence: band=BlueBroadcast cov=0.637 row=0.638 inkPixels=301
+PASS: pink middle top half: band PinkBroadcast (expected PinkBroadcast)
+PASS: pink middle top half: dark stroke matches band
+PASS: pink middle top half: category Megaphone
+PASS: pink middle top half: kind SuperMegaphone (expected SuperMegaphone)
+PASS: pink middle top half: coloured background retained
+  evidence: band=PinkBroadcast cov=0.778 row=0.807 inkPixels=68
+PASS: pink middle bottom half: band PinkBroadcast (expected PinkBroadcast)
+PASS: pink middle bottom half: dark stroke matches band
+PASS: pink middle bottom half: category Megaphone
+PASS: pink middle bottom half: kind SuperMegaphone (expected SuperMegaphone)
+PASS: pink middle bottom half: coloured background retained
+  evidence: band=PinkBroadcast cov=0.721 row=0.656 inkPixels=87
+PASS: pink last top crop: band PinkBroadcast (expected PinkBroadcast)
+PASS: pink last top crop: dark stroke matches band
+PASS: pink last top crop: category Megaphone
+PASS: pink last top crop: kind SuperMegaphone (expected SuperMegaphone)
+PASS: pink last top crop: coloured background retained
+  evidence: band=PinkBroadcast cov=0.843 row=0.918 inkPixels=63
+PASS: blue top crop: band BlueBroadcast (expected BlueBroadcast)
+PASS: blue top crop: dark stroke matches band
+PASS: blue top crop: category Megaphone
+PASS: blue top crop: kind Megaphone (expected Megaphone)
+PASS: blue top crop: coloured background retained
+  evidence: band=BlueBroadcast cov=0.831 row=0.907 inkPixels=47
+PASS: blue bottom crop: band BlueBroadcast (expected BlueBroadcast)
+PASS: blue bottom crop: dark stroke matches band
+PASS: blue bottom crop: category Megaphone
+PASS: blue bottom crop: kind Megaphone (expected Megaphone)
+PASS: blue bottom crop: coloured background retained
+  evidence: band=BlueBroadcast cov=0.545 row=0.633 inkPixels=114
+PASS: whole image cropped at first band row: band PinkBroadcast (expected PinkBroadcast)
+PASS: whole image cropped at first band row: dark stroke matches band
+PASS: whole image cropped at first band row: category Megaphone
+PASS: whole image cropped at first band row: kind SuperMegaphone (expected SuperMegaphone)
+PASS: whole image cropped at first band row: coloured background retained
+  evidence: band=PinkBroadcast cov=0.651 row=0.559 inkPixels=385
+PASS: blue row cropped at both image edges: band BlueBroadcast (expected BlueBroadcast)
+PASS: blue row cropped at both image edges: dark stroke matches band
+PASS: blue row cropped at both image edges: category Megaphone
+PASS: blue row cropped at both image edges: kind Megaphone (expected Megaphone)
+PASS: blue row cropped at both image edges: coloured background retained
+  evidence: band=BlueBroadcast cov=0.637 row=0.638 inkPixels=258
+PASS: normal chat over 215,165,182: no broadcast band
+PASS: normal chat over 215,165,182: stays Normal
+PASS: normal chat over 140,168,180: no broadcast band
+PASS: normal chat over 140,168,180: stays Normal
+PASS: Normal channel glyph remains isolated over a coloured scene
+PASS: Buddy channel glyph remains isolated over a coloured scene
+PASS: Party channel glyph remains isolated over a coloured scene
+PASS: Guild channel glyph remains isolated over a coloured scene
+PASS: Alliance channel glyph remains isolated over a coloured scene
+PASS: Whisper channel glyph remains isolated over a coloured scene
+PASS: notice prefix remains Notice
+PASS: system prefix/colour remains System
+PASS: system colour is not converted into a broadcast background
+PASS: ordinary words do not manufacture System/Megaphone
+PASS: FromSample with no foreground/background/row evidence is Unknown
+PASS: white glyph evidence still proves Normal
+PASS: dark blue stroke on a blue scene without band evidence is Unknown
+PASS: unmatched glyph colour is Unknown rather than Normal/System/Guild
+PASS: unassociated fragment without visual evidence is Unknown
+PASS: explicit party prefix works without visual evidence
+PASS: valid guild glyph colour is still Guild
+PASS: explicit guild prefix is still Guild
+PASS: synthetic measured pink band is broadcast evidence
+PASS: synthetic measured pink band classifies as Megaphone
+PASS: explicit personal prefix is not promoted by a pink band
+  texture evidence: band=PinkBroadcast cov=0.757 row=0.568 inkMatch=False inkPixels=0
+PASS: translucent textured pink band is still detected
+PASS: translucent textured pink band classifies as Megaphone
+PASS: the same textured scene without a band is not broadcast
+PASS: textured scene alone does not promote ordinary chat
+Chat megaphone pixel regression: 164 checks passed; fixtures, scale/tint, partial crops, adjacent pink/blue rows, six personal channels, system/notice, ordinary text over coloured/textured scenes and Unknown isolation covered.

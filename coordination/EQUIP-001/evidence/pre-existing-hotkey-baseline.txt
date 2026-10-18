@@ -1,0 +1,12 @@
+baseline head=399cc8e
+baseline exe=E49562E787D8AC3FE2D7D2AC41D86E5A944325F9D302FA1E113F8A6ED09B11DB
+baseline exit=1
+--- output ---
+Exception: D:\TEMP\equip-baseline\tests\logic-hotkey-toggle.ps1:10
+Line |
+  10 |  … rocess.ExitCode -ne 0) { throw "F8已编译程序自检进程失败：$($process.ExitCode)" }
+     |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | F8已编译程序自检进程失败：3
+--- report ---
+失败：System.InvalidOperationException: 第一次F8未用新截图显示翻译
+   在 MapleOverlay.OverlayForm.<RunHotkeyToggleBenchmarkAsync>d__120.MoveNext()

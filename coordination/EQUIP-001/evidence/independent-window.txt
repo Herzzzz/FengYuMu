@@ -1,0 +1,7 @@
+
+An error has occurred that was not properly handled. Additional information is shown below. The PowerShell process will exit.
+Unhandled exception. System.IO.FileLoadException: The given assembly name was invalid.
+File name: 'ﾫg￭ﾋU^,'
+   at System.Reflection.AssemblyNameParser.Parse(ReadOnlySpan`1 name)
+   at System.Reflection.AssemblyName.ParseAsAssemblySpec(Char* pAssemblyName, Void* pAssemblySpec)
+AI实时浮窗：F10独立呼出、停止状态幂等、顶部拖动、主窗口关闭不断流、自由缩放、半透明游戏风格、来源颜色、蓝底普通喇叭、粉底超级喇叭、置顶无焦点与F8隔离通过

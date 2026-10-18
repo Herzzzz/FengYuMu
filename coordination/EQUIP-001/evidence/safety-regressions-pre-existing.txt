@@ -1,0 +1,32 @@
+EQUIP-001 pre-existing / environment regressions
+
+These checks fail on the current branch exactly as recorded for accepted QUEST-001.
+They are outside the EQUIP-001 source scope and were not changed by this task.
+
+- tests/logic-overlay-label-layout.ps1 (exit 1)
+  cross-screen geometry assertion: 跨屏大小的矩形未被几何判据拒绝
+- tests/logic-overlay-paint-safety.ps1 (exit 1)
+  stale source guard: OverlayLabel[] snapshot = labels.ToArray()
+- tests/logic-overlay-dual-rendering.ps1 (exit 1)
+  stale source guard: label.RenderMode == LabelRenderMode.Seamless
+- tests/logic-panel-context-isolation.ps1 (exit 1)
+  stale source guard: normalized.Contains("quest summary")
+- tests/logic-quest-body-and-summary.ps1 (exit 1)
+  stale source guard for the old RemoveAll(TaskId) expression
+- tests/logic-quest-title-groups.ps1 (exit 1)
+  pre-existing dictionary/index assertion: Father's Mushroom Stew
+- tests/logic-quest-shell-resilience.ps1 (exit 1)
+  clean synthetic scene still reports an empty scene on this host's Windows OCR
+- tests/logic-characters-r15.ps1 (exit 1)
+  stale hard-coded path D:\workspace\work\release-v4.0\...
+- tests/logic-hotkey-toggle.ps1 (exit 1)
+  first F8 did not show new-screenshot translation. Confirmed on the untouched
+  baseline commit 399cc8e with baseline EXE
+  E49562E787D8AC3FE2D7D2AC41D86E5A944325F9D302FA1E113F8A6ED09B11DB.
+  See pre-existing-hotkey-baseline.txt.
+
+Not run because the scripts contain stale hard-coded /workspace or
+bin/windows-v4.0 paths (source is not changed by EQUIP-001):
+- tests/logic-quest-paragraph-pipeline-r12.ps1
+- tests/logic-quest-journal-r13.ps1
+- tests/logic-universal-panels-r14.ps1

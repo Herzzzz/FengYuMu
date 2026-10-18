@@ -1,0 +1,5 @@
+Exception: D:\GPT\文件\枫语幕\work\dsh-chat-001\tests\logic-hotkey-toggle.ps1:10
+Line |
+  10 |  … rocess.ExitCode -ne 0) { throw "F8已编译程序自检进程失败：$($process.ExitCode)" }
+     |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | F8已编译程序自检进程失败：3

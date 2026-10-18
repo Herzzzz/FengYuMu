@@ -1,0 +1,213 @@
+{
+  "schema": 2,
+  "taskId": "EQUIP-001",
+  "state": "IMPLEMENTED_BUILD_AND_TESTS_COMMITTED_PENDING_CLOUD_REVIEW",
+  "branch": "dsh/equip-001",
+  "baseCommit": "399cc8e",
+  "implementationCommit": "ce945b0947f7b1e81b8ac2e5e2d43c1ef9874669",
+  "resultFilesCommit": "reported in the final relay message; this file is committed with the result",
+  "inherits": [
+    "CHAT-001 accepted",
+    "QUEST-001 / FONT-001 accepted"
+  ],
+  "scope": {
+    "sourceFiles": [
+      "src/EquipmentFieldGrammar.cs",
+      "src/EquipmentPanelLayout.cs",
+      "src/StructuredPanelOverlay.cs",
+      "src/MapleOverlay.cs",
+      "src/SceneRecognition.cs",
+      "src/SimpleFusionComposition.cs",
+      "src/build.ps1"
+    ],
+    "testFiles": [
+      "tests/logic-equipment-fields.ps1",
+      "tests/logic-equipment-paint.ps1",
+      "tests/logic-equipment-panel-r6.ps1",
+      "tests/logic-equipment-body-r6.ps1",
+      "tests/logic-equipment-scope.ps1",
+      "tests/logic-simple-flow-r11.ps1"
+    ],
+    "notChanged": [
+      "chat classification",
+      "quest matching and quest dictionaries",
+      "OCR model, protocol and OCR rounds",
+      "AI request logic and prompts"
+    ]
+  },
+  "diagnosis": {
+    "combinedRowOmission": "When BuildOcrPanels had not marked the local panel as equipment, AddStructuredFieldLabels passed equipment=false. The old parser then dropped every field on a combined row except the last one, so Weapon Def/Magic Def/INT/LUK/Remaining Enhancements disappeared after the first value.",
+    "missingAliases": "Evasion, Attack Speed, Upgrade Slots, short ATT/ATK and related critical/defence variants were absent from the generic field table.",
+    "recognition": "The equipment gate required a short literal anchor set (req, remaining enhancements, or both defences); partially OCR'd tooltips never reached the equipment path.",
+    "valueErasure": "The old whole-row translation could erase a value before the structured field plan ran, and the merged key/value branch repainted the value with an averaged ink colour.",
+    "evidence": "coordination/EQUIP-001/evidence/baseline-grammar-probe.txt"
+  },
+  "implementation": {
+    "genericAliases": [
+      "Evasion -> avoidability",
+      "Attack Speed (numeric or Fast/VerySlow/Normal)",
+      "Upgrade Slots / Remaining Upgrades -> upgrades",
+      "requirements and primary attributes",
+      "weapon/magic attack, weapon/magic defence, ATT/ATK forms",
+      "critical/crit rate and damage",
+      "speed, movement speed, accuracy, avoidability, jump, HP/MP, fame"
+    ],
+    "exactValues": "Raw OCR value substring is retained byte-for-byte: signs (+/-/U+2212/full-width), percentages, decimals, thousands separators, OCR-confusable digits and every parenthesized correction such as +36 (40 -4).",
+    "protectedLayout": "Each field replaces only the translated key. The measured value has its own KeepClearBounds guard, so the value pixels and their colours are never repainted. A safe merged-word split leaves a two-pixel gap; if no safe split exists the original row is preserved with merged-value-region-unsafe.",
+    "sharedTypography": "EquipmentPanelTypography: Microsoft YaHei, Pixel unit, one panel size derived from measured row height (floor 11px, cap 22px). No independent 8px squeeze.",
+    "combinedRows": "Row-level equipment context and exact continuation checks keep every parsed field on requirements/defence/attribute rows.",
+    "partialOcr": "Missing colons, missing value rectangles and key-only rows are handled; missing values are not invented.",
+    "evidenceStages": "equipment-panel / equipment-coverage log recognised, matched, prepared, valuePixels, partialValues, mergedText, preserved and preservedReason; equipment-paint log records prepared/painted/preserved/preservedReason.",
+    "taskSpecificRuntimeBranches": false,
+    "extraOcrOrAiRounds": false
+  },
+  "build": {
+    "command": "pwsh -NoProfile -File src/build.ps1",
+    "status": "PASS",
+    "head": "ce945b0947f7b1e81b8ac2e5e2d43c1ef9874669",
+    "worktreeCleanAtBuild": true,
+    "inputs": 65,
+    "exePath": "枫语幕.exe",
+    "exeSha256": "638A2B3E2F57D43A8899E766B0F5A94901D4110844529D4A86D99861788D2B7D",
+    "buildEvidencePath": "枫语幕.exe.build.json",
+    "buildEvidenceSha256": "50720CBBB639116C724A5C657220481499C7BAB4FECBEFA120C1AB89498DDA61",
+    "compiler": "dotnet SDK 6.0.410 Roslyn csc.dll with .NET Framework 4.8 reference assemblies"
+  },
+  "tests": {
+    "equipmentFields": {
+      "command": "pwsh -NoProfile -File tests/logic-equipment-fields.ps1",
+      "checks": 63,
+      "kind": "actual built EXE grammar/plan API; synthetic rectangles",
+      "status": "PASS",
+      "evidence": "evidence/equipment-fields.txt"
+    },
+    "equipmentPaint": {
+      "command": "pwsh -NoProfile -File tests/logic-equipment-paint.ps1",
+      "checks": 22,
+      "kind": "generated-source substitute Font/Graphics harness",
+      "status": "PASS",
+      "evidence": "evidence/equipment-paint.txt"
+    },
+    "equipmentPanel": {
+      "command": "pwsh -NoProfile -File tests/logic-equipment-panel-r6.ps1",
+      "checks": 28,
+      "kind": "exact production structured builder with controlled OCR geometry",
+      "status": "PASS",
+      "evidence": "evidence/equipment-panel.txt"
+    },
+    "equipmentBody": {
+      "command": "pwsh -NoProfile -File tests/logic-equipment-body-r6.ps1",
+      "checks": 7,
+      "kind": "exact production equipment description builder",
+      "status": "PASS",
+      "evidence": "evidence/equipment-body.txt"
+    },
+    "equipmentScope": {
+      "command": "pwsh -NoProfile -File tests/logic-equipment-scope.ps1",
+      "checks": 27,
+      "kind": "source-level chat/AI/equipment isolation guards",
+      "status": "PASS",
+      "evidence": "evidence/equipment-scope.txt"
+    },
+    "simpleFlow": {
+      "command": "pwsh -NoProfile -File tests/logic-simple-flow-r11.ps1",
+      "checks": 33,
+      "status": "PASS",
+      "evidence": "evidence/simple-flow.txt"
+    },
+    "questFont": {
+      "command": "pwsh -NoProfile -File tests/logic-quest-font-layout.ps1",
+      "checks": 51,
+      "status": "PASS",
+      "evidence": "evidence/quest-font.txt"
+    },
+    "questPanel": {
+      "command": "pwsh -NoProfile -File tests/logic-quest-panel-layout.ps1",
+      "checks": 164,
+      "status": "PASS",
+      "evidence": "evidence/quest-panel.txt"
+    },
+    "journalAndItem": {
+      "command": "pwsh -NoProfile -File tests/logic-journal-and-item-r6.ps1 -ExePath .\\枫语幕.exe",
+      "checks": 23,
+      "status": "PASS",
+      "evidence": "evidence/journal-item.txt"
+    },
+    "chatCategoryFiltering": {
+      "command": "pwsh -NoProfile -File tests/logic-chat-category-filtering.ps1",
+      "status": "PASS (chat source untouched)",
+      "evidence": "evidence/chat-category-filtering.txt"
+    },
+    "chatContinuity": {
+      "command": "pwsh -NoProfile -File tests/logic-chat-continuity.ps1",
+      "checks": 9,
+      "status": "PASS",
+      "evidence": "evidence/chat-continuity.txt"
+    },
+    "chatMegaphonePixels": {
+      "command": "pwsh -NoProfile -File tests/logic-chat-megaphone-pixels.ps1",
+      "checks": 164,
+      "status": "PASS",
+      "evidence": "evidence/chat-megaphone-pixels.txt"
+    },
+    "uiDpiScaling": {
+      "command": "pwsh -NoProfile -File tests/logic-ui-dpi-scaling.ps1",
+      "status": "PASS 100/125/150/175/200% and mixed DPI",
+      "evidence": "evidence/ui-dpi-scaling.txt"
+    },
+    "releaseSafety": {
+      "command": "pwsh -NoProfile -File tests/logic-release-safety.ps1",
+      "checks": 22,
+      "status": "PASS",
+      "evidence": "evidence/release-safety.txt"
+    },
+    "globalSafety": [
+      {
+        "script": "tests/logic-followup-safety.ps1",
+        "checks": 11,
+        "status": "PASS",
+        "evidence": "evidence/followup-safety.txt"
+      },
+      {
+        "script": "tests/logic-scene-feedback-safety.ps1",
+        "checks": 32,
+        "status": "PASS",
+        "evidence": "evidence/scene-feedback-safety.txt"
+      },
+      {
+        "script": "tests/logic-capture-frame-policy.ps1",
+        "checks": 13,
+        "status": "PASS",
+        "evidence": "evidence/capture-frame-policy.txt"
+      },
+      {
+        "script": "tests/logic-user-feedback-safety.ps1",
+        "checks": 20,
+        "status": "PASS",
+        "evidence": "evidence/user-feedback-safety.txt"
+      }
+    ]
+  },
+  "preExistingFailuresConfirmed": [
+    "tests/logic-overlay-label-layout.ps1 (geometry assertion)",
+    "tests/logic-overlay-paint-safety.ps1 (stale source guard)",
+    "tests/logic-overlay-dual-rendering.ps1 (stale source guard)",
+    "tests/logic-panel-context-isolation.ps1 (stale source guard)",
+    "tests/logic-quest-body-and-summary.ps1 (stale source guard)",
+    "tests/logic-quest-title-groups.ps1 (dictionary/index assertion)",
+    "tests/logic-quest-shell-resilience.ps1 (empty scene on this host)",
+    "tests/logic-characters-r15.ps1 (stale hard-coded workspace path)",
+    "tests/logic-hotkey-toggle.ps1 (confirmed on untouched baseline 399cc8e EXE E49562E787D8AC3FE2D7D2AC41D86E5A944325F9D302FA1E113F8A6ED09B11DB)"
+  ],
+  "notRunStalePathTests": [
+    "tests/logic-quest-paragraph-pipeline-r12.ps1",
+    "tests/logic-quest-journal-r13.ps1",
+    "tests/logic-universal-panels-r14.ps1"
+  ],
+  "unverified": [
+    "Real in-game equipment tooltip rendering at 100/125/150/200% Windows scaling",
+    "Real-game colour sampling and pixel comparison for coloured equipment modifiers",
+    "User's private equipment screenshots"
+  ],
+  "cloudAcceptance": "PENDING"
+}

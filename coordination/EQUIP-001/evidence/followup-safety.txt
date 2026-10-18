@@ -1,0 +1,13 @@
+PASS: worker handshake and actual pipe request
+PASS: healthy worker reused
+PASS: hung worker has bounded timeout
+PASS: only owned hung process terminated
+PASS: cancel aborts owned worker and actual pending pipe read
+PASS: new capture succeeds after cancellation
+PASS: component fully verified before use
+PASS: 100 unchanged availability checks reuse one full hash validation
+PASS: component metadata change causes fresh hash rejection
+PASS: transactionally repaired component can recover
+PASS: periodic full check rejects same-size/time tampering
+FOLLOWUP_PASSED=11
+Followup safety: 11/11 passed; real subprocess/filesystem behavior, native PrintWindow and OCR model recognition unverified.

@@ -1,0 +1,37 @@
+{
+  "taskId": "EQUIP-001",
+  "source": "tests/logic-equipment-fields.ps1 and tests/logic-equipment-paint.ps1",
+  "cases": [
+    {"category": "requirements", "row": "REQ LEV : 10  REQ STR : 0  REQ INT : 50  REQ DEX : 0  REQ LUK : 20  REQ FAME : 0", "keys": ["level", "strength", "intelligence", "dexterity", "luck", "fame"], "values": ["10", "0", "50", "0", "20", "0"]},
+    {"category": "defences", "row": "Weapon Def.: +16  Magic Def.: +18", "keys": ["weapon-defense", "magic-defense"], "values": ["+16", "+18"]},
+    {"category": "primary", "row": "INT: +1  LUK: +2  Remaining Enhancements: 7", "keys": ["intelligence", "luck", "upgrades"], "values": ["+1", "+2", "7"]},
+    {"category": "attack", "row": "Weapon Attack: +36 (40 -4)", "keys": ["weapon-attack"], "values": ["+36 (40 -4)"]},
+    {"category": "attack-percent-correction", "row": "Weapon Attack: +36% (40% -4%)", "keys": ["weapon-attack"], "values": ["+36% (40% -4%)"]},
+    {"category": "negative", "row": "Magic Attack: -5", "keys": ["magic-attack"], "values": ["-5"]},
+    {"category": "short-attack-aliases", "row": "ATT: +12  M. ATT: +13", "keys": ["weapon-attack", "magic-attack"], "values": ["+12", "+13"]},
+    {"category": "critical", "row": "Critical Rate: +5%  Critical Damage: +12%", "keys": ["critical-rate", "critical-damage"], "values": ["+5%", "+12%"]},
+    {"category": "evasion-alias", "row": "Evasion: +4", "keys": ["avoidability"], "values": ["+4"]},
+    {"category": "evasion-partial-colon", "row": "Evasion +4", "keys": ["avoidability"], "values": ["+4"]},
+    {"category": "avoidability-negative", "row": "Avoidability: -3", "keys": ["avoidability"], "values": ["-3"]},
+    {"category": "speed", "row": "Movement Speed: -2", "keys": ["speed"], "values": ["-2"]},
+    {"category": "attack-speed-text", "row": "Attack Speed: Very Slow", "keys": ["attack-speed"], "values": ["Very Slow"]},
+    {"category": "upgrade-slots", "row": "Upgrade Slots: 2", "keys": ["upgrades"], "values": ["2"]},
+    {"category": "upgrades-zero", "row": "Upgrades Available: 0", "keys": ["upgrades"], "values": ["0"]},
+    {"category": "ocr-confusable", "row": "Weapon Def. +1O", "keys": ["weapon-defense"], "values": ["+1O"]},
+    {"category": "unicode-minus", "row": "Magic Attack: \u22126", "keys": ["magic-attack"], "values": ["\u22126"]},
+    {"category": "decimal-percent", "row": "Critical Damage: -4.5%", "keys": ["critical-damage"], "values": ["-4.5%"]},
+    {"category": "types", "rows": ["Type: Hat  Weapon Def.: +12  Magic Def.: +14", "Type: Overall  ...", "Type: Shoes  ...", "Type: Gloves  ...", "Type: One-Handed Sword  ..."], "keys": ["weapon-defense", "magic-defense"]},
+    {"category": "merged-safe-split", "row": "INT+5", "keys": ["intelligence"], "values": ["+5"], "plan": "MergedValueSplit=true, key ends before value, value guard retained"},
+    {"category": "merged-unsafe", "row": "INT+5", "plan": "MergedValueBaked=true, status=preserved, preservedReason=merged-value-region-unsafe, translation retains the exact +5 text"},
+    {"category": "partial-value-rectangle", "row": "Weapon Def.: +16", "plan": "PartialValue=true, ValueMode=value-bounds-unmeasured, rest of row guarded"},
+    {"category": "key-only-partial", "row": "Weapon Def.", "plan": "HasValue=false, no invented guard or number"}
+  ],
+  "colorPreservation": "The value region is the measured guard and is never sampled into the replacement. The composition test checks that every value marker remains transparent/original after painting.",
+  "typography": {
+    "family": "Microsoft YaHei",
+    "unit": "Pixel",
+    "sharedPanelSizeExample": 12,
+    "floor": 11,
+    "cap": 22
+  }
+}

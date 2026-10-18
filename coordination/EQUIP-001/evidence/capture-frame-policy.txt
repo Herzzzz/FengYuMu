@@ -1,0 +1,14 @@
+PASS: QPC converts exactly at ten MHz
+PASS: high-frequency QPC preserves 100ns scale
+PASS: queued pre-request frame is rejected
+PASS: only current request and later frames qualify
+PASS: missing request timestamp fails closed
+PASS: measured visible window frame maps to client pixels
+PASS: outer rectangle is used only when exact frame size matches
+PASS: no guessed crop on DPI or size mismatch
+PASS: negative monitor origin maps correctly
+PASS: client outside captured target is rejected
+PASS: empty frame rejected
+PASS: overflowing frame bounds rejected
+PASS: invalid clock frequency rejected
+Capture frame policy: 13/13 passed; actual Windows Graphics Capture, GPU and game unverified.

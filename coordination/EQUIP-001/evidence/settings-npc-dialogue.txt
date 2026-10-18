@@ -1,0 +1,7 @@
+
+An error has occurred that was not properly handled. Additional information is shown below. The PowerShell process will exit.
+Unhandled exception. System.IO.FileLoadException: The given assembly name was invalid.
+File name: 'ﾫg￭ﾋU^,'
+   at System.Reflection.AssemblyNameParser.Parse(ReadOnlySpan`1 name)
+   at System.Reflection.AssemblyName.ParseAsAssemblySpec(Char* pAssemblyName, Void* pAssemblySpec)
+设置与 NPC 对话专项测试通过：82 条设置词条全部可达，五分页、复合标签、动态数值与场景隔离通过；Tommy/Jane/Lakelis 实机 OCR 可命中自然译文，任务 ID 为 10310/10311

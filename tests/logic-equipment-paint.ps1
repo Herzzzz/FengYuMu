@@ -152,6 +152,9 @@ namespace MapleOverlay {
     var exact=EquipmentFieldGrammar.Parse("Weapon Attack: +36 (40 -4)",true);
     EqCheck(exact.Count==1&&exact[0].RawValue=="+36 (40 -4)","parenthesized correction is preserved byte-for-byte");
    }
+   var seenLogs=new HashSet<string>();
+   foreach(var log in Program.Logs)
+    if(log.Contains("equipment-paint")&&seenLogs.Add(log))Console.WriteLine("EVIDENCE: "+log);
    Console.WriteLine("Equipment field paint: "+equipmentPaintChecks+
     " checks passed; generated-source substitute Font/Graphics harness; real game pixels unverified.");
    return equipmentPaintChecks;

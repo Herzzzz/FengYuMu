@@ -1,0 +1,11 @@
+
+An error has occurred that was not properly handled. Additional information is shown below. The PowerShell process will exit.
+Unhandled exception. System.IO.FileLoadException: The given assembly name was invalid.
+File name: 'ﾫg￭ﾋU^,'
+   at System.Reflection.AssemblyNameParser.Parse(ReadOnlySpan`1 name)
+   at System.Reflection.AssemblyName.ParseAsAssemblySpec(Char* pAssemblyName, Void* pAssemblySpec)
+Exception: D:\GPT\文件\枫语幕\work\dsh-chat-001\tests\logic-overlay-dual-rendering.ps1:115
+Line |
+ 115 |  …   if (-not $source.Contains($required)) { throw "双渲染缺少守卫：$required" }
+     |                                              ~~~~~~~~~~~~~~~~~~~~~~~~~
+     | 双渲染缺少守卫：label.RenderMode == LabelRenderMode.Seamless

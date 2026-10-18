@@ -1,0 +1,5 @@
+Exception: D:\GPT\文件\枫语幕\work\dsh-chat-001\tests\logic-overlay-label-layout.ps1:182
+Line |
+ 182 |      throw '跨屏大小的矩形未被几何判据拒绝'
+     |      ~~~~~~~~~~~~~~~~~~~~~~~
+     | 跨屏大小的矩形未被几何判据拒绝

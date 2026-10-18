@@ -1,0 +1,224 @@
+{
+  "taskId": "EQUIP-001",
+  "branch": "dsh/equip-001",
+  "baseCommit": "399cc8e",
+  "implementationCommit": "ce945b0947f7b1e81b8ac2e5e2d43c1ef9874669",
+  "build": {
+    "command": "pwsh -NoProfile -File src/build.ps1",
+    "status": "PASS",
+    "head": "ce945b0947f7b1e81b8ac2e5e2d43c1ef9874669",
+    "worktreeEntries": 0,
+    "inputs": 65,
+    "compiler": "dotnet SDK 6.0.410 Roslyn csc.dll with .NET Framework 4.8 reference assemblies",
+    "exePath": "枫语幕.exe",
+    "exeSha256": "638A2B3E2F57D43A8899E766B0F5A94901D4110844529D4A86D99861788D2B7D",
+    "buildEvidencePath": "枫语幕.exe.build.json",
+    "buildEvidenceSha256": "50720CBBB639116C724A5C657220481499C7BAB4FECBEFA120C1AB89498DDA61"
+  },
+  "stageDefinitions": {
+    "recognized": "equipment panel (grammar structure) or equipment field row is identified from OCR geometry/text",
+    "matched": "generic fields are parsed; exact raw value spans are retained",
+    "prepared": "one key label plus a protected value guard is planned for the shared panel typography",
+    "painted": "the composition pass accepted and drew the complete key label",
+    "preservedReason": "the original pixels/text were kept because composition or planning could not safely paint; the reason is recorded"
+  },
+  "equipmentStageEvidence": {
+    "panel": "equipment-panel recognized=1 matched=13 prepared=13 painted=0 preserved=0 keys=level,strength,intelligence,weapon-defense,magic-defense,intelligence,luck,upgrades,weapon-attack,critical-rate,avoidability,attack-speed,upgrades panel=100,100,269,184 typography=family=Microsoft YaHei unit=Pixel size=12 floor=11 reason=grammar-structure sourceRows=8",
+    "coverage": "equipment-coverage recognizedPanels=1 recognizedRows=8 parsed=13 prepared=13 valuePixels=13 partialValues=0 mergedText=0 preserved=0 preservedReason=none rejected=0 keys=level,strength,intelligence,weapon-defense,magic-defense,intelligence,luck,upgrades,weapon-attack,critical-rate,avoidability,attack-speed,upgrades",
+    "fallback": "equipment-panel recognized=0 matched=3 prepared=3 painted=0 preserved=0 keys=weapon-defense,magic-defense,avoidability panel=100,300,202,40 typography=family=Microsoft YaHei unit=Pixel size=12 floor=11 reason=field-row-fallback sourceRows=2",
+    "paintAll": "equipment-paint generation=1 prepared=12 painted=12 preserved=0 preservedReason=none",
+    "paintPreserved": "equipment-paint generation=1 prepared=1 painted=0 preserved=1 preservedReason=equipment-field-does-not-fit",
+    "planPreserved": "merged-value-region-unsafe (field test; original pixels kept instead of recolouring an unsplittable key/value word)"
+  },
+  "testsPass": [
+    {
+      "script": "tests/logic-equipment-fields.ps1",
+      "checks": 63,
+      "kind": "actual built EXE grammar and plan API; synthetic rectangles",
+      "exit": 0,
+      "evidence": "evidence/equipment-fields.txt"
+    },
+    {
+      "script": "tests/logic-equipment-paint.ps1",
+      "checks": 22,
+      "kind": "generated-source substitute Font/Graphics composition harness",
+      "exit": 0,
+      "evidence": "evidence/equipment-paint.txt"
+    },
+    {
+      "script": "tests/logic-equipment-panel-r6.ps1",
+      "checks": 28,
+      "kind": "exact production structured builder with controlled OCR geometry",
+      "exit": 0,
+      "evidence": "evidence/equipment-panel.txt"
+    },
+    {
+      "script": "tests/logic-equipment-body-r6.ps1",
+      "checks": 7,
+      "kind": "exact production equipment description builder, controlled OCR/glossary boundaries",
+      "exit": 0,
+      "evidence": "evidence/equipment-body.txt"
+    },
+    {
+      "script": "tests/logic-equipment-scope.ps1",
+      "checks": 27,
+      "kind": "source-level chat/AI/equipment isolation guards",
+      "exit": 0,
+      "evidence": "evidence/equipment-scope.txt"
+    },
+    {
+      "script": "tests/logic-simple-flow-r11.ps1",
+      "checks": 33,
+      "kind": "actual request/composition/background methods with controlled GDI font/capture boundaries",
+      "exit": 0,
+      "evidence": "evidence/simple-flow.txt"
+    },
+    {
+      "script": "tests/logic-quest-font-layout.ps1",
+      "checks": 51,
+      "kind": "generated-source substitute Font/Graphics harness",
+      "exit": 0,
+      "evidence": "evidence/quest-font.txt"
+    },
+    {
+      "script": "tests/logic-quest-panel-layout.ps1",
+      "checks": 164,
+      "kind": "actual GDI+ panel checks on the built EXE",
+      "exit": 0,
+      "evidence": "evidence/quest-panel.txt"
+    },
+    {
+      "script": "tests/logic-journal-and-item-r6.ps1 -ExePath .\\枫语幕.exe",
+      "checks": 23,
+      "kind": "actual dictionary/candidate policy on the built EXE",
+      "exit": 0,
+      "evidence": "evidence/journal-item.txt"
+    },
+    {
+      "script": "tests/logic-quest-text-scope-r12.ps1",
+      "checks": 17,
+      "kind": "quest text scope policy",
+      "exit": 0,
+      "evidence": "evidence/quest-text-scope.txt"
+    },
+    {
+      "script": "tests/logic-quest-matching-r12.ps1 -ExePath .\\枫语幕.exe",
+      "checks": 28,
+      "kind": "actual dictionary/policy with controlled English variants",
+      "exit": 0,
+      "evidence": "evidence/quest-matching.txt"
+    },
+    {
+      "script": "tests/logic-observed-quest-wording.ps1 -ExePath .\\枫语幕.exe",
+      "checks": 12,
+      "kind": "manual observed wording against built EXE; not OCR acceptance",
+      "exit": 0,
+      "evidence": "evidence/observed-quest-wording.txt"
+    },
+    {
+      "script": "tests/logic-chat-category-filtering.ps1",
+      "checks": null,
+      "kind": "chat category isolation (chat source untouched)",
+      "exit": 0,
+      "evidence": "evidence/chat-category-filtering.txt"
+    },
+    {
+      "script": "tests/logic-chat-continuity.ps1",
+      "checks": 9,
+      "kind": "chat continuity policy (chat source untouched)",
+      "exit": 0,
+      "evidence": "evidence/chat-continuity.txt"
+    },
+    {
+      "script": "tests/logic-chat-megaphone-pixels.ps1",
+      "checks": 164,
+      "kind": "chat megaphone pixels and isolation (chat source untouched)",
+      "exit": 0,
+      "evidence": "evidence/chat-megaphone-pixels.txt"
+    },
+    {
+      "script": "tests/logic-ui-dpi-scaling.ps1",
+      "checks": null,
+      "kind": "100/125/150/175/200% and mixed DPI layout",
+      "exit": 0,
+      "evidence": "evidence/ui-dpi-scaling.txt"
+    },
+    {
+      "script": "tests/logic-visual-panel-detection.ps1",
+      "checks": null,
+      "kind": "synthetic scene panel detection",
+      "exit": 0,
+      "evidence": "evidence/visual-panel-detection.txt"
+    },
+    {
+      "script": "tests/logic-independent-window.ps1",
+      "checks": null,
+      "kind": "independent AI window lifecycle",
+      "exit": 0,
+      "evidence": "evidence/independent-window.txt"
+    },
+    {
+      "script": "tests/logic-settings-npc-dialogue.ps1",
+      "checks": 82,
+      "kind": "settings entries, composite labels, dynamic values and scene isolation",
+      "exit": 0,
+      "evidence": "evidence/settings-npc-dialogue.txt"
+    },
+    {
+      "script": "tests/logic-release-safety.ps1",
+      "checks": 22,
+      "kind": "release/build input safety",
+      "exit": 0,
+      "evidence": "evidence/release-safety.txt"
+    },
+    {
+      "script": "tests/logic-followup-safety.ps1",
+      "checks": 11,
+      "kind": "subprocess/filesystem follow-up safety",
+      "exit": 0,
+      "evidence": "evidence/followup-safety.txt"
+    },
+    {
+      "script": "tests/logic-scene-feedback-safety.ps1",
+      "checks": 32,
+      "kind": "scene feedback safety",
+      "exit": 0,
+      "evidence": "evidence/scene-feedback-safety.txt"
+    },
+    {
+      "script": "tests/logic-capture-frame-policy.ps1",
+      "checks": 13,
+      "kind": "capture frame policy",
+      "exit": 0,
+      "evidence": "evidence/capture-frame-policy.txt"
+    },
+    {
+      "script": "tests/logic-user-feedback-safety.ps1",
+      "checks": 20,
+      "kind": "user feedback safety",
+      "exit": 0,
+      "evidence": "evidence/user-feedback-safety.txt"
+    }
+  ],
+  "expectedPreExistingFailures": [
+    "tests/logic-overlay-label-layout.ps1",
+    "tests/logic-overlay-paint-safety.ps1",
+    "tests/logic-overlay-dual-rendering.ps1",
+    "tests/logic-panel-context-isolation.ps1",
+    "tests/logic-quest-body-and-summary.ps1",
+    "tests/logic-quest-title-groups.ps1",
+    "tests/logic-quest-shell-resilience.ps1",
+    "tests/logic-characters-r15.ps1 (stale hard-coded workspace path)",
+    "tests/logic-hotkey-toggle.ps1 (confirmed identically on untouched baseline 399cc8e EXE E49562E787D8AC3FE2D7D2AC41D86E5A944325F9D302FA1E113F8A6ED09B11DB)"
+  ],
+  "notRunStalePathTests": [
+    "tests/logic-quest-paragraph-pipeline-r12.ps1",
+    "tests/logic-quest-journal-r13.ps1",
+    "tests/logic-universal-panels-r14.ps1"
+  ],
+  "unverified": [
+    "Real in-game equipment tooltip rendering at 100/125/150/200% Windows scaling",
+    "Real-game colour sampling and pixel comparison for coloured equipment modifiers",
+    "User's private equipment screenshots"
+  ]
+}
