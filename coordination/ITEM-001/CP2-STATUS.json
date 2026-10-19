@@ -1,7 +1,7 @@
 {
   "workItem": "ITEM-001",
   "checkpoint": "CP2",
-  "state": "READY_FOR_CLOUD_REVIEW",
+  "state": "CP2_ACCEPTED",
   "branch": "dsh/item-001",
   "baselineCommit": "f6d59efbb9e0974c8ac4e29a062a87c9a6d9d104",
   "implementationCommits": [
@@ -88,7 +88,10 @@
     "firstBlockingIssue": "sentence-level shared flag was resolved but not propagated to the final result",
     "repairCommit": "7f63041",
     "repairVerification": "91/91 passed; CP1 8/8; journal/item 23/23; simple-flow 33/33; F064/F065 hashes unchanged",
-    "currentState": "READY_FOR_CLOUD_REREVIEW"
+    "finalDecision": "CP2 PASS",
+    "reviewedCommits": ["7f63041", "c9c6a3b"],
+    "blockingIssues": 0,
+    "currentState": "ACCEPTED"
   },
   "untouchedUntrackedFiles": [
     "main_ui_live_ai.png",

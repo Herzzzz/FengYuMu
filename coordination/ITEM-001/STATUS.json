@@ -1,17 +1,17 @@
 {
   "workItem": "ITEM-001",
-  "checkpoint": "CP1",
-  "state": "CP1_ACCEPTED",
+  "checkpoint": "CP2",
+  "state": "CP2_ACCEPTED",
   "branch": "dsh/item-001",
-  "baselineCommit": "68094394080a6c951f6c3fd998150fc4266f992c",
-  "implementationCommit": "ea7439a",
-  "evidenceCommit": "cf98099",
-  "scope": "ordinary item tooltip drawing and known negative misattribution only",
+  "baselineCommit": "f6d59efbb9e0974c8ac4e29a062a87c9a6d9d104",
+  "implementationCommit": "7f63041",
+  "evidenceCommit": "c9c6a3b",
+  "scope": "ordinary item tooltip drawing, shared descriptions, conflict preservation, and immutable item sentence queries",
   "build": {
     "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\src\\build.ps1",
     "exitCode": 0,
-    "log": "evidence/cp1-build-r2.log",
-    "exeSha256": "21F53A2F0FC2AC2544BAA2C47F57E4A9EB2DE6A89A17327015E4337712C7E0BC"
+    "log": "evidence/cp2-build.log",
+    "exeSha256": "76ACA20148B1CC085B3C6C0A94247B721C541F7EF2CF851CFADF0C241347A83A"
   },
   "tests": [
     {
@@ -27,10 +27,10 @@
       "result": "33/33 passed"
     },
     {
-      "name": "full ITEM semantic suite",
+      "name": "full ITEM semantic, planner, and compositor suite",
       "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\tests\\logic-item-text-001.ps1",
-      "exitCode": 1,
-      "result": "known CP2 failure: identical description shared by several ids is translatable"
+      "exitCode": 0,
+      "result": "91/91 passed"
     }
   ],
   "controlledOcrReplay": {
@@ -56,12 +56,12 @@
     "realNativeOcrInGame": "UNVERIFIED",
     "formalRelease": "NOT_PERFORMED"
   },
-  "wipDependency": "ItemTextIndex.cs and ItemTextSemantics.cs are included for a reproducible build but remain frozen CP2 work; their known shared-description failure is not claimed fixed by CP1.",
+  "wipDependency": "CP2 shared-description and immutable-query work is complete and accepted.",
   "cloudAcceptance": {
-    "decision": "CP1 PASS",
-    "reviewedCommits": ["ea7439a", "cf98099", "7a6634e"],
+    "decision": "CP2 PASS",
+    "reviewedCommits": ["f7f5821", "b52b6c5", "7f63041", "c9c6a3b"],
     "blockingIssues": 0,
-    "note": "Cloud independently checked source, crop evidence and trace ordering, and reran simple-flow 33/33. F065 crop-only delta is 1578 pixels; 3440 is the full-frame delta recorded locally."
+    "note": "Cloud found one shared-sentence flag propagation blocker in the first review; repair 7f63041 passed final rereview with no remaining CP2 blockers."
   },
   "untouchedUntrackedFiles": [
     "main_ui_live_ai.png",
