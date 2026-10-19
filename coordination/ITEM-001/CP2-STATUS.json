@@ -4,18 +4,21 @@
   "state": "READY_FOR_CLOUD_REVIEW",
   "branch": "dsh/item-001",
   "baselineCommit": "f6d59efbb9e0974c8ac4e29a062a87c9a6d9d104",
-  "implementationCommit": "f7f58214f1715b7113040c36c46d9ced70b23c19",
+  "implementationCommits": [
+    "f7f58214f1715b7113040c36c46d9ced70b23c19",
+    "7f63041"
+  ],
   "scope": "shared item descriptions, conflict preservation, and immutable item sentence query results",
   "build": {
     "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\src\\build.ps1",
     "exitCode": 0,
     "log": "evidence/cp2-build.log",
-    "exeSha256": "411470B9D37B091EAC661AF19193CBD20A4BF4B7882CCF6768904A795E16F1EB"
+    "exeSha256": "76ACA20148B1CC085B3C6C0A94247B721C541F7EF2CF851CFADF0C241347A83A"
   },
   "focusedTests": [
     {
       "name": "ITEM-001 full semantic, planner, and compositor suite",
-      "result": "90/90 passed",
+      "result": "91/91 passed",
       "log": "evidence/cp2-item-text.log"
     },
     {
@@ -79,6 +82,13 @@
     "controlledWindowsOcrReplay": "VERIFIED",
     "realNativeOcrInGame": "UNVERIFIED",
     "formalRelease": "NOT_PERFORMED"
+  },
+  "cloudReview": {
+    "firstDecision": "CP2 NEEDS_CHANGES",
+    "firstBlockingIssue": "sentence-level shared flag was resolved but not propagated to the final result",
+    "repairCommit": "7f63041",
+    "repairVerification": "91/91 passed; CP1 8/8; journal/item 23/23; simple-flow 33/33; F064/F065 hashes unchanged",
+    "currentState": "READY_FOR_CLOUD_REREVIEW"
   },
   "untouchedUntrackedFiles": [
     "main_ui_live_ai.png",
