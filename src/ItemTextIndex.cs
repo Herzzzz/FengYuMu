@@ -128,7 +128,10 @@ namespace MapleOverlay
         {
             List<ItemSentenceReference> rows;
             if (!String.IsNullOrEmpty(canonical) && itemSentenceIndex.TryGetValue(canonical, out rows))
-                return rows;
+                // Callers apply item-id and trust filters with RemoveAll. Returning the
+                // persistent bucket would make one scoped lookup corrupt every later
+                // unscoped or differently scoped lookup in this process.
+                return new List<ItemSentenceReference>(rows);
             return new List<ItemSentenceReference>();
         }
 

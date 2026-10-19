@@ -929,13 +929,6 @@ namespace MapleOverlay
                 return result;
             }
 
-            string reason;
-            if (HasConflictingVisible(text, candidates, out reason))
-            {
-                result.Reason = reason;
-                return result;
-            }
-
             List<string> pieces = SplitSentences(text);
             if (pieces.Count == 0)
             {
@@ -945,11 +938,11 @@ namespace MapleOverlay
 
             // First try the complete trusted row. CanonicalSentence treats
             // Restore/Recover as the same item verb, but nothing else is rewritten.
+            string reason;
             List<TranslationEntry> full = new List<TranslationEntry>();
             string canonicalVisible = CanonicalSentence(text);
             foreach (TranslationEntry entry in candidates)
             {
-                if (entry.ItemStatus != ItemSemanticStatus.Trusted) continue;
                 if (!String.Equals(CanonicalSentence(entry.English), canonicalVisible,
                     StringComparison.Ordinal)) continue;
                 full.Add(entry);
@@ -959,17 +952,42 @@ namespace MapleOverlay
                 string chinese;
                 string resolvedId;
                 bool shared;
-                if (ResolveDistinctChinese(full, out chinese, out resolvedId, out shared, out reason))
+                bool allTrusted = true;
+                bool identicalSharedProse = true;
+                foreach (TranslationEntry entry in full)
+                {
+                    if (entry.ItemStatus != ItemSemanticStatus.Trusted) allTrusted = false;
+                    if (entry.ItemStatus != ItemSemanticStatus.Undecidable ||
+                        entry.ItemStatusReason != "no-verifiable-gameplay-signal")
+                        identicalSharedProse = false;
+                }
+                if (ResolveDistinctChinese(full, out chinese, out resolvedId, out shared, out reason) &&
+                    (allTrusted || identicalSharedProse))
                 {
                     result.Matched = true;
                     result.Translation = EnsureSentencePunctuation(chinese);
-                    result.Source = "item-description";
+                    result.Source = allTrusted ? "item-description" : "item-description-shared";
                     result.ItemId = resolvedId;
                     result.Shared = shared;
-                    result.Reason = "full-row-match";
+                    result.Reason = allTrusted ? "full-row-match" : shared ?
+                        "shared-identical-description" : "exact-plain-description";
                     return result;
                 }
-                result.Reason = reason;
+                if (!allTrusted && !identicalSharedProse)
+                {
+                    bool conflict = false;
+                    foreach (TranslationEntry entry in full)
+                        if (entry.ItemStatus == ItemSemanticStatus.Conflict) conflict = true;
+                    result.Reason = conflict ? "data-conflict" : "data-unverified";
+                }
+                else result.Reason = reason.Length == 0 ? "data-unverified" : reason;
+                return result;
+            }
+
+            string conflictReason;
+            if (HasConflictingVisible(text, candidates, out conflictReason))
+            {
+                result.Reason = conflictReason;
                 return result;
             }
 

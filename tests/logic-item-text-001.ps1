@@ -14,6 +14,7 @@ $normalize=$storeType.GetMethod('Normalize',$flags)
 function N([string]$text){return [string]$normalize.Invoke($null,[object[]]@($text))}
 function Audit([string]$en,[string]$zh){return $inspect.Invoke($null,[object[]]@($en,$zh))}
 function Body([string]$text,[string]$id=''){return $bodyMethod.Invoke($null,[object[]]@($store,$text,$id))}
+function BodyFrom($which,[string]$text,[string]$id=''){return $bodyMethod.Invoke($null,[object[]]@($which,$text,$id))}
 function F($object,[string]$name){return $object.GetType().GetField($name,$flags).GetValue($object)}
 function Status($audit){return [string](F $audit 'Status')}
 function Counts([string]$en,[string]$zh){$a=Audit $en $zh;return ((Status $a)+'/'+[string](F $a 'Reason'))}
@@ -87,6 +88,44 @@ $share=Body 'A wooden table that allows you to play Omok.' ''
 Check ([bool](F $share 'Matched')) 'identical description shared by several ids is translatable'
 Check ([bool](F $share 'Shared') -and [string](F $share 'ItemId') -eq '') 'shared description never picks an arbitrary id'
 Equal '可以用来玩五子棋的木桌。' ([string](F $share 'Translation')) 'shared description uses the identical Chinese translation'
+$shareScoped=Body 'A wooden table that allows you to play Omok.' '4031046'
+Check ([bool](F $shareScoped 'Matched') -and -not [bool](F $shareScoped 'Shared')) 'reliable item id scopes a shared plain description'
+Equal '4031046' ([string](F $shareScoped 'ItemId')) 'scoped shared description keeps the reliable id'
+
+# Synthetic rows prove that the restricted exact-plain path is general and that
+# lookup filtering never mutates the persistent sentence index.
+$tempDictionary=Join-Path ([IO.Path]::GetTempPath()) ('fengyumu-item-cp2-'+[Guid]::NewGuid().ToString('N')+'.tsv')
+try{
+ @(
+  "A decorative token for testing.`t测试装饰品。`t怀旧服-物品说明#9900001`tCP2 synthetic",
+  "A decorative token for testing.`t测试装饰品。`t怀旧服-物品说明#9900002`tCP2 synthetic",
+  "A plain single item for testing.`t测试单一物品。`t怀旧服-物品说明#9900003`tCP2 synthetic",
+  "An ambiguous token for testing.`t歧义译文甲。`t怀旧服-物品说明#9900004`tCP2 synthetic",
+  "An ambiguous token for testing.`t歧义译文乙。`t怀旧服-物品说明#9900005`tCP2 synthetic"
+ ) | Set-Content -LiteralPath $tempDictionary -Encoding UTF8
+ $synthetic=$storeType.GetConstructors($flags)[0].Invoke([object[]]@([string]$tempDictionary))
+ $storeType.GetMethod('Load',$flags).Invoke($synthetic,@())|Out-Null
+ $multi=BodyFrom $synthetic 'A decorative token for testing.' ''
+ Check ([bool](F $multi 'Matched') -and [bool](F $multi 'Shared') -and [string](F $multi 'ItemId') -eq '') 'synthetic identical prose is shared without claiming an id'
+ $single=BodyFrom $synthetic 'A plain single item for testing.' ''
+ Check ([bool](F $single 'Matched') -and -not [bool](F $single 'Shared')) 'synthetic single-id plain prose uses the exact-only path'
+ Equal '9900003' ([string](F $single 'ItemId')) 'synthetic single-id prose resolves only its unique id'
+ $ambiguous=BodyFrom $synthetic 'An ambiguous token for testing.' ''
+ Check (-not [bool](F $ambiguous 'Matched')) 'same English with different Chinese remains ambiguous'
+ $scopedFirst=BodyFrom $synthetic 'A decorative token for testing.' '9900001'
+ $unscopedAfter=BodyFrom $synthetic 'A decorative token for testing.' ''
+ Check ([bool](F $scopedFirst 'Matched') -and [string](F $scopedFirst 'ItemId') -eq '9900001') 'scoped query keeps the requested synthetic id'
+ Check ([bool](F $unscopedAfter 'Matched') -and [bool](F $unscopedAfter 'Shared')) 'scoped query does not poison later unscoped lookup'
+ $canonical=$semType.GetMethod('CanonicalSentence',$flags).Invoke($null,[object[]]@([string]'Restores 100 HP.'))
+ $findRefs=$storeType.GetMethod('FindItemSentenceReferences',$flags)
+ $snapshot=$findRefs.Invoke($store,[object[]]@([string]$canonical));$beforeCount=$snapshot.Count;$snapshot.Clear()
+ $afterSnapshot=$findRefs.Invoke($store,[object[]]@([string]$canonical))
+ Check ($beforeCount -gt 0 -and $afterSnapshot.Count -eq $beforeCount) 'mutating a returned candidate snapshot cannot corrupt the sentence index'
+ $reloaded=$storeType.GetConstructors($flags)[0].Invoke([object[]]@([string]$tempDictionary))
+ $storeType.GetMethod('Load',$flags).Invoke($reloaded,@())|Out-Null
+ $reloadedShared=BodyFrom $reloaded 'A decorative token for testing.' ''
+ Check ([bool](F $reloadedShared 'Matched') -and [bool](F $reloadedShared 'Shared')) 'reload preserves the same shared-query result'
+}finally{if(Test-Path -LiteralPath $tempDictionary){Remove-Item -LiteralPath $tempDictionary -Force}}
 
 # ---- panel planning through the real BuildLabels pipeline ----
 $formCtor=@($formType.GetConstructors($flags)|Where-Object{$_.GetParameters().Count -eq 3})[0]
@@ -132,9 +171,9 @@ function Build($result,[float]$scale=1.0){
  }finally{$prepared.Dispose()}
 }
 function Labels{return $script:built}
-function ItemLabels($labels){return @($labels|Where-Object{$null -ne $_.GetType().GetField('ItemPanel',$flags).GetValue($_)})}
-function Texts($labels){return @($labels|ForEach-Object{ $_.GetType().GetField('Text',$flags).GetValue($_) })}
-function FindText($labels,[string]$text){return @($labels|Where-Object{ $_.GetType().GetField('Text',$flags).GetValue($_) -eq $text })}
+function ItemLabels($labels){return @($labels|Where-Object{$null -ne $_ -and $null -ne $_.GetType().GetField('ItemPanel',$flags).GetValue($_)})}
+function Texts($labels){return @($labels|Where-Object{$null -ne $_}|ForEach-Object{ $_.GetType().GetField('Text',$flags).GetValue($_) })}
+function FindText($labels,[string]$text){return @($labels|Where-Object{ $null -ne $_ -and $_.GetType().GetField('Text',$flags).GetValue($_) -eq $text })}
 function PlanText($labels){
  $plans=@();$seen=@()
  foreach($label in $labels){
@@ -142,9 +181,30 @@ function PlanText($labels){
   if($null -eq $plan){continue}
   $key=[Runtime.CompilerServices.RuntimeHelpers]::GetHashCode($plan)
   if($seen -contains $key){continue}
-  $seen+=$key;$plans+=$plan.Describe()
+  $seen+=$key;$plans+=[string]$plan.GetType().GetMethod('Describe',$flags).Invoke($plan,@())
  }
  return @($plans)
+}
+function ComposeCurrent{
+ $frame=New-Object Drawing.Bitmap 1920,1080
+ try{
+  $paint=[Drawing.Graphics]::FromImage($frame)
+  try{
+   $paint.Clear([Drawing.Color]::FromArgb(255,32,40,56))
+   foreach($label in ItemLabels $script:built){
+    $source=$label.GetType().GetField('SourceBounds',$flags).GetValue($label)
+    $paint.DrawLine([Drawing.Pens]::White,$source.Left+2,$source.Top+4,[Math]::Max($source.Left+3,$source.Right-2),$source.Top+4)
+   }
+  }finally{$paint.Dispose()}
+  $compose=$formType.GetMethod('PrepareSimpleFusionAsync',$flags)
+  $invokeArgs=[object[]]::new(3);$invokeArgs[0]=[Drawing.Bitmap]$frame;$invokeArgs[1]=[Drawing.Rectangle]::Empty;$invokeArgs[2]=$script:built
+  $task=$compose.Invoke($form,$invokeArgs);$ok=[bool]$task.GetAwaiter().GetResult()
+  $ready=$formType.GetField('simpleReady',$flags).GetValue($form)
+  return [pscustomobject]@{Ok=$ok;Ready=$ready.Count}
+ }finally{
+  $formType.GetMethod('ClearSimpleFusion',$flags).Invoke($form,@())|Out-Null
+  $frame.Dispose()
+ }
 }
 
 Build (MakeResult @('Red Potion','Account-Bound. Transferable within world.','A potion made out of red herbs.','Restores 100 HP.'))
@@ -172,11 +232,19 @@ Check ((Texts $labels) -contains '返回勇士部落。') 'return scroll body is
 $plans=PlanText $labels
 Check ($plans.Count -eq 1) 'return scroll uses one local item plan'
 
+Build (MakeResult @('Omok Table','A wooden table that allows you to play Omok.'))
+$labels=Labels
+Check ((Texts $labels) -contains '围棋盘') 'shared-prose production plan keeps its scoped item name'
+Check ((Texts $labels) -contains '可以用来玩五子棋的木桌。') 'shared-prose positive reaches the production item planner'
+Check ((PlanText $labels).Count -eq 1) 'shared-prose name and body have one owning plan'
+$composed=ComposeCurrent
+Check ($composed.Ok -and $composed.Ready -eq 2) 'shared-prose name and body reach the production compositor together'
+
 Build (MakeResult @('Hamburger','A hamburger with bulgogi in it.','Recovers 500 HP.'))
 $labels=Labels
 Check ((Texts $labels) -contains '汉堡') 'conflict item still paints its independently verified name'
 Check (-not ((Texts $labels) -contains '夹着韩式烤肉的汉堡包。恢复400血量。')) 'conflict body never paints despite an exact English hit'
-$planText=(PlanText $labels)[0]
+$planText=@(PlanText $labels)[0]
 Check ($planText.Contains('item-body:preserved/data-conflict')) 'conflict body records data-conflict at the plan stage'
 
 Build (MakeResult @('Red Potion','This is a new effect.','Restores 120 HP.'))
@@ -218,15 +286,15 @@ Check ($null -ne $fit) 'shared-font fit helper is available to composition'
 $bm=New-Object Drawing.Bitmap 1,1
 $g=[Drawing.Graphics]::FromImage($bm)
 try{
- $tiny=$fit.Invoke($null,[object[]]@($g,[string]('由红色草药制成的药水。恢复100 HP。'),(New-Object Drawing.SizeF 12,10),[float]11.0,'SimSun'))
+ $fitArgs=[object[]]::new(5);$fitArgs[0]=[Drawing.Graphics]$g;$fitArgs[1]=[string]'由红色草药制成的药水。恢复100 HP。';$fitArgs[2]=[Drawing.SizeF](New-Object Drawing.SizeF 12,10);$fitArgs[3]=[float]11.0;$fitArgs[4]=[string]'SimSun'
+ $tiny=$fit.Invoke($null,$fitArgs)
  Check ($null -eq $tiny) 'a translation that cannot fit the measured area is preserved, never truncated'
- $roomy=$fit.Invoke($null,[object[]]@($g,[string]'恢复100 HP。',(New-Object Drawing.SizeF 200,40),[float]11.0,'SimSun'))
+ $fitArgs[1]=[string]'恢复100 HP。';$fitArgs[2]=[Drawing.SizeF](New-Object Drawing.SizeF 200,40)
+ $roomy=$fit.Invoke($null,$fitArgs)
  Check ($null -ne $roomy) 'a translation with measured room is allowed to paint'
  if($null -ne $roomy){$roomy.Dispose()}
 }finally{$g.Dispose();$bm.Dispose()}
 
-if($count -ne 53){throw "Unexpected check count: $count"}
+if($count -ne 90){throw "Unexpected check count: $count"}
 Write-Output ('ITEM-001 logic: '+$count+'/'+$count+' passed; dictionary SHA-256='+(Get-FileHash -LiteralPath (Join-Path $root '枫语幕词库.tsv') -Algorithm SHA256).Hash+'; real game pixels UNVERIFIED.')
 [Environment]::Exit(0)
-
-
