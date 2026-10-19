@@ -101,7 +101,9 @@ try{
   "A decorative token for testing.`t测试装饰品。`t怀旧服-物品说明#9900002`tCP2 synthetic",
   "A plain single item for testing.`t测试单一物品。`t怀旧服-物品说明#9900003`tCP2 synthetic",
   "An ambiguous token for testing.`t歧义译文甲。`t怀旧服-物品说明#9900004`tCP2 synthetic",
-  "An ambiguous token for testing.`t歧义译文乙。`t怀旧服-物品说明#9900005`tCP2 synthetic"
+  "An ambiguous token for testing.`t歧义译文乙。`t怀旧服-物品说明#9900005`tCP2 synthetic",
+  "A crimson tonic. Restores 10 HP.`t深红补药。恢复10 HP。`t怀旧服-物品说明#9900006`tCP2 synthetic",
+  "A crimson tonic. Restores 20 HP.`t深红补药。恢复20 HP。`t怀旧服-物品说明#9900007`tCP2 synthetic"
  ) | Set-Content -LiteralPath $tempDictionary -Encoding UTF8
  $synthetic=$storeType.GetConstructors($flags)[0].Invoke([object[]]@([string]$tempDictionary))
  $storeType.GetMethod('Load',$flags).Invoke($synthetic,@())|Out-Null
@@ -112,6 +114,8 @@ try{
  Equal '9900003' ([string](F $single 'ItemId')) 'synthetic single-id prose resolves only its unique id'
  $ambiguous=BodyFrom $synthetic 'An ambiguous token for testing.' ''
  Check (-not [bool](F $ambiguous 'Matched')) 'same English with different Chinese remains ambiguous'
+ $sharedSentence=BodyFrom $synthetic 'A crimson tonic.' ''
+ Check ([bool](F $sharedSentence 'Matched') -and [bool](F $sharedSentence 'Shared') -and [string](F $sharedSentence 'ItemId') -eq '') 'shared sentence path preserves shared identity without claiming an id'
  $scopedFirst=BodyFrom $synthetic 'A decorative token for testing.' '9900001'
  $unscopedAfter=BodyFrom $synthetic 'A decorative token for testing.' ''
  Check ([bool](F $scopedFirst 'Matched') -and [string](F $scopedFirst 'ItemId') -eq '9900001') 'scoped query keeps the requested synthetic id'
@@ -295,6 +299,6 @@ try{
  if($null -ne $roomy){$roomy.Dispose()}
 }finally{$g.Dispose();$bm.Dispose()}
 
-if($count -ne 90){throw "Unexpected check count: $count"}
+if($count -ne 91){throw "Unexpected check count: $count"}
 Write-Output ('ITEM-001 logic: '+$count+'/'+$count+' passed; dictionary SHA-256='+(Get-FileHash -LiteralPath (Join-Path $root '枫语幕词库.tsv') -Algorithm SHA256).Hash+'; real game pixels UNVERIFIED.')
 [Environment]::Exit(0)

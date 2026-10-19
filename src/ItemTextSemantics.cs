@@ -1024,6 +1024,7 @@ namespace MapleOverlay
 
             List<string> translated = new List<string>();
             HashSet<string> matchedIds = new HashSet<string>(StringComparer.Ordinal);
+            bool matchedShared = false;
             bool usedTemplate = false;
             bool usedDictionary = false;
             for (int i = 0; i < pieces.Count; i++)
@@ -1087,6 +1088,7 @@ namespace MapleOverlay
                     return result;
                 }
                 translated.Add(EnsureSentencePunctuation(chinese));
+                if (shared) matchedShared = true;
                 if (resolvedId.Length > 0) matchedIds.Add(resolvedId);
                 usedDictionary = true;
             }
@@ -1101,8 +1103,8 @@ namespace MapleOverlay
             result.Translation = combined.ToString();
             result.Source = usedDictionary && usedTemplate ? "item-mixed" :
                 usedTemplate ? "item-template" : "item-sentence";
-            result.ItemId = matchedIds.Count == 1 ? First(matchedIds) : "";
-            result.Shared = matchedIds.Count > 1;
+            result.ItemId = !matchedShared && matchedIds.Count == 1 ? First(matchedIds) : "";
+            result.Shared = matchedShared || matchedIds.Count > 1;
             result.Reason = "visible-sentence-match";
             return result;
         }
