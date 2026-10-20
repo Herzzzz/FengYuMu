@@ -46,10 +46,12 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           $exe = @(Get-ChildItem -LiteralPath $PWD -Filter *.exe -File)[0].FullName
-          foreach ($name in @('logic-live-panel-closeout','logic-equipment-fields','logic-skill-panel-001','logic-skill-title-matching','logic-skill-detail-semantics')) {
+          foreach ($name in @('logic-live-panel-closeout','logic-skill-panel-001','logic-skill-title-matching','logic-skill-detail-semantics')) {
             & powershell.exe -NoProfile -ExecutionPolicy Bypass -File "./tests/$name.ps1" -ExePath $exe
             if ($LASTEXITCODE -ne 0) { throw "$name failed ($LASTEXITCODE)" }
           }
+          & (Join-Path $PSHOME 'pwsh.exe') -NoProfile -File './tests/logic-equipment-fields.ps1' -ExePath $exe
+          if ($LASTEXITCODE -ne 0) { throw "equipment fields failed ($LASTEXITCODE)" }
           foreach ($name in @('logic-quest-panel-layout','logic-item-cp1','logic-item-text-001')) {
             & powershell.exe -NoProfile -ExecutionPolicy Bypass -File "./tests/$name.ps1"
             if ($LASTEXITCODE -ne 0) { throw "$name failed ($LASTEXITCODE)" }
