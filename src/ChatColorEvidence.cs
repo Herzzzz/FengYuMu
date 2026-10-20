@@ -9,7 +9,8 @@ namespace MapleOverlay
         None = 0,
         Colored = 1,
         PinkBroadcast = 2,
-        BlueBroadcast = 3
+        BlueBroadcast = 3,
+        YellowBroadcast = 4
     }
 
     internal sealed class ChatColorSample
@@ -26,7 +27,8 @@ namespace MapleOverlay
         internal bool HasBand { get { return Band != ChatBandKind.None; } }
         internal bool IsBroadcastBand
         {
-            get { return Band == ChatBandKind.PinkBroadcast || Band == ChatBandKind.BlueBroadcast; }
+            get { return Band == ChatBandKind.PinkBroadcast || Band == ChatBandKind.BlueBroadcast ||
+                    Band == ChatBandKind.YellowBroadcast; }
         }
     }
 
@@ -124,6 +126,19 @@ namespace MapleOverlay
         {
             return color.B - color.R >= 20 && color.B >= color.G - 4 &&
                 color.G - color.R >= 3 && color.B >= 105;
+        }
+
+        private static bool IsYellowFamily(Color color)
+        {
+            return color.R >= 145 && color.G >= 115 && color.R >= color.G - 12 &&
+                color.R - color.G <= 105 && Math.Min(color.R, color.G) - color.B >= 50;
+        }
+
+        private static bool IsYellowInk(Color ink, Color band)
+        {
+            bool warm = ink.R >= ink.G - 8 && ink.G - ink.B >= 10;
+            bool neutralDark = Chroma(ink) < 18 && Math.Max(ink.R, Math.Max(ink.G, ink.B)) <= 105;
+            return (warm || neutralDark) && Luminance(ink) <= Luminance(band) - 25;
         }
 
         private static bool IsPinkInk(Color ink, Color band)
@@ -242,10 +257,11 @@ namespace MapleOverlay
 
             bool pink = IsPinkFamily(background);
             bool blue = IsBlueFamily(background);
+            bool yellow = IsYellowFamily(background);
             Color ink = Color.Empty;
             int inkPixels = 0;
-            bool pinkInk = false, blueInk = false;
-            if (pink || blue)
+            bool pinkInk = false, blueInk = false, yellowInk = false;
+            if (pink || blue || yellow)
             {
                 Dictionary<int, Cluster> dark = new Dictionary<int, Cluster>();
                 int textArea = Math.Max(1, text.Width * text.Height);
@@ -261,7 +277,7 @@ namespace MapleOverlay
                         Color value = Color.FromArgb(r, g, b);
                         if (Distance(pixel, background) < 52) continue;
                         if (Luminance(pixel) > Luminance(background) - 16) continue;
-                        if (Chroma(value) < 14) continue;
+                        if (Chroma(value) < 14 && !yellow) continue;
                         // A glyph stroke is darker than at least one close neighbour;
                         // flat background/scene texture is not.
                         bool edge = false;
@@ -282,19 +298,21 @@ namespace MapleOverlay
                     inkPixels = darkBest.Count;
                     pinkInk = pink && IsPinkInk(ink, background);
                     blueInk = blue && IsBlueInk(ink, background);
+                    yellowInk = yellow && IsYellowInk(ink, background);
                 }
             }
             result.Ink = ink;
             result.InkPixels = inkPixels;
-            result.InkMatchesBand = pinkInk || blueInk;
-            bool boundary = (pink || blue) && HasVerticalBoundary(pixels, width, height, strip, text, background);
+            result.InkMatchesBand = pinkInk || blueInk || yellowInk;
+            bool boundary = (pink || blue || yellow) && HasVerticalBoundary(pixels, width, height, strip, text, background);
             result.Boundary = boundary;
 
-            if ((pink || blue) && coverage >= 0.44 && rowMedian >= 0.46 && rowGood >= 0.55)
+            if ((pink || blue || yellow) && coverage >= 0.44 && rowMedian >= 0.46 && rowGood >= 0.55)
             {
                 bool boundaryBand = boundary && coverage >= 0.50 && rowMedian >= 0.50;
                 if (pink && (pinkInk || boundaryBand)) result.Band = ChatBandKind.PinkBroadcast;
                 else if (blue && (blueInk || boundaryBand)) result.Band = ChatBandKind.BlueBroadcast;
+                else if (yellow && (yellowInk || boundaryBand)) result.Band = ChatBandKind.YellowBroadcast;
                 else result.Band = ChatBandKind.Colored;
             }
             else if (Chroma(background) >= 28 && Math.Max(background.R, Math.Max(background.G, background.B)) >= 90)

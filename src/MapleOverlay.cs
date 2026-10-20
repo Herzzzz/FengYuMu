@@ -6582,8 +6582,9 @@ private Rectangle FindCursorPanelCrop(
                 // can legitimately contain an exact item or skill name ("T> Bamboo Hat"), but
                 // that is not evidence that the corresponding tooltip is open. Chat has its
                 // own explicit AI translator and is excluded here even without a saved region.
-                if (SceneClassifier.LooksLikePlayerChat(candidate.Text)) continue;
-                if (IsChatLine(candidate, ocrScale, chatExclusion) &&
+                bool inTooltip = TooltipOwnerOf(GetOcrLineBounds(candidate), tooltipOwners) >= 0;
+                if (!inTooltip && SceneClassifier.LooksLikePlayerChat(candidate.Text)) continue;
+                if (!inTooltip && IsChatLine(candidate, ocrScale, chatExclusion) &&
                     !translations.HasDetailCandidate(candidate.Text) &&
                     !LooksLikeEquipmentStatText(candidate.Text)) continue;
                 allLines.Add(candidate);
@@ -7058,6 +7059,10 @@ private Rectangle FindCursorPanelCrop(
             }
             AddStructuredFieldLabels(output, allLines, panelByLine, ocrScale, handledItemLines);
             AddCharacterFieldSurfaces(output, allLines, prepared, ocrScale);
+            // Long-match scanning may advance past a list row. Revisit independent
+            // local list names, without borrowing the tooltip's skill identity.
+            foreach (OcrLine listLine in allLines)
+                TryAddSkillListNameLabel(output, listLine, allLines, ocrScale);
             AddSkillOverviewSections(output, allLines, panelByLine, prepared, ocrScale, handledSkillPanels);
             AddSkillEffectSections(output, allLines, panelByLine, ocrScale, handledSkillPanels,
                 handledItemLines);

@@ -178,10 +178,10 @@ namespace MapleOverlay
         private static Match MatchValue(string tail,FieldDefinition definition)
         {
             if(definition.TextValue) {
-                Match textValue=Regex.Match(tail,@"^\s*[.:：]*\s*"+TextValue,RegexOptions.IgnoreCase);
+                Match textValue=Regex.Match(tail,@"^[\s.:：]*"+TextValue,RegexOptions.IgnoreCase);
                 if(textValue.Success)return textValue;
             }
-            return Regex.Match(tail,@"^\s*[.:：]*\s*"+NumericValue,RegexOptions.IgnoreCase);
+            return Regex.Match(tail,@"^[\s.:：]*"+NumericValue,RegexOptions.IgnoreCase);
         }
 
         // True only when a complete known field starts immediately after separators.

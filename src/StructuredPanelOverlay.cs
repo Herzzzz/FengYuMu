@@ -69,6 +69,14 @@ namespace MapleOverlay
                     // proportional estimate and is reported as such.
                     RectangleF box=new RectangleF((float)word.BoundingRect.X+(float)word.BoundingRect.Width*(left-absoluteStart)/raw.Length,
                         (float)word.BoundingRect.Y,(float)word.BoundingRect.Width*(right-left)/raw.Length,(float)word.BoundingRect.Height);
+                    if(allowPunctuationTrim && (left>absoluteStart||right<absoluteEnd)) {
+                        bool lettersOutside=(left>absoluteStart&&HasLetterOrDigit(raw.Substring(0,left-absoluteStart)))||
+                            (right<absoluteEnd&&HasLetterOrDigit(raw.Substring(right-absoluteStart)));
+                        // Punctuation does not provide character geometry. Own the
+                        // entire measured key word, including its colon/period,
+                        // instead of proportionally cutting the last letter off.
+                        if(!lettersOutside)box=word.BoundingRect;
+                    }
                     bounds=bounds.IsEmpty?box:RectangleF.Union(bounds,box);
                 }
                 cursor=Math.Min(text.Length,lineStart+line.Text.Length);

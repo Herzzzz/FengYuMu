@@ -78,6 +78,15 @@ function Paint($name){
  foreach($label in $list){
   $row=[ordered]@{text=(G $label 'Text');role=(G $label 'SemanticRole');source=(G $label 'MatchSource');ready=$ready.Contains($label);reason=(G $label 'FusionFailureReason');bounds=(G $label 'SourceBounds').ToString()}
   $rows+=$row
+  $guard=G $label 'KeepClearBounds'
+  if($layer -and !$guard.IsEmpty){
+   $rect=[Drawing.Rectangle]::Ceiling($guard)
+   $same=$true
+   for($yy=$rect.Top;$yy -lt $rect.Bottom;$yy++) { for($xx=$rect.Left;$xx -lt $rect.Right;$xx++) {
+    if($b.GetPixel($xx,$yy).ToArgb() -ne $layer.GetPixel($xx,$yy).ToArgb()){$same=$false}
+   }}
+   Check $same ($name+': original value pixels unchanged: '+$label.Text)
+  }
  }
  $rows | ConvertTo-Json -Depth 8 | Set-Content -Encoding UTF8 (Join-Path $out ($name+'.json'))
  $script:report+=@{case=$name;planned=$list.Count;ready=$ready.Count;labels=$rows}
@@ -86,6 +95,30 @@ function Paint($name){
  return $rows
 }
 try {
+ # Split OCR fragments must enter parsing as one physical broadcast row.
+ Frame
+ Fill 20 57 1160 27 ([Drawing.Color]::FromArgb(255,220,0))
+ $name=Row 'DemoUser' 40 62 14 ([Drawing.Color]::FromArgb(85,65,0))
+ [void](Row 'CH07 :' 135 62 14 ([Drawing.Color]::FromArgb(85,65,0)))
+ [void](Row '[Maple Token] Offer also selling 83 magic wand' 205 62 14 ([Drawing.Color]::FromArgb(85,65,0)))
+ [void](Row 'You received EXP (+450)' 40 94 14)
+ $group=(T 'OverlayForm').GetMethod('GroupChatOcrRows',$f)
+ $grouped=@($group.Invoke($null,[object[]]@((G $ocr 'Lines'))))
+ Check ($grouped.Count -eq 2) 'yellow broadcast fragments group without swallowing the adjacent system row'
+ $text=[string](G $grouped[0] 'Text')
+ $chatType=T 'OfflineChatForm'
+ $parse=@($chatType.GetMethods($f)|Where-Object {$_.Name -eq 'ParseChatLines' -and $_.GetParameters().Count -eq 1})[0]
+ $parsed=@($parse.Invoke($null,[object[]]@($text)))
+ Check ($parsed.Count -eq 1 -and $parsed[0] -match '^DemoUser:' -and $parsed[0] -match '83 magic wand') 'yellow speaker, badge, linked item and body survive raw-chat parsing'
+ $read=(T 'OverlayForm').GetMethod('ReadSimplePixels',$f)
+ $px=$read.Invoke($null,[object[]]@($b))
+ $analyze=(T 'ChatColorEvidence').GetMethod('Analyze',$f)
+ $e=$analyze.Invoke($null,[object[]]@($px,1200,850,[Drawing.Rectangle]::new(40,62,600,17),$null))
+ Check ((G $e 'Band').ToString() -eq 'YellowBroadcast') 'yellow background and dark ink recognized as broadcast evidence'
+ $isBand=$e.GetType().GetProperty('IsBroadcastBand',$f).GetValue($e,$null)
+ $style=(T 'ChatVisualStylePolicy').GetMethod('FromSample',$f).Invoke($null,[object[]]@($text,(G $e 'Foreground'),(G $e 'Background'),$isBand))
+ Check ((G $style 'Category').ToString() -eq 'Megaphone') 'yellow message routed to megaphone instead of system or guild'
+ $b.Save((Join-Path $out 'yellow-synthetic.png'));$gr.Dispose();$b.Dispose()
  Frame
  Fill 30 25 280 590 ([Drawing.Color]::Ivory)
  [void](Row 'SKILL INVENTORY' 45 32 14 ([Drawing.Color]::Black))
@@ -135,6 +168,49 @@ try {
  for($i=0;$i -lt $rows.Count;$i++){[void](Row $rows[$i] 270 (180+$i*31) 14)}
  $r=Paint 'equipment-fields'
  Check (@($r | Where-Object {$_.ready -and $_.role -eq 'item-field'}).Count -eq $rows.Count) 'equipment: all requirement, HP and combat keys drawn'
+ Get-ChildItem -LiteralPath $root -Filter *.log -File | ForEach-Object { Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $out $_.Name) -Force }
+ # Three independently observed journal wordings, exercised through the full
+ # Discovery entry point. A selected list row, optional objective card and white
+ # detail viewport are separate surfaces. No original private image is embedded.
+ $journalPath=Join-Path $root '任务正文.tsv'
+ $variants=@([IO.File]::ReadAllLines($journalPath,[Text.Encoding]::UTF8) | Where-Object {$_ -and ! $_.StartsWith('#')} | ForEach-Object {,$_.Split([char]9)})
+ foreach($v in @($variants | Select-Object -Last 3)) {
+  $caption=$v[0];$body=$v[2];$hasSummary=$v[4] -ne '10500'
+  Frame
+  Fill 30 25 365 700 ([Drawing.Color]::White)
+  [void](Row 'QUEST' 42 30 14 ([Drawing.Color]::Black))
+  [void](Row 'Available' 42 62 14 ([Drawing.Color]::Black))
+  [void](Row 'In Progress' 145 62 14 ([Drawing.Color]::Black))
+  [void](Row 'Completed' 255 62 14 ([Drawing.Color]::Black))
+  Fill 40 104 345 28 ([Drawing.Color]::FromArgb(50,100,150))
+  [void](Row $caption 45 110 12)
+  Fill 425 92 720 110 ([Drawing.Color]::FromArgb(70,135,180))
+  # A deliberately truncated right header cannot override a current stage.
+  [void](Row ($caption.Substring(0,[Math]::Min(22,$caption.Length))+'...') 443 112 15)
+  $bodyTop=215
+  if($hasSummary){
+   Fill 425 215 720 100 ([Drawing.Color]::FromArgb(225,222,211))
+   [void](Row 'Quest Summary' 443 225 17 ([Drawing.Color]::Black))
+   [void](Row 'Mithril Ingot 0 / 1' 490 265 14 ([Drawing.Color]::Black))
+   $bodyTop=330
+  }
+  Fill 425 $bodyTop 720 (715-$bodyTop) ([Drawing.Color]::White)
+  $y=$bodyTop+12
+  if($v[4] -eq '10313'){
+   [void](Row $caption 443 $y 15 ([Drawing.Color]::Black));$y+=28
+  }
+  $current=''
+  foreach($word in $body.Split([char]' ')){
+   if(($current+' '+$word).Length -gt 85){[void](Row $current 443 $y 14 ([Drawing.Color]::Black));$y+=24;$current=$word}
+   else {$current=($current+' '+$word).TrimStart()}
+  }
+  if($current){[void](Row $current 443 $y 14 ([Drawing.Color]::Black))}
+  [void](Row 'DETAILS' 280 740 14 ([Drawing.Color]::Black))
+  [void](Row 'QUEST HELPER' 775 740 14 ([Drawing.Color]::Black))
+  [void](Row 'FORFEIT' 1050 740 14 ([Drawing.Color]::Black))
+  $r=Paint ('journal-'+$v[4])
+  Check (@($r | Where-Object {$_.ready -and $_.role -eq 'task-journal'}).Count -eq 1) ('complete white journal viewport drawn: '+$v[4]+' optionalSummary='+$hasSummary)
+ }
  $report | ConvertTo-Json -Depth 10 | Set-Content -Encoding UTF8 (Join-Path $out 'summary.json')
  Write-Output "Native production pipeline: $checks checks passed; controlled measured OCR input, not live-game OCR."
 } finally {$form.Dispose()}

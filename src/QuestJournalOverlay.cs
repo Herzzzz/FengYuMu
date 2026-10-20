@@ -95,6 +95,10 @@ namespace MapleOverlay
                             string caption=translations.ResolveJournalCaption(line.Text);if(caption.Length==0)continue;
                             record=SelectConfirmedJournal(caption,JournalPanelProse(detail,caption),detail,out reason);if(record!=null)break;
                         }
+                    if(record==null) {
+                        string selected=SelectedJournalCaption(all,pixels,prepared.Width,prepared.Height,owner,scale);
+                        if(selected.Length>0)record=SelectConfirmedJournal(selected,prose,sorted,out reason);
+                    }
                     if(record==null)record=translations.SelectJournalForProse(prose,out reason);
                     if(record==null&&detail!=null&&detail.Count>0)
                         record=translations.SelectJournalForProse(JournalPanelProse(detail),out reason);
@@ -538,6 +542,29 @@ namespace MapleOverlay
 
         private static bool JournalPaper(Color color)
         {return color.R>=245&&color.G>=245&&color.B>=240;}
+
+        private string SelectedJournalCaption(List<OcrLine> lines,int[] pixels,int width,int height,
+            RectangleF owner,float scale)
+        {
+            string selected="";
+            foreach(OcrLine line in lines) {
+                RectangleF r=GetOcrLineBounds(line);
+                if(r.IsEmpty||r.Right>=owner.Left||r.Width<30*scale)continue;
+                string caption=translations.ResolveJournalCaption(line.Text);
+                if(caption.Length==0)continue;
+                int blue=0,total=0;
+                for(int i=0;i<12;i++) {
+                    int x=(int)(r.Left+r.Width*(i+.5f)/12),y=(int)(r.Top-2*scale);
+                    if(x<0||x>=width||y<0||y>=height)continue;
+                    int c=pixels[y*width+x],red=(c>>16)&255,green=(c>>8)&255,b=c&255;
+                    total++;if(red<125&&green>red+15&&b>green+10)blue++;
+                }
+                if(total<6||blue*4<total*3)continue;
+                if(selected.Length>0&&TranslationStore.Normalize(selected)!=TranslationStore.Normalize(caption))return "";
+                selected=caption;
+            }
+            return selected;
+        }
         private static string JournalHeader(List<OcrLine> lines,int[] pixels,int width,int height,Rectangle body)
         {
             StringBuilder result=new StringBuilder();

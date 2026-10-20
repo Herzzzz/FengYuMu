@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -751,11 +751,10 @@ namespace MapleOverlay
 
         private void UpdateStatus(ChatVisualStyle style)
         {
-            status.Text = style.Kind == ChatVisualKind.Megaphone
-                ? "普通喇叭译文已按蓝底显示"
-                : (style.Kind == ChatVisualKind.SuperMegaphone
-                    ? "超级喇叭译文已按粉底显示"
-                    : "AI新译文已归入“" + CategoryName(style.Category) + "”");
+            status.Text = style.Kind == ChatVisualKind.Megaphone ||
+                style.Kind == ChatVisualKind.SuperMegaphone
+                ? "喇叭译文已按原频道底色显示"
+                : "AI新译文已归入“" + CategoryName(style.Category) + "”";
         }
 
         internal static string CategoryName(ChatSourceCategory category)
