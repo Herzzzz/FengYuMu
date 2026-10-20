@@ -54,21 +54,75 @@ namespace MapleOverlay
             foreach(OcrLine header in all){string key=Regex.Replace(TranslationStore.Normalize(header.Text),@"\s+","");bool stats=key=="characterstat"||key=="characterstats",info=key=="characterinfo"||key=="characterinformation";if(!stats&&!info)continue;
                 if(bands==null)bands=CharacterFieldSurface.Find(ReadSimplePixels(prepared),prepared.Width,prepared.Height,scale);
                 RectangleF anchor=GetOcrLineBounds(header);List<CharacterFieldBand> main=CharacterFieldSurface.Column(bands,1,anchor,stats?7:4,scale,info);
-                if(main==null)continue;string[] names=stats?new string[]{"名称","职业","等级","生命值","魔法值","经验","人气"}:new string[]{"等级","职业","人气","家族"};
-                for(int i=0;i<main.Count;i++){AddCharacterFieldSurface(output,main[i].Bounds,names[i],scale);fields++;}
-                RectangleF job=main[1].Bounds;
+                string[] names=stats?new string[]{"名称","职业","等级","生命值","魔法值","经验","人气"}:new string[]{"等级","职业","人气","家族"};
+                RectangleF job=RectangleF.Empty;
+                if(main!=null) {
+                    for(int i=0;i<main.Count;i++){AddCharacterFieldSurface(output,main[i].Bounds,names[i],scale);fields++;}
+                    job=main[1].Bounds;
+                }
+                // A missed/noisy cell must not disable every other measured field.
+                // Independently confirmed keys use their own coloured cell, with the
+                // character caption and local geometry as context. No values or
+                // player names are used to guess a label.
+                foreach(CharacterFieldBand band in bands) {
+                    RectangleF box=band.Bounds;
+                    if(box.Top<anchor.Bottom||box.Top>anchor.Bottom+750*scale||
+                        box.Left<anchor.Left-20*scale||box.Left>anchor.Right+500*scale)continue;
+                    if((band.ColorKind==1||band.ColorKind==3)&&Math.Abs(box.Left-anchor.Left)>120*scale&&!info)continue;
+                    if(band.ColorKind==2&&box.Left<anchor.Right)continue;
+                    string english="";
+                    foreach(OcrLine line in all)foreach(OcrWord word in line.Words)
+                        if(box.Contains(new PointF(word.BoundingRect.Left+word.BoundingRect.Width/2,
+                            word.BoundingRect.Top+word.BoundingRect.Height/2)))
+                            english+=(english.Length>0?" ":"")+word.Text;
+                    string chinese=CharacterFieldKey(english,band.ColorKind,stats);
+                    if(chinese.Length==0)continue;
+                    AddCharacterFieldSurface(output,box,chinese,scale);fields++;
+                    if(TranslationStore.Normalize(english)=="job")job=box;
+                }
+                if(!job.IsEmpty)
                 foreach(OcrLine line in all)foreach(OcrWord word in line.Words){RectangleF box=word.BoundingRect;if(box.Top+box.Height/2<job.Top||box.Top+box.Height/2>job.Bottom||box.Left<job.Right||box.Left>job.Right+280*scale)continue;
                     string chinese=translations.TranslateJobName(word.Text);if(chinese.Length==0)continue;
                     RectangleF slot=RectangleF.FromLTRB(box.Left,Math.Max(job.Top+2*scale,box.Top-2*scale),box.Right,Math.Min(job.Bottom-2*scale,box.Bottom+3*scale));
                     AddCharacterFieldSurface(output,slot,chinese,scale);output[output.Count-1].SemanticRole="character-job";jobs++;}
                 if(!stats)continue;
-                RectangleF greenAnchor=new RectangleF(main[0].Bounds.Left,main[main.Count-1].Bounds.Bottom-1,main[0].Bounds.Width,1);
-                List<CharacterFieldBand> attributes=CharacterFieldSurface.Column(bands,3,greenAnchor,4,scale,false);
+                RectangleF greenAnchor=main==null?RectangleF.Empty:new RectangleF(main[0].Bounds.Left,main[main.Count-1].Bounds.Bottom-1,main[0].Bounds.Width,1);
+                List<CharacterFieldBand> attributes=main==null?null:CharacterFieldSurface.Column(bands,3,greenAnchor,4,scale,false);
                 if(attributes!=null){string[] labels={"力量","敏捷","智力","运气"};for(int i=0;i<4;i++){AddCharacterFieldSurface(output,attributes[i].Bounds,labels[i],scale);fields++;}}
                 List<CharacterFieldBand> detail=CharacterFieldSurface.Column(bands,2,anchor,10,scale,true);
                 if(detail!=null){string[] labels={"攻击力","物理防御力","魔法攻击力","魔法防御力","命中率","回避率","暴击率","暴击伤害","移动速度","跳跃力"};for(int i=0;i<10;i++){AddCharacterFieldSurface(output,detail[i].Bounds,labels[i],scale);fields++;}}
             }
             Program.LogRuntimeEvent("character-field-coverage","fields="+fields+" jobs="+jobs);
+        }
+        private static string CharacterFieldKey(string text,int kind,bool stats)
+        {
+            string key=Regex.Replace(TranslationStore.Normalize(text),@"[^a-z0-9]","");
+            if(kind==1) {
+                switch(key) {
+                    case "name":return stats?"名称":"";
+                    case "job":return "职业";
+                    case "level":return "等级";
+                    case "hp":return stats?"生命值":"";
+                    case "mp":return stats?"魔法值":"";
+                    case "exp":return stats?"经验":"";
+                    case "fame":return "人气";
+                    case "guild":return "家族";
+                }
+            }
+            if(!stats)return "";
+            if(kind==3) {
+                switch(key) {case "str":return "力量";case "dex":return "敏捷";case "int":return "智力";case "luk":return "运气";}
+            }
+            if(kind==2) {
+                switch(key) {
+                    case "attack":return "攻击力";case "weapondef":case "weapondefense":return "物理防御力";
+                    case "magic":case "magicattack":return "魔法攻击力";case "magicdef":case "magicdefense":return "魔法防御力";
+                    case "accuracy":return "命中率";case "evasion":case "avoidability":return "回避率";
+                    case "critrate":case "criticalrate":return "暴击率";case "critdamage":case "criticaldamage":return "暴击伤害";
+                    case "speed":return "移动速度";case "jump":return "跳跃力";
+                }
+            }
+            return "";
         }
         private void AddCharacterFieldSurface(List<OverlayLabel> output,RectangleF raw,string chinese,float scale)
         {

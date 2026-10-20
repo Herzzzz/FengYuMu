@@ -10,7 +10,7 @@ $f=[Reflection.BindingFlags]'Public,NonPublic,Static,Instance'
 function T($name){$a.GetType('MapleOverlay.'+$name,$true)}
 function N($name){[Activator]::CreateInstance((T $name),$true)}
 function S($o,$name,$value){$o.GetType().GetField($name,$f).SetValue($o,$value)}
-function G($o,$name){$o.GetType().GetField($name,$f).GetValue($o)}
+function G($o,$name){return ,($o.GetType().GetField($name,$f).GetValue($o))}
 function Call($o,$name,[object[]]$args){
  try {$o.GetType().GetMethod($name,$f).Invoke($o,$args)}
  catch {if($_.Exception.InnerException){throw $_.Exception.InnerException};throw}
@@ -52,15 +52,15 @@ function Row([string]$text,[single]$x,[single]$y,[single]$size=14,$ink=[Drawing.
   $height=[single][Math]::Ceiling($font.GetHeight($gr))
   $word=N 'OcrWord';S $word 'Text' $part
   S $word 'BoundingRect' ([Drawing.RectangleF]::new($xx,$y,$width,$height))
-  [void]$line.Words.Add($word)
+  [void](G $line 'Words').Add($word)
   $brush=[Drawing.SolidBrush]::new($ink);$gr.DrawString($part,$font,$brush,$xx,$y,$format);$brush.Dispose()
   $xx+=$width+$size*.28
  }
- $font.Dispose();[void]$ocr.Lines.Add($line)
+ $font.Dispose();[void](G $ocr 'Lines').Add($line)
  return $line
 }
 function Paint($name){
- $gr.Dispose();S $ocr 'Text' (($ocr.Lines | ForEach-Object {$_.Text}) -join "`n")
+ $gr.Dispose();S $ocr 'Text' (((G $ocr 'Lines') | ForEach-Object {$_.Text}) -join "`n")
  $b.Save((Join-Path $out ($name+'-before.png')))
  (G $form 'captureTextRows').Clear()
  $scope=[Enum]::Parse((T 'LabelBuildScope'),'Discovery')

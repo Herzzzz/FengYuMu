@@ -2070,6 +2070,7 @@ namespace MapleOverlay
         // font: the original text is then preserved and only an explicit notice is drawn.
         public bool Overflow;
         public bool PaintedLastPass;
+        public bool TooltipPriority;
         public string LayoutFailureReason = "";
         public string FusionFailureReason = "";
         public string SemanticRole = "";
@@ -7082,6 +7083,10 @@ private Rectangle FindCursorPanelCrop(
                 TryAddQuestJournal(output, taskContextLines, allLines, prepared, ocrScale, questPanelContext, measuredQuestDetails);
             int bodyLabels=output.FindAll(delegate(OverlayLabel item){return item.SemanticRole=="task-body" || item.SemanticRole=="task-journal";}).Count;
             Program.LogRuntimeEvent("quest-body", "scope="+scope+" candidates="+bodyLabels);
+            foreach (OverlayLabel label in output)
+                foreach (RectangleF owner in tooltipOwners)
+                    if (OverlaySpan(owner, ocrScale).Contains(label.SourceBounds))
+                    { label.TooltipPriority = true; break; }
             return output;
         } finally {Program.LogRuntimeEvent("dictionary-pass","scope="+scope+
                 " lines="+result.Lines.Count+" elapsedMs="+dictionaryClock.ElapsedMilliseconds);}

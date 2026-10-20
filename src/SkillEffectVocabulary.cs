@@ -61,6 +61,7 @@ namespace MapleOverlay
             {"is increased by", "增加"},{"is reduced by", "降低"},
             {"increased by", "增加"},{"reduced by", "降低"},
             {"Attack Range", "攻击范围"},{"Range", "范围"},
+            {"in distance", "距离"},
             {"Cooldown", "冷却时间"},{"Duration", "持续时间"},
             {"Accuracy", "命中率"},{"Evasion", "回避率"},
             {"Avoidability", "回避率"},{"Mastery", "熟练度"},

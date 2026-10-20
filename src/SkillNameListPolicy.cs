@@ -154,7 +154,28 @@ namespace MapleOverlay
             added.MatchSource = "skill-list-name";
             added.Confidence = LabelConfidence.High;
             added.SourceBoundaryEstimated = !measured;
-            added.PanelBounds = OverlaySpan(SkillNameListPolicy.BoundsOf(line), ocrScale);
+            RectangleF listSlot = SkillNameListPolicy.BoundsOf(line);
+            // A short English name can need more width in Chinese. Nearby measured
+            // names in this same column establish its usable width, not the entire
+            // inventory or a neighbouring tooltip. The erased source stays exact.
+            foreach (OcrLine neighbor in allLines)
+            {
+                RectangleF other = SkillNameListPolicy.BoundsOf(neighbor);
+                if (Math.Abs(other.Left - nameSpan.Left) > 8 * ocrScale ||
+                    Math.Abs(other.Top - nameSpan.Top) > 260 * ocrScale) continue;
+                List<MatchResult> neighborMatches = translations.FindSkillNameMatches(neighbor.Text);
+                if (neighborMatches.Count != 1 || TranslationStore.Normalize(neighbor.Text) !=
+                    neighborMatches[0].Entry.Normalized) continue;
+                listSlot.Width = Math.Max(listSlot.Width, other.Right - listSlot.Left);
+            }
+            foreach (OcrLine neighbor in allLines)
+            {
+                if (neighbor == line) continue;
+                RectangleF other = SkillNameListPolicy.BoundsOf(neighbor);
+                if (other.Left >= nameSpan.Right && other.Bottom > nameSpan.Top && other.Top < nameSpan.Bottom)
+                    listSlot.Width = Math.Min(listSlot.Width, other.Left - listSlot.Left - ocrScale);
+            }
+            added.PanelBounds = OverlaySpan(listSlot, ocrScale);
             added.LayoutFontSize = Math.Max(11.0f, Math.Min(16.0f,
                 nameSpan.Height / Math.Max(0.01f, ocrScale) - 3.0f));
             added.LayoutMinimumFontSize = added.LayoutFontSize;

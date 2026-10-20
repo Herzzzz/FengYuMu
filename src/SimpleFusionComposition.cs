@@ -85,6 +85,7 @@ namespace MapleOverlay
                 List<OverlayLabel> ordered = new List<OverlayLabel>(source);
                 ordered.Sort(delegate(OverlayLabel a, OverlayLabel b) {
                     if (a == null) return b == null ? 0 : 1; if (b == null) return -1;
+                    if (a.TooltipPriority != b.TooltipPriority) return a.TooltipPriority ? -1 : 1;
                     if ((a.Journal != null) != (b.Journal != null)) return a.Journal != null ? -1 : 1;
                     int trusted = b.Confidence.CompareTo(a.Confidence);
                     return trusted != 0 ? trusted : ((b.Text ?? "").Length).CompareTo((a.Text ?? "").Length);
