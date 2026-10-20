@@ -1776,8 +1776,10 @@ namespace MapleOverlay
                             !TryExactGlossaryTranslation(protectedMessage, out prepared.Translated))
                         {
                             const string targetLanguage = "简体中文";
-                            prepared.CacheKey = targetLanguage + "|" +
-                                NormalizeChatPhrase(cleanedMessage);
+                            string glossary = BuildGlossaryForTarget(protectedMessage,
+                                targetLanguage);
+                            prepared.CacheKey = OnlineAiProtocol.BuildChatCacheKey(online.Endpoint,
+                                online.Model, targetLanguage, protectedMessage, glossary);
                             bool cached = translationCache.TryGetValue(prepared.CacheKey, out prepared.Translated);
                             if (cached && !IsPlausibleChatTranslationForTarget(protectedMessage, prepared.Translated, targetLanguage))
                             { ForgetTranslation(prepared.CacheKey); cached = false; prepared.Translated = null; }
@@ -1787,10 +1789,8 @@ namespace MapleOverlay
                                 if (!tasksByCacheKey.TryGetValue(prepared.CacheKey,
                                     out existingTask))
                                 {
-                                    string glossary = BuildGlossaryForTarget(protectedMessage,
-                                        targetLanguage);
                                     string sourceLanguage = DetectChatSourceLanguage(cleanedMessage);
-                                    existingTask = RequestChatTranslationAsync(protectedMessage,
+                                    existingTask = RequestChatTranslationAsync(online, protectedMessage,
                                         sourceLanguage, targetLanguage, glossary, cancellationToken);
                                     tasksByCacheKey[prepared.CacheKey] = existingTask;
                                 }
@@ -1845,11 +1845,18 @@ namespace MapleOverlay
             return outcome.Text;
         }
 
-        private async Task<ChatTranslationOutcome> RequestChatTranslationAsync(string source,
+        private Task<ChatTranslationOutcome> RequestChatTranslationAsync(string source,
             string sourceLanguage, string targetLanguage, string glossary, CancellationToken cancellationToken)
         {
+            return RequestChatTranslationAsync(OnlineAiSettings.Load(), source,
+                sourceLanguage, targetLanguage, glossary, cancellationToken);
+        }
+
+        private async Task<ChatTranslationOutcome> RequestChatTranslationAsync(OnlineAiSettings online,
+            string source, string sourceLanguage, string targetLanguage, string glossary,
+            CancellationToken cancellationToken)
+        {
             cancellationToken.ThrowIfCancellationRequested();
-            OnlineAiSettings online = OnlineAiSettings.Load();
             ChatTranslationOutcome outcome = new ChatTranslationOutcome { Provider = online.Provider };
             if (!online.IsReady) { outcome.Failure = online.NotReadyReason; return outcome; }
             try
@@ -2226,6 +2233,7 @@ namespace MapleOverlay
             SplitChatIdentityParts(left, out leftSpeaker, out leftMessage);
             SplitChatIdentityParts(right, out rightSpeaker, out rightMessage);
             if (leftSpeaker.Length > 0 && rightSpeaker.Length > 0 && leftSpeaker != rightSpeaker) return false;
+            if (!SameChatNumericEvidence(leftMessage, rightMessage)) return false;
             string a = ChatIdentity(NormalizeCommonChatOcr(leftMessage));
             string b = ChatIdentity(NormalizeCommonChatOcr(rightMessage));
             if (a == b) return true;
@@ -2257,11 +2265,33 @@ namespace MapleOverlay
 
         private static bool SameChatLine(string left, string right)
         {
+            string leftSpeaker, leftMessage, rightSpeaker, rightMessage;
+            SplitChatIdentityParts(left, out leftSpeaker, out leftMessage);
+            SplitChatIdentityParts(right, out rightSpeaker, out rightMessage);
+            if (!SameChatNumericEvidence(leftMessage, rightMessage)) return false;
             string a = ChatIdentity(left), b = ChatIdentity(right);
             if (a == b) return true;
             int longest = Math.Max(a.Length, b.Length);
             if (longest < 8 || Math.Abs(a.Length - b.Length) > Math.Max(2, longest / 10)) return false;
             return EditDistanceWithin(a, b, Math.Max(2, longest / 10));
+        }
+
+        private static bool SameChatNumericEvidence(string left, string right)
+        {
+            // OCR spelling tolerance must not consume a real change of price, level,
+            // sign, percentage, quantity or an attached unit. This is only for frame
+            // identity; dictionary/template normalization has a separate purpose.
+            const string numeric = @"[+\-−]?\d+(?:[.,]\d+)*(?:\s*[%％]|[A-Za-z]+)?";
+            MatchCollection a = Regex.Matches(left ?? "", numeric);
+            MatchCollection b = Regex.Matches(right ?? "", numeric);
+            if (a.Count != b.Count) return false;
+            for (int index = 0; index < a.Count; index++)
+            {
+                string x = Regex.Replace(a[index].Value, @"\s+", "").Replace('−', '-').Replace('％', '%');
+                string y = Regex.Replace(b[index].Value, @"\s+", "").Replace('−', '-').Replace('％', '%');
+                if (!String.Equals(x, y, StringComparison.OrdinalIgnoreCase)) return false;
+            }
+            return true;
         }
 
         private static bool EditDistanceWithin(string left, string right, int limit)
@@ -3408,9 +3438,10 @@ namespace MapleOverlay
             string result = message; int index = 0;
             foreach (string name in names)
             {
-                if (result.IndexOf(name, StringComparison.OrdinalIgnoreCase) < 0) continue;
+                string pattern = @"(?<![\p{L}\p{N}_])" + Regex.Escape(name) + @"(?![\p{L}\p{N}_])";
+                if (!Regex.IsMatch(result, pattern, RegexOptions.IgnoreCase)) continue;
                 string token = "__FYM_PLAYER_" + index++ + "__";
-                result = Regex.Replace(result, Regex.Escape(name), token, RegexOptions.IgnoreCase);
+                result = Regex.Replace(result, pattern, token, RegexOptions.IgnoreCase);
                 tokens[token] = name;
             }
             return result;

@@ -1,4 +1,6 @@
 using System;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace MapleOverlay
@@ -18,6 +20,22 @@ namespace MapleOverlay
                 !path.EndsWith("/responses", StringComparison.OrdinalIgnoreCase))
                 throw new ArgumentException("请填写完整接口：以 /chat/completions 或 /responses 结尾。");
             return uri.GetLeftPart(UriPartial.Authority) + path;
+        }
+
+        internal static string BuildChatCacheKey(string endpoint, string model, string target,
+            string protectedSource, string glossary)
+        {
+            // Keep exact values and punctuation. A phrase-search key deliberately
+            // discards some of them and cannot identify an AI translation request.
+            // The live request uses this same settings snapshot. No credential enters
+            // this key, and length framing keeps embedded separators unambiguous.
+            StringBuilder identity = new StringBuilder("chat-cache-v2|");
+            foreach (string field in new string[] {
+                (endpoint ?? "").Trim(), (model ?? "").Trim(),
+                target ?? "", protectedSource ?? "", glossary ?? ""
+            }) identity.Append(field.Length).Append(':').Append(field);
+            using (SHA256 hash = SHA256.Create())
+                return Convert.ToBase64String(hash.ComputeHash(Encoding.UTF8.GetBytes(identity.ToString())));
         }
 
         internal static Uri ModelsEndpoint(string endpoint)

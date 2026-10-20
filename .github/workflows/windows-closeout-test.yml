@@ -1,0 +1,87 @@
+name: Windows closeout test package
+
+on:
+  push:
+    branches: [codex/closeout-borrowed-lessons]
+    paths:
+      - src/OfflineChat.cs
+      - src/OnlineAiProtocol.cs
+      - tests/logic-chat-closeout.ps1
+      - .github/workflows/windows-closeout-test.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-closeout-test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-package:
+    runs-on: windows-2022
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Build native Windows executable
+        shell: powershell
+        run: ./src/build.ps1
+      - name: Validate closeout logic and chat source preservation
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          ./tests/logic-chat-closeout.ps1
+          ./tests/logic-chat-continuity.ps1
+          ./tests/logic-chat-megaphone-pipeline.ps1
+          ./tests/logic-chat-megaphone-pixels.ps1
+          ./tests/logic-scene-feedback-safety.ps1
+          ./tests/logic-user-feedback-safety.ps1
+          ./tests/logic-simple-flow-r11.ps1
+      - name: Validate native settings and UI startup
+        shell: powershell
+        run: ./tests/logic-online-ai-settings.ps1 -ExePath "$PWD/枫语幕.exe"
+      - name: Assemble test-only runtime package
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          . ./tools/Build-Evidence.ps1
+          Assert-BuildEvidence "$PWD/枫语幕.exe" $PWD
+          $packageRoot = Join-Path $PWD 'test-package'
+          $outputRoot = Join-Path $PWD 'test-download'
+          New-Item -ItemType Directory -Force $packageRoot, $outputRoot | Out-Null
+          foreach ($name in @('枫语幕.exe','枫语幕.exe.build.json','枫语幕词库.tsv','基础补充词库.tsv','任务正文.tsv','LICENSE')) {
+            Copy-Item -LiteralPath (Join-Path $PWD $name) -Destination $packageRoot
+          }
+          foreach ($name in @('Export-LatestF8Diagnostics.ps1','导出最近F8诊断.cmd')) {
+            Copy-Item -LiteralPath (Join-Path "$PWD/tools" $name) -Destination $packageRoot
+          }
+          $notes = @(
+            '枫语幕4.0 修复测试更新包（非正式发布）',
+            "源码提交：$env:GITHUB_SHA；Windows 原生构建。",
+            '本次新增：聊天改价/数字变化不再当旧消息；缓存保留小数、符号及百分比并隔离模型/接口/语境；昵称只按完整边界保护。',
+            '已验收的任务、装备、技能、道具修复包含在本包；不表示全部词条都已翻译。',
+            '仍未完成：提示框遮挡聊天的捕获隔离；真实游戏与混合DPI实测。',
+            '使用：退出旧版，完整解压到新目录，启动枫语幕.exe；词库设置指向本包枫语幕词库.tsv，保留三份TSV。',
+            '本包不含可选Paddle组件，先选Windows OCR并确保英文OCR可用；也可复制旧目录完整PrimaryOcr文件夹。',
+            '保留旧安装目录与自定义词库用于回退；不要同时运行两份程序。F8识别；出问题用导出最近F8诊断.cmd。',
+            'Windows构建及界面测试不能替代真实游戏、原生OCR场景和实际DPI验收。'
+          )
+          $notes | Set-Content -LiteralPath (Join-Path $packageRoot '使用说明.txt') -Encoding utf8BOM
+          $manifest = [ordered]@{}
+          Get-ChildItem -LiteralPath $packageRoot -File | Sort-Object Name | ForEach-Object {
+            $manifest[$_.Name] = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash
+          }
+          $manifest | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $packageRoot 'FILES-SHA256.json') -Encoding utf8
+          $zip = Join-Path $outputRoot 'FengYuMu_v4.0_Closeout_Test.zip'
+          Compress-Archive -Path "$packageRoot/*" -DestinationPath $zip
+          $hash = (Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash
+          "$hash  FengYuMu_v4.0_Closeout_Test.zip" | Set-Content -LiteralPath ($zip + '.sha256') -Encoding ascii
+          Write-Host "TEST_PACKAGE_SHA256=$hash"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FengYuMu-Windows-closeout-test
+          path: test-download/*
+          if-no-files-found: error
+          retention-days: 7
