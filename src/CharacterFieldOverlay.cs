@@ -51,10 +51,11 @@ namespace MapleOverlay
         private void AddCharacterFieldSurfaces(List<OverlayLabel> output,List<OcrLine> all,Bitmap prepared,float scale)
         {
             if(prepared==null)return;List<CharacterFieldBand> bands=null;int fields=0,jobs=0;
-            foreach(OcrLine header in all){string key=Regex.Replace(TranslationStore.Normalize(header.Text),@"\s+","");bool stats=key=="characterstat"||key=="characterstats",info=key=="characterinfo"||key=="characterinformation";if(!stats&&!info)continue;
+            foreach(OcrLine header in CharacterCaptionRows(all)){string key=Regex.Replace(TranslationStore.Normalize(header.Text),@"\s+","");bool stats=key=="characterstat"||key=="characterstats",info=key=="characterinfo"||key=="characterinformation";if(!stats&&!info)continue;
                 if(bands==null)bands=CharacterFieldSurface.Find(ReadSimplePixels(prepared),prepared.Width,prepared.Height,scale);
-                RectangleF anchor=GetOcrLineBounds(header);List<CharacterFieldBand> main=CharacterFieldSurface.Column(bands,1,anchor,stats?7:4,scale,info);
-                string[] names=stats?new string[]{"名称","职业","等级","生命值","魔法值","经验","人气"}:new string[]{"等级","职业","人气","家族"};
+                RectangleF anchor=GetOcrLineBounds(header);List<CharacterFieldBand> main=stats?CharacterFieldSurface.Column(bands,1,anchor,8,scale,false):null;
+                if(main==null)main=CharacterFieldSurface.Column(bands,1,anchor,stats?7:4,scale,info);
+                string[] names=stats?(main!=null&&main.Count==8?new string[]{"名称","职业","等级","家族","生命值","魔法值","经验","人气"}:new string[]{"名称","职业","等级","生命值","魔法值","经验","人气"}):new string[]{"等级","职业","人气","家族"};
                 RectangleF job=RectangleF.Empty;
                 if(main!=null) {
                     for(int i=0;i<main.Count;i++){AddCharacterFieldSurface(output,main[i].Bounds,names[i],scale);fields++;}
@@ -90,9 +91,30 @@ namespace MapleOverlay
                 List<CharacterFieldBand> attributes=main==null?null:CharacterFieldSurface.Column(bands,3,greenAnchor,4,scale,false);
                 if(attributes!=null){string[] labels={"力量","敏捷","智力","运气"};for(int i=0;i<4;i++){AddCharacterFieldSurface(output,attributes[i].Bounds,labels[i],scale);fields++;}}
                 List<CharacterFieldBand> detail=CharacterFieldSurface.Column(bands,2,anchor,10,scale,true);
-                if(detail!=null){string[] labels={"攻击力","物理防御力","魔法攻击力","魔法防御力","命中率","回避率","暴击率","暴击伤害","移动速度","跳跃力"};for(int i=0;i<10;i++){AddCharacterFieldSurface(output,detail[i].Bounds,labels[i],scale);fields++;}}
+                if(detail==null)detail=CharacterFieldSurface.Column(bands,2,anchor,9,scale,true);
+                if(detail!=null){string[] labels=detail.Count==9?new string[]{"攻击力","物理防御力","魔法攻击力","魔法防御力","命中率","回避率","手技","移动速度","跳跃力"}:new string[]{"攻击力","物理防御力","魔法攻击力","魔法防御力","命中率","回避率","暴击率","暴击伤害","移动速度","跳跃力"};for(int i=0;i<detail.Count;i++){AddCharacterFieldSurface(output,detail[i].Bounds,labels[i],scale);fields++;}}
             }
             Program.LogRuntimeEvent("character-field-coverage","fields="+fields+" jobs="+jobs);
+        }
+        private static List<OcrLine> CharacterCaptionRows(List<OcrLine> source)
+        {
+            List<OcrLine> captions=new List<OcrLine>();
+            // A Windows OCR line can include the caption and another column. Scope
+            // the anchor to the original caption words, not that whole merged line.
+            foreach(OcrLine line in source) {
+                for(int i=0;i<line.Words.Count;i++) {
+                    OcrWord word=line.Words[i];string key=TranslationStore.Normalize(word.Text).Replace(" ","");
+                    if(key=="characterstat"||key=="characterstats"||key=="characterinfo"||key=="characterinformation") {
+                        OcrLine caption=new OcrLine{Text=key};caption.Words.Add(word);captions.Add(caption);break;
+                    }
+                    if(key!="character"||i+1>=line.Words.Count)continue;
+                    OcrWord next=line.Words[i+1];string suffix=TranslationStore.Normalize(next.Text);
+                    if(suffix!="stat"&&suffix!="stats"&&suffix!="info"&&suffix!="information")continue;
+                    if(Math.Abs(word.BoundingRect.Top-next.BoundingRect.Top)>Math.Max(word.BoundingRect.Height,next.BoundingRect.Height)*.5f)continue;
+                    OcrLine joined=new OcrLine{Text="character"+suffix};joined.Words.Add(word);joined.Words.Add(next);captions.Add(joined);break;
+                }
+            }
+            return captions;
         }
         private static string CharacterFieldKey(string text,int kind,bool stats)
         {

@@ -55,7 +55,7 @@ namespace MapleOverlay
             List<RectangleF> objectiveCards=QuestObjectiveSurface.Find(pixels,prepared.Width,prepared.Height,owner,scale);
             OcrLine heading=null;string stage="",reason="no-measured-stage";
             Rectangle area=Rectangle.Empty;Color background=Color.Empty;QuestJournalRecord record=null;
-            foreach(OcrLine line in sorted) {
+            foreach(OcrLine line in JournalStageCandidates(sorted,scale)) {
                 string resolved=translations.ResolveJournalStage(line.Text);if(resolved.Length==0)continue;
                 Rectangle candidate;Color paper;
                 if(!QuestJournalGeometry.Measure(pixels,prepared.Width,prepared.Height,GetOcrLineBounds(line),owner,scale,out candidate,out paper)||!JournalPaper(paper))continue;
@@ -221,8 +221,8 @@ namespace MapleOverlay
                 // Only a structurally confirmed stage title may be skipped. In a
                 // titleless/scroll path the heading is a body locator and must be
                 // checked like every other visible prose row.
-                bool confirmedTitle=line==heading&&stage.Length>0&&
-                    TranslationStore.Normalize(translations.ResolveJournalStage(line.Text))==
+                bool confirmedTitle=heading!=null&&GetOcrLineBounds(heading).Contains(raw)&&stage.Length>0&&
+                    TranslationStore.Normalize(translations.ResolveJournalStage(heading.Text))==
                     TranslationStore.Normalize(stage);
                 if(confirmedTitle)continue;
                 if(!String.IsNullOrEmpty(record.Title)&&key==TranslationStore.Normalize(record.Title))continue;
@@ -538,6 +538,26 @@ namespace MapleOverlay
             }
             if(bounds.IsEmpty)return bounds;
             return new RectangleF(bounds.Left/scale,bounds.Top/scale,bounds.Width/scale,bounds.Height/scale);
+        }
+
+        private static List<OcrLine> JournalStageCandidates(List<OcrLine> lines,float scale)
+        {
+            List<OcrLine> candidates=new List<OcrLine>();
+            for(int i=0;i<lines.Count;i++) {
+                OcrLine first=lines[i];candidates.Add(first);
+                RectangleF previous=GetOcrLineBounds(first),anchor=previous;
+                if(first.Text.Length<8||first.Text.Length>110)continue;
+                OcrLine combined=new OcrLine{Text=first.Text};combined.Words.AddRange(first.Words);
+                for(int j=i+1;j<lines.Count&&j<=i+2;j++) {
+                    OcrLine next=lines[j];RectangleF box=GetOcrLineBounds(next);
+                    if(box.Top<previous.Bottom||box.Top-previous.Bottom>Math.Max(8*scale,previous.Height*1.25f)||
+                        Math.Abs(box.Left-anchor.Left)>18*scale)break;
+                    combined.Text+=" "+next.Text;combined.Words.AddRange(next.Words);
+                    OcrLine candidate=new OcrLine{Text=combined.Text};candidate.Words.AddRange(combined.Words);
+                    candidates.Add(candidate);previous=box;
+                }
+            }
+            return candidates;
         }
 
         private static bool JournalPaper(Color color)

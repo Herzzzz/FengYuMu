@@ -7452,12 +7452,14 @@ private Rectangle FindCursorPanelCrop(
                 panelByLine.TryGetValue(line, out panel);
                 if (!characterStat && normalized.Contains("character stat"))
                 {
-                    AddCharacterStatLayoutLabels(output, line, ocrScale); characterStat = true;
+                    // Coloured field cells are measured by AddCharacterFieldSurfaces.
+                    // Fixed offsets can put labels over live values on another UI scale.
+                    characterStat = true;
                 }
                 else if (!characterStat && panel != null && panel.IsCharacterStats &&
                     normalized.StartsWith("name", StringComparison.Ordinal))
                 {
-                    AddCharacterStatLayoutFromName(output, line, ocrScale); characterStat = true;
+                    characterStat = true;
                 }
                 if (!characterInfo && normalized.Contains("character info"))
                 {

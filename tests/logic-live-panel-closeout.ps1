@@ -31,8 +31,8 @@ S $form 'recognitionGeneration' 1
 $script:report=@()
 $script:checks=0
 function Check($ok,$name){
- if(!$ok){if($ProbeOnly){Write-Output "OBSERVED FAILURE: $name"}else{throw "FAIL: $name"}}
- else {$script:checks++;Write-Output "PASS: $name"}
+ if(!$ok){if($ProbeOnly){Write-Host "OBSERVED FAILURE: $name"}else{throw "FAIL: $name"}}
+ else {$script:checks++;Write-Host "PASS: $name"}
 }
 function Frame {
  $script:b=[Drawing.Bitmap]::new(1200,850)
@@ -61,7 +61,7 @@ function Row([string]$text,[single]$x,[single]$y,[single]$size=14,$ink=[Drawing.
 }
 function Paint($name,[single]$ocrScale=1,$prepared=$null){
  if($null -eq $prepared){$prepared=$b}
- $gr.Dispose();S $ocr 'Text' (((G $ocr 'Lines') | ForEach-Object {$_.Text}) -join "`n")
+ $gr.Dispose();S $ocr 'Text' (((G $ocr 'Lines') | ForEach-Object {G $_ 'Text'}) -join "`n")
  $b.Save((Join-Path $out ($name+'-before.png')))
  (G $form 'captureTextRows').Clear()
  $scope=[Enum]::Parse((T 'LabelBuildScope'),'Discovery')
@@ -73,18 +73,23 @@ function Paint($name,[single]$ocrScale=1,$prepared=$null){
  $task=Call $form 'PrepareSimpleFusionAsync' ([object[]]@($b,[Drawing.Rectangle]::new(0,0,1200,850),$list))
  while(!$task.IsCompleted){[Windows.Forms.Application]::DoEvents();Start-Sleep -Milliseconds 5}
  [void]$task.GetAwaiter().GetResult()
- $layer=G $form 'simpleLayer';if($layer){$layer.Save((Join-Path $out ($name+'-after.png')))}
+ $layer=G $form 'simpleLayer'
+ $composite=[Drawing.Bitmap]$b.Clone()
+ if($null -ne $layer){
+  $cg=[Drawing.Graphics]::FromImage($composite);$cg.DrawImageUnscaled($layer,0,0);$cg.Dispose()
+  $composite.Save((Join-Path $out ($name+'-after.png')))
+ }
  $ready=G $form 'simpleReady'
  $rows=@()
  foreach($label in $list){
   $row=[ordered]@{text=(G $label 'Text');role=(G $label 'SemanticRole');source=(G $label 'MatchSource');ready=$ready.Contains($label);reason=(G $label 'FusionFailureReason');bounds=(G $label 'SourceBounds').ToString();guard=(G $label 'KeepClearBounds').ToString()}
   $rows+=$row
   $guard=G $label 'KeepClearBounds'
-  if($layer -and !$guard.IsEmpty){
+  if($null -ne $layer -and $guard.Width -gt 0 -and $guard.Height -gt 0){
    $rect=[Drawing.Rectangle]::Ceiling($guard)
    $same=$true
    for($yy=$rect.Top;$yy -lt $rect.Bottom;$yy++) { for($xx=$rect.Left;$xx -lt $rect.Right;$xx++) {
-    if($b.GetPixel($xx,$yy).ToArgb() -ne $layer.GetPixel($xx,$yy).ToArgb()){$same=$false}
+    if($b.GetPixel($xx,$yy).ToArgb() -ne $composite.GetPixel($xx,$yy).ToArgb()){$same=$false}
    }}
    Check $same ($name+': original value pixels unchanged: '+$label.Text)
   }
@@ -92,7 +97,7 @@ function Paint($name,[single]$ocrScale=1,$prepared=$null){
  $rows | ConvertTo-Json -Depth 8 | Set-Content -Encoding UTF8 (Join-Path $out ($name+'.json'))
  $script:report+=@{case=$name;planned=$list.Count;ready=$ready.Count;labels=$rows}
  Write-Host ($name+' planned='+$list.Count+' ready='+$ready.Count)
- $b.Dispose()
+ $composite.Dispose();$b.Dispose()
  return $rows
 }
 try {
@@ -208,7 +213,9 @@ try {
   [void](Row 'In Progress' 145 62 14 ([Drawing.Color]::Black))
   [void](Row 'Completed' 255 62 14 ([Drawing.Color]::Black))
   Fill 40 104 345 28 ([Drawing.Color]::FromArgb(50,100,150))
-  [void](Row $caption 45 110 12)
+  $listCaption=$caption
+  if($v[4] -eq '10313'){$listCaption="[Construction Site B1] Shumi's Lost Coin"}
+  [void](Row $listCaption 45 110 12)
   Fill 425 92 720 110 ([Drawing.Color]::FromArgb(70,135,180))
   # A deliberately truncated right header cannot override a current stage.
   [void](Row ($caption.Substring(0,[Math]::Min(22,$caption.Length))+'...') 443 112 15)
@@ -222,7 +229,8 @@ try {
   Fill 425 $bodyTop 720 (715-$bodyTop) ([Drawing.Color]::White)
   $y=$bodyTop+12
   if($v[4] -eq '10313'){
-   [void](Row $caption 443 $y 15 ([Drawing.Color]::Black));$y+=28
+   [void](Row ($caption.Substring(0,$caption.Length-5)) 443 $y 15 ([Drawing.Color]::Black));$y+=24
+   [void](Row 'Cash' 443 $y 15 ([Drawing.Color]::Black));$y+=28
   }
   $current=''
   foreach($word in $body.Split([char]' ')){
