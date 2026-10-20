@@ -1,4 +1,4 @@
-param([string]$ExePath = '')
+﻿param([string]$ExePath = '')
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 if (-not $ExePath) { $ExePath = Join-Path $repoRoot 'bin\skill-001\枫语幕.exe' }
@@ -422,6 +422,11 @@ $healRows = [object[]]@(
 )
 $full = RunPlan -store $store -rows $healRows -width 1000 -height 500
 $fullRoles = Roles $full.Labels
+Write-Host ("FULL_PANEL_DIAGNOSTIC roles=" + ($fullRoles -join ',') + " labels=" + $full.Labels.Count)
+if ($null -ne $full.Plan) {
+    Write-Host $full.Plan.GetType().GetMethod('Describe', $flags).Invoke($full.Plan, @())
+}
+
 foreach ($role in 'skill-name', 'skill-master-level', 'skill-body', 'skill-required', 'skill-current-body', 'skill-next-body') {
     Check (HasRole $fullRoles $role) "full panel plans $role"
 }
