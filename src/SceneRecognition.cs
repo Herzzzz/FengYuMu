@@ -568,6 +568,9 @@ namespace MapleOverlay
     internal sealed class VisualPanelRegion
     {
         public Rectangle Bounds;
+        // Keep the measured colour surface separate from the padded discovery crop.
+        // Only the former may assign OCR words to a tooltip owner.
+        public Rectangle SurfaceBounds;
         public VisualPanelSurfaceKind Kind;
         public int Score;
         public double FillRatio;
@@ -726,8 +729,8 @@ namespace MapleOverlay
                 Rectangle raw = Rectangle.FromLTRB(minX * step, minY * step,
                     Math.Min(bitmap.Width, (maxX + 1) * step),
                     Math.Min(bitmap.Height, (maxY + 1) * step));
-                if (raw.Left <= 12 || raw.Top <= 12 || raw.Right >= bitmap.Width - 12 ||
-                    raw.Bottom >= bitmap.Height - 12) continue;
+                if (kind == VisualPanelSurfaceKind.Light && (raw.Left <= 12 || raw.Top <= 12 ||
+                    raw.Right >= bitmap.Width - 12 || raw.Bottom >= bitmap.Height - 12)) continue;
                 long rawArea = (long)raw.Width * raw.Height;
                 long screenArea = (long)bitmap.Width * bitmap.Height;
                 if (rawArea > screenArea * 58 / 100) continue;
@@ -745,6 +748,7 @@ namespace MapleOverlay
                     (int)Math.Round(fill * 28.0 + rowStrength * 18.0 + columnStrength * 16.0);
                 AddVisualPanelRegion(output, new VisualPanelRegion {
                     Bounds = expanded,
+                    SurfaceBounds = raw,
                     Kind = kind,
                     Score = score,
                     FillRatio = fill,

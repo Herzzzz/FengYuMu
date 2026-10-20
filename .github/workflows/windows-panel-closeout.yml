@@ -1,0 +1,33 @@
+name: Windows panel closeout verification
+on:
+  push:
+    branches: [codex/closeout-borrowed-lessons]
+    paths: [src/**, tests/logic-live-panel-closeout.ps1, .github/workflows/windows-panel-closeout.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: windows-panel-closeout-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  panels:
+    runs-on: windows-2022
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Build Windows executable
+        shell: pwsh
+        run: ./src/build.ps1
+      - name: Verify full discovery and composition path
+        shell: powershell
+        run: ./tests/logic-live-panel-closeout.ps1 -ProbeOnly
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: controlled-panel-verification
+          path: |
+            panel-test-output/*
+            runtime-events.log
+          retention-days: 3

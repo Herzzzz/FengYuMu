@@ -4790,7 +4790,7 @@ namespace MapleOverlay
             {
                 OcrResult result = await RecognizeAsync(prepared);
                 frame.Text = result.Text ?? "";
-                foreach (OcrLine line in result.Lines)
+                foreach (OcrLine line in GroupChatOcrRows(result.Lines))
                 {
                     string text = (line.Text ?? "").Trim();
                     if (text.Length == 0) continue;
@@ -4849,6 +4849,77 @@ namespace MapleOverlay
             lastFastChatIdentity = fastIdentity;
             lastReviewedChatFrame = selected;
             return selected;
+        }
+
+        private sealed class PrimaryChatRow
+        {
+            internal readonly List<OcrLine> Parts = new List<OcrLine>();
+            internal RectangleF Anchor;
+        }
+
+        private static List<OcrLine> GroupChatOcrRows(IList<OcrLine> lines)
+        {
+            // Windows OCR may split a nickname, channel badge and body into separate
+            // lines when their colours differ. Rejoin only measured fragments of the
+            // same visual baseline, using the original word boxes and no extra OCR.
+            List<OcrLine> ordered = new List<OcrLine>(lines);
+            ordered.Sort(delegate(OcrLine a, OcrLine b) {
+                RectangleF left = GetOcrLineBounds(a), right = GetOcrLineBounds(b);
+                int vertical = left.Top.CompareTo(right.Top);
+                return vertical != 0 ? vertical : left.Left.CompareTo(right.Left);
+            });
+            List<PrimaryChatRow> rows = new List<PrimaryChatRow>();
+            foreach (OcrLine line in ordered)
+            {
+                RectangleF bounds = GetOcrLineBounds(line);
+                PrimaryChatRow best = null;
+                float bestOverlap = 0;
+                if (!bounds.IsEmpty)
+                    foreach (PrimaryChatRow row in rows)
+                    {
+                        RectangleF anchorBounds = row.Anchor;
+                        if (anchorBounds.IsEmpty) continue;
+                        float shorter = Math.Min(bounds.Height, anchorBounds.Height);
+                        float overlap = Math.Min(bounds.Bottom, anchorBounds.Bottom) -
+                            Math.Max(bounds.Top, anchorBounds.Top);
+                        float centerDrift = Math.Abs((bounds.Top + bounds.Bottom) -
+                            (anchorBounds.Top + anchorBounds.Bottom)) / 2.0f;
+                        if (overlap < shorter * 0.68f || centerDrift > shorter * 0.45f ||
+                            overlap <= bestOverlap) continue;
+                        best = row; bestOverlap = overlap;
+                    }
+                if (best == null)
+                {
+                    best = new PrimaryChatRow { Anchor = bounds };
+                    rows.Add(best);
+                }
+                best.Parts.Add(line);
+            }
+            List<OcrLine> grouped = new List<OcrLine>();
+            foreach (PrimaryChatRow row in rows)
+            {
+                if (row.Parts.Count == 1) { grouped.Add(row.Parts[0]); continue; }
+                row.Parts.Sort(delegate(OcrLine a, OcrLine b) {
+                    return GetOcrLineBounds(a).Left.CompareTo(GetOcrLineBounds(b).Left);
+                });
+                OcrLine merged = new OcrLine();
+                StringBuilder text = new StringBuilder();
+                RectangleF previous = RectangleF.Empty;
+                foreach (OcrLine part in row.Parts)
+                {
+                    string value = (part.Text ?? "").Trim();
+                    if (value.Length == 0) continue;
+                    RectangleF bounds = GetOcrLineBounds(part);
+                    if (text.Length > 0 && NeedsChatPartSpace(text[text.Length - 1], value[0],
+                        previous, bounds)) text.Append(' ');
+                    text.Append(value);
+                    merged.Words.AddRange(part.Words);
+                    previous = bounds;
+                }
+                merged.Text = text.ToString();
+                grouped.Add(merged);
+            }
+            return grouped;
         }
 
         private sealed class StrongChatRow
@@ -6303,7 +6374,78 @@ private Rectangle FindCursorPanelCrop(
             return statCount >= 6 || infoCount >= 4;
         }
 
+        private static int TooltipOwnerOf(RectangleF bounds, List<RectangleF> owners)
+        {
+            if (owners == null || bounds.IsEmpty) return -1;
+            int best = -1; float bestArea = Single.MaxValue;
+            for (int i = 0; i < owners.Count; i++)
+            {
+                RectangleF owner = owners[i];
+                if (!owner.Contains(new PointF(bounds.Left + bounds.Width / 2, bounds.Top + bounds.Height / 2))) continue;
+                RectangleF overlap = RectangleF.Intersect(owner, bounds);
+                if (overlap.Width * overlap.Height < bounds.Width * bounds.Height * 0.85f) continue;
+                float area = owner.Width * owner.Height;
+                if (area < bestArea) { best = i; bestArea = area; }
+            }
+            return best;
+        }
+
+        private static List<RectangleF> FindConfirmedTooltipOwners(List<VisualPanelRegion> surfaces,
+            IList<OcrLine> lines)
+        {
+            List<RectangleF> owners = new List<RectangleF>();
+            foreach (VisualPanelRegion surface in surfaces)
+            {
+                if (surface.Kind != VisualPanelSurfaceKind.DarkBlue || surface.SurfaceBounds.IsEmpty) continue;
+                RectangleF bounds = surface.SurfaceBounds; bounds.Inflate(2, 2);
+                StringBuilder text = new StringBuilder();
+                foreach (OcrLine line in lines) foreach (OcrWord word in line.Words)
+                    if (bounds.Contains(new PointF(word.BoundingRect.Left + word.BoundingRect.Width / 2,
+                        word.BoundingRect.Top + word.BoundingRect.Height / 2)))
+                        text.Append(word.Text).Append(' ');
+                string key = TranslationStore.Normalize(text.ToString());
+                bool skill = key.Contains("master level") || key.Contains("current level") ||
+                    key.Contains("next level") || key.Contains("required skill");
+                bool equipment = EquipmentFieldGrammar.LooksLikeEquipmentStructure(text.ToString());
+                // Blue scenery, chat backgrounds and character stat cells do not
+                // become tooltips merely because their colour is similar.
+                if (!skill && !equipment) continue;
+                owners.Add(bounds);
+            }
+            Program.LogRuntimeEvent("tooltip-surface", "confirmed=" + owners.Count + " extraOcr=0");
+            return owners;
+        }
+
+        private static List<OcrLine> SplitTooltipOcrLines(IList<OcrLine> lines, List<RectangleF> owners)
+        {
+            List<OcrLine> result = new List<OcrLine>();
+            foreach (OcrLine line in lines)
+            {
+                if (owners.Count == 0 || line.Words.Count == 0) { result.Add(line); continue; }
+                Dictionary<int, List<OcrWord>> parts = new Dictionary<int, List<OcrWord>>();
+                foreach (OcrWord word in line.Words)
+                {
+                    int owner = TooltipOwnerOf(word.BoundingRect, owners);
+                    List<OcrWord> words;
+                    if (!parts.TryGetValue(owner, out words)) { words = new List<OcrWord>(); parts.Add(owner, words); }
+                    words.Add(word);
+                }
+                if (parts.Count == 1) { result.Add(line); continue; }
+                foreach (List<OcrWord> words in parts.Values)
+                {
+                    OcrLine part = new OcrLine(); StringBuilder text = new StringBuilder();
+                    foreach (OcrWord word in words) { if (text.Length > 0) text.Append(' '); text.Append(word.Text); part.Words.Add(word); }
+                    part.Text = text.ToString(); result.Add(part);
+                }
+            }
+            return result;
+        }
+
         private Dictionary<OcrLine, OcrPanelInfo> BuildOcrPanels(List<OcrLine> lines)
+        { return BuildOcrPanels(lines, null); }
+
+        private Dictionary<OcrLine, OcrPanelInfo> BuildOcrPanels(List<OcrLine> lines,
+            List<RectangleF> tooltipOwners)
         {
             Dictionary<OcrLine, OcrPanelInfo> byLine = new Dictionary<OcrLine, OcrPanelInfo>();
             int count = lines.Count;
@@ -6311,7 +6453,12 @@ private Rectangle FindCursorPanelCrop(
             for (int i = 0; i < count; i++) parent[i] = i;
             for (int i = 0; i < count; i++)
                 for (int j = i + 1; j < count; j++)
-                    if (BelongToSamePanel(lines[i], lines[j])) UnionPanel(parent, i, j);
+                {
+                    int a = TooltipOwnerOf(GetOcrLineBounds(lines[i]), tooltipOwners);
+                    int b = TooltipOwnerOf(GetOcrLineBounds(lines[j]), tooltipOwners);
+                    if (a != b) continue;
+                    if (a >= 0 || BelongToSamePanel(lines[i], lines[j])) UnionPanel(parent, i, j);
+                }
 
             Dictionary<int, OcrPanelInfo> groups = new Dictionary<int, OcrPanelInfo>();
             for (int i = 0; i < count; i++)
@@ -6418,6 +6565,9 @@ private Rectangle FindCursorPanelCrop(
             Stopwatch dictionaryClock=Stopwatch.StartNew();
             try {
             List<OverlayLabel> output = new List<OverlayLabel>();
+            List<VisualPanelRegion> measuredSurfaces = prepared == null
+                ? new List<VisualPanelRegion>() : ClassicSceneVision.FindForegroundPanels(prepared);
+            List<RectangleF> tooltipOwners = FindConfirmedTooltipOwners(measuredSurfaces, result.Lines);
             foreach (OcrLine detected in result.Lines)
             {
                 RectangleF raw = GetOcrLineBounds(detected);
@@ -6425,7 +6575,7 @@ private Rectangle FindCursorPanelCrop(
             }
             Rectangle chatExclusion = GetChatExclusionBounds();
             List<OcrLine> allLines = new List<OcrLine>();
-            foreach (OcrLine candidate in result.Lines)
+            foreach (OcrLine candidate in SplitTooltipOcrLines(result.Lines, tooltipOwners))
             {
                 // Static interface/item matching must never translate player chat. A chat line
                 // can legitimately contain an exact item or skill name ("T> Bamboo Hat"), but
@@ -6438,7 +6588,9 @@ private Rectangle FindCursorPanelCrop(
                 allLines.Add(candidate);
             }
             allLines = SkillVisualLines(allLines);
-            Dictionary<OcrLine, OcrPanelInfo> panelByLine = BuildOcrPanels(allLines);
+            // Colour surfaces own their text before proximity grouping. Inventory
+            // rows cannot bridge into a dark-blue tooltip, even at the same Y.
+            Dictionary<OcrLine, OcrPanelInfo> panelByLine = BuildOcrPanels(allLines, tooltipOwners);
             AddStablePanelLayouts(output, allLines, panelByLine, ocrScale);
             SceneSnapshot visibleScene = SceneClassifier.Analyze(result, translations, false);
             bool focusedSettingsWindow = scope == LabelBuildScope.FocusedPanel &&
@@ -6453,7 +6605,7 @@ private Rectangle FindCursorPanelCrop(
             bool questSummaryObserved = HasQuestSummaryMarker(allLines);
             if ((hasScopedCaption || questSummaryObserved) && prepared != null)
             {
-                foreach (VisualPanelRegion measured in ClassicSceneVision.FindForegroundPanels(prepared))
+                foreach (VisualPanelRegion measured in measuredSurfaces)
                     measuredPanelScopes.Add(measured.Bounds);
                 CharacterStatVisualLayout measuredStats = ClassicSceneVision.FindCharacterStats(prepared);
                 if (measuredStats != null) measuredPanelScopes.Add(measuredStats.Crop);
