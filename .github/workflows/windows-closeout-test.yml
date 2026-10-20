@@ -26,7 +26,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Build native Windows executable
-        shell: powershell
+        shell: pwsh
         run: ./src/build.ps1
       - name: Validate closeout logic and chat source preservation
         shell: pwsh
