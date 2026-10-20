@@ -103,7 +103,7 @@ try {
  [void](Row '[Maple Token] Offer also selling 83 magic wand' 205 62 14 ([Drawing.Color]::FromArgb(85,65,0)))
  [void](Row 'You received EXP (+450)' 40 94 14)
  $group=(T 'OverlayForm').GetMethod('GroupChatOcrRows',$f)
- $grouped=@($group.Invoke($null,[object[]]@((G $ocr 'Lines'))))
+ $grouped=@($group.Invoke($null,[object[]]@(,(G $ocr 'Lines'))))
  Check ($grouped.Count -eq 2) 'yellow broadcast fragments group without swallowing the adjacent system row'
  $text=[string](G $grouped[0] 'Text')
  $chatType=T 'OfflineChatForm'
@@ -168,6 +168,25 @@ try {
  for($i=0;$i -lt $rows.Count;$i++){[void](Row $rows[$i] 270 (180+$i*31) 14)}
  $r=Paint 'equipment-fields'
  Check (@($r | Where-Object {$_.ready -and $_.role -eq 'item-field'}).Count -eq $rows.Count) 'equipment: all requirement, HP and combat keys drawn'
+ # Public fixture replay also exercises the real Windows OCR adapter.
+ $fixture=Join-Path $PSScriptRoot 'fixtures/public-v3/character-stats-warrior.png'
+ $native=[Drawing.Bitmap]::new($fixture)
+ try {
+  $task=Call $form 'TranslatePictureAsync' ([object[]]@($native,[Threading.CancellationToken]::None))
+  $timeout=[Diagnostics.Stopwatch]::StartNew()
+  while(!$task.IsCompleted){
+   if($timeout.Elapsed.TotalSeconds -gt 60){throw 'Native OCR replay exceeded 60 seconds'}
+   [Windows.Forms.Application]::DoEvents();Start-Sleep -Milliseconds 5
+  }
+  $picture=$task.GetAwaiter().GetResult()
+  try {
+   $ready=G $form 'simpleReady'
+   $nativeFields=@($ready | Where-Object {(G $_ 'SemanticRole') -eq 'character-field'})
+   Check ($nativeFields.Count -ge 15) ('public character fixture, real Windows OCR and composition: fields='+$nativeFields.Count)
+   (G $picture 'Image').Save((Join-Path $out 'public-character-native-after.png'))
+   [IO.File]::WriteAllText((Join-Path $out 'public-character-native-ocr.txt'),(G $picture 'RecognizedText'),[Text.Encoding]::UTF8)
+  } finally {$picture.Dispose()}
+ } finally {$native.Dispose()}
  Get-ChildItem -LiteralPath $root -Filter *.log -File | ForEach-Object { Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $out $_.Name) -Force }
  # Three independently observed journal wordings, exercised through the full
  # Discovery entry point. A selected list row, optional objective card and white
