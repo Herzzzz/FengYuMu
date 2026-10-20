@@ -233,7 +233,9 @@ try {
   if($hasSummary){
    Fill 425 215 720 100 ([Drawing.Color]::FromArgb(225,222,211))
    [void](Row 'Quest Summary' 443 225 17 ([Drawing.Color]::Black))
-   [void](Row 'Mithril Ingot 0 / 1' 490 265 14 ([Drawing.Color]::Black))
+   $objective='Mithril Ingot 0 / 1'
+   if($v[4] -eq '10313'){$objective="Shumi's Roll of Cash 0 / 1"}
+   [void](Row $objective 490 265 14 ([Drawing.Color]::Black))
    $bodyTop=330
   }
   Fill 425 $bodyTop 720 (715-$bodyTop) ([Drawing.Color]::White)

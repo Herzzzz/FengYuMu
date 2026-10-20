@@ -155,7 +155,17 @@ namespace MapleOverlay
             }
             RectangleF overlay=OverlaySpan(area,scale);
             Rectangle overlayArea=Rectangle.Ceiling(overlay);
-            float fontHeight=Math.Max(14,Math.Min(40,GetOcrLineBounds(heading).Height/scale));
+            // A wrapped two-line stage heading is not a double-height font.
+            // Derive body typography from individual visible prose rows instead.
+            List<float> proseHeights=new List<float>();
+            foreach(OcrLine proseLine in sorted) {
+                RectangleF row=GetOcrLineBounds(proseLine);
+                if(!area.Contains(Rectangle.Ceiling(row))||row.Height<5*scale||row.Height>40*scale)continue;
+                if(stage.Length>0&&GetOcrLineBounds(heading).Contains(row))continue;
+                proseHeights.Add(row.Height/scale);
+            }
+            proseHeights.Sort();
+            float fontHeight=proseHeights.Count==0?16:Math.Max(14,Math.Min(28,proseHeights[proseHeights.Count/2]));
             JournalLayoutPlan layout=null;
             using(Bitmap probe=new Bitmap(1,1))
             using(Graphics measure=Graphics.FromImage(probe)) {

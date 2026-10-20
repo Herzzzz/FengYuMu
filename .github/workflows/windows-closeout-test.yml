@@ -41,6 +41,14 @@ jobs:
             & powershell.exe -NoProfile -ExecutionPolicy Bypass -File "./tests/$name.ps1"
             if ($LASTEXITCODE -ne 0) { throw "$name failed ($LASTEXITCODE)" }
           }
+      - name: Prepare UTF-8 scripts for Windows PowerShell
+        shell: pwsh
+        run: |
+          # Windows PowerShell 5 reads BOM-less files as the legacy code page.
+          Get-ChildItem ./tests -Filter *.ps1 -File | ForEach-Object {
+            $text = [IO.File]::ReadAllText($_.FullName, [Text.Encoding]::UTF8)
+            [IO.File]::WriteAllText($_.FullName, $text, [Text.UTF8Encoding]::new($true))
+          }
       - name: Validate complete panels and native OCR replay
         shell: pwsh
         run: |
