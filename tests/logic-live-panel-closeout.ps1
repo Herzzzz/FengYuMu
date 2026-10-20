@@ -11,9 +11,9 @@ function T($name){$a.GetType('MapleOverlay.'+$name,$true)}
 function N($name){[Activator]::CreateInstance((T $name),$true)}
 function S($o,$name,$value){$o.GetType().GetField($name,$f).SetValue($o,$value)}
 function G($o,$name){return ,($o.GetType().GetField($name,$f).GetValue($o))}
-function Call($o,$name,[object[]]$args){
- try {$o.GetType().GetMethod($name,$f).Invoke($o,$args)}
- catch {if($_.Exception.InnerException){throw $_.Exception.InnerException};throw}
+function Call($o,$name,[object[]]$methodArgs){
+ try {$o.GetType().GetMethod($name,$f).Invoke($o,$methodArgs)}
+ catch {if($_.Exception.InnerException){throw ($name+': '+$_.Exception.InnerException.ToString())};throw}
 }
 $out=Join-Path $root 'panel-test-output'
 New-Item -ItemType Directory -Force $out | Out-Null
