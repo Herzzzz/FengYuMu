@@ -59,12 +59,13 @@ function Row([string]$text,[single]$x,[single]$y,[single]$size=14,$ink=[Drawing.
  $font.Dispose();[void](G $ocr 'Lines').Add($line)
  return $line
 }
-function Paint($name){
+function Paint($name,[single]$ocrScale=1,$prepared=$null){
+ if($null -eq $prepared){$prepared=$b}
  $gr.Dispose();S $ocr 'Text' (((G $ocr 'Lines') | ForEach-Object {$_.Text}) -join "`n")
  $b.Save((Join-Path $out ($name+'-before.png')))
  (G $form 'captureTextRows').Clear()
  $scope=[Enum]::Parse((T 'LabelBuildScope'),'Discovery')
- $labels=Call $form 'BuildLabels' ([object[]]@($ocr,[single]1,$b,$scope))
+ $labels=Call $form 'BuildLabels' ([object[]]@($ocr,$ocrScale,$prepared,$scope))
  # Reflection returns the List as one object; retain it for the production compositor.
  $listType=[Collections.Generic.List``1].MakeGenericType((T 'OverlayLabel'))
  $list=[Activator]::CreateInstance($listType)
@@ -76,7 +77,7 @@ function Paint($name){
  $ready=G $form 'simpleReady'
  $rows=@()
  foreach($label in $list){
-  $row=[ordered]@{text=(G $label 'Text');role=(G $label 'SemanticRole');source=(G $label 'MatchSource');ready=$ready.Contains($label);reason=(G $label 'FusionFailureReason');bounds=(G $label 'SourceBounds').ToString()}
+  $row=[ordered]@{text=(G $label 'Text');role=(G $label 'SemanticRole');source=(G $label 'MatchSource');ready=$ready.Contains($label);reason=(G $label 'FusionFailureReason');bounds=(G $label 'SourceBounds').ToString();guard=(G $label 'KeepClearBounds').ToString()}
   $rows+=$row
   $guard=G $label 'KeepClearBounds'
   if($layer -and !$guard.IsEmpty){
@@ -168,25 +169,30 @@ try {
  for($i=0;$i -lt $rows.Count;$i++){[void](Row $rows[$i] 270 (180+$i*31) 14)}
  $r=Paint 'equipment-fields'
  Check (@($r | Where-Object {$_.ready -and $_.role -eq 'item-field'}).Count -eq $rows.Count) 'equipment: all requirement, HP and combat keys drawn'
- # Public fixture replay also exercises the real Windows OCR adapter.
+ # Replay actual Windows OCR using the same prepared image, Discovery and
+ # compositor as F8. Keep the result until assertions, before picture cleanup.
  $fixture=Join-Path $PSScriptRoot 'fixtures/public-v3/character-stats-warrior.png'
- $native=[Drawing.Bitmap]::new($fixture)
+ $script:b=[Drawing.Bitmap]::new($fixture)
+ $prepArgs=New-Object 'object[]' 4
+ $prepArgs[0]=$b;$prepArgs[1]=[single]0;$prepArgs[2]=$false;$prepArgs[3]=[single]1800
+ $prepared=(T 'OverlayForm').GetMethod('PrepareForOcr',$f).Invoke($null,$prepArgs)
  try {
-  $task=Call $form 'TranslatePictureAsync' ([object[]]@($native,[Threading.CancellationToken]::None))
+  $task=Call $form 'RecognizeAsync' ([object[]]@($prepared,[Threading.CancellationToken]::None))
   $timeout=[Diagnostics.Stopwatch]::StartNew()
   while(!$task.IsCompleted){
    if($timeout.Elapsed.TotalSeconds -gt 60){throw 'Native OCR replay exceeded 60 seconds'}
    [Windows.Forms.Application]::DoEvents();Start-Sleep -Milliseconds 5
   }
-  $picture=$task.GetAwaiter().GetResult()
-  try {
-   $ready=G $form 'simpleReady'
-   $nativeFields=@($ready | Where-Object {(G $_ 'SemanticRole') -eq 'character-field'})
-   Check ($nativeFields.Count -ge 15) ('public character fixture, real Windows OCR and composition: fields='+$nativeFields.Count)
-   (G $picture 'Image').Save((Join-Path $out 'public-character-native-after.png'))
-   [IO.File]::WriteAllText((Join-Path $out 'public-character-native-ocr.txt'),(G $picture 'RecognizedText'),[Text.Encoding]::UTF8)
-  } finally {$picture.Dispose()}
- } finally {$native.Dispose()}
+  $script:ocr=$task.GetAwaiter().GetResult()
+  $nativeRows=@()
+  foreach($line in (G $ocr 'Lines')){
+   $words=@();foreach($word in (G $line 'Words')){$words+=@{text=(G $word 'Text');bounds=(G $word 'BoundingRect').ToString()}}
+   $nativeRows+=@{text=(G $line 'Text');words=$words}
+  }
+  $nativeRows | ConvertTo-Json -Depth 8 | Set-Content -Encoding UTF8 (Join-Path $out 'public-native-words.json')
+  $r=Paint 'public-character-native' $prepArgs[1] $prepared
+  Check (@($r | Where-Object {$_.ready -and $_.role -eq 'character-field'}).Count -ge 15) 'public character fixture, real Windows OCR and composition: measured field cells drawn'
+ } finally {$prepared.Dispose()}
  Get-ChildItem -LiteralPath $root -Filter *.log -File | ForEach-Object { Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $out $_.Name) -Force }
  # Three independently observed journal wordings, exercised through the full
  # Discovery entry point. A selected list row, optional objective card and white
