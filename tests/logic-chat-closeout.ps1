@@ -3,15 +3,44 @@ $ErrorActionPreference='Stop'
 Add-Type -Path (Join-Path $PSHOME 'Microsoft.CodeAnalysis.dll')
 Add-Type -Path (Join-Path $PSHOME 'Microsoft.CodeAnalysis.CSharp.dll')
 $tree=[Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree]::ParseText([IO.File]::ReadAllText((Join-Path $RepositoryRoot 'src/OfflineChat.cs'))).GetRoot()
-$names=@('ChatIdentity','SameChatLine','IsSameTranslationSource','SplitChatIdentityParts','EditDistanceWithin','NormalizeCommonChatOcr','SameChatNumericEvidence','GetNewChatLines','GetNewChatLineIndices','ProtectPlayerNames','RestorePlayerNames')
+$names=@('ChatIdentity','SameChatLine','IsSameTranslationSource','SplitChatIdentityParts','EditDistanceWithin','NormalizeCommonChatOcr','SameChatNumericEvidence','GetNewChatLines','GetNewChatLineIndices','ProtectPlayerNames','RestorePlayerNames','ParseChatLines','AddParsedLine','IsCompleteChatNotice','RepairChatSpeakerMarker','TryParseChatPresence','IsStructuredUiNoise','IsLikelyWrappedChatTail','IsWrappedPseudoSpeaker','IsWrappedContinuationWord','NormalizeLinkedItemName','ProtectLinkedItemNames')
 $parts=@($tree.DescendantNodes()|Where-Object {$_ -is [Microsoft.CodeAnalysis.CSharp.Syntax.MethodDeclarationSyntax] -and $names -contains $_.Identifier.ValueText}|ForEach-Object {$_.ToFullString()})
 $protocol=[IO.File]::ReadAllText((Join-Path $RepositoryRoot 'src/OnlineAiProtocol.cs')) -replace '(?m)^using .*;\r?\n',''
 $continuity=[IO.File]::ReadAllText((Join-Path $RepositoryRoot 'src/ChatFrameContinuity.cs')) -replace '(?m)^using .*;\r?\n',''
-$code='using System;using System.Collections.Generic;using System.Text;using System.Text.RegularExpressions;using System.Security.Cryptography;'+$protocol+$continuity+'namespace MapleOverlay {public class ChatCloseoutProbe{private HashSet<string> protectedPlayerNames=new HashSet<string>();'+($parts -join "`n")+@'
+$boundaries=[IO.File]::ReadAllText((Join-Path $RepositoryRoot 'src/ChatBoundaryPolicy.cs')) -replace '(?m)^using .*;\r?\n',''
+$code='using System;using System.Collections.Generic;using System.Text;using System.Text.RegularExpressions;using System.Security.Cryptography;'+$protocol+$continuity+$boundaries+'namespace MapleOverlay {public class ChatCloseoutProbe{private HashSet<string> protectedPlayerNames=new HashSet<string>();'+($parts -join "`n")+@'
 static int checks;
 static void Check(bool ok,string name){if(!ok)throw new Exception(name);checks++;Console.WriteLine("PASS: "+name);}
 static string Key(string source,string endpoint="https://provider.invalid/v1/chat/completions",string model="model-A",string target="简体中文",string glossary=""){return OnlineAiProtocol.BuildChatCacheKey(endpoint,model,target,source,glossary);}
 public static int Run(){checks=0;
+ string warning="You are lacking the MP Potion that your pet is supposed to use.";
+ string player="Alice: selling gloves and scrolls, please whisper me if you would like to buy any";
+ var notices=ParseChatLines(player+"\n"+warning+"\n"+warning+"\n"+warning+"\nBob: hello");
+ Check(notices.Count==2&&notices[0]==player&&notices[1]=="Bob: hello","repeated pet notices cannot become wrapped player-chat tails");
+ Check(ParseChatLines(warning).Count==0,"standalone MP pet notice is excluded");
+ Check(ParseChatLines(warning.Replace("MP","HP")).Count==0,"standalone HP pet notice is excluded");
+ notices=ParseChatLines(player+"\n  You are lacking the mp potion that your pet is supposed to use  ");
+ Check(notices.Count==1&&notices[0]==player,"case and whitespace variants cannot attach to player chat");
+ notices=ParseChatLines("Alice: "+warning);
+ Check(notices.Count==1&&notices[0]=="Alice: "+warning,"player quoting the pet warning remains player chat");
+ Check(ParseChatLines("Alice: B> MP Potion please").Count==1,"player potion trade remains player chat");
+ var items=new Dictionary<string,string>(StringComparer.OrdinalIgnoreCase){
+  {NormalizeLinkedItemName("White Label Ring"),"白色名片戒指"},
+  {NormalizeLinkedItemName("Mokbi Throwing-Stars"),"黑色利刃"}};
+ Dictionary<string,string> links;
+ string linked=ProtectLinkedItemNames("[White Label Ring] S>100K",items,out links);
+ Check(linked=="__FYM_TERM_0__ S>100K"&&links["__FYM_TERM_0__"]=="[白色名片戒指]","whole known item link locked to dictionary translation with price outside");
+ linked=ProtectLinkedItemNames("【Mokbi Throwing Stars】 S>150K",items,out links);
+ Check(RestorePlayerNames(linked,links)=="【黑色利刃】 S>150K","hyphen/spacing variant and full-width brackets retain item identity");
+ linked=ProtectLinkedItemNames("[Unknown Gold $& Ring] S>10K",items,out links);
+ Check(RestorePlayerNames(linked,links)=="[Unknown Gold $& Ring] S>10K","unknown link preserved verbatim including literal replacement characters");
+ linked=ProtectLinkedItemNames("[White Label Ring Plus] S>100K",items,out links);
+ Check(links["__FYM_TERM_0__"]=="[White Label Ring Plus]","substring is not an exact item name");
+ linked=ProtectLinkedItemNames("[White Label Ring] and [Mokbi Throwing Stars]",items,out links);
+ Check(links.Count==2&&RestorePlayerNames(linked,links)=="[白色名片戒指] and [黑色利刃]","multiple item links restore independently");
+ linked=ProtectLinkedItemNames("__FYM_TERM_0__ [Unknown Ring]",items,out links);
+ Check(links.ContainsKey("__FYM_TERM_1__"),"generated link token cannot collide with source text");
+ Check(ProtectLinkedItemNames("B> MP Potion please",items,out links)=="B> MP Potion please"&&links.Count==0,"ordinary unlinked chat is unchanged");
  var changes=new[]{
   new[]{"S> gloves 10k","S> gloves 20k"},new[]{"S> gloves 1.5m","S> gloves 15m"},
   new[]{"S> scroll 60%","S> scroll 60"},new[]{"S> gloves +2","S> gloves -2"},
@@ -62,8 +91,8 @@ public static int Run(){checks=0;
 '@
 Add-Type -TypeDefinition $code -IgnoreWarnings -WarningAction SilentlyContinue
 $count=[MapleOverlay.ChatCloseoutProbe]::Run()
-if($count -ne 59){throw "Unexpected check count $count"}
+if($count -ne 72){throw "Unexpected check count $count"}
 # Inspect production wiring in addition to executing the extracted methods.
 $process=@($tree.DescendantNodes()|Where-Object {$_ -is [Microsoft.CodeAnalysis.CSharp.Syntax.MethodDeclarationSyntax] -and $_.Identifier.ValueText -eq 'ProcessPendingChatAsync'})[0].ToString()
 if(-not $process.Contains('BuildChatCacheKey(online.Endpoint') -or -not $process.Contains('RequestChatTranslationAsync(online, protectedMessage')){throw 'Live cache/request do not use the same settings snapshot'}
-Write-Output 'Chat closeout: 60/60 passed (59 executed method checks + production snapshot wiring); no live provider/OCR/Windows UI claim.'
+Write-Output 'Chat closeout: 73/73 passed (72 executed method checks + production snapshot wiring); no live provider/OCR/Windows UI claim.'

@@ -996,6 +996,8 @@ namespace MapleOverlay
             new Dictionary<string, string>(StringComparer.Ordinal);
         private Dictionary<string, string> glossaryFullNames =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        private Dictionary<string, string> linkedItemTranslations =
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         private HashSet<string> lockableGlossaryKeys =
             new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private HashSet<string> preferredChatAliases =
@@ -1754,9 +1756,12 @@ namespace MapleOverlay
                         { droppedChatLines++; continue; }
                         string speakerPrefix, message;
                         SplitSpeaker(pending.Text, out speakerPrefix, out message);
-                        string cleanedMessage = NormalizeCommonChatOcr(message);
+                        Dictionary<string, string> itemTokens;
+                        string itemProtected = ProtectLinkedItemNames(message, linkedItemTranslations, out itemTokens);
+                        string cleanedMessage = NormalizeCommonChatOcr(itemProtected);
                         Dictionary<string, string> nameTokens;
                         string protectedMessage = ProtectPlayerNames(cleanedMessage, out nameTokens);
+                        foreach (KeyValuePair<string, string> item in itemTokens) nameTokens[item.Key] = item.Value;
                         PreparedChatLine prepared = new PreparedChatLine {
                             Pending = pending,
                             Source = pending.Text,
@@ -1778,6 +1783,10 @@ namespace MapleOverlay
                             const string targetLanguage = "简体中文";
                             string glossary = BuildGlossaryForTarget(protectedMessage,
                                 targetLanguage);
+                            // Bind the cache/request context to the exact linked names,
+                            // even when two messages have the same placeholder layout.
+                            foreach (KeyValuePair<string, string> item in itemTokens)
+                                glossary += "\n" + item.Key + " = " + item.Value;
                             prepared.CacheKey = OnlineAiProtocol.BuildChatCacheKey(online.Endpoint,
                                 online.Model, targetLanguage, protectedMessage, glossary);
                             bool cached = translationCache.TryGetValue(prepared.CacheKey, out prepared.Translated);
@@ -2476,6 +2485,12 @@ namespace MapleOverlay
         {
             string line = Regex.Replace((value ?? "").TrimStart(' ', '•', '·', '-', '*'), @"\s+", " ");
             if (line.Length == 0) return true;
+            // Drop standalone pet auto-potion feedback before wrapped-line joining.
+            // Otherwise it becomes part of the preceding player's body and bypasses
+            // the later system filter. A real "Player: ..." message does not match.
+            if (Regex.IsMatch(line,
+                @"^You are lacking the (?:HP|MP) Potion that your pet is supposed to use[.!！。]?\s*$",
+                RegexOptions.IgnoreCase)) return true;
             return Regex.IsMatch(line,
                 @"^(?:(?:weapon|magic|physical)\s+)?(?:attack|def(?:ense)?|accuracy|avoidability|speed|jump|enhancements?|remaining\s+enhancements?|type|level|job|name|fame|max\s*hp|max\s*mp|str|dex|int|luk|ability\s+points?|skill\s+points?)\s*\.?\s*[:：]",
                 RegexOptions.IgnoreCase) ||
@@ -3186,10 +3201,16 @@ namespace MapleOverlay
             if (input.Length == 0 || output.Length == 0) return false;
             if (output.IndexOf('\r') >= 0 || output.IndexOf('\n') >= 0) return false;
             if (ChatTextRules.LooksLikeInstructionLeak(output)) return false;
+            foreach (Match token in Regex.Matches(input, @"__FYM_TERM_\d+__"))
+                if (Regex.Matches(input, Regex.Escape(token.Value)).Count !=
+                    Regex.Matches(output, Regex.Escape(token.Value), RegexOptions.IgnoreCase).Count) return false;
+            foreach (Match token in Regex.Matches(output, @"__FYM_TERM_\d+__", RegexOptions.IgnoreCase))
+                if (input.IndexOf(token.Value, StringComparison.OrdinalIgnoreCase) < 0) return false;
             int maximum = Math.Max(32, input.Length * 3 + 12);
             if (output.Length > maximum) return false;
             bool targetChinese = (targetLanguage ?? "").IndexOf("中文", StringComparison.OrdinalIgnoreCase) >= 0;
-            if (targetChinese && Regex.Matches(input, "[A-Za-z]").Count >= 3 &&
+            string languageInput = Regex.Replace(input, @"__FYM_(?:PLAYER|TERM)_\d+__", "");
+            if (targetChinese && Regex.Matches(languageInput, "[A-Za-z]").Count >= 3 &&
                 Regex.Matches(output, "[\\u3400-\\u9fff]").Count == 0) return false;
             if (!targetChinese && Regex.Matches(input, "[\\u3400-\\u9fff]").Count >= 2 &&
                 Regex.Matches(output, "[A-Za-zÁÉÍÓÚÜÑáéíóúüñ¿¡]").Count < 2) return false;
@@ -3290,6 +3311,7 @@ namespace MapleOverlay
                 new List<KeyValuePair<string, string>>();
             HashSet<string> nextOutboundTaskNames =
                 new HashSet<string>(StringComparer.Ordinal);
+            HashSet<string> itemKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             Dictionary<string, HashSet<string>> valuesByEnglish =
                 new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
             List<KeyValuePair<string, string>> loaded = new List<KeyValuePair<string, string>>();
@@ -3302,6 +3324,8 @@ namespace MapleOverlay
                     if (parts.Length < 2 || parts[0].Length < 2 || parts[1].Length == 0) continue;
                     string english = parts[0].Trim(), chinese = parts[1].Trim();
                     string category = parts.Length > 2 ? parts[2].Trim() : "";
+                    if (category.StartsWith("怀旧服-道具#", StringComparison.Ordinal) ||
+                        category.StartsWith("怀旧服-装备#", StringComparison.Ordinal)) itemKeys.Add(english);
                     if (category.StartsWith("怀旧服-聊天多义缩写", StringComparison.Ordinal))
                         nextContextOnlyKeys.Add(english);
                     bool lockableCategory = category.StartsWith("怀旧服-地图", StringComparison.Ordinal) ||
@@ -3365,6 +3389,17 @@ namespace MapleOverlay
             }
             foreach (KeyValuePair<string, string> entry in loaded)
                 if (valuesByEnglish[entry.Key].Count == 1) nextEntries.Add(entry);
+            Dictionary<string, string> nextLinkedItems = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            HashSet<string> conflictingLinkedItems = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (KeyValuePair<string, string> entry in loaded)
+            {
+                if (!itemKeys.Contains(entry.Key)) continue;
+                string key = NormalizeLinkedItemName(entry.Key), previous;
+                if (nextLinkedItems.TryGetValue(key, out previous) && previous != entry.Value)
+                    conflictingLinkedItems.Add(key);
+                else nextLinkedItems[key] = entry.Value;
+            }
+            foreach (string key in conflictingLinkedItems) nextLinkedItems.Remove(key);
             nextEntries.Sort(delegate(KeyValuePair<string, string> left, KeyValuePair<string, string> right) {
                 return right.Key.Length.CompareTo(left.Key.Length);
             });
@@ -3380,6 +3415,7 @@ namespace MapleOverlay
             // Publish only after the entire file has been read and indexed. A failed reload
             // therefore leaves the previous, known-good live glossary untouched.
             glossaryEntries = nextEntries;
+            linkedItemTranslations = nextLinkedItems;
             outboundGlossaryEntries = nextOutboundEntries;
             nextOutboundTasks.Sort(delegate(KeyValuePair<string, string> left,
                 KeyValuePair<string, string> right) {
@@ -3430,6 +3466,33 @@ namespace MapleOverlay
             if (name.Length >= 3 && name.Length <= 48) protectedPlayerNames.Add(name);
         }
 
+        private static string NormalizeLinkedItemName(string value)
+        {
+            // Only spacing/hyphen variants; never remove words, digits or signs.
+            return Regex.Replace((value ?? "").Trim(), @"[\s\-]+", " ").ToLowerInvariant();
+        }
+
+        private static string ProtectLinkedItemNames(string message,
+            Dictionary<string, string> exactNames, out Dictionary<string, string> tokens)
+        {
+            Dictionary<string, string> replacements = new Dictionary<string, string>();
+            string source = message ?? "";
+            int index = 0;
+            string result = Regex.Replace(source, @"\[[^\[\]\r\n]{1,120}\]|【[^【】\r\n]{1,120}】", delegate(Match match) {
+                string name = match.Value.Substring(1, match.Length - 2), chinese;
+                string replacement = match.Value;
+                if (exactNames != null && exactNames.TryGetValue(NormalizeLinkedItemName(name), out chinese))
+                    replacement = match.Value[0] + chinese + match.Value[match.Length - 1];
+                string token;
+                do { token = "__FYM_TERM_" + index++ + "__"; }
+                while (source.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0);
+                replacements[token] = replacement;
+                return token;
+            });
+            tokens = replacements;
+            return result;
+        }
+
         private string ProtectPlayerNames(string message, out Dictionary<string, string> tokens)
         {
             tokens = new Dictionary<string, string>();
@@ -3451,7 +3514,7 @@ namespace MapleOverlay
         {
             string result = translation;
             foreach (KeyValuePair<string, string> item in tokens)
-                result = Regex.Replace(result, Regex.Escape(item.Key), item.Value, RegexOptions.IgnoreCase);
+                result = Regex.Replace(result, Regex.Escape(item.Key), delegate(Match ignored) { return item.Value; }, RegexOptions.IgnoreCase);
             return result;
         }
 

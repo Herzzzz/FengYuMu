@@ -110,6 +110,48 @@ function Paint($name,[single]$ocrScale=1,$prepared=$null){
  return $rows
 }
 try {
+ # Native parser, actual packaged glossary, and final publication safeguards.
+ $chatType=T 'OfflineChatForm'
+ $parse=@($chatType.GetMethods($f)|Where-Object {$_.Name -eq 'ParseChatLines' -and $_.GetParameters().Count -eq 1})[0]
+ $warning='You are lacking the MP Potion that your pet is supposed to use.'
+ $previous='DemoUser: selling gloves and scrolls, please whisper me if you would like to buy any'
+ $noticeRows=@($parse.Invoke($null,[object[]]@($previous+"`n"+$warning+"`n"+$warning+"`n"+$warning)))
+ Check ($noticeRows.Count -eq 1 -and $noticeRows[0] -eq $previous) 'repeated pet feedback excluded before wrapped-chat joining'
+ $quote=@($parse.Invoke($null,[object[]]@('DemoUser: '+$warning)))
+ Check ($quote.Count -eq 1 -and $quote[0] -eq ('DemoUser: '+$warning)) 'real speaker quoting feedback is retained'
+ $chatCtor=$chatType.GetConstructors($f)[0]
+ $chatForm=$chatCtor.Invoke([object[]]@($form,$root))
+ try {
+  $exact=G $chatForm 'linkedItemTranslations'
+  $protect=$chatType.GetMethod('ProtectLinkedItemNames',$f)
+  foreach($pair in @(@('[White Label Ring]','[白色名片戒指]'),@('【Mokbi Throwing Stars】','【黑色利刃】'),@('[Unknown Ring]','[Unknown Ring]'))){
+   $argsLink=[object[]]@(($pair[0]+' S>100K'),$exact,$null)
+   $protected=$protect.Invoke($null,$argsLink)
+   Check ($argsLink[2]['__FYM_TERM_0__'] -eq $pair[1]) ('packaged glossary owns whole link, unknown remains original: '+$pair[0])
+   $prepared=[Activator]::CreateInstance($chatType.GetNestedType('PreparedChatLine',$f),$true)
+   S $prepared 'Source' ('DemoUser: '+$pair[0]+' S>100K')
+   S $prepared 'SpeakerPrefix' 'DemoUser: '
+   S $prepared 'Untranslated' $protected
+   S $prepared 'Translated' '出售 __FYM_TERM_0__，100K'
+   S $prepared 'NameTokens' $argsLink[2]
+   Check (Call $chatForm 'PublishPreparedChatLine' ([object[]]@($prepared))) 'valid protected item translation passes production publication'
+   Check ((G $chatForm 'output').Text.Contains($pair[1])) 'published output restores exact item name and brackets'
+   S $prepared 'Translated' '出售一枚乱猜的戒指，100K'
+   Check (!(Call $chatForm 'PublishPreparedChatLine' ([object[]]@($prepared)))) 'AI dropping or rewriting protected link cannot publish success'
+   S $prepared 'Translated' '出售 __FYM_TERM_0__ __FYM_TERM_0__，100K'
+   Check (!(Call $chatForm 'PublishPreparedChatLine' ([object[]]@($prepared)))) 'AI duplicating linked item cannot publish success'
+  }
+  $conflicts=Join-Path $out 'link-conflicts'
+  [void](New-Item -ItemType Directory -Force $conflicts)
+  $entries=@("Twin Ring`t戒指甲`t怀旧服-道具#1","Twin-Ring`t戒指乙`t怀旧服-装备#2")
+  [IO.File]::WriteAllLines((Join-Path $conflicts ([IO.Path]::GetFileName($dict))),$entries,[Text.UTF8Encoding]::new($true))
+  $conflictForm=$chatCtor.Invoke([object[]]@($form,$conflicts))
+  try {
+   $argsLink=[object[]]@('[Twin Ring] S>100K',(G $conflictForm 'linkedItemTranslations'),$null)
+   [void]$protect.Invoke($null,$argsLink)
+   Check ($argsLink[2]['__FYM_TERM_0__'] -eq '[Twin Ring]') 'conflicting whole-name dictionary entries preserve original link'
+  } finally {$conflictForm.Dispose()}
+ } finally {$chatForm.Dispose()}
  # Split OCR fragments must enter parsing as one physical broadcast row.
  Frame
  Fill 20 57 1160 27 ([Drawing.Color]::FromArgb(255,220,0))
