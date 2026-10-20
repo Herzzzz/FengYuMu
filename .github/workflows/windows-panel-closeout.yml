@@ -22,7 +22,7 @@ jobs:
         run: ./src/build.ps1
       - name: Verify full discovery and composition path
         shell: powershell
-        run: ./tests/logic-live-panel-closeout.ps1 -ProbeOnly
+        run: ./tests/logic-live-panel-closeout.ps1
       - uses: actions/upload-artifact@v4
         if: always()
         with:

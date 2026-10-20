@@ -76,7 +76,7 @@ function Paint($name,[single]$ocrScale=1,$prepared=$null){
  $layer=G $form 'simpleLayer'
  $composite=[Drawing.Bitmap]$b.Clone()
  if($null -ne $layer){
-  $cg=[Drawing.Graphics]::FromImage($composite);$cg.DrawImageUnscaled($layer,0,0);$cg.Dispose()
+  $cg=[Drawing.Graphics]::FromImage($composite);$cg.DrawImage($layer,[Drawing.Rectangle]::new(0,0,$b.Width,$b.Height),[Drawing.Rectangle]::new(0,0,$layer.Width,$layer.Height),[Drawing.GraphicsUnit]::Pixel);$cg.Dispose()
   $composite.Save((Join-Path $out ($name+'-after.png')))
  }
  $ready=G $form 'simpleReady'
@@ -92,6 +92,15 @@ function Paint($name,[single]$ocrScale=1,$prepared=$null){
     if($b.GetPixel($xx,$yy).ToArgb() -ne $composite.GetPixel($xx,$yy).ToArgb()){$same=$false}
    }}
    Check $same ($name+': original value pixels unchanged: '+$label.Text)
+  }
+ }
+ if($name -eq 'public-character-native'){
+  foreach($rect in @([Drawing.Rectangle]::new(276,226,106,189),[Drawing.Rectangle]::new(464,248,87,168))){
+   $same=$true
+   for($yy=$rect.Top;$yy -lt $rect.Bottom;$yy++){for($xx=$rect.Left;$xx -lt $rect.Right;$xx++){
+    if($b.GetPixel($xx,$yy).ToArgb() -ne $composite.GetPixel($xx,$yy).ToArgb()){$same=$false}
+   }}
+   Check $same ('120 DPI replay: entire live value column unchanged '+$rect)
   }
  }
  $rows | ConvertTo-Json -Depth 8 | Set-Content -Encoding UTF8 (Join-Path $out ($name+'.json'))
@@ -137,13 +146,14 @@ try {
  Fill 235 265 660 340 ([Drawing.Color]::FromArgb(42,44,101))
  [void](Row 'Teleport' 251 279 19)
  [void](Row '[Master Level: 20]' 355 323)
- [void](Row 'Use arrow keys to teleport a certain distance in the same map.' 355 350)
+ [void](Row 'Use the arrow keys to teleport a set distance within the same map.' 355 350)
  [void](Row '[Current Level: 1]' 252 450)
  [void](Row 'MP -55; Teleport, with 110 in distance' 252 474)
  [void](Row '[Next Level: 2]' 252 526)
  [void](Row 'MP -53; Teleport, with 112 in distance' 252 550)
  $r=Paint 'skill-adjacent'
  foreach($text in @('魔力吸收','群体治愈','神之保护','圣箭术')){Check (@($r | Where-Object {$_.ready -and $_.text -eq $text}).Count -gt 0) "list name drawn: $text"}
+ Check (@($r | Where-Object {$_.ready -and $_.role -eq 'skill-body'}).Count -eq 1) 'known complete tooltip overview drawn together with current and next levels'
  Check (@($r | Where-Object {$_.ready -and $_.role -eq 'skill-current-body' -and $_.text -match '110'}).Count -eq 1) 'current level effect drawn with its own distance'
  Check (@($r | Where-Object {$_.ready -and $_.role -eq 'skill-next-body' -and $_.text -match '112'}).Count -eq 1) 'next level effect drawn with its own distance'
  Frame

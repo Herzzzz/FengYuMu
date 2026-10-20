@@ -44,6 +44,7 @@ namespace MapleOverlay {
   public void DrawString(string t,Font f,SolidBrush brush,PointF origin,StringFormat format){DrawString(t,f,brush,new RectangleF(origin.X,origin.Y,100000,fontHeight(f)),format);}
   static float fontHeight(Font f){return f.Size*1.4f;}
   public void DrawString(string t,Font f,SolidBrush b,float x,float y){DrawString(t,f,b,new RectangleF(x,y,80,20),StringFormat.GenericTypographic);}
+  public void DrawImage(Bitmap b,Rectangle dst,Rectangle src,GraphicsUnit unit){if(dst.Size!=src.Size)throw new Exception("pixel extent changed");DrawImageUnscaled(b,dst.Location);}
   public void DrawImageUnscaled(Image image,int x,int y){DrawImageUnscaled((Bitmap)image,new Point(x,y));}
   public void DrawImageUnscaled(Bitmap b,Point at){Draws++;int[] a=b.Pixels(),p=target.Pixels();for(int y=0;y<b.Height;y++)for(int x=0;x<b.Width;x++)if((uint)a[y*b.Width+x]>>24!=0&&x+at.X>=0&&x+at.X<target.Width&&y+at.Y>=0&&y+at.Y<target.Height)p[(y+at.Y)*target.Width+x+at.X]=a[y*b.Width+x];target.Set(p);}
   public void Clear(Color c){target.Set(Enumerable.Repeat(c.ToArgb(),target.Width*target.Height).ToArray());}public void Dispose(){}

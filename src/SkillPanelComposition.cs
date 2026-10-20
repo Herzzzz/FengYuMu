@@ -282,7 +282,7 @@ namespace MapleOverlay
                 if (height <= 26.0f) singleLine.Add(height);
             float rowHeight = singleLine.Count == 0 ? 14.0f :
                 singleLine[singleLine.Count / 2];
-            plan.BodyFontSize = Math.Max(11.0f, Math.Min(16.0f, rowHeight - 1.0f));
+            plan.BodyFontSize = Math.Max(11.0f, Math.Min(16.0f, rowHeight * 0.82f));
             plan.TitleFontSize = Math.Max(14.0f, Math.Min(24.0f, plan.BodyFontSize + 3.0f));
             plan.FontFamily = "SimSun";
 

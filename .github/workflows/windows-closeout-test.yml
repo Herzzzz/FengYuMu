@@ -4,9 +4,10 @@ on:
   push:
     branches: [codex/closeout-borrowed-lessons]
     paths:
-      - src/OfflineChat.cs
-      - src/OnlineAiProtocol.cs
-      - tests/logic-chat-closeout.ps1
+      - src/**
+      - tests/logic-live-panel-closeout.ps1
+      - tests/logic-simple-flow-r11.ps1
+      - '*.tsv'
       - .github/workflows/windows-closeout-test.yml
   workflow_dispatch:
 
@@ -40,6 +41,19 @@ jobs:
             & powershell.exe -NoProfile -ExecutionPolicy Bypass -File "./tests/$name.ps1"
             if ($LASTEXITCODE -ne 0) { throw "$name failed ($LASTEXITCODE)" }
           }
+      - name: Validate complete panels and native OCR replay
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $exe = @(Get-ChildItem -LiteralPath $PWD -Filter *.exe -File)[0].FullName
+          foreach ($name in @('logic-live-panel-closeout','logic-equipment-fields','logic-skill-panel-001','logic-skill-title-matching','logic-skill-detail-semantics')) {
+            & powershell.exe -NoProfile -ExecutionPolicy Bypass -File "./tests/$name.ps1" -ExePath $exe
+            if ($LASTEXITCODE -ne 0) { throw "$name failed ($LASTEXITCODE)" }
+          }
+          foreach ($name in @('logic-quest-panel-layout','logic-item-cp1','logic-item-text-001')) {
+            & powershell.exe -NoProfile -ExecutionPolicy Bypass -File "./tests/$name.ps1"
+            if ($LASTEXITCODE -ne 0) { throw "$name failed ($LASTEXITCODE)" }
+          }
       - name: Validate native settings and UI startup
         shell: powershell
         run: |
@@ -65,8 +79,8 @@ jobs:
           $notes = @(
             '枫语幕4.0 修复测试更新包（非正式发布）',
             "源码提交：$env:GITHUB_SHA；Windows 原生构建。",
-            '本次新增：聊天改价/数字变化不再当旧消息；缓存保留小数、符号及百分比并隔离模型/接口/语境；昵称只按完整边界保护。',
-            '已验收的任务、装备、技能、道具修复包含在本包；不表示全部词条都已翻译。',
+            '本次重点：深蓝详情提示框独立匹配并优先绘制；修复技能名称/等级效果、属性字段、任务阶段正文、装备漏字段与黄色喇叭。',
+            '任务依据当前阶段匹配，在白色正文区整体排版，灰色需求数量保留。词库未覆盖的内容仍可能保留原文。',
             '仍未完成：提示框遮挡聊天的捕获隔离；真实游戏与混合DPI实测。',
             '使用：退出旧版，完整解压到新目录，启动枫语幕.exe；词库设置指向本包枫语幕词库.tsv，保留三份TSV。',
             '本包不含可选Paddle组件，先选Windows OCR并确保英文OCR可用；也可复制旧目录完整PrimaryOcr文件夹。',
@@ -79,10 +93,10 @@ jobs:
             $manifest[$_.Name] = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash
           }
           $manifest | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $packageRoot 'FILES-SHA256.json') -Encoding utf8
-          $zip = Join-Path $outputRoot 'FengYuMu_v4.0_Closeout_Test.zip'
+          $zip = Join-Path $outputRoot 'FengYuMu_v4.0_Tooltip_Fix_Test.zip'
           Compress-Archive -Path "$packageRoot/*" -DestinationPath $zip
           $hash = (Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash
-          "$hash  FengYuMu_v4.0_Closeout_Test.zip" | Set-Content -LiteralPath ($zip + '.sha256') -Encoding ascii
+          "$hash  FengYuMu_v4.0_Tooltip_Fix_Test.zip" | Set-Content -LiteralPath ($zip + '.sha256') -Encoding ascii
           Write-Host "TEST_PACKAGE_SHA256=$hash"
       - uses: actions/upload-artifact@v4
         with:

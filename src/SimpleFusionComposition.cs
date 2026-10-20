@@ -47,7 +47,8 @@ namespace MapleOverlay
             if (simpleLayerGeneration != recognitionGeneration || !ClientRectangle.Contains(simpleLayerBounds)) return true;
             Rectangle game = gameBounds; game.Offset(-Bounds.Left, -Bounds.Top);
             if (!game.Contains(simpleLayerBounds)) return true;
-            graphics.DrawImageUnscaled(simpleLayer, simpleLayerBounds.Location);
+            graphics.DrawImage(simpleLayer, simpleLayerBounds,
+                new Rectangle(0, 0, simpleLayer.Width, simpleLayer.Height), GraphicsUnit.Pixel);
             foreach (OverlayLabel label in labels) label.PaintedLastPass = simpleReady.Contains(label);
             lastPaintedTranslationCount = simpleReady.Count;
             MarkItemPlansPainted("window", false);
@@ -152,8 +153,11 @@ namespace MapleOverlay
                         { failures[label] = "composition-work-budget"; continue; }
                         work += (int)cost;
                         List<Rectangle> guards = FusionRowEvidence.OtherGuards(observed, rows);
-                        ReconstructedTextSurface surface;
-                        bool smooth = TextSurfaceReconstruction.TryReconstruct(frame, width, height, area, rows, out surface, out reason, guards);
+                        ReconstructedTextSurface surface = null;
+                        bool smooth = label.SemanticRole == "character-field" &&
+                            label.MatchSource == "character-field-surface" &&
+                            TryReconstructCharacterCell(frame, width, area, out surface);
+                        if (!smooth) smooth = TextSurfaceReconstruction.TryReconstruct(frame, width, height, area, rows, out surface, out reason, guards);
                         if (!smooth && !SimpleBackgroundFill.TryReconstruct(frame, width, height, area, rows, guards, out surface))
                         { failures[label] = "invalid-background-source"; continue; }
                         if(label.MatchSource=="skill-overview-slot")surface.SourceHeight=Math.Min(20,surface.SourceHeight);
@@ -427,6 +431,27 @@ namespace MapleOverlay
             format.Trimming = StringTrimming.None;
             format.FormatFlags &= ~StringFormatFlags.NoWrap;
             return format;
+        }
+
+        private static bool TryReconstructCharacterCell(int[] frame,int width,Rectangle cell,
+            out ReconstructedTextSurface surface)
+        {
+            surface=null;long red=0,green=0,blue=0;int count=0;
+            // These are already measured coloured label cells. Sampling their outer
+            // ring picks the grey frame/value column instead of the cell background.
+            // Use the saturated majority inside the cell; white glyphs are excluded.
+            for(int y=cell.Top;y<cell.Bottom;y++)for(int x=cell.Left;x<cell.Right;x++) {
+                int p=frame[y*width+x],r=(p>>16)&255,g=(p>>8)&255,b=p&255;
+                if(Math.Max(r,Math.Max(g,b))-Math.Min(r,Math.Min(g,b))<45)continue;
+                red+=r;green+=g;blue+=b;count++;
+            }
+            if(count*2<cell.Width*cell.Height)return false;
+            int color=Color.FromArgb((int)(red/count),(int)(green/count),(int)(blue/count)).ToArgb();
+            int[] pixels=new int[cell.Width*cell.Height];
+            for(int i=0;i<pixels.Length;i++)pixels[i]=color;
+            surface=new ReconstructedTextSurface{Region=cell,Pixels=pixels,Ink=Color.White.ToArgb(),
+                SourceHeight=Math.Min(18,cell.Height),MaskedPixels=pixels.Length};
+            return true;
         }
 
         private static Font FitSimpleFont(Graphics graphics, string text, SizeF area, float sourceHeight)

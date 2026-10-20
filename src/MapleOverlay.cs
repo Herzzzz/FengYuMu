@@ -7054,7 +7054,8 @@ private Rectangle FindCursorPanelCrop(
                 bool skillLevel = line.Text.IndexOf("master level", StringComparison.OrdinalIgnoreCase) >= 0 ||
                     line.Text.IndexOf("current level", StringComparison.OrdinalIgnoreCase) >= 0 ||
                     line.Text.IndexOf("next level", StringComparison.OrdinalIgnoreCase) >= 0;
-                if (skillLevel && TryTranslateStructuredLine(line.Text, false, true, out structured))
+                if (skillLevel && (fieldOwner == null || !handledSkillPanels.Contains(fieldOwner)) &&
+                    TryTranslateStructuredLine(line.Text, false, true, out structured))
                     AddWholeLineLabel(output, line, structured, ocrScale, false);
             }
             AddStructuredFieldLabels(output, allLines, panelByLine, ocrScale, handledItemLines);

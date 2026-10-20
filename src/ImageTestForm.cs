@@ -69,7 +69,9 @@ namespace MapleOverlay
                 {
                     if(simpleLayer!=null)
                     {
-                        using(Graphics g=Graphics.FromImage(output.Image))g.DrawImageUnscaled(simpleLayer,0,0);
+                        using(Graphics g=Graphics.FromImage(output.Image))
+                            g.DrawImage(simpleLayer,new Rectangle(Point.Empty,source.Size),
+                                new Rectangle(Point.Empty,simpleLayer.Size),GraphicsUnit.Pixel);
                         output.Painted=simpleReady.Count;
                         int itemLabels=0;foreach(OverlayLabel itemLabel in found)if(itemLabel.ItemPanel!=null)itemLabels++;
                         Program.LogRuntimeEvent("item-picture-labels","labels="+found.Count+" item="+itemLabels+" ready="+simpleReady.Count);
@@ -164,7 +166,9 @@ namespace MapleOverlay
                     {
                         if(decoded.Width>8192||decoded.Height>8192||(long)decoded.Width*decoded.Height>16000000)throw new ArgumentException("图片过大，请使用单张游戏窗口截图。");
                         Bitmap next=new Bitmap(decoded.Width,decoded.Height,PixelFormat.Format32bppArgb);
-                        using(Graphics g=Graphics.FromImage(next))g.DrawImageUnscaled(decoded,0,0);
+                        using(Graphics g=Graphics.FromImage(next))
+                            g.DrawImage(decoded,new Rectangle(Point.Empty,next.Size),
+                                new Rectangle(Point.Empty,decoded.Size),GraphicsUnit.Pixel);
                         ticket++;if(cancellation!=null)cancellation.Cancel();picture.Image=null;ClearResult();if(original!=null)original.Dispose();original=next;picture.Image=original;
                         recognized.Clear();status.Text="图片已打开。点击识别并翻译或按 F8。";
                     }
