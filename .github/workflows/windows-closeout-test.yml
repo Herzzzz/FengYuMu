@@ -32,13 +32,14 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          ./tests/logic-chat-closeout.ps1
-          ./tests/logic-chat-continuity.ps1
-          ./tests/logic-chat-megaphone-pipeline.ps1
-          ./tests/logic-chat-megaphone-pixels.ps1
-          ./tests/logic-scene-feedback-safety.ps1
-          ./tests/logic-user-feedback-safety.ps1
-          ./tests/logic-simple-flow-r11.ps1
+          foreach ($name in @('logic-chat-closeout','logic-chat-continuity','logic-scene-feedback-safety','logic-user-feedback-safety','logic-simple-flow-r11')) {
+            & (Join-Path $PSHOME 'pwsh.exe') -NoProfile -File "./tests/$name.ps1"
+            if ($LASTEXITCODE -ne 0) { throw "$name failed ($LASTEXITCODE)" }
+          }
+          foreach ($name in @('logic-chat-megaphone-pipeline','logic-chat-megaphone-pixels')) {
+            & powershell.exe -NoProfile -ExecutionPolicy Bypass -File "./tests/$name.ps1"
+            if ($LASTEXITCODE -ne 0) { throw "$name failed ($LASTEXITCODE)" }
+          }
       - name: Validate native settings and UI startup
         shell: powershell
         run: ./tests/logic-online-ai-settings.ps1 -ExePath "$PWD/枫语幕.exe"
