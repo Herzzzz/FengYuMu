@@ -42,7 +42,11 @@ jobs:
           }
       - name: Validate native settings and UI startup
         shell: powershell
-        run: ./tests/logic-online-ai-settings.ps1 -ExePath "$PWD/枫语幕.exe"
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $exe = @(Get-ChildItem -LiteralPath $PWD -Filter *.exe -File)
+          if ($exe.Count -ne 1) { throw 'Expected one native application executable' }
+          ./tests/logic-online-ai-settings.ps1 -ExePath $exe[0].FullName
       - name: Assemble test-only runtime package
         shell: pwsh
         run: |
