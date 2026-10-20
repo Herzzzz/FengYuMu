@@ -120,7 +120,7 @@ try {
  $quote=@($parse.Invoke($null,[object[]]@('DemoUser: '+$warning)))
  Check ($quote.Count -eq 1 -and $quote[0] -eq ('DemoUser: '+$warning)) 'real speaker quoting feedback is retained'
  $chatCtor=$chatType.GetConstructors($f)[0]
- $chatForm=$chatCtor.Invoke([object[]]@($form,$root))
+ $chatForm=$chatCtor.Invoke([object[]]@($form,[string]$root))
  try {
   $exact=G $chatForm 'linkedItemTranslations'
   $protect=$chatType.GetMethod('ProtectLinkedItemNames',$f)
@@ -145,7 +145,7 @@ try {
   [void](New-Item -ItemType Directory -Force $conflicts)
   $entries=@("Twin Ring`t戒指甲`t怀旧服-道具#1","Twin-Ring`t戒指乙`t怀旧服-装备#2")
   [IO.File]::WriteAllLines((Join-Path $conflicts ([IO.Path]::GetFileName($dict))),$entries,[Text.UTF8Encoding]::new($true))
-  $conflictForm=$chatCtor.Invoke([object[]]@($form,$conflicts))
+  $conflictForm=$chatCtor.Invoke([object[]]@($form,[string]$conflicts))
   try {
    $argsLink=[object[]]@('[Twin Ring] S>100K',(G $conflictForm 'linkedItemTranslations'),$null)
    [void]$protect.Invoke($null,$argsLink)
