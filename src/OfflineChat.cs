@@ -1774,8 +1774,15 @@ namespace MapleOverlay
             // QQ or another application after the settings page is clicked.
             if (overlay == null || !overlay.TryGetMapleWindowBounds(out game))
             {
-                status.Text = "未找到可用的 MapleStory 窗口";
-                status.Text = "请先启动 MapleStory 并切换为窗口模式，再框选游戏聊天区。";
+                // 以前这句话把「全屏」和「没找到窗口」混成一句「请切换为窗口模式」，
+                // 结果真窗口化的人照着改也改不好。现在按 tracker 给的原因分开说。
+                string why = overlay == null ? "" : (overlay.MapleLockDiagnostic ?? "");
+                if (why.Contains("全屏"))
+                    status.Text = "检测到全屏的 MapleStory，独占全屏截不了图。切成窗口（别最大化，四周留点桌面），再点「聊天框位置」。";
+                else if (why.Contains("无法唯一判断"))
+                    status.Text = why;
+                else
+                    status.Text = "没找到 MapleStory 窗口。先开游戏（窗口化、别最大化），再点「聊天框位置」。";
                 return;
             }
             try

@@ -1295,7 +1295,7 @@ namespace MapleOverlay
             overlay = owner;
             AutoScaleDimensions = new SizeF(96.0f, 96.0f);
             AutoScaleMode = AutoScaleMode.Dpi;
-            Text = "枫语幕 v4.4.4";
+            Text = "枫语幕 v4.4.5";
             StartPosition = FormStartPosition.CenterScreen;
             FormBorderStyle = FormBorderStyle.Sizable;
             MaximizeBox = true;

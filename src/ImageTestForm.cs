@@ -132,7 +132,7 @@ namespace MapleOverlay
         {
             Current=this;ownsClient=shared==null;client=shared??new PrimaryOcrClient(AppDomain.CurrentDomain.BaseDirectory);
             backend=new OverlayForm(true,client,store);
-            Text="枫语幕 v4.4.4 · 本地图片 OCR 测试";ClientSize=new Size(1120,760);MinimumSize=new Size(760,540);
+            Text="枫语幕 v4.4.5 · 本地图片 OCR 测试";ClientSize=new Size(1120,760);MinimumSize=new Size(760,540);
             Font=new Font("Microsoft YaHei UI",9);KeyPreview=true;
             FlowLayoutPanel bar=new FlowLayoutPanel{Dock=DockStyle.Top,Height=44,Padding=new Padding(6)};
             Button open=new Button{Text="打开图片…",Width=110,Height=28};open.Click+=delegate{OpenPicture();};

@@ -141,7 +141,7 @@ namespace MapleOverlay
                 Program.LogRuntimeEvent("overlay-published", "generation=" + generation + " phase=single elapsedMs=" + visibleRequestWatch.ElapsedMilliseconds);
                 Program.LogRuntimeEvent("ocr-complete", "generation=" + generation + " labels=" + labels.Count + " prepared=" + simpleReady.Count + " painted=" + lastPaintedTranslationCount + " elapsedMs=" + clock.ElapsedMilliseconds);
                 SetInteractionStatus("词库候选 " + labels.Count + " 条；确认替换 " + simpleReady.Count + " 条；实际显示 " + lastPaintedTranslationCount + " 条。");
-                tray.Text = "枫语幕 v4.4.4（显示 " + lastPaintedTranslationCount + " 条，" + clock.ElapsedMilliseconds + "ms）";
+                tray.Text = "枫语幕 v4.4.5（显示 " + lastPaintedTranslationCount + " 条，" + clock.ElapsedMilliseconds + "ms）";
                 if (automatic)
                 {
                     continuousTranslationFailures = 0;

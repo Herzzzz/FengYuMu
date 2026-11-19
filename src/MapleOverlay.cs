@@ -23,8 +23,8 @@ using Windows.Storage.Streams;
 
 [assembly: AssemblyTitle("枫语幕")]
 [assembly: AssemblyProduct("枫语幕")]
-[assembly: AssemblyVersion("4.4.4.0")]
-[assembly: AssemblyFileVersion("4.4.4.0")]
+[assembly: AssemblyVersion("4.4.5.0")]
+[assembly: AssemblyFileVersion("4.4.5.0")]
 
 namespace MapleOverlay
 {
@@ -1851,6 +1851,7 @@ namespace MapleOverlay
             {
                 List<TranslationEntry> candidates;
                 TranslationEntry best = null;
+                int matchedLength = 0;
                 if (source.TryGetValue(normalized[position], out candidates))
                 {
                     foreach (TranslationEntry candidate in candidates)
@@ -1864,17 +1865,32 @@ namespace MapleOverlay
                                 candidate.TaskId != taskId) continue;
                         }
                         if (position + candidate.Normalized.Length > normalized.Length) continue;
-                        if (string.CompareOrdinal(normalized, position, candidate.Normalized, 0,
-                            candidate.Normalized.Length) != 0) continue;
+                        int matchLength = candidate.Normalized.Length;
+                        // The prefix must be identical; plural support only extends a form
+                        // that really is this singular entry. "the Lupins" can reach "Lupin"
+                        // because "lupin" matches and the boundary fails on the trailing "s",
+                        // but a different stem ("toy rifle") must never borrow the suffix.
+                        if (string.CompareOrdinal(normalized, position, candidate.Normalized,
+                            0, matchLength) != 0) continue;
+                        if (!IsBoundary(normalized, position + matchLength))
+                        {
+                            // "Lupins": the next char is a letter, so the singular form cannot
+                            // end here. Retry with the plural/possessive suffix.
+                            if (matchLength < 3) continue;
+                            int extraSuffix = PluralExtension(normalized, position + matchLength);
+                            if (extraSuffix == 0) continue;
+                            matchLength += extraSuffix;
+                        }
                         if (!IsBoundary(normalized, position - 1) ||
-                            !IsBoundary(normalized, position + candidate.Normalized.Length)) continue;
+                            !IsBoundary(normalized, position + matchLength)) continue;
                         best = candidate;
+                        matchedLength = matchLength;
                         break;
                     }
                 }
                 if (best == null) { position++; continue; }
-                results.Add(new MatchResult { Entry = best, Start = position, Length = best.Normalized.Length });
-                position += best.Normalized.Length;
+                results.Add(new MatchResult { Entry = best, Start = position, Length = matchedLength });
+                position += matchedLength;
             }
             return results;
         }
@@ -2051,6 +2067,23 @@ namespace MapleOverlay
             if (at < 0 || at >= text.Length) return true;
             char c = text[at];
             return !Char.IsLetterOrDigit(c) && c != '\'';
+        }
+
+        // Returns how many characters the suffix occupies right after a singular dictionary
+        // form: "Lupins" -> 1 ("s"), "Boxes" -> 2 ("es"), "Lupin's" -> 2 ("'s"). Zero means
+        // the text does not continue the singular form at all.
+        private static int PluralExtension(string text, int at)
+        {
+            if (at < 0 || at >= text.Length) return 0;
+            if (text[at] == 's') return 1;
+            if (text[at] == 'e' && at + 1 < text.Length && text[at + 1] == 's') return 2;
+            // Possessive: "Lupin's Bananas" still names the Lupin entry.
+            if (text[at] == '\'')
+            {
+                if (at + 1 < text.Length && text[at + 1] == 's') return 2;
+                return 1;
+            }
+            return 0;
         }
 
         private static bool TaskSequenceSuffixMatches(string recognized, string candidate)
@@ -4580,6 +4613,14 @@ namespace MapleOverlay
             return mapleWindows.TryGetCaptureBounds(out bounds, out fullScreen) && !fullScreen;
         }
 
+        // 锁不上时到底是哪种：全屏、没找到、还是好几个窗口分不清。
+        // 上层拿这句去分提示，别再统一报「请切换为窗口模式」——
+        // 明明窗口化的人照着改也改不好，白折腾。
+        internal string MapleLockDiagnostic
+        {
+            get { return mapleWindows.Diagnostic; }
+        }
+
         internal bool TryGetSnapWindowBounds(out Rectangle bounds)
         {
             // Positioning needs valid geometry, not permission to capture. An unrelated
@@ -4678,7 +4719,7 @@ namespace MapleOverlay
         private void BuildTray()
         {
             tray.Icon = Program.AppIcon;
-            tray.Text = "枫语幕 v4.4.4";
+            tray.Text = "枫语幕 v4.4.5";
             tray.Visible = true;
             ContextMenuStrip menu = new ContextMenuStrip();
             ToolStripMenuItem main = new ToolStripMenuItem("打开主界面");
@@ -4727,8 +4768,8 @@ namespace MapleOverlay
                 tray.Visible = false;
                 tray.Icon = Program.AppIcon;
                 tray.Text = GraphicsWindowCapture.LastFrameWidth > 0
-                    ? "枫语幕 v4.4.4 · " + GraphicsWindowCapture.LastFrameWidth + "×" + GraphicsWindowCapture.LastFrameHeight
-                    : "枫语幕 v4.4.4（内存待机）";
+                    ? "枫语幕 v4.4.5 · " + GraphicsWindowCapture.LastFrameWidth + "×" + GraphicsWindowCapture.LastFrameHeight
+                    : "枫语幕 v4.4.5（内存待机）";
                 tray.Visible = true;
                 Program.LogRuntimeEvent("tray-register-request", "localVisible=" + tray.Visible + " shellPresence=unverified");
             }
@@ -4978,7 +5019,7 @@ namespace MapleOverlay
             ShowCurrentTranslations();
             if (continuousTranslationEnabled)
                 continuousTranslationSuppressedUntilUtc = DateTime.UtcNow.AddSeconds(3);
-            tray.Text = "枫语幕 v4.4.4";
+            tray.Text = "枫语幕 v4.4.5";
         }
 
         private Task ShowTranslationAsync()
