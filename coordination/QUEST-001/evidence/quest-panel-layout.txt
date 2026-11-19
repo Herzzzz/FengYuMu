@@ -1,0 +1,165 @@
+PASS: short-with-summary: production journal label built
+PASS: short-with-summary: replacement region covers the first body row
+PASS: short-with-summary: replacement region covers the measured right edge
+PASS: short-with-summary: replacement region stays inside the measured panel
+PASS: short-with-summary: Quest Summary row is outside the body region
+PASS: short-with-summary: objective counter 1 is protected
+PASS: short-with-summary: plan font unit is Pixel
+PASS: short-with-summary: body base size is at least 15px
+PASS: short-with-summary: title is larger than body
+PASS: short-with-summary: measured line width fits content width
+PASS: short-with-summary: full body has at least one page
+PASS: short-without-summary: production journal label built
+PASS: short-without-summary: replacement region covers the first body row
+PASS: short-without-summary: replacement region covers the measured right edge
+PASS: short-without-summary: replacement region stays inside the measured panel
+PASS: short-without-summary: plan font unit is Pixel
+PASS: short-without-summary: body base size is at least 15px
+PASS: short-without-summary: title is larger than body
+PASS: short-without-summary: measured line width fits content width
+PASS: short-without-summary: full body has at least one page
+PASS: three-objectives: production journal label built
+PASS: three-objectives: replacement region covers the first body row
+PASS: three-objectives: replacement region covers the measured right edge
+PASS: three-objectives: replacement region stays inside the measured panel
+PASS: three-objectives: Quest Summary row is outside the body region
+PASS: three-objectives: objective counter 1 is protected
+PASS: three-objectives: objective counter 2 is protected
+PASS: three-objectives: objective counter 3 is protected
+PASS: three-objectives: plan font unit is Pixel
+PASS: three-objectives: body base size is at least 15px
+PASS: three-objectives: title is larger than body
+PASS: three-objectives: measured line width fits content width
+PASS: three-objectives: full body has at least one page
+PASS: R1 prose is not a counter: Please take care of 50
+PASS: R1 prose is not a counter: Please collect a total of 20
+PASS: R1 prose is not a counter: care of 20
+PASS: R1 real counter structure recognized: stump 30 f 30
+PASS: R1 real counter structure recognized: Pink Anthurium 0 / 1
+PASS: R1 real counter structure recognized: O / 2O
+PASS: R1 real counter structure recognized: 30 / 30
+PASS: R1 counter pair needs a word boundary
+PASS: R1 target-column location allows an all-confusable slash count
+PASS: R1 all-confusable slash count outside the target column is rejected
+PASS: R1 prose is not a counter even in a misleading target column
+PASS: R1 corresponding body still builds a journal label
+PASS: R1 corresponding body region covers the first body row
+PASS: R1 corresponding body region covers the last body row
+PASS: R1 corresponding body receives the shared typography plan
+PASS: R1 corresponding body passes the completeness guard
+PASS: r1-conflicting-quantity: whole journal replacement is rejected
+PASS: r1-conflicting-quantity: rejection reason is visible-quantity-not-in-record:50 (got quest-journal-incomplete:visible-quantity-not-in-record:50)
+PASS: r1-conflicting-quantity: original pixels are preserved
+PASS: r1-unknown-appended-prose: whole journal replacement is rejected
+PASS: r1-unknown-appended-prose: rejection reason is visible-prose (got quest-journal-incomplete:visible-prose-order-or-content:the)
+PASS: r1-unknown-appended-prose: original pixels are preserved
+PASS: r3a-titleless-first-positive: journal replacement is built
+PASS: r3a-titleless-first-positive: completeness guard passes
+PASS: r3a-titleless-first-positive: first visible line is inside the region
+PASS: r3a-titleless-first-quantity: whole journal replacement is rejected
+PASS: r3a-titleless-first-quantity: rejection reason is visible-quantity-not-in-record:50 (got quest-journal-incomplete:visible-quantity-not-in-record:50)
+PASS: r3a-titleless-first-quantity: original pixels are preserved
+PASS: r3a-titleless-first-unknown: whole journal replacement is rejected
+PASS: r3a-titleless-first-unknown: rejection reason is visible-prose (got quest-journal-incomplete:visible-prose-order-or-content:mayor)
+PASS: r3a-titleless-first-unknown: original pixels are preserved
+PASS: r3a-scrolled-first-positive: journal replacement is built
+PASS: r3a-scrolled-first-positive: completeness guard passes
+PASS: r3a-scrolled-first-positive: first visible line is inside the region
+PASS: r3a-scrolled-first-quantity: whole journal replacement is rejected
+PASS: r3a-scrolled-first-quantity: rejection reason is visible-quantity-not-in-record:50 (got quest-journal-incomplete:visible-quantity-not-in-record:50)
+PASS: r3a-scrolled-first-quantity: original pixels are preserved
+PASS: r3a-scrolled-first-unknown: whole journal replacement is rejected
+PASS: r3a-scrolled-first-unknown: rejection reason is visible-prose (got quest-journal-incomplete:visible-prose-order-or-content:mayor)
+PASS: r3a-scrolled-first-unknown: original pixels are preserved
+PASS: r3a-titleless-no-caption-quantity: no journal replacement is emitted
+PASS: r3a-titleless-no-caption-quantity: original pixels are preserved
+PASS: r3a-titleless-no-caption-unknown: no journal replacement is emitted
+PASS: r3a-titleless-no-caption-unknown: original pixels are preserved
+PASS: r3a-scrolled-no-caption-quantity: no journal replacement is emitted
+PASS: r3a-scrolled-no-caption-quantity: original pixels are preserved
+PASS: r3a-scrolled-no-caption-unknown: no journal replacement is emitted
+PASS: r3a-scrolled-no-caption-unknown: original pixels are preserved
+PASS: R3b OCR-tolerant ordered alignment accepts: She wanted 20 each of Orange Mushroom Cap
+PASS: R3b OCR-tolerant ordered alignment accepts: I GOT A REQUEST FROM MAYA OF HENESYS, WHO HAS BEEN COLLECTING VARIOUS ITEMS.
+PASS: R3b OCR-tolerant ordered alignment accepts: I got a reqvest from Maya of Henesys, who has been collecting various items.
+PASS: R3b changed order/negation/unknown alignment rejects: She wanted Green Mushroom Cap but not Orange Mushroom Cap
+PASS: R3b rejection identifies the unmatched token: order-or-content:but
+PASS: R3b changed order/negation/unknown alignment rejects: She wanted Green Mushroom Cap Orange Mushroom Cap
+PASS: R3b rejection identifies the unmatched token: order-or-content:orange
+PASS: R3b changed order/negation/unknown alignment rejects: She wanted 20 each of Orange Mushroom Cap please
+PASS: R3b rejection identifies the unmatched token: order-or-content:please
+PASS: R3b multi-line prose in source order is accepted
+PASS: R3b multi-line prose in reversed order is rejected
+PASS: R3b cross-line reorder identifies the unmatched token: order-or-content:got
+PASS: R3b positive OCR-noise body passes the completeness guard
+PASS: r3b-negation-appended: whole journal replacement is rejected
+PASS: r3b-negation-appended: ordered alignment reason recorded (got quest-journal-incomplete:visible-prose-order-or-content:she)
+PASS: r3b-negation-appended: original pixels are preserved
+PASS: r3b-reordered-appended: whole journal replacement is rejected
+PASS: r3b-reordered-appended: ordered alignment reason recorded (got quest-journal-incomplete:visible-prose-order-or-content:she)
+PASS: r3b-reordered-appended: original pixels are preserved
+PASS: R3c numeric association accepts: He wants you to get him 1 Orange Mushroom Cap and 10 Blue Snail Shells
+PASS: R3c numeric association accepts: 10
+PASS: R3c numeric association accepts: 1
+PASS: R3c numeric association rejects: He wants you to get him 10 Orange Mushroom Cap and 1 Blue Snail Shells
+PASS: R3c numeric rejection identifies the unmatched token: order-or-content:orange
+PASS: R3c numeric association rejects: He wants you to get him 1 Orange Mushroom Cap and 1 Blue Snail Shells
+PASS: R3c numeric rejection identifies the unmatched token: order-or-content:1
+PASS: R3c numeric association rejects: He wants you to get him 1 Orange Mushroom Cap and 10 Blue Snail Shells and 10 Blue Snail Shells
+PASS: R3c numeric rejection identifies the unmatched token: order-or-content:and
+PASS: R3c numeric association rejects: 2
+PASS: R3c numeric rejection identifies the unmatched token: order-or-content:2
+PASS: r3c-correct-association: journal replacement is built
+PASS: r3c-correct-association: completeness guard passes
+PASS: r3c-swapped-quantities: whole journal replacement is rejected
+PASS: r3c-swapped-quantities: numeric association reason recorded (got quest-journal-incomplete:visible-prose-order-or-content:orange)
+PASS: r3c-swapped-quantities: original pixels are preserved
+PASS: r3c-changed-blue-count: whole journal replacement is rejected
+PASS: r3c-changed-blue-count: numeric association reason recorded (got quest-journal-incomplete:visible-prose-order-or-content:1)
+PASS: r3c-changed-blue-count: original pixels are preserved
+PASS: r3c-duplicate-multiplicity: whole journal replacement is rejected
+PASS: r3c-duplicate-multiplicity: numeric association reason recorded (got quest-journal-incomplete:visible-prose-order-or-content:and)
+PASS: r3c-duplicate-multiplicity: original pixels are preserved
+PASS: R2 actual-GDI+ plan returns for emoji-a
+PASS: R2 emoji-a preserves every character
+PASS: R2 emoji-a pages contain no lone surrogates
+PASS: R2 emoji-a title preserves every character
+PASS: R2 emoji-a title contains no lone surrogates
+PASS: R2 actual-GDI+ plan returns for supplementary-long
+PASS: R2 supplementary-long preserves every character
+PASS: R2 supplementary-long pages contain no lone surrogates
+PASS: R2 supplementary-long title preserves every character
+PASS: R2 supplementary-long title contains no lone surrogates
+PASS: R2 supplementary-long paginates
+PASS: manual-short: composition plan built with actual GDI+ metrics
+PASS: manual-short: short body stays on one page
+PASS: manual-short: body base size stays readable
+PASS: manual-short: actual measured line width fits content
+PASS: manual-long: composition plan built with actual GDI+ metrics
+PASS: manual-long: long body paginates instead of shrinking
+PASS: manual-long: pagination preserves all characters
+PASS: manual-long: body base size stays readable
+PASS: manual-long: actual measured line width fits content
+PASS: scale 1: production journal label built
+PASS: scale 1: font unit is Pixel
+PASS: scale 1: body base size is readable
+PASS: scale 1: body base size does not shrink
+PASS: scale 1: measured width fits
+PASS: scale 1.25: production journal label built
+PASS: scale 1.25: font unit is Pixel
+PASS: scale 1.25: body base size is readable
+PASS: scale 1.25: body base size does not shrink
+PASS: scale 1.25: measured width fits
+PASS: scale 1.5: production journal label built
+PASS: scale 1.5: font unit is Pixel
+PASS: scale 1.5: body base size is readable
+PASS: scale 1.5: body base size does not shrink
+PASS: scale 1.5: measured width fits
+PASS: scale 2: production journal label built
+PASS: scale 2: font unit is Pixel
+PASS: scale 2: body base size is readable
+PASS: scale 2: body base size does not shrink
+PASS: scale 2: measured width fits
+PASS: repeated F8 planning is deterministic
+PASS: repeated F8 plan is reusable by the compositor
+Quest panel layout: 164 checks passed; metrics=D:\GPT\文件\枫语幕\work\dsh-chat-001\coordination\QUEST-001\evidence\layout-metrics.json

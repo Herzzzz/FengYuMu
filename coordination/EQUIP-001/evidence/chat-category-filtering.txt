@@ -1,0 +1,7 @@
+
+An error has occurred that was not properly handled. Additional information is shown below. The PowerShell process will exit.
+Unhandled exception. System.IO.FileLoadException: The given assembly name was invalid.
+File name: 'ﾫg￭ﾋU^,'
+   at System.Reflection.AssemblyNameParser.Parse(ReadOnlySpan`1 name)
+   at System.Reflection.AssemblyName.ParseAsAssemblySpec(Char* pAssemblyName, Void* pAssemblySpec)
+聊天分类回归通过：组队信息只出现在“全部”和“组队”，不会混入普通或家族；频道栏使用无打光扁平按钮

@@ -1,0 +1,17 @@
+{
+  "taskId": "EQUIP-001",
+  "buildHead": "2e4d83ab97ca4f9951a37ad2df9678639ab960ef",
+  "exeSha256": "32AB92CFCC8402B4A28491A0626ED6D250B923B4C9230AEBD810797FCF18DE20",
+  "note": "These checks are recorded pre-existing/environment failures, not EQUIP-001 passes. Hotkey was confirmed identically on untouched baseline 399cc8e.",
+  "tests": [
+    {"name": "logic-overlay-label-layout", "exit": 1, "reason": "跨屏大小的矩形未被几何判据拒绝"},
+    {"name": "logic-overlay-paint-safety", "exit": 1, "reason": "stale source guard: OverlayLabel[] snapshot = labels.ToArray()"},
+    {"name": "logic-overlay-dual-rendering", "exit": 1, "reason": "stale source guard: label.RenderMode == LabelRenderMode.Seamless"},
+    {"name": "logic-panel-context-isolation", "exit": 1, "reason": "stale source guard: normalized.Contains(\"quest summary\")"},
+    {"name": "logic-quest-body-and-summary", "exit": 1, "reason": "stale source guard for old RemoveAll(TaskId) expression"},
+    {"name": "logic-quest-title-groups", "exit": 1, "reason": "dictionary/index assertion: Father's Mushroom Stew"},
+    {"name": "logic-quest-shell-resilience", "exit": 1, "reason": "clean synthetic scene reports empty scene on this host"},
+    {"name": "logic-characters-r15", "exit": 1, "reason": "stale hard-coded D:\\workspace\\work\\release-v4.0 path"},
+    {"name": "logic-hotkey-toggle", "exit": 1, "reason": "first F8 new-screenshot self-check; identical on baseline EXE E49562E787D8AC3FE2D7D2AC41D86E5A944325F9D302FA1E113F8A6ED09B11DB"}
+  ]
+}

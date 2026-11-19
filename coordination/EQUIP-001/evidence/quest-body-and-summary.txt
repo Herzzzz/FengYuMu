@@ -1,0 +1,12 @@
+
+An error has occurred that was not properly handled. Additional information is shown below. The PowerShell process will exit.
+Unhandled exception. System.IO.FileLoadException: The given assembly name was invalid.
+File name: 'ﾫg￭ﾋU^,'
+   at System.Reflection.AssemblyNameParser.Parse(ReadOnlySpan`1 name)
+   at System.Reflection.AssemblyName.ParseAsAssemblySpec(Char* pAssemblyName, Void* pAssemblySpec)
+Exception: D:\GPT\文件\枫语幕\work\dsh-chat-001\tests\logic-quest-body-and-summary.ps1:163
+Line |
+ 163 |          throw "Quest Summary / 任务正文支持缺少守卫：$required"
+     |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Quest Summary / 任务正文支持缺少守卫：results.RemoveAll(delegate(MatchResult match) { return match.Entry.TaskId.Length > 0;
+     | });

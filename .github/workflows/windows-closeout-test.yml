@@ -1,0 +1,119 @@
+name: Windows closeout test package
+
+on:
+  push:
+    branches: [codex/closeout-borrowed-lessons]
+    paths:
+      - src/**
+      - tests/logic-live-panel-closeout.ps1
+      - tests/logic-simple-flow-r11.ps1
+      - '*.tsv'
+      - .github/workflows/windows-closeout-test.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-closeout-test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-package:
+    runs-on: windows-2022
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Build native Windows executable
+        shell: pwsh
+        run: ./src/build.ps1
+      - name: Validate closeout logic and chat source preservation
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          foreach ($name in @('logic-chat-closeout','logic-chat-continuity','logic-scene-feedback-safety','logic-user-feedback-safety','logic-simple-flow-r11')) {
+            & (Join-Path $PSHOME 'pwsh.exe') -NoProfile -File "./tests/$name.ps1"
+            if ($LASTEXITCODE -ne 0) { throw "$name failed ($LASTEXITCODE)" }
+          }
+          foreach ($name in @('logic-chat-megaphone-pipeline','logic-chat-megaphone-pixels')) {
+            & powershell.exe -NoProfile -ExecutionPolicy Bypass -File "./tests/$name.ps1"
+            if ($LASTEXITCODE -ne 0) { throw "$name failed ($LASTEXITCODE)" }
+          }
+      - name: Prepare UTF-8 scripts for Windows PowerShell
+        shell: pwsh
+        run: |
+          # Windows PowerShell 5 reads BOM-less files as the legacy code page.
+          Get-ChildItem ./tests -Filter *.ps1 -File | ForEach-Object {
+            $text = [IO.File]::ReadAllText($_.FullName, [Text.Encoding]::UTF8)
+            [IO.File]::WriteAllText($_.FullName, $text, [Text.UTF8Encoding]::new($true))
+          }
+      - name: Validate complete panels and native OCR replay
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $exe = @(Get-ChildItem -LiteralPath $PWD -Filter *.exe -File)[0].FullName
+          foreach ($name in @('logic-live-panel-closeout','logic-skill-title-matching','logic-skill-detail-semantics')) {
+            & powershell.exe -NoProfile -ExecutionPolicy Bypass -File "./tests/$name.ps1" -ExePath $exe
+            if ($LASTEXITCODE -ne 0) { throw "$name failed ($LASTEXITCODE)" }
+          }
+          & (Join-Path $PSHOME 'pwsh.exe') -NoProfile -File './tests/logic-skill-panel-001.ps1' -ExePath $exe
+          if ($LASTEXITCODE -ne 0) { throw "skill panel failed ($LASTEXITCODE)" }
+          & (Join-Path $PSHOME 'pwsh.exe') -NoProfile -File './tests/logic-equipment-fields.ps1' -ExePath $exe
+          if ($LASTEXITCODE -ne 0) { throw "equipment fields failed ($LASTEXITCODE)" }
+          foreach ($name in @('logic-quest-panel-layout','logic-item-cp1','logic-item-text-001')) {
+            & powershell.exe -NoProfile -ExecutionPolicy Bypass -File "./tests/$name.ps1"
+            if ($LASTEXITCODE -ne 0) { throw "$name failed ($LASTEXITCODE)" }
+          }
+      - name: Validate native settings and UI startup
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $exe = @(Get-ChildItem -LiteralPath $PWD -Filter *.exe -File)
+          if ($exe.Count -ne 1) { throw 'Expected one native application executable' }
+          ./tests/logic-online-ai-settings.ps1 -ExePath $exe[0].FullName
+      - name: Assemble test-only runtime package
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          . ./tools/Build-Evidence.ps1
+          Assert-BuildEvidence "$PWD/枫语幕.exe" $PWD
+          $packageRoot = Join-Path $PWD 'test-package'
+          $outputRoot = Join-Path $PWD 'test-download'
+          New-Item -ItemType Directory -Force $packageRoot, $outputRoot | Out-Null
+          foreach ($name in @('枫语幕.exe','枫语幕.exe.build.json','枫语幕词库.tsv','基础补充词库.tsv','任务正文.tsv','LICENSE')) {
+            Copy-Item -LiteralPath (Join-Path $PWD $name) -Destination $packageRoot
+          }
+          foreach ($name in @('Export-LatestF8Diagnostics.ps1','导出最近F8诊断.cmd')) {
+            Copy-Item -LiteralPath (Join-Path "$PWD/tools" $name) -Destination $packageRoot
+          }
+          $notes = @(
+            '枫语幕4.0 修复测试更新包（非正式发布）',
+            "源码提交：$env:GITHUB_SHA；Windows 原生构建。",
+            '本次重点：深蓝详情提示框独立匹配并优先绘制；修复技能名称/等级效果、属性字段、任务阶段正文、装备漏字段与黄色喇叭。',
+            '聊天收尾：过滤宠物缺少HP/MP药水的系统提醒；括号道具链接只用完整词库译名，未知/冲突名称保留原文，不让AI乱译。',
+            '任务依据当前阶段匹配，在白色正文区整体排版，灰色需求数量保留。词库未覆盖的内容仍可能保留原文。',
+            '仍未完成：提示框遮挡聊天的捕获隔离；真实游戏与混合DPI实测。',
+            '使用：退出旧版，完整解压到新目录，启动枫语幕.exe；词库设置指向本包枫语幕词库.tsv，保留三份TSV。',
+            '本包不含可选Paddle组件，先选Windows OCR并确保英文OCR可用；也可复制旧目录完整PrimaryOcr文件夹。',
+            '保留旧安装目录与自定义词库用于回退；不要同时运行两份程序。F8识别；出问题用导出最近F8诊断.cmd。',
+            'Windows构建及界面测试不能替代真实游戏、原生OCR场景和实际DPI验收。'
+          )
+          $notes | Set-Content -LiteralPath (Join-Path $packageRoot '使用说明.txt') -Encoding utf8BOM
+          $manifest = [ordered]@{}
+          Get-ChildItem -LiteralPath $packageRoot -File | Sort-Object Name | ForEach-Object {
+            $manifest[$_.Name] = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash
+          }
+          $manifest | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $packageRoot 'FILES-SHA256.json') -Encoding utf8
+          $zip = Join-Path $outputRoot 'FengYuMu_v4.0_Tooltip_Fix_Test.zip'
+          Compress-Archive -Path "$packageRoot/*" -DestinationPath $zip
+          $hash = (Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash
+          "$hash  FengYuMu_v4.0_Tooltip_Fix_Test.zip" | Set-Content -LiteralPath ($zip + '.sha256') -Encoding ascii
+          Write-Host "TEST_PACKAGE_SHA256=$hash"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FengYuMu-Windows-closeout-test
+          path: test-download/*
+          if-no-files-found: error
+          retention-days: 7

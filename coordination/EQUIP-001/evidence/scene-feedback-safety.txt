@@ -1,0 +1,33 @@
+PASS: pulse starts and ends transparent
+PASS: whole-client pulse remains subtle
+PASS: pulse never loops or leaks beyond duration
+PASS: invalid pulse time stays transparent
+PASS: unchanged source retains overlay
+PASS: small compositor variation does not retire text
+PASS: closed light panel on world pixels retires text
+PASS: substantial local source replacement retires text
+PASS: small live counter changes are tolerated
+PASS: different evidence sizes fail closed
+PASS: inadequate evidence fails closed
+PASS: title card grows for readable translation
+PASS: prose height follows wrapped translation rather than source rows
+PASS: edge card remains inside locked client
+PASS: oversize prose explicitly refuses clipped layout
+PASS: non-finite measure rejected
+PASS: invalid tiny client rejected
+PASS: adjacent translation cards do not overlap
+PASS: full viewport reports no placement
+PASS: free card preserves original anchor
+PASS: standard chat completion parsed
+PASS: JavaScriptSerializer ArrayList response parsed
+PASS: structured chat text joined
+PASS: responses text joined without reasoning summary
+PASS: top-level output text parsed
+PASS: 输出额度耗尽
+PASS: 响应未完成
+PASS: 没有最终译文
+PASS: 有效 JSON 对象
+PASS: key in provider metadata redacted
+PASS: embedded key redacted
+PASS: safe provider error code preserved
+Scene feedback safety: 32/32 passed; actual GDI/game/mouse/hotkeys and provider HTTP remain unverified.

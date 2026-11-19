@@ -1,0 +1,7 @@
+
+An error has occurred that was not properly handled. Additional information is shown below. The PowerShell process will exit.
+Unhandled exception. System.IO.FileLoadException: The given assembly name was invalid.
+File name: 'ﾫg￭ﾋU^,'
+   at System.Reflection.AssemblyNameParser.Parse(ReadOnlySpan`1 name)
+   at System.Reflection.AssemblyName.ParseAsAssemblySpec(Char* pAssemblyName, Void* pAssemblySpec)
+Recovery 技能详情回归通过：说明句完整、1/2/3级动态数值保留、单行不换行、多行按源行换行、Y不因测量上移、相邻等级字段不被覆盖、任务/背包上下文隔离

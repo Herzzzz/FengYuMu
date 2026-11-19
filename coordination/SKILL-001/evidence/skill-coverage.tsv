@@ -1,0 +1,265 @@
+skillId	className	stage	name	nameStatus	overviewRows	masterRows	overviewStatus	overviewTranslation	levelEffects	distinctEffects	levelPass	levelFail
+1000	Beginner	Beginner	Three Snails	pass	3	2	present	pass	3	3	3	0
+1000000	Warrior	1st	Improved HP Recovery	pass	3	2	present	pass	15	15	15	0
+1000001	Warrior	1st	Max HP Increase	pass	4	2	present	pass	15	15	15	0
+1000002	Warrior	1st	Precise Strikes	pass	3	2	present	pass	15	15	15	0
+1001	Beginner	Beginner	Recovery	pass	3	2	present	pass	3	3	3	0
+1001000	Warrior	1st	Iron Body	pass	4	2	present	pass	20	20	20	0
+1001001	Warrior	1st	Power Strike	pass	3	2	present	pass	20	20	20	0
+1001002	Warrior	1st	Slash Blast	pass	4	2	present	pass	20	20	20	0
+1002	Beginner	Beginner	Nimble Feet	pass	3	2	present	pass	3	3	3	0
+1100000	Warrior	1st	Sword Mastery	pass	3	2	present	pass	20	20	20	0
+1100001	Warrior	1st	Axe Mastery	pass	3	2	present	pass	20	20	20	0
+1101000	Warrior	1st	Final Attack: Sword	pass	4	2	present	pass	30	30	30	0
+1101001	Warrior	1st	Final Attack: Axe	pass	4	2	present	pass	30	30	30	0
+1101002	Warrior	1st	Sword Booster	pass	4	2	present	pass	20	20	20	0
+1101003	Warrior	1st	Axe Booster	pass	4	2	present	pass	20	20	20	0
+1101004	Warrior	1st	Rage	pass	3	2	present	pass	30	30	30	0
+1101005	Warrior	1st	Rush	pass	4	2	present	pass	20	20	20	0
+1110000	Warrior	2nd	Improved MP Recovery	pass	0	0	absent	n/a	20	20	20	0
+1111000	Warrior	2nd	Combo Attack	pass	0	0	absent	n/a	30	30	30	0
+1111001	Warrior	2nd	Panic	pass	0	0	absent	n/a	30	30	30	0
+1111002	Warrior	2nd	Coma	pass	0	0	absent	n/a	30	30	30	0
+1111003	Warrior	2nd	Shout	pass	0	0	absent	n/a	30	30	30	0
+1111004	Warrior	2nd	Armor Crash	pass	0	0	absent	n/a	20	20	20	0
+1111005	Warrior	2nd	Power Guard	pass	0	0	absent	n/a	20	20	20	0
+1120003	Warrior	3rd	Advanced Combo Attack	pass	0	0	absent	n/a	0	0	0	0
+1120004	Warrior	3rd	Achilles	pass	0	0	absent	n/a	0	0	0	0
+1120005	Warrior	3rd	Guardian	pass	0	0	absent	n/a	0	0	0	0
+1121000	Warrior	3rd	Maple Warrior	pass	0	0	absent	n/a	0	0	0	0
+1121001	Warrior	3rd	Monster Magnet	pass	0	0	absent	n/a	0	0	0	0
+1121002	Warrior	3rd	Power Stance	pass	0	0	absent	n/a	0	0	0	0
+1121006	Warrior	3rd	Rush	pass	0	0	absent	n/a	0	0	0	0
+1121008	Warrior	3rd	Brandish	pass	0	0	absent	n/a	0	0	0	0
+1121010	Warrior	3rd	Enrage	pass	0	0	absent	n/a	0	0	0	0
+1121011	Warrior	3rd	Hero's Will	pass	0	0	absent	n/a	0	0	0	0
+1200000	Warrior	1st	Sword Mastery	pass	3	2	present	pass	20	20	20	0
+1200001	Warrior	1st	Blunt Weapon Mastery	pass	3	2	present	pass	20	20	20	0
+1201000	Warrior	1st	Final Attack: Sword	pass	4	2	present	pass	30	30	30	0
+1201001	Warrior	1st	Final Attack: Blunt Weapon	pass	4	2	present	pass	30	30	30	0
+1201002	Warrior	1st	Sword Booster	pass	4	2	present	pass	20	20	20	0
+1201003	Warrior	1st	Blunt Weapon Booster	pass	4	2	present	pass	20	20	20	0
+1201004	Warrior	1st	Threaten	pass	3	2	present	pass	30	30	30	0
+1201005	Warrior	1st	Rush	pass	4	2	present	pass	20	20	20	0
+1210000	Warrior	2nd	Improved MP Recovery	pass	0	0	absent	n/a	20	20	20	0
+1211000	Warrior	2nd	Charged Blow	pass	0	0	absent	n/a	30	30	30	0
+1211001	Warrior	2nd	Fire Charge	pass	0	0	absent	n/a	30	30	30	0
+1211002	Warrior	2nd	Ice Charge	pass	0	0	absent	n/a	30	30	30	0
+1211003	Warrior	2nd	Lightning Charge	pass	0	0	absent	n/a	30	30	30	0
+1211004	Warrior	2nd	Elemental Crash	pass	0	0	absent	n/a	20	20	20	0
+1211005	Warrior	2nd	Power Guard	pass	0	0	absent	n/a	20	20	20	0
+1220005	Warrior	3rd	Achilles	pass	0	0	absent	n/a	0	0	0	0
+1220006	Warrior	3rd	Guardian	pass	0	0	absent	n/a	0	0	0	0
+1220010	Warrior	3rd	Advanced Charge	pass	0	0	absent	n/a	0	0	0	0
+1221000	Warrior	3rd	Maple Warrior	pass	0	0	absent	n/a	0	0	0	0
+1221001	Warrior	3rd	Monster Magnet	pass	0	0	absent	n/a	0	0	0	0
+1221002	Warrior	3rd	Power Stance	pass	0	0	absent	n/a	0	0	0	0
+1221003	Warrior	3rd	Holy Charge: Sword	pass	0	0	absent	n/a	0	0	0	0
+1221004	Warrior	3rd	Divine Charge (BW)	pass	0	0	absent	n/a	0	0	0	0
+1221007	Warrior	3rd	Rush	pass	0	0	absent	n/a	0	0	0	0
+1221009	Warrior	3rd	Blast	pass	0	0	absent	n/a	0	0	0	0
+1221011	Warrior	3rd	Heaven's Hammer	pass	0	0	absent	n/a	0	0	0	0
+1221012	Warrior	3rd	Hero's Will	pass	0	0	absent	n/a	0	0	0	0
+1300000	Warrior	1st	Spear Mastery	pass	3	2	present	pass	20	20	20	0
+1300001	Warrior	1st	Polearm Mastery	pass	3	2	present	pass	20	20	20	0
+1301000	Warrior	1st	Final Attack: Spear	pass	4	2	present	pass	30	30	30	0
+1301001	Warrior	1st	Final Attack: Polearm	pass	4	2	present	pass	30	30	30	0
+1301002	Warrior	1st	Spear Booster	pass	4	2	present	pass	20	20	20	0
+1301003	Warrior	1st	Polearm Booster	pass	4	2	present	pass	20	20	20	0
+1301004	Warrior	1st	Iron Will	pass	3	2	present	pass	30	30	30	0
+1301005	Warrior	1st	Rush	pass	4	2	present	pass	20	20	20	0
+1310000	Warrior	2nd	Partial Resistance	pass	0	0	absent	n/a	20	20	20	0
+1311000	Warrior	2nd	Piercing Crusher	pass	0	0	absent	n/a	30	30	30	0
+1311001	Warrior	2nd	Dragon Fury	pass	0	0	absent	n/a	30	30	30	0
+1311002	Warrior	2nd	Dragon Roar	pass	0	0	absent	n/a	30	30	30	0
+1311003	Warrior	2nd	Power Crash	pass	0	0	absent	n/a	20	20	20	0
+1311004	Warrior	2nd	Dragon Blood	pass	0	0	absent	n/a	30	30	30	0
+1311005	Warrior	2nd	Hyper Body	pass	0	0	absent	n/a	20	20	20	0
+1320005	Warrior	3rd	Achilles	pass	0	0	absent	n/a	0	0	0	0
+1320006	Warrior	3rd	Berserk	pass	0	0	absent	n/a	0	0	0	0
+1320008	Warrior	3rd	Aura of the Beholder	pass	0	0	absent	n/a	30	30	30	0
+1320009	Warrior	3rd	Hex of the Beholder	pass	0	0	absent	n/a	0	0	0	0
+1321000	Warrior	3rd	Maple Warrior	pass	0	0	absent	n/a	0	0	0	0
+1321001	Warrior	3rd	Monster Magnet	pass	0	0	absent	n/a	0	0	0	0
+1321002	Warrior	3rd	Power Stance	pass	0	0	absent	n/a	0	0	0	0
+1321003	Warrior	3rd	Rush	pass	2	0	absent	n/a	0	0	0	0
+1321004	Warrior	3rd	Beholder	pass	0	0	absent	n/a	0	0	0	0
+1321007	Warrior	3rd	Crusher	pass	0	0	absent	n/a	0	0	0	0
+1321008	Warrior	3rd	Fury	pass	0	0	absent	n/a	0	0	0	0
+1321010	Warrior	3rd	Hero's Will	pass	0	0	absent	n/a	0	0	0	0
+2000000	Magician	1st	Improved MP Recovery	pass	3	2	present	pass	15	15	15	0
+2000001	Magician	1st	Max MP Increase	pass	4	2	present	pass	15	15	15	0
+2001000	Magician	1st	Magic Guard	pass	3	2	present	pass	15	15	15	0
+2001001	Magician	1st	Magic Armor	pass	4	2	present	pass	20	20	20	0
+2001002	Magician	1st	Energy Bolt	pass	3	2	present	pass	20	20	20	0
+2001003	Magician	1st	Magic Claw	pass	4	2	present	pass	20	20	20	0
+2100000	Magician	1st	MP Eater	pass	3	2	present	pass	20	20	20	0
+2101000	Magician	1st	Meditation	pass	4	2	present	pass	20	20	20	0
+2101001	Magician	1st	Teleport	pass	3	2	present	pass	20	20	20	0
+2101002	Magician	1st	Slow	pass	4	2	present	pass	20	20	20	0
+2101003	Magician	1st	Fire Arrow	pass	3	2	present	pass	30	30	30	0
+2101004	Magician	1st	Poison Breath	pass	4	2	present	pass	30	30	30	0
+2110000	Magician	2nd	Elemental Resistance	pass	0	0	absent	n/a	20	20	20	0
+2111000	Magician	2nd	Element Amplification	pass	0	0	absent	n/a	30	30	30	0
+2111001	Magician	2nd	Explosion	pass	0	0	absent	n/a	30	30	30	0
+2111002	Magician	2nd	Poison Mist	pass	0	0	absent	n/a	30	30	30	0
+2111003	Magician	2nd	Element Composition	pass	0	0	absent	n/a	30	30	30	0
+2111004	Magician	2nd	Seal	pass	0	0	absent	n/a	20	20	20	0
+2111005	Magician	2nd	Spell Booster	pass	0	0	absent	n/a	20	20	20	0
+2121000	Magician	3rd	Maple Warrior	pass	0	0	absent	n/a	0	0	0	0
+2121001	Magician	3rd	Big Bang	pass	0	0	absent	n/a	0	0	0	0
+2121002	Magician	3rd	Mana Reflection	pass	0	0	absent	n/a	0	0	0	0
+2121003	Magician	3rd	Fire Demon	pass	0	0	absent	n/a	0	0	0	0
+2121004	Magician	3rd	Infinity	pass	0	0	absent	n/a	0	0	0	0
+2121005	Magician	3rd	Elquines	pass	0	0	absent	n/a	0	0	0	0
+2121006	Magician	3rd	Paralyze	pass	0	0	absent	n/a	0	0	0	0
+2121007	Magician	3rd	Meteor Shower	pass	0	0	absent	n/a	0	0	0	0
+2121008	Magician	3rd	Hero's Will	pass	0	0	absent	n/a	0	0	0	0
+2200000	Magician	1st	MP Eater	pass	3	2	present	pass	20	20	20	0
+2201000	Magician	1st	Meditation	pass	4	2	present	pass	20	20	20	0
+2201001	Magician	1st	Teleport	pass	3	2	present	pass	20	20	20	0
+2201002	Magician	1st	Slow	pass	4	2	present	pass	20	20	20	0
+2201003	Magician	1st	Cold Beam	pass	3	2	present	pass	30	30	30	0
+2201004	Magician	1st	Thunder Bolt	pass	3	2	present	pass	30	30	30	0
+2210000	Magician	2nd	Elemental Resistance	pass	0	0	absent	n/a	20	20	20	0
+2211000	Magician	2nd	Element Amplification	pass	0	0	absent	n/a	30	30	30	0
+2211001	Magician	2nd	Ice Strike	pass	0	0	absent	n/a	30	30	30	0
+2211002	Magician	2nd	Thunder Spear	pass	0	0	absent	n/a	30	30	30	0
+2211003	Magician	2nd	Element Composition	pass	0	0	absent	n/a	30	30	30	0
+2211004	Magician	2nd	Seal	pass	0	0	absent	n/a	20	20	20	0
+2211005	Magician	2nd	Spell Booster	pass	0	0	absent	n/a	20	20	20	0
+2221000	Magician	3rd	Maple Warrior	pass	0	0	absent	n/a	0	0	0	0
+2221001	Magician	3rd	Big Bang	pass	0	0	absent	n/a	0	0	0	0
+2221002	Magician	3rd	Mana Reflection	pass	0	0	absent	n/a	0	0	0	0
+2221003	Magician	3rd	Ice Demon	pass	0	0	absent	n/a	0	0	0	0
+2221004	Magician	3rd	Infinity	pass	0	0	absent	n/a	0	0	0	0
+2221005	Magician	3rd	Ifrit	pass	0	0	absent	n/a	0	0	0	0
+2221006	Magician	3rd	Chain Lightning	pass	0	0	absent	n/a	0	0	0	0
+2221007	Magician	3rd	Blizzard	pass	0	0	absent	n/a	0	0	0	0
+2221008	Magician	3rd	Hero's Will	pass	0	0	absent	n/a	0	0	0	0
+2300000	Magician	1st	MP Eater	pass	3	2	present	pass	20	20	20	0
+2301000	Magician	1st	Teleport	pass	3	2	present	pass	20	20	20	0
+2301001	Magician	1st	Heal	pass	3	2	present	pass	30	30	30	0
+2301002	Magician	1st	Invincible	pass	4	2	present	pass	20	20	20	0
+2301003	Magician	1st	Bless	pass	4	2	present	pass	20	20	20	0
+2301004	Magician	1st	Holy Arrow	pass	3	2	present	pass	30	30	30	0
+2310000	Magician	2nd	Elemental Resistance	pass	0	0	absent	n/a	20	20	20	0
+2311000	Magician	2nd	Dispel	pass	0	1	present	pass	20	20	20	0
+2311001	Magician	2nd	Mystic Door	pass	0	0	absent	n/a	20	20	20	0
+2311002	Magician	2nd	Holy Symbol	pass	0	0	absent	n/a	30	30	30	0
+2311003	Magician	2nd	Shining Ray	pass	0	0	absent	n/a	30	30	30	0
+2311004	Magician	2nd	Doom	pass	0	0	absent	n/a	30	30	30	0
+2311005	Magician	2nd	Summon Dragon	pass	0	0	absent	n/a	30	30	30	0
+2321000	Magician	3rd	Maple Warrior	pass	0	0	absent	n/a	0	0	0	0
+2321001	Magician	3rd	Big Bang	pass	0	0	absent	n/a	0	0	0	0
+2321002	Magician	3rd	Mana Reflection	pass	0	0	absent	n/a	0	0	0	0
+2321003	Magician	3rd	Bahamut	pass	0	0	absent	n/a	0	0	0	0
+2321004	Magician	3rd	Infinity	pass	0	0	absent	n/a	0	0	0	0
+2321005	Magician	3rd	Holy Shield	pass	0	0	absent	n/a	0	0	0	0
+2321006	Magician	3rd	Resurrection	pass	0	0	absent	n/a	0	0	0	0
+2321007	Magician	3rd	Angel Ray	pass	0	0	absent	n/a	0	0	0	0
+2321008	Magician	3rd	Genesis	pass	0	0	absent	n/a	0	0	0	0
+2321009	Magician	3rd	Hero's Will	pass	0	0	absent	n/a	0	0	0	0
+3000000	Bowman	1st	Critical Shot	pass	3	2	present	pass	15	15	15	0
+3000001	Bowman	1st	The Eye of Amazon	pass	4	2	present	pass	15	15	15	0
+3000002	Bowman	1st	The Eye of Amazon	pass	3	2	present	pass	0	0	0	0
+3001000	Bowman	1st	Focus	pass	4	2	present	pass	20	20	20	0
+3001001	Bowman	1st	Arrow Blow	pass	3	2	present	pass	20	20	20	0
+3001002	Bowman	1st	Double Shot	pass	4	2	present	pass	20	20	20	0
+3001003	Bowman	1st	Power Knockback	pass	0	0	absent	n/a	15	15	15	0
+3100000	Bowman	1st	Bow Mastery	pass	3	2	present	pass	20	20	20	0
+3100001	Bowman	1st	Amazon's Judgement	pass	0	0	absent	n/a	20	20	20	0
+3101000	Bowman	1st	Final Attack: Bow	pass	4	2	present	pass	30	30	30	0
+3101001	Bowman	1st	Bow Booster	pass	4	2	present	pass	20	20	20	0
+3101002	Bowman	1st	Power Knockback	pass	3	2	present	pass	0	0	0	0
+3101003	Bowman	1st	Soul Arrow: Bow	pass	4	2	present	pass	20	20	20	0
+3101004	Bowman	1st	Arrow Bomb: Bow	pass	3	2	present	pass	30	30	30	0
+3110000	Bowman	2nd	Mortal Blow	pass	0	0	absent	n/a	20	20	20	0
+3111000	Bowman	2nd	Puppet	pass	0	0	absent	n/a	20	20	20	0
+3111001	Bowman	2nd	Inferno	pass	0	0	absent	n/a	30	30	30	0
+3111002	Bowman	2nd	Arrow Rain	pass	0	0	absent	n/a	30	30	30	0
+3111003	Bowman	2nd	Strafe	pass	0	0	absent	n/a	30	30	30	0
+3111004	Bowman	2nd	Silver Hawk	pass	0	0	absent	n/a	30	30	30	0
+3111005	Bowman	2nd	Wind Step	pass	0	0	absent	n/a	20	20	20	0
+3120005	Bowman	3rd	Bow Expert	pass	0	0	absent	n/a	0	0	0	0
+3121000	Bowman	3rd	Maple Warrior	pass	0	0	absent	n/a	0	0	0	0
+3121002	Bowman	3rd	Sharp Eyes	pass	0	0	absent	n/a	0	0	0	0
+3121003	Bowman	3rd	Dragon's Breath	pass	0	0	absent	n/a	0	0	0	0
+3121004	Bowman	3rd	Hurricane	pass	0	0	absent	n/a	0	0	0	0
+3121006	Bowman	3rd	Phoenix	pass	0	0	absent	n/a	0	0	0	0
+3121007	Bowman	3rd	Hamstring	pass	0	0	absent	n/a	0	0	0	0
+3121008	Bowman	3rd	Concentrate	pass	0	0	absent	n/a	0	0	0	0
+3121009	Bowman	3rd	Hero's Will	pass	0	0	absent	n/a	0	0	0	0
+3200000	Bowman	1st	Crossbow Mastery	pass	3	2	present	pass	20	20	20	0
+3200001	Bowman	1st	Amazon's Judgement	pass	0	0	absent	n/a	20	20	20	0
+3201000	Bowman	1st	Final Attack: Crossbow	pass	4	2	present	pass	30	30	30	0
+3201001	Bowman	1st	Crossbow Booster	pass	4	2	present	pass	20	20	20	0
+3201002	Bowman	1st	Power Knockback	pass	3	2	present	pass	0	0	0	0
+3201003	Bowman	1st	Soul Arrow: Crossbow	pass	4	2	present	pass	20	20	20	0
+3201004	Bowman	1st	Iron Arrow: Crossbow	pass	3	2	present	pass	30	30	30	0
+3210000	Bowman	2nd	Mortal Blow	pass	0	0	absent	n/a	20	20	20	0
+3211000	Bowman	2nd	Puppet	pass	0	0	absent	n/a	20	20	20	0
+3211001	Bowman	2nd	Blizzard	pass	0	0	absent	n/a	30	30	30	0
+3211002	Bowman	2nd	Arrow Eruption	pass	0	1	present	pass	30	30	30	0
+3211003	Bowman	2nd	Strafe	pass	0	0	absent	n/a	30	30	30	0
+3211004	Bowman	2nd	Golden Eagle	pass	0	0	absent	n/a	30	30	30	0
+3211005	Bowman	2nd	Evasion Step	pass	0	0	absent	n/a	20	20	20	0
+3220004	Bowman	3rd	Marksman Boost	pass	0	0	absent	n/a	0	0	0	0
+3221000	Bowman	3rd	Maple Warrior	pass	0	0	absent	n/a	0	0	0	0
+3221001	Bowman	3rd	Piercing Arrow	pass	0	0	absent	n/a	0	0	0	0
+3221002	Bowman	3rd	Sharp Eyes	pass	0	0	absent	n/a	0	0	0	0
+3221003	Bowman	3rd	Dragon's Breath	pass	0	0	absent	n/a	0	0	0	0
+3221005	Bowman	3rd	Frostprey	pass	0	0	absent	n/a	0	0	0	0
+3221006	Bowman	3rd	Blind	pass	0	0	absent	n/a	0	0	0	0
+3221007	Bowman	3rd	Snipe	pass	0	0	absent	n/a	0	0	0	0
+3221008	Bowman	3rd	Hero's Will	pass	0	0	absent	n/a	0	0	0	0
+4000000	Thief	1st	Nimble Body	pass	3	2	present	pass	15	15	15	0
+4000001	Thief	1st	Keen Eyes	pass	4	2	present	pass	15	15	15	0
+4001000	Thief	1st	Disorder	pass	3	2	present	pass	20	20	20	0
+4001001	Thief	1st	Dark Sight	pass	4	2	present	pass	20	20	20	0
+4001002	Thief	1st	Double Stab	pass	3	2	present	pass	20	20	20	0
+4001003	Thief	1st	Lucky Seven	pass	3	2	present	pass	20	20	20	0
+4100000	Thief	1st	Claw Mastery	pass	3	2	present	pass	20	20	20	0
+4100001	Thief	1st	Critical Throw	pass	4	2	present	pass	30	30	30	0
+4100002	Thief	1st	Critical Recovery	pass	3	2	present	pass	20	20	20	0
+4101000	Thief	1st	Claw Booster	pass	4	2	present	pass	20	20	20	0
+4101001	Thief	1st	Haste	pass	3	2	present	pass	20	20	20	0
+4101002	Thief	1st	Drain	pass	4	2	present	pass	30	30	30	0
+4110000	Thief	2nd	Claw Guard	pass	0	0	absent	n/a	20	20	20	0
+4111000	Thief	2nd	Meso Saver	pass	0	0	absent	n/a	20	20	20	0
+4111001	Thief	2nd	Shadow Partner	pass	0	0	absent	n/a	30	30	30	0
+4111002	Thief	2nd	Shadow Web	pass	0	0	absent	n/a	20	20	20	0
+4111003	Thief	2nd	Shadow Meso	pass	0	0	absent	n/a	30	30	30	0
+4111004	Thief	2nd	Avenger	pass	0	0	absent	n/a	30	30	30	0
+4111005	Thief	2nd	Flash Jump	pass	0	0	absent	n/a	20	20	20	0
+4120002	Thief	3rd	Shadow Shifter	pass	0	0	absent	n/a	0	0	0	0
+4120005	Thief	3rd	Venomous Star	pass	0	0	absent	n/a	0	0	0	0
+4121000	Thief	3rd	Maple Warrior	pass	0	0	absent	n/a	0	0	0	0
+4121003	Thief	3rd	Taunt	pass	0	0	absent	n/a	0	0	0	0
+4121004	Thief	3rd	Ninja Ambush	pass	0	0	absent	n/a	0	0	0	0
+4121006	Thief	3rd	Shadow Stars	pass	0	0	absent	n/a	0	0	0	0
+4121007	Thief	3rd	Triple Throw	pass	0	0	absent	n/a	0	0	0	0
+4121008	Thief	3rd	Ninja Storm	pass	0	0	absent	n/a	0	0	0	0
+4121009	Thief	3rd	Hero's Will	pass	0	0	absent	n/a	0	0	0	0
+4200000	Thief	1st	Dagger Mastery	pass	3	2	present	pass	20	20	20	0
+4200001	Thief	1st	Nimble Recovery	pass	3	2	present	pass	20	20	20	0
+4201000	Thief	1st	Dagger Booster	pass	4	2	present	pass	20	20	20	0
+4201001	Thief	1st	Haste	pass	3	2	present	pass	20	20	20	0
+4201002	Thief	1st	Steal	pass	4	2	present	pass	30	30	30	0
+4201003	Thief	1st	Savage Blow	pass	3	2	present	pass	30	30	30	0
+4210000	Thief	2nd	Chakra	pass	0	0	absent	n/a	30	30	30	0
+4211000	Thief	2nd	Meso Guard	pass	0	0	absent	n/a	20	20	20	0
+4211001	Thief	2nd	Assaulter	pass	0	0	absent	n/a	30	30	30	0
+4211002	Thief	2nd	Band of Thieves	pass	0	0	absent	n/a	30	30	30	0
+4211003	Thief	2nd	Pickpocket	pass	0	0	absent	n/a	20	20	20	0
+4211004	Thief	2nd	Meso Explosion	pass	0	0	absent	n/a	30	30	30	0
+4211005	Thief	2nd	Flash Jump	pass	0	0	absent	n/a	20	20	20	0
+4220002	Thief	3rd	Shadow Shifter	pass	0	0	absent	n/a	0	0	0	0
+4220005	Thief	3rd	Venomous Stab	pass	0	0	absent	n/a	0	0	0	0
+4221000	Thief	3rd	Maple Warrior	pass	0	0	absent	n/a	0	0	0	0
+4221001	Thief	3rd	Assassinate	pass	0	0	absent	n/a	0	0	0	0
+4221003	Thief	3rd	Taunt	pass	0	0	absent	n/a	0	0	0	0
+4221004	Thief	3rd	Ninja Ambush	pass	0	0	absent	n/a	0	0	0	0
+4221006	Thief	3rd	Smokescreen	pass	0	0	absent	n/a	0	0	0	0
+4221007	Thief	3rd	Boomerang Step	pass	0	0	absent	n/a	0	0	0	0
+4221008	Thief	3rd	Hero's Will	pass	0	0	absent	n/a	0	0	0	0

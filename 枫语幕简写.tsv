@@ -1,0 +1,37 @@
+# 聊天简写归一化：送 AI 之前把缩写展开成完整英文，减少模型猜错方向。
+# 格式：简写 <TAB> 展开 <TAB> 说明
+# 规则只在完整词边界上生效（不区分大小写）；单字母缩写（u/r/k）不收，误伤太高。
+wts	wants to sell	交易：本人要卖
+wtb	wants to buy	交易：本人要买
+wtt	wants to trade	交易：本人要换
+lfp	looking for party	求组
+lfg	looking for group	求组
+lfm	looking for members	招人
+lf1	looking for one more	还差一人
+kpq	Kerning party quest	废弃都市组队任务
+tyvm	thank you very much	非常感谢
+ty	thank you	谢谢
+thx	thanks	谢谢
+np	no problem	没问题
+pls	please	请
+plz	please	请
+brb	be right back	马上回来
+afk	away from keyboard	暂时离开
+omw	on my way	在路上
+gg	good game	打得好
+idk	I do not know	不知道
+imo	in my opinion	我认为
+btw	by the way	顺便
+pm	private message	私聊
+pm me	private message me	私聊我
+wts it	wants to sell it	要卖这个
+wtb it	wants to buy it	要买这个
+anyone	anyone	有人
+any1	anyone	有人
+c/o	current offer	交易：当前最高报价
+o.b.o	or best offer	交易：可议价
+w/o	without	没有
+
+S>	selling	交易：出售
+B>	buying	交易：收购
+T>	trading	交易：交换

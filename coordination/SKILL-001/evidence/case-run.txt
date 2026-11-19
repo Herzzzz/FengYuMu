@@ -1,0 +1,9 @@
+CASE full composed=True plannedLabels=6 ready=6 id=2301001 source=unique-title sections=6
+CASE only-next composed=True plannedLabels=2 ready=2 id=2301001 source=unique-title sections=2
+CASE desc-next composed=True plannedLabels=4 ready=4 id=2301001 source=unique-title sections=4
+CASE maxed composed=True plannedLabels=4 ready=4 id=2301001 source=unique-title sections=4
+CASE missing-title composed=True plannedLabels=3 ready=3 id= source=none sections=3
+CASE combined-row composed=True plannedLabels=4 ready=4 id=2301001 source=unique-title sections=4
+CASE shared-ambiguous composed=True plannedLabels=3 ready=3 id= source=none sections=4
+CASE narrow composed=True plannedLabels=4 ready=3 id=2301001 source=unique-title sections=4
+cases=32 -> D:\GPT\文件\枫语幕\work\dsh-chat-001\coordination\SKILL-001\evidence\skill-panel-cases.json

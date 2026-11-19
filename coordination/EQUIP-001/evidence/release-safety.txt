@@ -1,0 +1,30 @@
+
+An error has occurred that was not properly handled. Additional information is shown below. The PowerShell process will exit.
+Unhandled exception. System.IO.FileLoadException: The given assembly name was invalid.
+File name: 'ﾫg￭ﾋU^,'
+   at System.Reflection.AssemblyNameParser.Parse(ReadOnlySpan`1 name)
+   at System.Reflection.AssemblyName.ParseAsAssemblySpec(Char* pAssemblyName, Void* pAssemblySpec)
+PASS: 5 must not become 50
+PASS: ordered progress values
+PASS: duplicate number count
+PASS: percent unit retained
+PASS: full decimal token
+PASS: unchanged complete values
+PASS: real replacement
+PASS: verified old backup
+PASS: active custom dictionary preserved
+PASS: official dictionary delivered separately
+PASS: mid-replacement failure produces verified rollback
+PASS: partial replacement restores previous bytes
+PASS: rollback removes newly introduced files
+PASS: failure preserves user data
+PASS: existing backup is never reused
+PASS: temporary writes cleaned after success and failure
+PASS: complete component file manifest
+PASS: tampered helper rejected
+PASS: extra old component rejected
+PASS: missing component dependency rejected
+PASS_COUNT=20
+PASS: source drift rejected by input hash (not timestamp)
+PASS: changed EXE rejected
+Release safety: 22/22 passed; Windows UI/network/device checks not included.

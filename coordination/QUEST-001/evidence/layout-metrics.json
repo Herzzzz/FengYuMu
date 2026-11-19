@@ -1,0 +1,403 @@
+﻿{
+    "schema":  1,
+    "annotation":  "Actual GDI+ QuestJournalLayout metrics from synthetic panels; no OCR, AI, capture or in-game visual acceptance.",
+    "checks":  164,
+    "cases":  [
+                  {
+                      "case":  "short-with-summary",
+                      "scale":  1,
+                      "source":  [
+                                     401,
+                                     292,
+                                     408,
+                                     292
+                                 ],
+                      "bodyFontSize":  18,
+                      "titleFontSize":  22,
+                      "fontUnit":  "Pixel",
+                      "content":  [
+                                      407,
+                                      296,
+                                      391,
+                                      284
+                                  ],
+                      "pageCount":  1,
+                      "maxLineWidth":  381.111328125,
+                      "overflow":  "title-fit;body=single-page",
+                      "firstBodyTop":  346,
+                      "sourceCoversFirst":  true,
+                      "summaryProtected":  true
+                  },
+                  {
+                      "case":  "short-without-summary",
+                      "scale":  1,
+                      "source":  [
+                                     401,
+                                     292,
+                                     408,
+                                     292
+                                 ],
+                      "bodyFontSize":  18,
+                      "titleFontSize":  22,
+                      "fontUnit":  "Pixel",
+                      "content":  [
+                                      407,
+                                      296,
+                                      391,
+                                      284
+                                  ],
+                      "pageCount":  1,
+                      "maxLineWidth":  381.111328125,
+                      "overflow":  "title-fit;body=single-page",
+                      "firstBodyTop":  346,
+                      "sourceCoversFirst":  true,
+                      "summaryProtected":  true
+                  },
+                  {
+                      "case":  "three-objectives",
+                      "scale":  1,
+                      "source":  [
+                                     401,
+                                     292,
+                                     408,
+                                     292
+                                 ],
+                      "bodyFontSize":  18,
+                      "titleFontSize":  22,
+                      "fontUnit":  "Pixel",
+                      "content":  [
+                                      407,
+                                      296,
+                                      391,
+                                      284
+                                  ],
+                      "pageCount":  1,
+                      "maxLineWidth":  381.111328125,
+                      "overflow":  "title-fit;body=single-page",
+                      "firstBodyTop":  346,
+                      "sourceCoversFirst":  true,
+                      "summaryProtected":  true
+                  },
+                  {
+                      "case":  "r1-corresponding-body",
+                      "scale":  1,
+                      "source":  [
+                                     401,
+                                     292,
+                                     408,
+                                     292
+                                 ],
+                      "firstBodyTop":  346,
+                      "lastBodyBottom":  496,
+                      "sourceCoversFirst":  true,
+                      "sourceCoversLast":  true,
+                      "rejected":  false
+                  },
+                  {
+                      "case":  "r1-conflicting-quantity",
+                      "scale":  1,
+                      "rejected":  true,
+                      "reason":  "quest-journal-incomplete:visible-quantity-not-in-record:50",
+                      "appendedVisibleProse":  [
+                                                   "Please take care of 50"
+                                               ]
+                  },
+                  {
+                      "case":  "r1-unknown-appended-prose",
+                      "scale":  1,
+                      "rejected":  true,
+                      "reason":  "quest-journal-incomplete:visible-prose-order-or-content:the",
+                      "appendedVisibleProse":  [
+                                                   "The mayor asked me to deliver this letter"
+                                               ]
+                  },
+                  {
+                      "case":  "r3a-titleless-first-positive",
+                      "scale":  1,
+                      "bodyTop":  346,
+                      "rejected":  false,
+                      "reason":  "",
+                      "override":  ""
+                  },
+                  {
+                      "case":  "r3a-titleless-first-quantity",
+                      "scale":  1,
+                      "bodyTop":  346,
+                      "rejected":  true,
+                      "reason":  "quest-journal-incomplete:visible-quantity-not-in-record:50",
+                      "override":  "Please take care of 50"
+                  },
+                  {
+                      "case":  "r3a-titleless-first-unknown",
+                      "scale":  1,
+                      "bodyTop":  346,
+                      "rejected":  true,
+                      "reason":  "quest-journal-incomplete:visible-prose-order-or-content:mayor",
+                      "override":  "The mayor asked me to deliver this letter"
+                  },
+                  {
+                      "case":  "r3a-scrolled-first-positive",
+                      "scale":  1,
+                      "bodyTop":  300,
+                      "rejected":  false,
+                      "reason":  "",
+                      "override":  ""
+                  },
+                  {
+                      "case":  "r3a-scrolled-first-quantity",
+                      "scale":  1,
+                      "bodyTop":  300,
+                      "rejected":  true,
+                      "reason":  "quest-journal-incomplete:visible-quantity-not-in-record:50",
+                      "override":  "Please take care of 50"
+                  },
+                  {
+                      "case":  "r3a-scrolled-first-unknown",
+                      "scale":  1,
+                      "bodyTop":  300,
+                      "rejected":  true,
+                      "reason":  "quest-journal-incomplete:visible-prose-order-or-content:mayor",
+                      "override":  "The mayor asked me to deliver this letter"
+                  },
+                  {
+                      "case":  "r3a-titleless-no-caption-quantity",
+                      "scale":  1,
+                      "rejected":  true,
+                      "reason":  "",
+                      "override":  "Please take care of 50"
+                  },
+                  {
+                      "case":  "r3a-titleless-no-caption-unknown",
+                      "scale":  1,
+                      "rejected":  true,
+                      "reason":  "quest-journal-incomplete:visible-prose-order-or-content:mayor",
+                      "override":  "The mayor asked me to deliver this letter"
+                  },
+                  {
+                      "case":  "r3a-scrolled-no-caption-quantity",
+                      "scale":  1,
+                      "rejected":  true,
+                      "reason":  "",
+                      "override":  "Please take care of 50"
+                  },
+                  {
+                      "case":  "r3a-scrolled-no-caption-unknown",
+                      "scale":  1,
+                      "rejected":  true,
+                      "reason":  "quest-journal-incomplete:visible-prose-order-or-content:mayor",
+                      "override":  "The mayor asked me to deliver this letter"
+                  },
+                  {
+                      "case":  "r3b-ocr-noise-positive",
+                      "scale":  1,
+                      "rejected":  false
+                  },
+                  {
+                      "case":  "r3b-negation-appended",
+                      "scale":  1,
+                      "rejected":  true,
+                      "reason":  "quest-journal-incomplete:visible-prose-order-or-content:she",
+                      "appendedVisibleProse":  [
+                                                   "She wanted Green Mushroom Cap but not Orange Mushroom Cap"
+                                               ]
+                  },
+                  {
+                      "case":  "r3b-reordered-appended",
+                      "scale":  1,
+                      "rejected":  true,
+                      "reason":  "quest-journal-incomplete:visible-prose-order-or-content:she",
+                      "appendedVisibleProse":  [
+                                                   "She wanted Green Mushroom Cap Orange Mushroom Cap"
+                                               ]
+                  },
+                  {
+                      "case":  "r3c-correct-association",
+                      "scale":  1,
+                      "rejected":  false,
+                      "reason":  ""
+                  },
+                  {
+                      "case":  "r3c-swapped-quantities",
+                      "scale":  1,
+                      "rejected":  true,
+                      "reason":  "quest-journal-incomplete:visible-prose-order-or-content:orange"
+                  },
+                  {
+                      "case":  "r3c-changed-blue-count",
+                      "scale":  1,
+                      "rejected":  true,
+                      "reason":  "quest-journal-incomplete:visible-prose-order-or-content:1"
+                  },
+                  {
+                      "case":  "r3c-duplicate-multiplicity",
+                      "scale":  1,
+                      "rejected":  true,
+                      "reason":  "quest-journal-incomplete:visible-prose-order-or-content:and"
+                  },
+                  {
+                      "case":  "r2-emoji-a",
+                      "scale":  1,
+                      "bodyFontSize":  18,
+                      "titleFontSize":  22,
+                      "fontUnit":  "Pixel",
+                      "pageCount":  1,
+                      "overflow":  "title-fit;body=single-page",
+                      "titleCharacters":  3,
+                      "bodyCharacters":  3,
+                      "pagesNoLoneSurrogates":  true
+                  },
+                  {
+                      "case":  "r2-supplementary-long",
+                      "scale":  1,
+                      "bodyFontSize":  18,
+                      "titleFontSize":  22,
+                      "fontUnit":  "Pixel",
+                      "pageCount":  8,
+                      "overflow":  "title-fit;body=pages:8",
+                      "titleCharacters":  6,
+                      "bodyCharacters":  1021,
+                      "pagesNoLoneSurrogates":  true
+                  },
+                  {
+                      "case":  "manual-short",
+                      "scale":  1,
+                      "source":  [
+                                     400,
+                                     300,
+                                     410,
+                                     290
+                                 ],
+                      "bodyFontSize":  18,
+                      "titleFontSize":  22,
+                      "fontUnit":  "Pixel",
+                      "content":  [
+                                      406,
+                                      304,
+                                      393,
+                                      282
+                                  ],
+                      "pageCount":  1,
+                      "maxLineWidth":  216,
+                      "overflow":  "title-fit;body=single-page"
+                  },
+                  {
+                      "case":  "manual-long",
+                      "scale":  1,
+                      "source":  [
+                                     400,
+                                     300,
+                                     410,
+                                     290
+                                 ],
+                      "bodyFontSize":  18,
+                      "titleFontSize":  22,
+                      "fontUnit":  "Pixel",
+                      "content":  [
+                                      406,
+                                      304,
+                                      393,
+                                      282
+                                  ],
+                      "pageCount":  8,
+                      "maxLineWidth":  388.5556640625,
+                      "overflow":  "title-fit;body=pages:8"
+                  },
+                  {
+                      "case":  "scale-1",
+                      "scale":  1,
+                      "source":  [
+                                     401,
+                                     292,
+                                     408,
+                                     292
+                                 ],
+                      "bodyFontSize":  18,
+                      "titleFontSize":  22,
+                      "fontUnit":  "Pixel",
+                      "content":  [
+                                      407,
+                                      296,
+                                      391,
+                                      284
+                                  ],
+                      "pageCount":  1,
+                      "maxLineWidth":  381.111328125,
+                      "overflow":  "title-fit;body=single-page"
+                  },
+                  {
+                      "case":  "scale-1.25",
+                      "scale":  1.25,
+                      "source":  [
+                                     501,
+                                     363,
+                                     510,
+                                     368
+                                 ],
+                      "bodyFontSize":  22,
+                      "titleFontSize":  26,
+                      "fontUnit":  "Pixel",
+                      "content":  [
+                                      508,
+                                      367,
+                                      491,
+                                      360
+                                  ],
+                      "pageCount":  1,
+                      "maxLineWidth":  487.802734375,
+                      "overflow":  "title-fit;body=single-page"
+                  },
+                  {
+                      "case":  "scale-1.5",
+                      "scale":  1.5,
+                      "source":  [
+                                     601,
+                                     435,
+                                     613,
+                                     442
+                                 ],
+                      "bodyFontSize":  25,
+                      "titleFontSize":  29,
+                      "fontUnit":  "Pixel",
+                      "content":  [
+                                      608,
+                                      440,
+                                      592,
+                                      432
+                                  ],
+                      "pageCount":  1,
+                      "maxLineWidth":  589.66064453125,
+                      "overflow":  "title-fit;body=single-page"
+                  },
+                  {
+                      "case":  "scale-2",
+                      "scale":  2,
+                      "source":  [
+                                     801,
+                                     580,
+                                     818,
+                                     589
+                                 ],
+                      "bodyFontSize":  25,
+                      "titleFontSize":  29,
+                      "fontUnit":  "Pixel",
+                      "content":  [
+                                      808,
+                                      585,
+                                      797,
+                                      579
+                                  ],
+                      "pageCount":  1,
+                      "maxLineWidth":  779.3212890625,
+                      "overflow":  "title-fit;body=single-page"
+                  },
+                  {
+                      "case":  "repeat-f8",
+                      "scale":  1,
+                      "pageCount":  1,
+                      "bodyFontSize":  18,
+                      "overflow":  "title-fit;body=single-page",
+                      "reused":  true
+                  }
+              ],
+    "realGameVisual":  "UNVERIFIED"
+}

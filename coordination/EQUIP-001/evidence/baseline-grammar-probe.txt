@@ -1,0 +1,10 @@
+baseline head=399cc8e
+source=git show 399cc8e:src/EquipmentFieldGrammar.cs
+equipmentFlag and parsed keys/values:
+equipment=False fields=1 magic-defense=[+18]  <= Weapon Def.: +16  Magic Def.: +18
+equipment=False fields=1 upgrades=[7]  <= INT: +1  LUK: +2  Remaining Enhancements: 7
+equipment=False fields=1 fame=[0]  <= REQ LEV : 10  REQ STR : 0  REQ INT : 50  REQ DEX : 0  REQ LUK : 20  REQ FAME : 0
+equipment=True fields=0   <= Attack Speed: Fast
+equipment=True fields=0   <= Evasion: +4
+equipment=True fields=1 critical-rate=[+5%]  <= Critical Rate: +5%
+equipment=True fields=1 speed=[+3]  <= Speed: +3

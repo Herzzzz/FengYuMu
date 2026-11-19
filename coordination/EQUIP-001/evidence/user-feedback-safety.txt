@@ -1,0 +1,21 @@
+PASS: legacy value remains readable
+PASS: new preferences persist without invoking legacy lookup
+PASS: stale section merge retains other writer's values
+PASS: cleared credential does not resurrect legacy value
+PASS: Unicode, newlines, separators and empty values round trip
+PASS: concurrent commits retain all 20 changes
+PASS: filesystem failure preserves existing settings
+PASS: corrupt settings are refused and kept intact
+PASS: owned temporary writes cleaned up
+PASS: actual preference facade handles absent legacy profile
+PASS: base address normalizes to chat endpoint
+PASS: versioned base address retains v1
+PASS: models query retains vendor base path
+PASS: DeepSeek model query uses same API authority and version
+PASS: unsafe or incomplete endpoint refused: api.example.com
+PASS: unsafe or incomplete endpoint refused: api.example.com
+PASS: unsafe or incomplete endpoint refused: api.example.com
+PASS: unsafe or incomplete endpoint refused: api.example.com
+PASS: unsafe or incomplete endpoint refused: api.example.com
+PASS: model diagnostic excludes credentials and injected lines
+User feedback safety: 20/20 passed; actual Windows ACL/UI/game/provider paths remain unverified.

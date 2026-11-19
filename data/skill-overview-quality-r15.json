@@ -1,0 +1,91 @@
+{
+  "scannedSkillDescriptionRows": 4335,
+  "changedRows": 14,
+  "rules": "Shared orphan-English, duration grammar, elemental resistance and source profession wording; no runtime name/ID conditions",
+  "entries": [
+    {
+      "english": "Reflects a portion of the physical damage received from enemies. If incoming damage is guarded with a shield, 100% of the damage is reflected instead. However, the reflected damage cannot exceed 10% of the enemy’s Max HP at once.",
+      "category": "怀旧服-技能说明#1111005",
+      "before": "反射所受敌人造成的部分物理伤害。如果使用盾牌防御 incoming 损害，100% 的伤害会被反射。然而，每次反射的伤害不能超过敌人最大生命值的10%。",
+      "after": "反射所受敌人造成的部分物理伤害。如果使用盾牌防御所受伤害，100% 的伤害会被反射。然而，每次反射的伤害不能超过敌人最大生命值的10%。"
+    },
+    {
+      "english": "Imbues your sword or blunt weapon with the Fire element for a set duration to increase its power, granting a chance to burn enemies to inflict continuous damage every second for 3 seconds. Deals increased damage to fire-weak enemies, but deals reduced damage to fire-resistant enemies and cannot burn them. The effect is removed immediately if you equip a weapon other than a sword or blunt weapon, or use a charge skill of a different element, and has a chance to be removed when using Charge Blow.",
+      "category": "怀旧服-技能说明#1211001",
+      "before": "将你的剑或钝器 imbue 与火元素，持续一段时间以提升其威力，使敌人有几率被灼烧，每秒造成持续伤害3秒。对火属性弱的敌人造成额外伤害，但对火属性抗性的敌人造成伤害减少且无法灼烧。如果装备了非剑或钝器武器，或使用了其他元素的冲撞技能，效果会立即消失。使用冲撞攻击时，还有几率使效果消失。",
+      "after": "为你的剑或钝器赋予火属性，持续一段时间以提升其威力，使敌人有几率被灼烧，在3秒内每秒造成持续伤害。对火属性弱的敌人造成额外伤害，但对火属性抗性的敌人造成伤害减少且无法灼烧。如果装备了非剑或钝器武器，或使用了其他元素的冲撞技能，效果会立即消失。使用冲撞攻击时，还有几率使效果消失。"
+    },
+    {
+      "english": "Imbues your sword or blunt weapon with the Lightning element for a set duration to increase its power, granting a chance to electrocute enemies to stun them. Deals increased damage to lightning-weak enemies, but deals reduced damage to lightning-resistant enemies and cannot electrocute them. The effect is removed immediately if you equip a different weapon type or use a charge skill of a different element, and has a chance to be removed when using Charge Blow.",
+      "category": "怀旧服-技能说明#1211003",
+      "before": "将你的剑或钝器附魔为雷元素，持续一段时间以提升其威力，有一定几率使敌人麻痹。对雷元素弱的敌人造成额外伤害，但对雷元素免疫的敌人造成伤害减少且无法麻痹。如果装备了不同类型的武器或使用了不同元素的充能技能，效果会立即消失。使用充能打击时，也有几率使效果消失。",
+      "after": "将你的剑或钝器附魔为雷元素，持续一段时间以提升其威力，有一定几率使敌人麻痹。对雷元素弱的敌人造成额外伤害，但对雷元素具有抗性的敌人造成伤害减少且无法麻痹。如果装备了不同类型的武器或使用了不同元素的充能技能，效果会立即消失。使用充能打击时，也有几率使效果消失。"
+    },
+    {
+      "english": "Passively enhances the Combo Attack system with increased damage multiplier per orb and higher maximum orb count. At max level, each orb provides +150% damage and you can accumulate up to 10 orbs. Requires Combo Attack maxed at Lv30. This passive is what makes Hero's combo system devastating at endgame.",
+      "category": "怀旧服-技能说明#1120003",
+      "before": "被动增强连击攻击系统，每增加一个 orb 会提升 damage multiplier，同时提高最大 orb 数量。在最高等级时，每个 orb 提供 +150% 的伤害，并且可以累积到 10 个 orb。需要将连击攻击提升至 Lv30。这个被动技能让 Hero 的连击系统在后期游戏变得极具威胁。",
+      "after": "被动增强连击攻击系统，每增加一个连击点会提升伤害倍率，同时提高最大连击点数量。在最高等级时，每个连击点提供 +150% 的伤害，并且可以累积到 10 个连击点。需要将连击攻击提升至 Lv30。这个被动技能让 Hero 的连击系统在后期游戏变得极具威胁。"
+    },
+    {
+      "english": "The Paladin's signature attack skill. Delivers a devastating 2-hit strike to up to 6 enemies. At max level deals 374% × 2 per target. Synergizes with elemental charges for massive damage output. One of the strongest multi-target melee skills in the game.",
+      "category": "怀旧服-技能说明#1221009",
+      "before": "圣骑士的标志性攻击技能。对最多6个敌人造成2次 devastating 攻击。最大等级时每目标造成374% × 2的伤害。与元素充能协同作用可产生巨大伤害输出。游戏中最强的多目标近战技能之一。",
+      "after": "圣骑士的标志性攻击技能。对最多6个敌人造成2次强力攻击。最大等级时每目标造成374% × 2的伤害。与元素充能协同作用可产生巨大伤害输出。游戏中最强的多目标近战技能之一。"
+    },
+    {
+      "english": "Passive skill that commands the summoned Beholder to periodically heal the Dark Knight and nearby party members. Heals 10 to 68 HP every 4 seconds at max level. Synergizes with Berserk by helping manage HP levels. Requires Beholder to be summoned.",
+      "category": "怀旧服-技能说明#1320008",
+      "before": "被动技能，指挥召唤的窥视者定期为暗骑士和 nearby party members 回血。每4秒回血10到68点生命值，满级时生效。与狂暴技能协同作用，帮助维持生命值水平。需要召唤窥视者。",
+      "after": "被动技能，指挥召唤的窥视者定期为暗骑士和附近队员回血。每4秒回血10到68点生命值，满级时生效。与狂暴技能协同作用，帮助维持生命值水平。需要召唤窥视者。"
+    },
+    {
+      "english": "Fires a fire arrow created with magic power at a single enemy, dealing fire-elemental damage and burning them to inflict continuous damage every second for 3 seconds. Deals increased damage to fire-weak enemies, but deals reduced damage to fire-resistant enemies and cannot burn them.",
+      "category": "怀旧服-技能说明#2101003",
+      "before": "使用魔法力量发射一支火箭攻击单个敌人，造成火焰元素伤害，并使其持续受到每秒3秒的伤害。对火属性较弱的敌人造成额外伤害，但对火属性免疫的敌人造成伤害减少且无法燃烧。",
+      "after": "使用魔法力量发射一支火箭攻击单个敌人，造成火焰元素伤害，并使其在3秒内每秒受到持续伤害。对火属性较弱的敌人造成额外伤害，但对火属性具有抗性的敌人造成伤害减少且无法燃烧。"
+    },
+    {
+      "english": "Summons sharp ice fragments above the heads of multiple nearby enemies, dealing Ice-elemental damage. All monsters except those strong against ice will be briefly slowed when hit. Deals increased damage to ice-weak enemies, but deals reduced damage to ice-resistant enemies and cannot slow them.",
+      "category": "怀旧服-技能说明#2211001",
+      "before": "召唤尖锐的冰碎屑悬浮在多个 nearby 敌人头顶，造成冰元素伤害。所有除对冰元素抗性极强的怪物外，被击中的怪物会短暂减速。对冰元素弱的敌人造成更高伤害，但对冰元素抗性高的敌人造成更低伤害，并不能减速。",
+      "after": "召唤尖锐的冰碎屑悬浮在多个附近的敌人头顶，造成冰元素伤害。所有除对冰元素抗性极强的怪物外，被击中的怪物会短暂减速。对冰元素弱的敌人造成更高伤害，但对冰元素抗性高的敌人造成更低伤害，并不能减速。"
+    },
+    {
+      "english": "The F/P Arch Mage's ultimate attack. Rains meteors down on ALL enemies on screen (up to 15 targets). Deals massive fire damage (280–510%) with a cooldown. One of the strongest AoE attacks in the game. MP cost is a flat 500.",
+      "category": "怀旧服-技能说明#2121007",
+      "before": "F/P圣殿骑士的终极技能。向屏幕上的所有敌人（最多15个目标）倾泻陨石。造成巨额火属性伤害（280-510%），有冷却时间。游戏中最强大的范围攻击之一。MP消耗为固定500。",
+      "after": "火毒魔导师的终极技能。向屏幕上的所有敌人（最多15个目标）倾泻陨石。造成巨额火属性伤害（280-510%），有冷却时间。游戏中最强大的范围攻击之一。MP消耗为固定500。"
+    },
+    {
+      "english": "Unleashes a bolt of lightning that chains between up to 6 enemies. The I/L Arch Mage's primary multi-target attack. Damage scales from 250% to 424% per target. No cooldown — can be spammed for sustained AoE DPS.",
+      "category": "怀旧服-技能说明#2221006",
+      "before": "释放一道闪电，会在最多6个敌人之间传导。I/L圣骑士的主要群体攻击技能。伤害随目标数量增加而提升，每目标伤害从250%增至424%。无冷却时间，可连续释放以维持持续的范围伤害。",
+      "after": "释放一道闪电，会在最多6个敌人之间传导。冰雷魔导师的主要群体攻击技能。伤害随技能等级提升，每目标伤害从250%增至424%。无冷却时间，可连续释放以维持持续的范围伤害。"
+    },
+    {
+      "english": "The I/L Arch Mage's ultimate attack. Rains ice down on ALL enemies on screen (up to 15 targets). Deals massive ice damage (280–510%) with a freeze chance. Has a cooldown. MP cost is a flat 500.",
+      "category": "怀旧服-技能说明#2221007",
+      "before": "I/L圣骑士的终极技能。向屏幕上的所有敌人（最多15个目标）倾泻冰霜。造成大量冰系伤害（280-510%），并有冻结效果。有冷却时间。MP消耗为固定500。",
+      "after": "冰雷魔导师的终极技能。向屏幕上的所有敌人（最多15个目标）倾泻冰霜。造成大量冰系伤害（280-510%），并有冻结效果。有冷却时间。MP消耗为固定500。"
+    },
+    {
+      "english": "Fires a flaming arrow at an enemy in front that incinerates the surrounding area on impact, dealing Fire-elemental damage to up to 4 enemies. Targets hit will suffer from a Burn effect that inflicts continuous damage every second for 3 seconds. Deals increased damage to fire-weak enemies, but deals reduced damage to fire-resistant enemies and cannot burn them.",
+      "category": "怀旧服-技能说明#3111001",
+      "before": "向前方敌人发射一支燃烧的箭矢，在命中时焚烧周围区域，对最多4个敌人造成火元素伤害。命中目标会受到持续伤害，每秒造成3秒的伤害。对火属性弱的敌人造成额外伤害，但对火属性免疫的敌人造成伤害减少且无法点燃。",
+      "after": "向前方敌人发射一支燃烧的箭矢，在命中时焚烧周围区域，对最多4个敌人造成火元素伤害。命中目标会受到持续伤害，在3秒内每秒受到持续伤害。对火属性弱的敌人造成额外伤害，但对火属性具有抗性的敌人造成伤害减少且无法点燃。"
+    },
+    {
+      "english": "The Marksman's ultimate single-target attack. Fires a single devastating shot that always deals 199,999 damage (effectively a fixed-damage skill). Has a cooldown that decreases with level. The only skill in the game with guaranteed fixed damage, making it uniquely powerful against high-defense bosses.",
+      "category": "怀旧服-技能说明#3221007",
+      "before": "射手的终极单体攻击。发射一发 devastating 的射击，总是造成 199,999 点伤害（实际上是一个固定伤害技能）。拥有冷却时间，随着等级提升而减少。游戏内唯一一个保证固定伤害的技能，使其在对抗高防御boss时具有独特优势。",
+      "after": "射手的终极单体攻击。发射一发强力的射击，总是造成 199,999 点伤害（实际上是一个固定伤害技能）。拥有冷却时间，随着等级提升而减少。游戏内唯一一个保证固定伤害的技能，使其在对抗高防御boss时具有独特优势。"
+    },
+    {
+      "english": "While active, use Meso to block a portion of incoming damage. The effect is deactivated if you lack the required Meso. The effect is activated when used and deactivated when used again. Required Skill : At least Level 3 on Chakra",
+      "category": "怀旧服-技能说明#4211000",
+      "before": "在生效期间，使用金币可以抵挡一部分 incoming 损害。如果金币不足，效果会失效。效果在使用时激活，在再次使用时失效。所需技能：至少在 Chakra 上达到3级",
+      "after": "在生效期间，使用金币可以抵挡一部分所受伤害。如果金币不足，效果会失效。效果在使用时激活，在再次使用时失效。所需技能：至少在气旋上达到3级"
+    }
+  ]
+}

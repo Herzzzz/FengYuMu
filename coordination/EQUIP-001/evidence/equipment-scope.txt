@@ -1,0 +1,28 @@
+PASS: chat classification gate is unchanged
+PASS: prose-AI eligibility gate is unchanged
+PASS: equipment grammar is not wired into the chat gate
+PASS: equipment grammar is not wired into the AI gate
+PASS: equipment grammar has no DetectItemId branch
+PASS: equipment grammar has no GetItemOverview branch
+PASS: equipment grammar has no Black Jester branch
+PASS: equipment grammar has no Crimsonheart branch
+PASS: equipment grammar has no Warrior branch
+PASS: equipment grammar has no Magician branch
+PASS: equipment grammar has no Thief branch
+PASS: equipment grammar has no serverId branch
+PASS: equipment grammar has no ServerName branch
+PASS: equipment grammar has no playerName branch
+PASS: equipment layout has no DetectItemId branch
+PASS: equipment layout has no GetItemOverview branch
+PASS: equipment layout has no Black Jester branch
+PASS: equipment layout has no Crimsonheart branch
+PASS: equipment layout has no Warrior branch
+PASS: equipment layout has no Magician branch
+PASS: equipment layout has no Thief branch
+PASS: equipment grammar has no OCR or AI dependency
+PASS: equipment layout has no OCR or AI dependency
+PASS: release build includes the shared equipment plan
+PASS: composition uses the shared equipment typography
+PASS: composition records painted/preserved equipment evidence
+PASS: structured planning records recognized/matched/prepared equipment evidence
+Equipment scope safety: 27 checks passed; source-level isolation guards; runtime chat/OCR/AI paths unchanged.

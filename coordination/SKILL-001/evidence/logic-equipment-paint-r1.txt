@@ -1,0 +1,50 @@
+PASS: all generic equipment rows produce a prepared label
+PASS: equipment composition commits
+PASS: all equipment fields that fit are painted
+PASS: every pixel of every value region (sign, correction and colour) stays original
+PASS: every equipment label records a painted stage and readable font size
+PASS: one shared field font size is used across the panel
+PASS: equipment typography keeps the shared FONT family/pixel unit
+PASS: every prepared field retains the exact observed value string
+PASS: every value has a measured pixel guard
+PASS: the shared panel plan accounts for painted and preserved fields
+PASS: equipment composition adds no capture or OCR round
+PASS: equipment paint evidence distinguishes painted and preserved
+PASS: one paint pass publishes every prepared equipment field
+PASS: paint counters identify the actual equipment labels
+PASS: EQUIP-R1 estimated boundary label is not painted
+PASS: EQUIP-R1 estimated boundary records its preserve reason
+PASS: EQUIP-R1 all 48 numeric marker pixels stay original
+PASS: EQUIP-R1a independent sign field paints from the measured range
+PASS: EQUIP-R1a the complete signed value region stays original
+PASS: EQUIP-R1a composition guard covers the independent sign
+PASS: EQUIP-R3 contiguous STR+5INT+3 paints both fields
+PASS: EQUIP-R3 no source-or-live-value-conflict for contiguous fields
+PASS: EQUIP-R3 both complete value regions stay original
+PASS: EQUIP-R3a STR:+1OINT:+3 paints both fields
+PASS: EQUIP-R3a STR keeps +1O and INT is not blocked
+PASS: EQUIP-R3a both complete value regions stay original
+PASS: EQUIP-R3b clipped-letter key is not painted
+PASS: EQUIP-R3b complete value region stays original
+PASS: EQUIP-R2 fixture shares a 16px panel size
+PASS: EQUIP-R2 narrow and wide keys both paint at the shared size
+PASS: EQUIP-R2 narrow 智力 and wide 物理防御力 both use 16px, not 16/14
+PASS: EQUIP-R2 paint evidence records the single 16px panel decision
+PASS: EQUIP-R2 wide key that cannot fit is preserved while the narrow key paints
+PASS: EQUIP-R2 preserved wide key keeps the 16px panel decision and records no shrink
+PASS: unfitting equipment key preserves the original
+PASS: unfitting equipment key records equipment-field-does-not-fit
+PASS: preservedReason is attached to the equipment field plan
+PASS: unfitting key leaves its value pixels untouched
+PASS: equipment paint evidence records the preserved reason
+PASS: partial OCR without a value rectangle protects the rest of the row
+PASS: partial OCR still retains the observed value text
+PASS: parenthesized correction is preserved byte-for-byte
+EVIDENCE: equipment-paint generation=1 prepared=12 painted=12 preserved=0 panelSize=13 preservedReason=none
+EVIDENCE: equipment-paint generation=1 prepared=2 painted=1 preserved=1 panelSize=13 preservedReason=equipment-field-boundary-estimated
+EVIDENCE: equipment-paint generation=1 prepared=1 painted=1 preserved=0 panelSize=13 preservedReason=none
+EVIDENCE: equipment-paint generation=1 prepared=2 painted=2 preserved=0 panelSize=13 preservedReason=none
+EVIDENCE: equipment-paint generation=1 prepared=2 painted=2 preserved=0 panelSize=16 preservedReason=none
+EVIDENCE: equipment-paint generation=1 prepared=2 painted=1 preserved=1 panelSize=16 preservedReason=equipment-field-does-not-fit
+EVIDENCE: equipment-paint generation=1 prepared=1 painted=0 preserved=1 panelSize=13 preservedReason=equipment-field-does-not-fit
+Equipment field paint: 42 checks passed; generated-source substitute Font/Graphics harness; real game pixels unverified.

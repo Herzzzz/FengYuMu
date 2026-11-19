@@ -1,0 +1,8 @@
+PASS: one translated equipment attribute cannot suppress its observed description
+PASS: four fields and body keep independent semantic roles
+PASS: name and fields alone cannot publish an unseen overview
+PASS: unknown item cannot borrow a different item's overview
+PASS: unmatched observed prose is preserved
+PASS: description-only item still has its own path
+PASS: insufficient match coverage cannot publish a known item's body
+Equipment description routing: 7 passed; exact production builder, controlled OCR/glossary boundaries; real CW pixels unverified.

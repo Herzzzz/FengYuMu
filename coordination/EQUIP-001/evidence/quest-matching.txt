@@ -1,0 +1,29 @@
+PASS: user-confirmed plural ledger title has an exact independent translation
+PASS: plural is not a partial singular substring
+PASS: prior singular wording remains available
+PASS: server wording cannot invent a canonical task ID
+PASS: complete observed source retains its full body translation
+PASS: OCR split inside a word cannot suppress the complete observed paragraph
+PASS: OCR joined words retain the same observed paragraph
+PASS: one aligned zero-for-letter OCR error can recover full prose
+PASS: one aligned one-for-letter OCR error can recover full prose
+PASS: changed quantity, different wording or missing continuation cannot borrow a full paragraph
+PASS: changed quantity, different wording or missing continuation cannot borrow a full paragraph
+PASS: changed quantity, different wording or missing continuation cannot borrow a full paragraph
+PASS: changed quantity, different wording or missing continuation cannot borrow a full paragraph
+PASS: changed quantity, different wording or missing continuation cannot borrow a full paragraph
+PASS: changed quantity, different wording or missing continuation cannot borrow a full paragraph
+PASS: changed quantity, different wording or missing continuation cannot borrow a full paragraph
+PASS: space repair cannot merge different numeric token sequences
+PASS: decimal format cannot become two quantities
+PASS: letter O cannot manufacture an unobserved numeric zero
+PASS: split quantity cannot be silently reconstructed
+PASS: unrelated prefix is not swallowed by complete-prose comparison
+PASS: unrelated suffix is not swallowed by complete-prose comparison
+PASS: unscoped full-frame task names cannot authorize a paragraph
+PASS: measured selected-detail scope resolves its own canonical task
+PASS: shared ledger prose cannot be assigned an invented identity
+PASS: canonical paragraph with its observed quantities remains available
+PASS: canonical fuzzy matcher cannot change an observed task quantity
+PASS: quantity guard preserves existing nonnumeric OCR tolerance
+Quest matching r12: 28 checks passed; actual candidate dictionary/policy, controlled English variants rather than user OCR text.

@@ -1,0 +1,553 @@
+{
+  "scope": "All137ExportedEffectTemplates",
+  "templates": [
+    {
+      "english": "{n1}% increased Fire, Ice, Lightning and Poison Resistance",
+      "chinese": "火、冰、雷、毒抗性提升{n1}%"
+    },
+    {
+      "english": "{n1}% Increased resistance to Fire, Ice, and Lightning elements",
+      "chinese": "火、冰、雷抗性提升{n1}%"
+    },
+    {
+      "english": "{n1}% Increased resistance to Fire, Ice, and Lightning elements.",
+      "chinese": "火、冰、雷抗性提升{n1}%"
+    },
+    {
+      "english": "{n1}% success rate, Damage {n2}%; Kills the monster with HP at {n3}% or lower at {n4}% success rate",
+      "chinese": "成功率{n1}%，伤害{n2}%；怪物HP低于或等于{n3}%时，有{n4}%的成功率直接击杀"
+    },
+    {
+      "english": "{n1}% success rate, Final Attack with axe damage {n2}% to up to {n3} enemies",
+      "chinese": "发动率{n1}%，斧终极攻击伤害{n2}%，最多攻击{n3}个敌人"
+    },
+    {
+      "english": "{n1}% success rate, Final Attack with blunt weapon damage {n2}%",
+      "chinese": "发动率{n1}%，钝器终极攻击伤害{n2}%"
+    },
+    {
+      "english": "{n1}% success rate, Final Attack with bow damage {n2}% to up to {n3} enemies",
+      "chinese": "发动率{n1}%，弓终极攻击伤害{n2}%，最多攻击{n3}个敌人"
+    },
+    {
+      "english": "{n1}% success rate, Final Attack with crossbow damage {n2}%",
+      "chinese": "发动率{n1}%，弩终极攻击伤害{n2}%"
+    },
+    {
+      "english": "{n1}% success rate, Final Attack with polearm damage {n2}%, absorb {n3}% of damage as HP",
+      "chinese": "发动率{n1}%，矛终极攻击伤害{n2}%，将伤害的{n3}%转化为HP"
+    },
+    {
+      "english": "{n1}% success rate, Final Attack with spear damage {n2}%, absorb {n3}% of damage as HP",
+      "chinese": "发动率{n1}%，枪终极攻击伤害{n2}%，将伤害的{n3}%转化为HP"
+    },
+    {
+      "english": "{n1}% success rate, Final Attack with sword damage {n2}%",
+      "chinese": "发动率{n1}%，剑终极攻击伤害{n2}%"
+    },
+    {
+      "english": "{n1}% success rate, Final Attack with sword damage {n2}% to up to {n3} enemies",
+      "chinese": "发动率{n1}%，剑终极攻击伤害{n2}%，最多攻击{n3}个敌人"
+    },
+    {
+      "english": "Accuracy +{n1}, Critical Rate +{n2}%",
+      "chinese": "命中率+{n1}，暴击率+{n2}%"
+    },
+    {
+      "english": "Accuracy +{n1}, Evasion +{n2}",
+      "chinese": "命中率+{n1}，回避率+{n2}"
+    },
+    {
+      "english": "Attack range for bows and crossbows: +{n1}",
+      "chinese": "弓与弩攻击范围+{n1}"
+    },
+    {
+      "english": "Attack range for throwing weapons: +{n1}",
+      "chinese": "投掷武器攻击范围+{n1}"
+    },
+    {
+      "english": "Axe Mastery level {n1}, {n2}% chance to inflict bleed, dealing {n3}% total damage over {n4} sec",
+      "chinese": "斧熟练度等级{n1}，出血概率{n2}%，总伤害{n3}%，持续{n4}秒"
+    },
+    {
+      "english": "Blue Snail Shell -{n1}, MP -{n2}; Damage {n3}",
+      "chinese": "蓝蜗牛壳-{n1}，MP -{n2}；伤害{n3}"
+    },
+    {
+      "english": "Blunt Weapon Mastery level {n1}, {n2}% chance to ignore enemy Weapon Def.",
+      "chinese": "钝器熟练度等级{n1}，无视敌人物理防御概率{n2}%"
+    },
+    {
+      "english": "Bow Mastery level {n1}, Evasion +{n2}",
+      "chinese": "弓熟练度等级{n1}，回避率+{n2}"
+    },
+    {
+      "english": "Claw Mastery level {n1}, Attack Power +{n2}, {n3}% chance to retrieve used throwing stars",
+      "chinese": "拳套熟练度等级{n1}，攻击力+{n2}，回收已用飞镖概率{n3}%"
+    },
+    {
+      "english": "Critical hits have a {n1}% chance to reduce Enemy Speed by {n2} for {n3} sec",
+      "chinese": "暴击时有{n1}%概率降低敌人速度{n2}，持续{n3}秒"
+    },
+    {
+      "english": "Critical Rate +{n1}%, Critical Damage +{n2}%",
+      "chinese": "暴击率+{n1}%，暴击伤害+{n2}%"
+    },
+    {
+      "english": "Crossbow Mastery level {n1}, {n2}% chance to ignore enemy Weapon Def.",
+      "chinese": "弩熟练度等级{n1}，无视敌人物理防御概率{n2}%"
+    },
+    {
+      "english": "Dagger Mastery level {n1}, Critical Rate +{n2}%, {n3}% chance to ignore knockbacks",
+      "chinese": "短刀熟练度等级{n1}，暴击率+{n2}%，免于击退概率{n3}%"
+    },
+    {
+      "english": "Dark Sight MP cost -{n1}, When HP is {n2}% or below, restores a total of {n3}% HP over {n4} sec, Cannot retrigger for {n5} sec",
+      "chinese": "隐身术MP消耗-{n1}；HP不高于{n2}%时，恢复共{n3}% HP，持续{n4}秒；再次触发间隔{n5}秒"
+    },
+    {
+      "english": "For every attack, {n1}% success rate, absorb {n2}% of the enemy's Max MP",
+      "chinese": "每次攻击有{n1}%概率吸收敌人最大MP的{n2}%"
+    },
+    {
+      "english": "Heal {n1} HP every {n2} seconds",
+      "chinese": "恢复{n1}点HP，间隔{n2}秒"
+    },
+    {
+      "english": "HP -{n1}, MP -{n2}; Damage {n3}%",
+      "chinese": "HP -{n1}，MP -{n2}；伤害{n3}%"
+    },
+    {
+      "english": "HP -{n1}, MP -{n2}; Damage {n3}%; {n4}% chance to maintain Charged state",
+      "chinese": "HP -{n1}，MP -{n2}；伤害{n3}%；维持充能概率{n4}%"
+    },
+    {
+      "english": "HP -{n1}, MP -{n2}; Damage {n3}%; Range {n4}%; Stun for {n5} sec",
+      "chinese": "HP -{n1}，MP -{n2}；伤害{n3}%；范围{n4}%；眩晕{n5}秒"
+    },
+    {
+      "english": "HP -{n1}, MP -{n2}; Increases Axe Attack Speed by {n3} stages for {n4} sec",
+      "chinese": "HP -{n1}，MP -{n2}；斧攻击速度提升{n3}档，持续{n4}秒"
+    },
+    {
+      "english": "HP -{n1}, MP -{n2}; Increases Blunt Weapon Attack Speed by {n3} stages for {n4} sec",
+      "chinese": "HP -{n1}，MP -{n2}；钝器攻击速度提升{n3}档，持续{n4}秒"
+    },
+    {
+      "english": "HP -{n1}, MP -{n2}; Increases Bow Attack Speed by {n3} stages for {n4} sec",
+      "chinese": "HP -{n1}，MP -{n2}；弓攻击速度提升{n3}档，持续{n4}秒"
+    },
+    {
+      "english": "HP -{n1}, MP -{n2}; Increases Claw Attack Speed by {n3} stages for {n4} sec",
+      "chinese": "HP -{n1}，MP -{n2}；拳套攻击速度提升{n3}档，持续{n4}秒"
+    },
+    {
+      "english": "HP -{n1}, MP -{n2}; Increases Crossbow Attack Speed by {n3} stages for {n4} sec",
+      "chinese": "HP -{n1}，MP -{n2}；弩攻击速度提升{n3}档，持续{n4}秒"
+    },
+    {
+      "english": "HP -{n1}, MP -{n2}; Increases Dagger Attack Speed by {n3} stages for {n4} sec",
+      "chinese": "HP -{n1}，MP -{n2}；短刀攻击速度提升{n3}档，持续{n4}秒"
+    },
+    {
+      "english": "HP -{n1}, MP -{n2}; Increases Polearm Attack Speed by {n3} stages for {n4} sec",
+      "chinese": "HP -{n1}，MP -{n2}；矛攻击速度提升{n3}档，持续{n4}秒"
+    },
+    {
+      "english": "HP -{n1}, MP -{n2}; Increases Spear Attack Speed by {n3} stages for {n4} sec",
+      "chinese": "HP -{n1}，MP -{n2}；枪攻击速度提升{n3}档，持续{n4}秒"
+    },
+    {
+      "english": "HP -{n1}, MP -{n2}; Increases Sword Attack Speed by {n3} stages for {n4} sec",
+      "chinese": "HP -{n1}，MP -{n2}；剑攻击速度提升{n3}档，持续{n4}秒"
+    },
+    {
+      "english": "HP -{n1}; MP -{n2}; Damage {n3}%",
+      "chinese": "HP -{n1}；MP -{n2}；伤害{n3}%"
+    },
+    {
+      "english": "HP -{n1}; MP -{n2}; Damage {n3}%; {n4}% chance to inflict bleed, dealing {n5}% total damage over {n6} sec.",
+      "chinese": "HP -{n1}；MP -{n2}；伤害{n3}%；出血概率{n4}%，总伤害{n5}%，持续{n6}秒"
+    },
+    {
+      "english": "Max HP +{n1}%",
+      "chinese": "最大HP +{n1}%"
+    },
+    {
+      "english": "Max MP +{n1}%",
+      "chinese": "最大MP +{n1}%"
+    },
+    {
+      "english": "MP - {n1}, Damage {n2}%, attack {n3} times",
+      "chinese": "MP -{n1}，伤害{n2}%，攻击{n3}次"
+    },
+    {
+      "english": "MP - {n1}, Summoning Rock -{n2}; For {n3} sec, summons HP {n4} puppet",
+      "chinese": "MP -{n1}，召唤石-{n2}；持续{n3}秒，召唤HP为{n4}的傀儡"
+    },
+    {
+      "english": "MP -{n1}, {n2}% chance to steal, apply {n3}% in damage, on success +{n4} Attack Power for {n5} sec",
+      "chinese": "MP -{n1}，偷取概率{n2}%，伤害{n3}%，成功时攻击力+{n4}，持续{n5}秒"
+    },
+    {
+      "english": "MP -{n1}, Basic Attack {n2}, Mastery level {n3}",
+      "chinese": "MP -{n1}，基础攻击{n2}，熟练度等级{n3}"
+    },
+    {
+      "english": "MP -{n1}, Damage {n2}%, {n3}% chance to be stunned for {n4} sec",
+      "chinese": "MP -{n1}，伤害{n2}%，眩晕概率{n3}%，持续{n4}秒"
+    },
+    {
+      "english": "MP -{n1}, Magic Rock -{n2}; Increases Magic Casting Speed by {n3} stage for {n4} sec",
+      "chinese": "MP -{n1}，魔法石-{n2}；施法速度提升{n3}档，持续{n4}秒"
+    },
+    {
+      "english": "MP -{n1}, Magic Rock -{n2}; Increases Magic Casting Speed by {n3} stages for {n4} sec",
+      "chinese": "MP -{n1}，魔法石-{n2}；施法速度提升{n3}档，持续{n4}秒"
+    },
+    {
+      "english": "MP -{n1}, Magic Rock -{n2}; Portal duration {n3} sec",
+      "chinese": "MP -{n1}，魔法石-{n2}；传送门持续{n3}秒"
+    },
+    {
+      "english": "MP -{n1}, Magic Rock -{n2}; Protects yourself with a holy symbol for {n3} min, resurrecting with {n4}% HP recovered",
+      "chinese": "MP -{n1}，魔法石-{n2}；圣符保护持续{n3}分钟，复活时恢复{n4}% HP"
+    },
+    {
+      "english": "MP -{n1}, Mastery {n2}%, Explode up to {n3}",
+      "chinese": "MP -{n1}，熟练度{n2}%，最多引爆{n3}次"
+    },
+    {
+      "english": "MP -{n1}, Summoning Rock -{n2}; Summons a dragon with {n3} Attack and Mastery level {n4} for {n5} sec",
+      "chinese": "MP -{n1}，召唤石-{n2}；召唤龙，攻击力{n3}，熟练度等级{n4}，持续{n5}秒"
+    },
+    {
+      "english": "MP -{n1}, Summoning Rock -{n2}; Summons a Golden Eagle with {n3} Attack Power for {n4} sec; {n5}% chance to be stunned for {n6} sec",
+      "chinese": "MP -{n1}，召唤石-{n2}；召唤金鹰，攻击力{n3}，持续{n4}秒；眩晕概率{n5}%，持续{n6}秒"
+    },
+    {
+      "english": "MP -{n1}, Summoning Rock -{n2}; Summons a shadow partner for {n3} sec, Deals +{n4}% extra damage",
+      "chinese": "MP -{n1}，召唤石-{n2}；召唤影分身，持续{n3}秒，额外伤害+{n4}%"
+    },
+    {
+      "english": "MP -{n1}, Summoning Rock -{n2}; Summons a Silver Hawk with {n3} Attack Power for {n4} sec; {n5}% chance to be stunned for {n6} sec",
+      "chinese": "MP -{n1}，召唤石-{n2}；召唤银鹰，攻击力{n3}，持续{n4}秒；眩晕概率{n5}%，持续{n6}秒"
+    },
+    {
+      "english": "MP -{n1}, Summons a poison mist that lasts for {n2} sec, Attack Range {n3}%, {n4}% success rate, deals {n5} Basic Attack over {n6} sec",
+      "chinese": "MP -{n1}，毒雾持续{n2}秒，攻击范围{n3}%，成功率{n4}%，基础攻击{n5}，持续{n6}秒"
+    },
+    {
+      "english": "MP -{n1}, Uses {n2} Arrows, Damage {n3}%",
+      "chinese": "MP -{n1}，消耗{n2}支箭，伤害{n3}%"
+    },
+    {
+      "english": "MP -{n1}, Uses {n2} Arrows, Damage {n3}%, Attacks {n4} enemy {n5} times",
+      "chinese": "MP -{n1}，消耗{n2}支箭，伤害{n3}%，攻击{n4}个敌人{n5}次"
+    },
+    {
+      "english": "MP -{n1}; {n2}% chance to drop Mesos upon attacking; Max {n3} Mesos can exist",
+      "chinese": "MP -{n1}；攻击时掉落金币概率{n2}%；最多同时存在{n3}个金币"
+    },
+    {
+      "english": "MP -{n1}; {n2}% chance to morph into a Blue Snail for {n3} sec",
+      "chinese": "MP -{n1}；变成蓝蜗牛概率{n2}%，持续{n3}秒"
+    },
+    {
+      "english": "MP -{n1}; {n2}% chance to Seal enemies for {n3} sec",
+      "chinese": "MP -{n1}；封印敌人概率{n2}%，持续{n3}秒"
+    },
+    {
+      "english": "MP -{n1}; {n2}% damage with {n3} summoned thieves",
+      "chinese": "MP -{n1}；伤害{n2}%，召唤{n3}个盗贼"
+    },
+    {
+      "english": "MP -{n1}; Accuracy +{n2}, Evasion +{n3} for {n4} sec",
+      "chinese": "MP -{n1}；命中率+{n2}，回避率+{n3}，持续{n4}秒"
+    },
+    {
+      "english": "MP -{n1}; Accuracy +{n2}, Evasion +{n3}, and HP recovery from the Heal skill is increased by {n4}% for {n5} sec",
+      "chinese": "MP -{n1}；命中率+{n2}，回避率+{n3}，治愈术HP恢复量增加{n4}%，持续{n5}秒"
+    },
+    {
+      "english": "MP -{n1}; Attack {n2}x with {n3}% damage",
+      "chinese": "MP -{n1}；攻击{n2}次，伤害{n3}%"
+    },
+    {
+      "english": "MP -{n1}; Attack Power +{n2}, Weapon Def. -{n3} for {n4} sec",
+      "chinese": "MP -{n1}；攻击力+{n2}，物理防御-{n3}，持续{n4}秒"
+    },
+    {
+      "english": "MP -{n1}; Attack without using up any arrows for {n2} sec",
+      "chinese": "MP -{n1}；不消耗箭矢，持续{n2}秒"
+    },
+    {
+      "english": "MP -{n1}; Basic Attack {n2} on {n3} enemies, Mastery level {n4}",
+      "chinese": "MP -{n1}；基础攻击{n2}，攻击{n3}个敌人，熟练度等级{n4}"
+    },
+    {
+      "english": "MP -{n1}; Basic Attack {n2}, Mastery level {n3}, Attack Range {n4}%",
+      "chinese": "MP -{n1}；基础攻击{n2}，熟练度等级{n3}，攻击范围{n4}%"
+    },
+    {
+      "english": "MP -{n1}; Basic Attack {n2}, Mastery level {n3}, Attack Range {n4}%; Slowed for {n5} sec",
+      "chinese": "MP -{n1}；基础攻击{n2}，熟练度等级{n3}，攻击范围{n4}%；减速{n5}秒"
+    },
+    {
+      "english": "MP -{n1}; Basic Attack {n2}, Mastery level {n3}, Range {n4}%; Detonates Poison debuffs",
+      "chinese": "MP -{n1}；基础攻击{n2}，熟练度等级{n3}，范围{n4}%；引爆中毒效果"
+    },
+    {
+      "english": "MP -{n1}; Basic Attack {n2}, Mastery level {n3}; {n4}% chance to be electrocuted",
+      "chinese": "MP -{n1}；基础攻击{n2}，熟练度等级{n3}；触电概率{n4}%"
+    },
+    {
+      "english": "MP -{n1}; Basic Attack {n2}, Mastery level {n3}; {n4}% success rate, deals {n5} Basic Attack over {n6} sec",
+      "chinese": "MP -{n1}；基础攻击{n2}，熟练度等级{n3}；成功率{n4}%，基础攻击{n5}，持续{n6}秒"
+    },
+    {
+      "english": "MP -{n1}; Basic Attack {n2}, Mastery level {n3}; Deals {n4} Basic Attack over {n5} sec",
+      "chinese": "MP -{n1}；基础攻击{n2}，熟练度等级{n3}；基础攻击{n4}，持续{n5}秒"
+    },
+    {
+      "english": "MP -{n1}; Basic Attack {n2}, Mastery level {n3}; Slowed for {n4} sec",
+      "chinese": "MP -{n1}；基础攻击{n2}，熟练度等级{n3}；减速{n4}秒"
+    },
+    {
+      "english": "MP -{n1}; Blocks {n2}% of incoming damage using Meso; Consumes Meso equal to {n3}% of the blocked damage",
+      "chinese": "MP -{n1}；用金币抵挡{n2}%的伤害；金币消耗为抵挡伤害的{n3}%"
+    },
+    {
+      "english": "MP -{n1}; Cooldown {n2} sec; Attack Power of {n3} monsters decreased by {n4}% for {n5} sec",
+      "chinese": "MP -{n1}；冷却{n2}秒；{n3}个怪物的攻击力降低{n4}%，持续{n5}秒"
+    },
+    {
+      "english": "MP -{n1}; Cooldown {n2} sec; Physical Defense of {n3} monsters set to {n4} for {n5} sec.",
+      "chinese": "MP -{n1}；冷却{n2}秒；{n3}个怪物的物理防御变为{n4}，持续{n5}秒"
+    },
+    {
+      "english": "MP -{n1}; Cooldown {n2} sec; Removes Fire, Lightning, and Ice resistance from {n3} monsters for {n4} sec.",
+      "chinese": "MP -{n1}；冷却{n2}秒；移除{n3}个怪物的火、雷、冰抗性，持续{n4}秒"
+    },
+    {
+      "english": "MP -{n1}; Damage {n2}%",
+      "chinese": "MP -{n1}；伤害{n2}%"
+    },
+    {
+      "english": "MP -{n1}; damage {n2}%, {n3}% chance to absorb {n4}% of damage as HP",
+      "chinese": "MP -{n1}；伤害{n2}%，吸血概率{n3}%，将伤害的{n4}%转化为HP"
+    },
+    {
+      "english": "MP -{n1}; Damage {n2}%, knockback {n3} enemies by {n4}",
+      "chinese": "MP -{n1}；伤害{n2}%，击退{n3}个敌人，距离{n4}"
+    },
+    {
+      "english": "MP -{n1}; Damage {n2}%; {n3}% chance to reduce enemy's Accuracy for {n4} sec.",
+      "chinese": "MP -{n1}；伤害{n2}%；降低敌人命中率概率{n3}%，持续{n4}秒"
+    },
+    {
+      "english": "MP -{n1}; Damage {n2}%; Attacks {n3} enemies {n4} times",
+      "chinese": "MP -{n1}；伤害{n2}%；攻击{n3}个敌人{n4}次"
+    },
+    {
+      "english": "MP -{n1}; Damage {n2}%; Attacks {n3} enemy {n4} times",
+      "chinese": "MP -{n1}；伤害{n2}%；攻击{n3}个敌人{n4}次"
+    },
+    {
+      "english": "MP -{n1}; Damage {n2}%; Combo chance {n3}% for {n4} combos; Range {n5}%; Evasion -{n6} for {n7} sec.",
+      "chinese": "MP -{n1}；伤害{n2}%；连击概率{n3}%，连击{n4}次；范围{n5}%；回避率-{n6}，持续{n7}秒"
+    },
+    {
+      "english": "MP -{n1}; Damage increases by {n2}% while maintaining at least {n3} combo; Max combo count {n4}",
+      "chinese": "MP -{n1}；伤害增加{n2}%，需要至少{n3}连击；最大连击数{n4}"
+    },
+    {
+      "english": "MP -{n1}; Disappear into the shadows, regular movement speed while active",
+      "chinese": "MP -{n1}；隐身，保持正常移动速度"
+    },
+    {
+      "english": "MP -{n1}; Disappear into the shadows, Speed -{n2} while active",
+      "chinese": "MP -{n1}；隐身期间速度-{n2}"
+    },
+    {
+      "english": "MP -{n1}; Enemy Speed -{n2}, Evasion -{n3} for {n4} sec",
+      "chinese": "MP -{n1}；敌人速度-{n2}，回避率-{n3}，持续{n4}秒"
+    },
+    {
+      "english": "MP -{n1}; Enemy Speed -{n2}, Weapon Def. -{n3} for {n4} sec",
+      "chinese": "MP -{n1}；敌人速度-{n2}，物理防御-{n3}，持续{n4}秒"
+    },
+    {
+      "english": "MP -{n1}; Enemy's Attack Power -{n2}, Weapon Def. -{n3} for {n4} sec",
+      "chinese": "MP -{n1}；敌人攻击力-{n2}，物理防御-{n3}，持续{n4}秒"
+    },
+    {
+      "english": "MP -{n1}; Fire Damage {n2}%, {n3}% chance to deal {n4}% Damage over {n5} sec",
+      "chinese": "MP -{n1}；火属性伤害{n2}%，持续伤害概率{n3}%，伤害{n4}%，持续{n5}秒"
+    },
+    {
+      "english": "MP -{n1}; For {n2} sec, return {n3}% of the physical damage received",
+      "chinese": "MP -{n1}；持续{n2}秒，反射受到的物理伤害的{n3}%"
+    },
+    {
+      "english": "MP -{n1}; HP -{n2} every {n3} sec; Attack Power +{n4}",
+      "chinese": "MP -{n1}；HP -{n2}，间隔{n3}秒；攻击力+{n4}"
+    },
+    {
+      "english": "MP -{n1}; Ice Damage {n2}%, {n3}% chance to inflict Slow for {n4} sec",
+      "chinese": "MP -{n1}；冰属性伤害{n2}%，减速概率{n3}%，持续{n4}秒"
+    },
+    {
+      "english": "MP -{n1}; Imbues weapon with Fire for {n2} seconds; Damage +{n3}%; {n4}% chance to deal {n5}% Damage over {n6} sec.",
+      "chinese": "MP -{n1}；火属性附魔{n2}秒；伤害+{n3}%；持续伤害概率{n4}%，伤害{n5}%，持续{n6}秒"
+    },
+    {
+      "english": "MP -{n1}; Imbues weapon with Ice for {n2} seconds; Damage +{n3}%; {n4}% chance to Freeze enemies for {n5} sec.",
+      "chinese": "MP -{n1}；冰属性附魔{n2}秒；伤害+{n3}%；冻结敌人概率{n4}%，持续{n5}秒"
+    },
+    {
+      "english": "MP -{n1}; Imbues weapon with Lightning for {n2} seconds; Damage +{n3}%; {n4}% chance to be electrocuted",
+      "chinese": "MP -{n1}；雷属性附魔{n2}秒；伤害+{n3}%；触电概率{n4}%"
+    },
+    {
+      "english": "MP -{n1}; Imbues weapon with Lightning for {n2} seconds; Damage +{n3}%; {n4}%chance to be electrocuted",
+      "chinese": "MP -{n1}；雷属性附魔{n2}秒；伤害+{n3}%；触电概率{n4}%"
+    },
+    {
+      "english": "MP -{n1}; Jumps again in mid-air",
+      "chinese": "MP -{n1}；空中再次跳跃"
+    },
+    {
+      "english": "MP -{n1}; Leap backward",
+      "chinese": "MP -{n1}；向后跳跃"
+    },
+    {
+      "english": "MP -{n1}; Leap forward",
+      "chinese": "MP -{n1}；向前跳跃"
+    },
+    {
+      "english": "MP -{n1}; Max HP +{n2}% for {n3} sec",
+      "chinese": "MP -{n1}；最大HP +{n2}%，持续{n3}秒"
+    },
+    {
+      "english": "MP -{n1}; MP cost increased to {n2}%, Magic Attack Damage increased to {n3}%",
+      "chinese": "MP -{n1}；MP消耗增加至{n2}%，魔法伤害增加至{n3}%"
+    },
+    {
+      "english": "MP -{n1}; Party's Magic Attack +{n2} for {n3} sec",
+      "chinese": "MP -{n1}；队伍魔法攻击+{n2}，持续{n3}秒"
+    },
+    {
+      "english": "MP {n1}; Physical damage -{n2}%, Basic Attack {n3} non-elemental magic damage for {n4} sec",
+      "chinese": "MP {n1}；物理伤害-{n2}%，基础攻击{n3}的无属性魔法伤害，持续{n4}秒"
+    },
+    {
+      "english": "MP -{n1}; Range {n2}%; {n3}% chance to cure Poison, Blind, Weakness, and Curse conditions",
+      "chinese": "MP -{n1}；范围{n2}%；解除中毒、失明、虚弱、诅咒概率{n3}%"
+    },
+    {
+      "english": "MP -{n1}; Recover HP {n2} in {n3} sec. Cooldown: {n4} min.",
+      "chinese": "MP -{n1}；恢复HP {n2}，持续{n3}秒；冷却{n4}分钟"
+    },
+    {
+      "english": "MP -{n1}; Recovery rate {n2}%",
+      "chinese": "MP -{n1}；恢复率{n2}%"
+    },
+    {
+      "english": "MP -{n1}; Replace {n2}% of HP damage with MP while active",
+      "chinese": "MP -{n1}；生效期间以MP代替{n2}%的HP伤害"
+    },
+    {
+      "english": "MP -{n1}; Rush, with {n2} in distance; Damage {n3}%",
+      "chinese": "MP -{n1}；突进距离{n2}；伤害{n3}%"
+    },
+    {
+      "english": "MP -{n1}; Snares up to {n2} enemies for {n3} sec, dealing a total of {n4}% Damage",
+      "chinese": "MP -{n1}；束缚最多{n2}个敌人，持续{n3}秒，总伤害{n4}%"
+    },
+    {
+      "english": "MP -{n1}; speed +{n2} for {n3} sec. Cooldown: {n4} min.",
+      "chinese": "MP -{n1}；速度+{n2}，持续{n3}秒；冷却{n4}分钟"
+    },
+    {
+      "english": "MP -{n1}; Speed +{n2}, Jump +{n3} for {n4} sec",
+      "chinese": "MP -{n1}；速度+{n2}，跳跃力+{n3}，持续{n4}秒"
+    },
+    {
+      "english": "MP -{n1}; Stun chance {n2}% for {n3} sec, damage {n4}%",
+      "chinese": "MP -{n1}；眩晕概率{n2}%，持续{n3}秒，伤害{n4}%"
+    },
+    {
+      "english": "MP -{n1}; Teleport, with {n2} in distance",
+      "chinese": "MP -{n1}；瞬间移动距离{n2}"
+    },
+    {
+      "english": "MP -{n1}; Thrown Stars -{n2}; Damage {n3}%",
+      "chinese": "MP -{n1}；飞镖-{n2}；伤害{n3}%"
+    },
+    {
+      "english": "MP -{n1}; Weapon Def. +{n2}% for {n3} sec",
+      "chinese": "MP -{n1}；物理防御+{n2}%，持续{n3}秒"
+    },
+    {
+      "english": "MP -{n1}; Weapon Def. +{n2}, {n3}% chance to ignore knockbacks for {n4} sec",
+      "chinese": "MP -{n1}；物理防御+{n2}，免于击退概率{n3}%，持续{n4}秒"
+    },
+    {
+      "english": "MP -{n1}; Weapon Def. +{n2}, Magic Def. +{n3} for {n4} sec",
+      "chinese": "MP -{n1}；物理防御+{n2}，魔法防御+{n3}，持续{n4}秒"
+    },
+    {
+      "english": "Polearm Mastery level {n1}, Speed +{n2}",
+      "chinese": "矛熟练度等级{n1}，速度+{n2}"
+    },
+    {
+      "english": "Recover {n1} additional MP every {n2} sec.",
+      "chinese": "额外恢复{n1}点MP，间隔{n2}秒"
+    },
+    {
+      "english": "Recover {n1}% HP and {n2}% MP with a {n3}% chance when evading",
+      "chinese": "恢复{n1}% HP和{n2}% MP，回避成功时触发概率{n3}%"
+    },
+    {
+      "english": "Recover {n1}% HP and {n2}% MP with a {n3}% chance when landing a critical hit",
+      "chinese": "恢复{n1}% HP和{n2}% MP，暴击时触发概率{n3}%"
+    },
+    {
+      "english": "Red Snail Shell -{n1}, MP -{n2}; Damage {n3}",
+      "chinese": "红蜗牛壳-{n1}，MP -{n2}；伤害{n3}"
+    },
+    {
+      "english": "Regenerates {n1}% of Max MP every {n2} seconds; increases MP recovery from items by {n3}%",
+      "chinese": "恢复最大MP的{n1}%，间隔{n2}秒；药品MP恢复量提升{n3}%"
+    },
+    {
+      "english": "Regenerates HP every {n1} seconds; increases HP recovery from items by {n2}%",
+      "chinese": "自动恢复HP，间隔{n1}秒；药品HP恢复量提升{n2}%"
+    },
+    {
+      "english": "Snail Shell -{n1}, MP -{n2}; Damage {n3}",
+      "chinese": "蜗牛壳-{n1}，MP -{n2}；伤害{n3}"
+    },
+    {
+      "english": "Spear Mastery level {n1}, Critical Rate +{n2}%",
+      "chinese": "枪熟练度等级{n1}，暴击率+{n2}%"
+    },
+    {
+      "english": "Sword Mastery level {n1}, Weapon Def. +{n2}",
+      "chinese": "剑熟练度等级{n1}，物理防御+{n2}"
+    },
+    {
+      "english": "Throws {n1} Mesos to deal {n2}x damage; Chance to reduce Meso cost by {n3}% based on DEX",
+      "chinese": "投掷{n1}金币，造成{n2}倍伤害；根据敏捷降低金币消耗{n3}%"
+    },
+    {
+      "english": "Uses {n1} times level in Mesos, Magic Stone -{n2}; Prevents death from fatal damage and recovers {n3}% HP for {n4} min",
+      "chinese": "消耗等级乘以{n1}的金币，魔法石-{n2}；防止致命伤害并恢复{n3}% HP，持续{n4}分钟"
+    },
+    {
+      "english": "When a claw is equipped, Weapon Def. +{n1}; {n2}% chance to block physical attacks",
+      "chinese": "装备拳套时物理防御+{n1}；格挡物理攻击概率{n2}%"
+    }
+  ]
+}

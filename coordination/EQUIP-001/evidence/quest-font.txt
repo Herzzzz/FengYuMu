@@ -1,0 +1,52 @@
+PASS: journal + summary compose in one pass
+PASS: journal and adjacent summary label are both published
+PASS: journal records a real pixel font unit
+PASS: journal body base size is readable, not 8px
+PASS: title/body hierarchy is stable
+PASS: every measured line fits the content width
+PASS: content stays inside the replacement region
+PASS: first-line and right-edge English markers are fully replaced
+PASS: adjacent Quest Summary marker is replaced by its own label, not left as residue
+PASS: adjacent panel pixels outside the journal region remain transparent
+PASS: journal layout adds no capture or OCR round
+PASS: repeated F8 composition succeeds
+PASS: repeated F8 keeps the same plan metrics
+PASS: long body composes through pagination
+PASS: long body produces multiple pages instead of shrinking or truncating
+PASS: pagination preserves every character in order
+PASS: each page has measured draw lines
+PASS: page turn uses the cached layout without OCR
+PASS: page turn launches no capture or OCR
+PASS: scrolled/heading-less body composes
+PASS: scrolled body keeps the shared body base size without inventing a title
+PASS: emoji A😀 title and body composes within 8s
+PASS: emoji A😀 title and body has a plan
+PASS: emoji A😀 title and body pagination preserves every character
+PASS: emoji A😀 title and body pages contain no lone surrogates
+PASS: emoji A😀 title and body title preserves every character
+PASS: emoji A😀 title and body title contains no lone surrogates
+PASS: CJK long pagination composes within 8s
+PASS: CJK long pagination has a plan
+PASS: CJK long pagination pagination preserves every character
+PASS: CJK long pagination pages contain no lone surrogates
+PASS: CJK long pagination long supplementary body paginates
+PASS: supplementary title and long pagination composes within 8s
+PASS: supplementary title and long pagination has a plan
+PASS: supplementary title and long pagination pagination preserves every character
+PASS: supplementary title and long pagination pages contain no lone surrogates
+PASS: supplementary title and long pagination long supplementary body paginates
+PASS: supplementary title and long pagination title preserves every character
+PASS: supplementary title and long pagination title contains no lone surrogates
+PASS: scale 1 composes
+PASS: scale 1 uses a readable pixel base size
+PASS: scale 1 does not shrink the body base size
+PASS: scale 1.25 composes
+PASS: scale 1.25 uses a readable pixel base size
+PASS: scale 1.25 does not shrink the body base size
+PASS: scale 1.5 composes
+PASS: scale 1.5 uses a readable pixel base size
+PASS: scale 1.5 does not shrink the body base size
+PASS: scale 2 composes
+PASS: scale 2 uses a readable pixel base size
+PASS: scale 2 does not shrink the body base size
+Quest font/layout composition: 51 checks passed; generated-source substitute Font/Graphics harness, not native GDI acceptance; Windows game unverified.

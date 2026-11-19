@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <WzComparerR2Root Condition="'$(WzComparerR2Root)' == ''">D:\GPT\tools\WzComparerR2-net6-20261004.1</WzComparerR2Root>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="WzComparerR2.WzLib">
+      <HintPath>$(WzComparerR2Root)\Lib\WzComparerR2.WzLib.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="WzComparerR2.Common">
+      <HintPath>$(WzComparerR2Root)\Lib\WzComparerR2.Common.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+</Project>

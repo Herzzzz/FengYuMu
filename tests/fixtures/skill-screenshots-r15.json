@@ -1,0 +1,289 @@
+[
+  {
+    "case": "1",
+    "name": "Claw Booster",
+    "overview": "Consumes HP and MP to temporarily increase the Attack Speed of the equipped claw. Only applies when equipped with a claw.",
+    "current": "HP -30, MP -30; Increases Claw Attack Speed by 2 stages for 100 sec",
+    "next": "HP -29, MP -29; Increases Claw Attack Speed by 2 stages for 110 sec"
+  },
+  {
+    "case": "2",
+    "name": "Sword Mastery",
+    "overview": "Increases Sword Mastery and Accuracy. It only applies when a one-handed or two-handed sword is equipped.",
+    "current": "Sword Mastery level 8, Accuracy +17",
+    "next": "Sword Mastery level 9, Accuracy +18"
+  },
+  {
+    "case": "3",
+    "name": "Spear Booster",
+    "overview": "Consumes HP and MP to temporarily increase the Attack Speed of the equipped spear. Only applies when equipped with a spear.",
+    "current": "",
+    "next": "HP -30, MP -30; Increases Spear Attack Speed by 2 stages for 100 sec"
+  },
+  {
+    "case": "4",
+    "name": "Drain",
+    "overview": "Absorbs some of the damage dealt to the enemy as HP. The most one can absorb at once is 25% of the character's Max HP, and can't absorb more than the Max HP of the enemy.",
+    "current": "",
+    "next": "MP -14, damage 180%, 2% chance to absorb 5% of damage as HP"
+  },
+  {
+    "case": "5",
+    "name": "Savage Blow",
+    "overview": "Use MP to attack an enemy up to 6 times in a row with a dagger.",
+    "current": "MP -25; Attack 6x with 69% damage",
+    "next": "MP -25; Attack 6x with 70% damage"
+  },
+  {
+    "case": "6",
+    "name": "Poison Breath",
+    "overview": "Fires a poison droplet at a single enemy. The droplet explodes on contact, dealing poison-elemental damage to up to 6 nearby enemies and granting a chance to poison them. Deals increased damage to poison-weak enemies, but deals reduced damage to poison-resistant enemies and cannot poison them.",
+    "current": "MP -20; Basic Attack 50, Mastery level 1; 45% success rate, deals 10 Basic Attack over 5 sec",
+    "next": "MP -20; Basic Attack 51, Mastery level 1; 46% success rate, deals 11 Basic Attack over 5 sec"
+  },
+  {
+    "case": "7",
+    "name": "Iron Will",
+    "overview": "Temporarily increases the user's Weapon Defense and grants a chance to ignore knockback effects.",
+    "current": "",
+    "next": "MP -10; Weapon Def. +20, 5% chance to ignore knockbacks for 150 sec"
+  },
+  {
+    "case": "8",
+    "name": "Haste",
+    "overview": "Temporarily increases the speed and jump of all party members around the area.",
+    "current": "MP -15; Speed +10, Jump +1 for 100 sec",
+    "next": "MP -16; Speed +11, Jump +1 for 110 sec"
+  },
+  {
+    "case": "9",
+    "name": "Bow Booster",
+    "overview": "Consumes HP and MP to temporarily increase the Attack Speed of the equipped bow. Only applies when equipped with a bow.",
+    "current": "HP -23, MP -23; Increases Bow Attack Speed by 2 stages for 170 sec",
+    "next": "HP -22, MP -22; Increases Bow Attack Speed by 2 stages for 180 sec"
+  },
+  {
+    "case": "10",
+    "name": "Final Attack: Bow",
+    "overview": "Using attack skills has a chance to enable the Final Attack skill for 60 sec. While enabled, the skill can be used, dealing heavy damage to up to 3 enemies in front. Only applies when equipped with a bow.",
+    "current": "25% trigger rate; MP -17; Final Attack with damage 107% to up to 3 enemies",
+    "next": "25% trigger rate; MP -17; Final Attack with damage 108% to up to 3 enemies"
+  },
+  {
+    "case": "11",
+    "name": "Polearm Mastery",
+    "overview": "Increases Polearm Mastery and movement speed. It only applies when a polearm is equipped.",
+    "current": "Polearm Mastery level 10, Speed +20",
+    "next": ""
+  },
+  {
+    "case": "12",
+    "name": "Axe Booster",
+    "overview": "Consumes HP and MP to temporarily increase the Attack Speed of the equipped axe. Only applies when equipped with a one-handed or two-handed axe.",
+    "current": "",
+    "next": "HP -30, MP -30; Increases Axe Attack Speed by 2 stages for 100 sec"
+  },
+  {
+    "case": "13",
+    "name": "Spear Mastery",
+    "overview": "Increases Spear Mastery and gives a chance to deal damage that ignores the target's Weapon Def. It only applies when a spear is equipped.",
+    "current": "",
+    "next": "Spear Mastery level 1, 1% chance to ignore enemy Weapon Def."
+  },
+  {
+    "case": "14",
+    "name": "Rush",
+    "overview": "Rushes forward a certain distance in the direction you are facing. If there are monsters within the rush range, you can deal damage to up to 6 of them and knock them back a certain distance. While rushing, you will not be knocked back even if attacked by monsters. Cooldown: 2 sec",
+    "current": "MP -35; Rush, with 130 in distance; Damage 60%",
+    "next": "MP -34; Rush, with 130 in distance; Damage 61%"
+  },
+  {
+    "case": "15",
+    "name": "Critical Recovery",
+    "overview": "Recovers additional HP and MP with a certain chance when landing a critical hit. Cannot recover again within 30 second after a recovery.",
+    "current": "",
+    "next": "Recover 1% HP and 1% MP with a 20% chance when landing a critical hit"
+  },
+  {
+    "case": "16",
+    "name": "Steal",
+    "overview": "Attempts to steal an item from up to 2 monsters at once with a given success rate. On a successful steal, stuns the enemies for 1.5 seconds and increases Attack Power for 60 seconds. Stealing works only once per monster and can be attempted until successful.",
+    "current": "",
+    "next": "MP -10, 30% chance to steal, apply 120% in damage, on success +5 Attack Power for 60 sec"
+  },
+  {
+    "case": "17",
+    "name": "Bow Mastery",
+    "overview": "Increases Bow Mastery, Critical Rate, and Movement Speed. This effect only applies when a bow is equipped.",
+    "current": "Bow Mastery level 10, Critical Rate +10%, Speed +10",
+    "next": ""
+  },
+  {
+    "case": "18",
+    "name": "Sword Booster",
+    "overview": "Consumes HP and MP to temporarily increase the Attack Speed of the equipped sword. Only applies when equipped with a one-handed or two-handed sword.",
+    "current": "HP -25, MP -25; Increases Sword Attack Speed by 2 stages for 150 sec",
+    "next": "HP -24, MP -24; Increases Sword Attack Speed by 2 stages for 160 sec"
+  },
+  {
+    "case": "19",
+    "name": "Rush",
+    "overview": "Rushes forward a certain distance in the direction you are facing. If there are monsters within the rush range, you can deal damage to up to 6 of them and knock them back a certain distance. While rushing, you will not be knocked back even if attacked by monsters. Cooldown: 2 sec",
+    "current": "MP -31; Rush, with 130 in distance; Damage 64%",
+    "next": "MP -30; Rush, with 130 in distance; Damage 65%"
+  },
+  {
+    "case": "20a",
+    "name": "Crossbow Mastery",
+    "overview": "Increases Crossbow Mastery and Critical Damage. It only applies when a crossbow is equipped.",
+    "current": "Crossbow Mastery level 10, Critical Damage +20%",
+    "next": ""
+  },
+  {
+    "case": "20b",
+    "name": "Amazon's Judgement",
+    "overview": "Critical hits sever the enemy's tendons, slowing them down.",
+    "current": "Critical hits have a 60% chance to reduce Enemy Speed by 15 for 3 sec",
+    "next": "Critical hits have a 62% chance to reduce Enemy Speed by 16 for 3 sec"
+  },
+  {
+    "case": "20c",
+    "name": "Final Attack: Crossbow",
+    "overview": "Using attack skills has a chance to enable the Final Attack skill for 60 sec. While enabled, the skill can be used, dealing heavy damage to a single enemy in front. Only applies when equipped with a crossbow.",
+    "current": "25% trigger rate; MP -12; Final Attack with damage 270%",
+    "next": "25% trigger rate; MP -13; Final Attack with damage 273%"
+  },
+  {
+    "case": "20d",
+    "name": "Crossbow Booster",
+    "overview": "Consumes HP and MP to temporarily increase the Attack Speed of the equipped crossbow. Only applies when equipped with a crossbow.",
+    "current": "HP -30, MP -30; Increases Crossbow Attack Speed by 2 stages for 100 sec",
+    "next": "HP -29, MP -29; Increases Crossbow Attack Speed by 2 stages for 110 sec"
+  },
+  {
+    "case": "20e",
+    "name": "Soul Arrow: Crossbow",
+    "overview": "Temporarily allows the character to fire crossbow arrows without using up arrows. Only works with a crossbow equipped.",
+    "current": "",
+    "next": "MP -25; Attack without using up any arrows for 60 sec"
+  },
+  {
+    "case": "20f",
+    "name": "Iron Arrow",
+    "overview": "Attacks up to 6 monsters at once with a powerful arrow, which penetrates through them. Damage decreases as the arrow flies through each monster.",
+    "current": "MP -21; Damage 152%",
+    "next": "MP -22; Damage 154%"
+  },
+  {
+    "case": "21",
+    "name": "Meditation",
+    "overview": "Meditate for a bit to temporarily increase the Magic Attack of party members around the area.",
+    "current": "MP -21; Party's Magic Attack +18 for 230 sec",
+    "next": "MP -21; Party's Magic Attack +19 for 240 sec"
+  },
+  {
+    "case": "22",
+    "name": "Dagger Booster",
+    "overview": "Consumes HP and MP to temporarily increase the Attack Speed of the equipped dagger. Only applies when equipped with a dagger.",
+    "current": "",
+    "next": "HP -30, MP -30; Increases Dagger Attack Speed by 2 stages for 100 sec"
+  },
+  {
+    "case": "23",
+    "name": "Final Attack: Axe",
+    "overview": "Using attack skills has a chance to enable the Final Attack skill for 60 sec. While enabled, the skill can be used, dealing heavy damage to up to 3 enemies in front. Only applies when equipped with a one-handed or two-handed axe.",
+    "current": "",
+    "next": "25% trigger rate; HP -12; MP -10; Final Attack with damage 140% to up to 3 enemies. Range +130"
+  },
+  {
+    "case": "24",
+    "name": "Claw Mastery",
+    "overview": "Increases Claw Mastery and Attack Power, and gives a chance to recover used throwing stars when using throwing star attacks. Only applies when a claw is equipped.",
+    "current": "Claw Mastery level 2, Attack Power +5, 9% chance to retrieve used throwing stars",
+    "next": "Claw Mastery level 3, Attack Power +6, 10% chance to retrieve used throwing stars"
+  },
+  {
+    "case": "25",
+    "name": "Polearm Booster",
+    "overview": "Consumes HP and MP to temporarily increase the Attack Speed of the equipped polearm. Only applies when equipped with a polearm.",
+    "current": "HP -30, MP -30; Increases Polearm Attack Speed by 2 stages for 100 sec",
+    "next": "HP -29, MP -29; Increases Polearm Attack Speed by 2 stages for 110 sec"
+  },
+  {
+    "case": "26",
+    "name": "Slow",
+    "overview": "Temporarily slows down the movement speed and evasion of up to 6 monsters. Cannot be used on monsters that are already affected.",
+    "current": "",
+    "next": "MP -15; Enemy Speed -10, Evasion -1 for 10 sec"
+  },
+  {
+    "case": "27",
+    "name": "Soul Arrow: Bow",
+    "overview": "Temporarily allows the character to fire bow arrows without using up arrows. Only works with a bow equipped.",
+    "current": "MP -16; Attack without using up any arrows for 168 sec",
+    "next": "MP -15; Attack without using up any arrows for 180 sec"
+  },
+  {
+    "case": "28",
+    "name": "Final Attack: Polearm",
+    "overview": "Using attack skills has a chance to enable the Final Attack skill for 60 sec. While enabled, the skill can be used, dealing heavy damage to a single enemy and absorbing some of the damage dealt as HP. The most one can absorb at once is 25% of the character's Max HP, and can't absorb more than the Max HP of the enemy. Only applies when equipped with a polearm.",
+    "current": "25% trigger rate; MP -10; Final Attack with damage 275%, absorb 6% of damage as HP",
+    "next": "25% trigger rate; MP -10; Final Attack with damage 278%, absorb 6% of damage as HP"
+  },
+  {
+    "case": "29",
+    "name": "Haste",
+    "overview": "Temporarily increases the speed and jump of all party members around the area.",
+    "current": "",
+    "next": "MP -15; Speed +10, Jump +1 for 100 sec"
+  },
+  {
+    "case": "30",
+    "name": "Arrow Bomb",
+    "overview": "Fires an arrow with a bomb attached to it. If struck cleanly, the bomb explodes on the enemy, stunning some enemies around with a certain trigger rate. Can't attack more than 6 at once, and it only works with a bow equipped.",
+    "current": "MP -14; Stun chance 30% for 2 sec, damage 70%",
+    "next": "MP -14; Stun chance 31% for 2 sec, damage 72%"
+  },
+  {
+    "case": "31",
+    "name": "Dagger Mastery",
+    "overview": "Increases Dagger Mastery and Critical Rate, with a chance to ignore knockback effects. It only applies when a dagger is equipped.",
+    "current": "",
+    "next": "Dagger Mastery level 1, Critical Rate +1%, 1% chance to ignore knockbacks"
+  },
+  {
+    "case": "32",
+    "name": "Amazon's Judgement",
+    "overview": "Critical hits sever the enemy's tendons, slowing them down.",
+    "current": "Critical hits have a 60% chance to reduce Enemy Speed by 15 for 3 sec",
+    "next": "Critical hits have a 62% chance to reduce Enemy Speed by 16 for 3 sec"
+  },
+  {
+    "case": "33",
+    "name": "Fire Arrow",
+    "overview": "Fires a fire arrow created with magic power at a single enemy, dealing fire-elemental damage and burning them to inflict continuous damage every second for 3 seconds. Deals increased damage to fire-weak enemies, but deals reduced damage to fire-resistant enemies and cannot burn them.",
+    "current": "MP -28; Basic Attack 180, Mastery level 10; Deals 50 Basic Attack over 3 sec",
+    "next": ""
+  },
+  {
+    "case": "34",
+    "name": "Axe Mastery",
+    "overview": "Increases Axe Mastery, and attacks have a chance to inflict a bleeding effect on the target when attacking. It only applies when a one-handed or two-handed axe is equipped.",
+    "current": "",
+    "next": "Axe Mastery level 1, 5% chance to inflict bleed, dealing 40% total damage over 3 sec"
+  },
+  {
+    "case": "35",
+    "name": "Critical Throw",
+    "overview": "Increases Critical Rate and Critical Damage.",
+    "current": "Critical Rate +12%, Critical Damage +28%",
+    "next": "Critical Rate +12%, Critical Damage +29%"
+  },
+  {
+    "case": "36",
+    "name": "Nimble Recovery",
+    "overview": "Recover HP and MP with a certain chance when evading. Cannot recover again within 30 seconds after a recovery.",
+    "current": "",
+    "next": "Recover 1% HP and 1% MP with a 20% chance when evading"
+  }
+]

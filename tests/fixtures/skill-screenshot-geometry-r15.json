@@ -1,0 +1,3216 @@
+{
+  "originalImages": 36,
+  "panels": 41,
+  "method": "Visually checked text plus measured geometry on original user pixels. OCR transcript is controlled and not a Windows OCR result. Raw images intentionally excluded.",
+  "fixtures": [
+    {
+      "case": "1",
+      "name": "Claw Booster",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Claw Booster",
+          "bounds": [
+            36.53623188405794,
+            37.28985507246375,
+            240,
+            14.202898550724644
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            115.66666666666667,
+            63.666666666666664,
+            93.33333333333333,
+            11.666666666666671
+          ]
+        },
+        {
+          "text": "Consumes HP and MP to temporarily increase the Attack Speed of the equipped claw. Only applies when equipped with a claw.",
+          "bounds": [
+            115.66666666666667,
+            78.33333333333334,
+            308.3333333333333,
+            46.333333333333336
+          ]
+        },
+        {
+          "text": "Required Skill: Atleast Level 5 Claw Mastery",
+          "bounds": [
+            115.66666666666667,
+            127.66666666666667,
+            240.33333333333331,
+            11.333333333333329
+          ]
+        },
+        {
+          "text": "[Current Level 1]",
+          "bounds": [
+            37.0,
+            155.0,
+            87.0,
+            11.0
+          ]
+        },
+        {
+          "text": "HP -30, MP -30; Increases Claw Attack Speed by 2 stages for 100 sec",
+          "bounds": [
+            37.0,
+            169.0,
+            389.0,
+            19.0
+          ]
+        },
+        {
+          "text": "[Next Level 2]",
+          "bounds": [
+            36.666666666666664,
+            192.0,
+            70.33333333333333,
+            11.333333333333343
+          ]
+        },
+        {
+          "text": "HP -29, MP -29; Increases Claw Attack Speed by 2 stages for 110 sec",
+          "bounds": [
+            36.666666666666664,
+            206.33333333333334,
+            389.3333333333333,
+            15.666666666666657
+          ]
+        }
+      ],
+      "expected": 3,
+      "divider": 112,
+      "sourceName": "11DB7F55B4D1CC19551BD255DC42AAA7.png",
+      "sourceSha256": "441c1ebd368e3322dc543906cfea150b1a3af17ed2c61a1d77af11b39473654a",
+      "crop": [
+        0,
+        0,
+        406,
+        197
+      ],
+      "pixelSha256": "4c609626392f4099634ede6867c377a4bbcf405d7bec01124bf764e338cfb24e"
+    },
+    {
+      "case": "2",
+      "name": "Sword Mastery",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Sword Mastery",
+          "bounds": [
+            44.53623188405794,
+            54.28985507246375,
+            240,
+            14.202898550724644
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            123.66666666666667,
+            80.66666666666666,
+            93.33333333333333,
+            11.666666666666671
+          ]
+        },
+        {
+          "text": "Increases Sword Mastery and Accuracy. It only applies when a one-handed or two-handed sword is equipped.",
+          "bounds": [
+            123.66666666666667,
+            95.33333333333334,
+            331.3333333333333,
+            59.66666666666666
+          ]
+        },
+        {
+          "text": "[Current Level 17]",
+          "bounds": [
+            44.666666666666664,
+            171.66666666666666,
+            94.66666666666666,
+            11.666666666666686
+          ]
+        },
+        {
+          "text": "Sword Mastery level 8, Accuracy +17",
+          "bounds": [
+            44.666666666666664,
+            186.33333333333334,
+            412.3333333333333,
+            18.333333333333314
+          ]
+        },
+        {
+          "text": "[Next Level 18]",
+          "bounds": [
+            44.666666666666664,
+            208.66666666666666,
+            77.66666666666666,
+            11.666666666666686
+          ]
+        },
+        {
+          "text": "Sword Mastery level 9, Accuracy +18",
+          "bounds": [
+            44.666666666666664,
+            223.33333333333334,
+            412.3333333333333,
+            13.666666666666657
+          ]
+        }
+      ],
+      "expected": 3,
+      "divider": 129,
+      "sourceName": "1c93aa6a0a81b55122f7818f1e0bea00.png",
+      "sourceSha256": "ff9a391168cccc3974c50329c78d31a6d925bca1704629bce34eb746acd87b6a",
+      "crop": [
+        0,
+        0,
+        437,
+        212
+      ],
+      "pixelSha256": "eff7c6745bc4ea1fc195e4a32381e0169fccc0c6411a6d1fc549da69e1c7119c"
+    },
+    {
+      "case": "3",
+      "name": "Spear Booster",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Spear Booster",
+          "bounds": [
+            43.53623188405798,
+            59.289855072463766,
+            240,
+            14.202898550724635
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            122.66666666666667,
+            85.66666666666666,
+            93.33333333333333,
+            11.666666666666664
+          ]
+        },
+        {
+          "text": "Consumes HP and MP to temporarily increase the Attack Speed of the equipped spear. Only applies when equipped with a spear.",
+          "bounds": [
+            122.66666666666667,
+            100.33333333333333,
+            332.3333333333333,
+            46.33333333333334
+          ]
+        },
+        {
+          "text": "Required Skill: Atleast Level 5 Spear Mastery",
+          "bounds": [
+            123.0,
+            149.66666666666669,
+            245.0,
+            11.333333333333329
+          ]
+        },
+        {
+          "text": "[Next Level 1]",
+          "bounds": [
+            44.0,
+            176.66666666666666,
+            70.0,
+            11.333333333333343
+          ]
+        },
+        {
+          "text": "HP -30, MP -30; Increases Spear Attack Speed by 2 stages for 100 sec",
+          "bounds": [
+            44.0,
+            191.0,
+            413.0,
+            25.0
+          ]
+        }
+      ],
+      "expected": 2,
+      "divider": 134,
+      "sourceName": "1eb24d26d460fa42377cd69566d4f7e9.png",
+      "sourceSha256": "5a6d4be9f62d8c99bd94d284e83e8fe401631da23738e25b150d29f01cbe60b7",
+      "crop": [
+        0,
+        0,
+        437,
+        191
+      ],
+      "pixelSha256": "a77a94643ddc4f5d6bcc3fa5ce6c6fed4f4f78f03e7a1de893ea057b8c7ce060"
+    },
+    {
+      "case": "4",
+      "name": "Drain",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Drain",
+          "bounds": [
+            32.797101449275374,
+            31.043478260869566,
+            240,
+            13.797101449275361
+          ]
+        },
+        {
+          "text": "[Master Level: 30]",
+          "bounds": [
+            109.66666666666667,
+            56.66666666666667,
+            93.33333333333333,
+            11.333333333333332
+          ]
+        },
+        {
+          "text": "Absorbs some of the damage dealt to the enemy as HP. The most one can absorb at once is 25% of the character's Max HP, and can't absorb more than the Max HP of the enemy.",
+          "bounds": [
+            109.66666666666667,
+            71.0,
+            327.3333333333333,
+            46.66666666666667
+          ]
+        },
+        {
+          "text": "Required Skill : At least Level 3 Critical Recovery",
+          "bounds": [
+            109.66666666666667,
+            120.66666666666667,
+            261.66666666666663,
+            11.666666666666657
+          ]
+        },
+        {
+          "text": "[Next Level 1]",
+          "bounds": [
+            31,
+            147.66666666666669,
+            70.66666666666666,
+            11.666666666666671
+          ]
+        },
+        {
+          "text": "MP -14, damage 180%, 2% chance to absorb 5% of damage as HP",
+          "bounds": [
+            31,
+            162.33333333333334,
+            408,
+            14.666666666666657
+          ]
+        }
+      ],
+      "expected": 2,
+      "divider": 105,
+      "sourceName": "24D978293F4A51CC4BC04B0A4F03A4C0.png",
+      "sourceSha256": "41fb2389a13adb5ad71af5039ec09317fb8fa27b1a32aa289acb4af8dd590833",
+      "crop": [
+        0,
+        0,
+        419,
+        152
+      ],
+      "pixelSha256": "8c8d8df15663d02f45d29027d068a1c4f065b3a7c191a06867fb04eca1d5c373"
+    },
+    {
+      "case": "5",
+      "name": "Savage Blow",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Savage Blow",
+          "bounds": [
+            43.53623188405798,
+            59.289855072463766,
+            240,
+            14.202898550724635
+          ]
+        },
+        {
+          "text": "[Master Level: 30]",
+          "bounds": [
+            122.66666666666667,
+            85.66666666666666,
+            93.66666666666667,
+            11.666666666666664
+          ]
+        },
+        {
+          "text": "Use MP to attack an enemy up to 6 times in a row with a dagger.",
+          "bounds": [
+            122.66666666666667,
+            100.33333333333333,
+            327.3333333333333,
+            59.66666666666667
+          ]
+        },
+        {
+          "text": "[Current Level 25]",
+          "bounds": [
+            43.666666666666664,
+            176.66666666666666,
+            94.33333333333333,
+            11.333333333333343
+          ]
+        },
+        {
+          "text": "MP -25; Attack 6x with 69% damage",
+          "bounds": [
+            43.666666666666664,
+            191.0,
+            408.3333333333333,
+            18.666666666666657
+          ]
+        },
+        {
+          "text": "[Next Level 26]",
+          "bounds": [
+            43.666666666666664,
+            213.66666666666666,
+            77.66666666666666,
+            11.666666666666686
+          ]
+        },
+        {
+          "text": "MP -25; Attack 6x with 70% damage",
+          "bounds": [
+            43.666666666666664,
+            228.33333333333334,
+            408.3333333333333,
+            24.666666666666657
+          ]
+        }
+      ],
+      "expected": 3,
+      "divider": 134,
+      "sourceName": "3E9DCC5CB2652EE7DF953BE152ECA8FA.png",
+      "sourceSha256": "67de700b3bd99452599e5b29a7ae1c69be298b8902100cc8ae7b13c22d8fad2f",
+      "crop": [
+        0,
+        0,
+        432,
+        228
+      ],
+      "pixelSha256": "ad4f2d249e576dc8ec48ddf50f6207d2af79ce16ec071c3e067fc808d225f464"
+    },
+    {
+      "case": "6",
+      "name": "Poison Breath",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Poison Breath",
+          "bounds": [
+            43.53623188405794,
+            41.28985507246375,
+            240,
+            14.202898550724644
+          ]
+        },
+        {
+          "text": "[Master Level: 30]",
+          "bounds": [
+            122.66666666666667,
+            67.66666666666666,
+            93.66666666666667,
+            11.666666666666671
+          ]
+        },
+        {
+          "text": "Fires a poison droplet at a single enemy. The droplet explodes on contact, dealing poison-elemental damage to up to 6 nearby enemies and granting a chance to poison them. Deals increased damage to poison-weak enemies, but deals reduced damage to poison-resistant enemies and cannot poison them.",
+          "bounds": [
+            122.66666666666667,
+            82.33333333333334,
+            327.3333333333333,
+            98.66666666666666
+          ]
+        },
+        {
+          "text": "[Current Level 1]",
+          "bounds": [
+            43.666666666666664,
+            197.66666666666666,
+            87.66666666666666,
+            11.666666666666686
+          ]
+        },
+        {
+          "text": "MP -20; Basic Attack 50, Mastery level 1; 45% success rate, deals 10 Basic Attack over 5 sec",
+          "bounds": [
+            43.666666666666664,
+            212.33333333333334,
+            408.3333333333333,
+            34.333333333333314
+          ]
+        },
+        {
+          "text": "[Next Level 2]",
+          "bounds": [
+            43.666666666666664,
+            250.66666666666666,
+            70.66666666666666,
+            11.666666666666686
+          ]
+        },
+        {
+          "text": "MP -20; Basic Attack 51, Mastery level 1; 46% success rate, deals 11 Basic Attack over 5 sec",
+          "bounds": [
+            43.666666666666664,
+            265.33333333333337,
+            408.3333333333333,
+            35.66666666666666
+          ]
+        }
+      ],
+      "expected": 3,
+      "divider": 155,
+      "sourceName": "4C0902969E485FBA7A72AFA93F7AED02.png",
+      "sourceSha256": "69bae8694e442847ac07457cf6ffb733a1c316ff7b3ccd922a7ce096bdf595de",
+      "crop": [
+        0,
+        0,
+        432,
+        276
+      ],
+      "pixelSha256": "eade49415f1bea90b5ed62caaaf9ff4afead7cccc545aaa035c4fafe99d409e6"
+    },
+    {
+      "case": "7",
+      "name": "Iron Will",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Iron Will",
+          "bounds": [
+            49.53623188405794,
+            52.28985507246375,
+            240,
+            14.202898550724644
+          ]
+        },
+        {
+          "text": "[Master Level: 30]",
+          "bounds": [
+            128.66666666666669,
+            78.66666666666666,
+            93.33333333333333,
+            11.666666666666671
+          ]
+        },
+        {
+          "text": "Temporarily increases the user's Weapon Defense and grants a chance to ignore knockback effects.",
+          "bounds": [
+            128.66666666666669,
+            93.33333333333334,
+            314.3333333333333,
+            59.666666666666664
+          ]
+        },
+        {
+          "text": "[Next Level 1]",
+          "bounds": [
+            50.0,
+            170.0,
+            70.0,
+            11.0
+          ]
+        },
+        {
+          "text": "MP -10; Weapon Def. +20, 5% chance to ignore knockbacks for 150 sec",
+          "bounds": [
+            50.0,
+            184.0,
+            395.0,
+            26.0
+          ]
+        }
+      ],
+      "expected": 2,
+      "divider": 127,
+      "sourceName": "4fdfe90d499b644817d6f80414d2d454.png",
+      "sourceSha256": "33a1ef52edb1fac32257dc41dcda5b53fffbfe660856701d94f13d40faa2058a",
+      "crop": [
+        0,
+        0,
+        425,
+        185
+      ],
+      "pixelSha256": "c83f5062f386df3d69dab5c83c4ccca725ca1dd7dff1f7c6b83d7f64315320ee"
+    },
+    {
+      "case": "8",
+      "name": "Haste",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Haste",
+          "bounds": [
+            34.53623188405794,
+            40.28985507246375,
+            240,
+            14.202898550724644
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            113.66666666666667,
+            66.66666666666666,
+            93.66666666666667,
+            11.666666666666671
+          ]
+        },
+        {
+          "text": "Temporarily increases the speed and jump of all party members around the area.",
+          "bounds": [
+            113.66666666666667,
+            81.33333333333334,
+            331.3333333333333,
+            59.666666666666664
+          ]
+        },
+        {
+          "text": "[Current Level 1]",
+          "bounds": [
+            34.666666666666664,
+            157.66666666666669,
+            87.66666666666666,
+            11.333333333333329
+          ]
+        },
+        {
+          "text": "MP -15; Speed +10, Jump +1 for 100 sec",
+          "bounds": [
+            34.666666666666664,
+            172.0,
+            412.3333333333333,
+            18.666666666666657
+          ]
+        },
+        {
+          "text": "[Next Level 2]",
+          "bounds": [
+            34.666666666666664,
+            194.66666666666666,
+            70.33333333333333,
+            11.666666666666686
+          ]
+        },
+        {
+          "text": "MP -16; Speed +11, Jump +1 for 110 sec",
+          "bounds": [
+            34.666666666666664,
+            209.33333333333334,
+            412.3333333333333,
+            11.666666666666657
+          ]
+        }
+      ],
+      "expected": 3,
+      "divider": 115,
+      "sourceName": "5003984D7DFECBB99FA13D9722E11AFB.png",
+      "sourceSha256": "523191b9d9efd709a8279c7d39384ca89690340f28131a88705fb314e2510ac0",
+      "crop": [
+        0,
+        0,
+        427,
+        196
+      ],
+      "pixelSha256": "4e4683d4b01bad79452f716a8c1173ab7d21d6beb6254bbc6573f5bdfbd58e4c"
+    },
+    {
+      "case": "9",
+      "name": "Bow Booster",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Bow Booster",
+          "bounds": [
+            46.63043478260869,
+            59.54347826086956,
+            240,
+            23.130434782608695
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            175.5,
+            102.5,
+            147.5,
+            19.0
+          ]
+        },
+        {
+          "text": "Consumes HP and MP to temporarily increase the Attack Speed of the equipped bow. Only applies when equipped with a bow.",
+          "bounds": [
+            175.5,
+            124.5,
+            527.5,
+            75.5
+          ]
+        },
+        {
+          "text": "Required Skill: At least Level 5 Bow Mastery",
+          "bounds": [
+            176.0,
+            203.0,
+            369.5,
+            18.0
+          ]
+        },
+        {
+          "text": "[Current Level 8]",
+          "bounds": [
+            53.0,
+            245.5,
+            136.5,
+            17.5
+          ]
+        },
+        {
+          "text": "HP -23, MP -23; Increases Bow Attack Speed by 2 stages for 170 sec",
+          "bounds": [
+            53.0,
+            266.0,
+            652.0,
+            33.5
+          ]
+        },
+        {
+          "text": "[Next Level 9]",
+          "bounds": [
+            53.0,
+            303.5,
+            109.5,
+            17.5
+          ]
+        },
+        {
+          "text": "HP -22, MP -22; Increases Bow Attack Speed by 2 stages for 180 sec",
+          "bounds": [
+            53.0,
+            324.0,
+            652.0,
+            33.0
+          ]
+        }
+      ],
+      "expected": 3,
+      "divider": 195,
+      "sourceName": "54F69C92BF20F946491B84B0213B03CA.png",
+      "sourceSha256": "b836d3c053d386b3629422631b705ae929fefe5e28c6cb4c6583c5b4c8b2634a",
+      "crop": [
+        0,
+        0,
+        685,
+        332
+      ],
+      "pixelSha256": "8802b7435f367c75e5cdade2a94739294fb9f35146050eb7bf6df9f8ce7862dd"
+    },
+    {
+      "case": "10",
+      "name": "Final Attack: Bow",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Final Attack: Bow",
+          "bounds": [
+            51.52173913043478,
+            73.17391304347825,
+            240,
+            22.52173913043478
+          ]
+        },
+        {
+          "text": "[Master Level: 30]",
+          "bounds": [
+            177.0,
+            115.0,
+            146.5,
+            18.5
+          ]
+        },
+        {
+          "text": "Using attack skills has a chance to enable the Final Attack skill for 60 sec. While enabled, the skill can be used, dealing heavy damage to up to 3 enemies in front. Only applies when equipped with a bow.",
+          "bounds": [
+            177.0,
+            136.5,
+            524.0,
+            100.5
+          ]
+        },
+        {
+          "text": "Required Skill: Atleast Level 3 Bow Mastery",
+          "bounds": [
+            177.0,
+            240.0,
+            370.0,
+            18.5
+          ]
+        },
+        {
+          "text": "[Current Level 18]",
+          "bounds": [
+            54.0,
+            293.5,
+            148.0,
+            18.0
+          ]
+        },
+        {
+          "text": "25% trigger rate; MP -17; Final Attack with damage 107% to up to 3 enemies",
+          "bounds": [
+            54.0,
+            314.5,
+            649.0,
+            58.0
+          ]
+        },
+        {
+          "text": "[Next Level 19]",
+          "bounds": [
+            54.0,
+            376.5,
+            121.0,
+            17.5
+          ]
+        },
+        {
+          "text": "25% trigger rate; MP -17; Final Attack with damage 108% to up to 3 enemies",
+          "bounds": [
+            54.0,
+            397.0,
+            649.0,
+            68.0
+          ]
+        }
+      ],
+      "expected": 3,
+      "divider": 244,
+      "sourceName": "56A3F557279E20401D518B791FB9B050.png",
+      "sourceSha256": "5b2ed76e9f677f156f7354d2840a7b1a796d66168b60d6a0a08efc223a476928",
+      "crop": [
+        0,
+        0,
+        683,
+        440
+      ],
+      "pixelSha256": "8f4763dd6aab5ca3c4ba1dad1a3a4a8143f309dc7854753fb11bed4e71bb078b"
+    },
+    {
+      "case": "11",
+      "name": "Polearm Mastery",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Polearm Mastery",
+          "bounds": [
+            46.53623188405798,
+            57.289855072463766,
+            240,
+            14.202898550724635
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            125.66666666666667,
+            83.66666666666666,
+            93.33333333333333,
+            11.666666666666664
+          ]
+        },
+        {
+          "text": "Increases Polearm Mastery and movement speed. It only applies when a polearm is equipped.",
+          "bounds": [
+            125.66666666666667,
+            98.33333333333333,
+            376.3333333333333,
+            59.66666666666667
+          ]
+        },
+        {
+          "text": "[Current Level 20]",
+          "bounds": [
+            46.66666666666667,
+            174.66666666666666,
+            94.66666666666666,
+            11.666666666666686
+          ]
+        },
+        {
+          "text": "Polearm Mastery level 10, Speed +20",
+          "bounds": [
+            46.66666666666667,
+            189.33333333333334,
+            457.3333333333333,
+            18.666666666666657
+          ]
+        }
+      ],
+      "expected": 2,
+      "divider": 132,
+      "sourceName": "56c1d724774a2eb2439c2bd1c8ed07e8.png",
+      "sourceSha256": "9c8065e9054ddf9eb0cf1e25413548bc04505aaea034495adaff59f92d35cdc2",
+      "crop": [
+        0,
+        0,
+        484,
+        183
+      ],
+      "pixelSha256": "24723e139b4e3882088ca5fe132f824284b0ddf7107c94b32148519591a89a04"
+    },
+    {
+      "case": "12",
+      "name": "Axe Booster",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Axe Booster",
+          "bounds": [
+            40.797101449275374,
+            35.04347826086956,
+            240,
+            13.797101449275361
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            117.66666666666667,
+            60.66666666666667,
+            93.33333333333333,
+            11.333333333333332
+          ]
+        },
+        {
+          "text": "Consumes HP and MP to temporarily increase the Attack Speed of the equipped axe. Only applies when equipped with a one-handed or two-handed axe.",
+          "bounds": [
+            117.66666666666667,
+            75.0,
+            321.3333333333333,
+            47.0
+          ]
+        },
+        {
+          "text": "Required Skill: Atleast Level 5 Axe Mastery",
+          "bounds": [
+            118.0,
+            125.0,
+            231.0,
+            11.0
+          ]
+        },
+        {
+          "text": "[Next Level 1]",
+          "bounds": [
+            39.0,
+            152.0,
+            70.0,
+            11.0
+          ]
+        },
+        {
+          "text": "HP -30, MP -30; Increases Axe Attack Speed by 2 stages for 100 sec",
+          "bounds": [
+            39.0,
+            166.0,
+            402.0,
+            18.0
+          ]
+        }
+      ],
+      "expected": 2,
+      "divider": 109,
+      "sourceName": "607fbda0c2af20a8550acf1750535748.png",
+      "sourceSha256": "5bcbcc99a9555ca5df002b59e9ce2b141ee503fc04800ed46924a926850c2a67",
+      "crop": [
+        0,
+        0,
+        421,
+        159
+      ],
+      "pixelSha256": "c01c88b7ad04c47e5f782c9ddf5f6a380284d0bd50f673ef6a0a205304be91d4"
+    },
+    {
+      "case": "13",
+      "name": "Spear Mastery",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Spear Mastery",
+          "bounds": [
+            50.53623188405798,
+            64.28985507246377,
+            240,
+            14.202898550724635
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            129.66666666666669,
+            90.66666666666666,
+            93.33333333333333,
+            11.666666666666664
+          ]
+        },
+        {
+          "text": "Increases Spear Mastery and gives a chance to deal damage that ignores the target's Weapon Def. It only applies when a spear is equipped.",
+          "bounds": [
+            129.66666666666669,
+            105.33333333333333,
+            346.3333333333333,
+            59.66666666666667
+          ]
+        },
+        {
+          "text": "[Next Level 1]",
+          "bounds": [
+            50.66666666666667,
+            182.0,
+            70.66666666666666,
+            11.333333333333343
+          ]
+        },
+        {
+          "text": "Spear Mastery level 1, 1% chance to ignore enemy Weapon Def.",
+          "bounds": [
+            50.66666666666667,
+            196.33333333333334,
+            427.3333333333333,
+            16.666666666666657
+          ]
+        }
+      ],
+      "expected": 2,
+      "divider": 139,
+      "sourceName": "64ea586bbd8209412028275680bf351b.png",
+      "sourceSha256": "22afeb363c73957d1e7e92899eb615650c6c4d39fa649b2156b2a6e704e0d053",
+      "crop": [
+        0,
+        0,
+        458,
+        188
+      ],
+      "pixelSha256": "5e402b880b4d2a792b35cb8ece4c956501562ee4b54d0852d8da0a593673fd90"
+    },
+    {
+      "case": "14",
+      "name": "Rush",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Rush",
+          "bounds": [
+            58.39130434782608,
+            53.130434782608695,
+            240,
+            13.391304347826088
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            133.0,
+            78.0,
+            93.0,
+            11.0
+          ]
+        },
+        {
+          "text": "Rushes forward a certain distance in the direction you are facing. If there are monsters within the rush range, you can deal damage to up to 6 of them and knock them back a certain distance. While rushing, you will not be knocked back even if attacked by monsters. Cooldown: 2 sec",
+          "bounds": [
+            133.0,
+            92.0,
+            355.0,
+            99.0
+          ]
+        },
+        {
+          "text": "[Current Level 1]",
+          "bounds": [
+            54.0,
+            208.0,
+            87.0,
+            11.0
+          ]
+        },
+        {
+          "text": "MP -35; Rush, with 130 in distance; Damage 60%",
+          "bounds": [
+            54.0,
+            222.0,
+            436.0,
+            18.666666666666657
+          ]
+        },
+        {
+          "text": "[Next Level 2]",
+          "bounds": [
+            53.66666666666667,
+            244.66666666666666,
+            70.66666666666666,
+            11.478260869565219
+          ]
+        },
+        {
+          "text": "MP -34; Rush, with 130 in distance; Damage 61%",
+          "bounds": [
+            53.66666666666667,
+            259.1449275362319,
+            436.3333333333333,
+            17.855072463768124
+          ]
+        }
+      ],
+      "expected": 3,
+      "divider": 165,
+      "sourceName": "73deea68c954d785df6abe33c943c4e1.png",
+      "sourceSha256": "cef8e486c57817fd88446e6c735a8f3922a233cad11fe0529b3a30906d8b90e4",
+      "crop": [
+        0,
+        0,
+        470,
+        252
+      ],
+      "pixelSha256": "3b68633f7ac503306183798fc8ecf1523f15f2ba0a66e72f9a97fc1a210d095a"
+    },
+    {
+      "case": "15",
+      "name": "Critical Recovery",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Critical Recovery",
+          "bounds": [
+            42.53623188405794,
+            45.28985507246375,
+            240,
+            14.202898550724644
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            121.66666666666667,
+            71.66666666666666,
+            93.33333333333333,
+            11.666666666666671
+          ]
+        },
+        {
+          "text": "Recovers additional HP and MP with a certain chance when landing a critical hit. Cannot recover again within 30 second after a recovery.",
+          "bounds": [
+            121.66666666666667,
+            86.33333333333334,
+            312.3333333333333,
+            59.666666666666664
+          ]
+        },
+        {
+          "text": "[Next Level 1]",
+          "bounds": [
+            42.666666666666664,
+            162.66666666666666,
+            70.66666666666666,
+            11.666666666666686
+          ]
+        },
+        {
+          "text": "Recover 1% HP and 1% MP with a 20% chance when landing a critical hit",
+          "bounds": [
+            42.666666666666664,
+            177.33333333333334,
+            393.3333333333333,
+            8.666666666666657
+          ]
+        }
+      ],
+      "expected": 2,
+      "divider": 120,
+      "sourceName": "791F2A27E59B50B82239A975BD7F6B03.png",
+      "sourceSha256": "5aa43ddb0fd99890849910bd527b5ab1d67e9d641522e14627fc41d229c8a7c5",
+      "crop": [
+        0,
+        0,
+        416,
+        161
+      ],
+      "pixelSha256": "4cf0e4b317b2dd515a830b3f18b6b472210569180a6bec9a176554955bbf51ef"
+    },
+    {
+      "case": "16",
+      "name": "Steal",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Steal",
+          "bounds": [
+            43.53623188405798,
+            59.289855072463766,
+            240,
+            14.202898550724635
+          ]
+        },
+        {
+          "text": "[Master Level: 30]",
+          "bounds": [
+            122.66666666666667,
+            85.66666666666666,
+            93.66666666666667,
+            11.666666666666664
+          ]
+        },
+        {
+          "text": "Attempts to steal an item from up to 2 monsters at once with a given success rate. On a successful steal, stuns the enemies for 1.5 seconds and increases Attack Power for 60 seconds. Stealing works only once per monster and can be attempted until successful.",
+          "bounds": [
+            122.66666666666667,
+            100.33333333333333,
+            357.3333333333333,
+            78.33333333333333
+          ]
+        },
+        {
+          "text": "Required Skill: At least Level 5 Haste",
+          "bounds": [
+            122.66666666666667,
+            181.66666666666666,
+            199.66666666666663,
+            11.333333333333343
+          ]
+        },
+        {
+          "text": "[Next Level 1]",
+          "bounds": [
+            43.666666666666664,
+            215.66666666666666,
+            70.66666666666666,
+            11.333333333333343
+          ]
+        },
+        {
+          "text": "MP -10, 30% chance to steal, apply 120% in damage, on success +5 Attack Power for 60 sec",
+          "bounds": [
+            43.666666666666664,
+            230.0,
+            438.3333333333333,
+            56.0
+          ]
+        }
+      ],
+      "expected": 2,
+      "divider": 173,
+      "sourceName": "843FA3D30BD5C8EE23CAC11B90C894B2.png",
+      "sourceSha256": "6a2adf6e348e596197d3aaaf616b904f48eac40567a0b615b661dc41fe965f7b",
+      "crop": [
+        0,
+        0,
+        462,
+        261
+      ],
+      "pixelSha256": "8160db0bb976efa16dc7fa4f80c14f9b7c4c0a9e37166ae185276bb8baac9c13"
+    },
+    {
+      "case": "17",
+      "name": "Bow Mastery",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Bow Mastery",
+          "bounds": [
+            63.91304347826086,
+            63.30434782608695,
+            240,
+            21.91304347826087
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            186.0,
+            104.0,
+            146.5,
+            18.0
+          ]
+        },
+        {
+          "text": "Increases Bow Mastery, Critical Rate, and Movement Speed. This effect only applies when a bow is equipped.",
+          "bounds": [
+            186.0,
+            125.0,
+            540.0,
+            97.0
+          ]
+        },
+        {
+          "text": "[Current Level 20]",
+          "bounds": [
+            44.0,
+            245.5,
+            166.5,
+            18.782608695652176
+          ]
+        },
+        {
+          "text": "Bow Mastery level 10, Critical Rate +10%, Speed +10",
+          "bounds": [
+            44.0,
+            267.2826086956522,
+            684.0,
+            40.717391304347814
+          ]
+        }
+      ],
+      "expected": 2,
+      "divider": 196,
+      "sourceName": "8541D80D088B5A46C034C9352EE761BE.png",
+      "sourceSha256": "f1f7dd05ef94f6a07bba00da254e54553da8686063119f366ae6c30037db8519",
+      "crop": [
+        0,
+        0,
+        708,
+        283
+      ],
+      "pixelSha256": "12b693ae8d0858ac976be759acecc9599e17c0fa3f999d983efb6663ef5ec200"
+    },
+    {
+      "case": "18",
+      "name": "Sword Booster",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Sword Booster",
+          "bounds": [
+            34.53623188405794,
+            38.28985507246375,
+            240,
+            14.202898550724644
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            113.66666666666667,
+            64.66666666666666,
+            93.33333333333333,
+            11.666666666666671
+          ]
+        },
+        {
+          "text": "Consumes HP and MP to temporarily increase the Attack Speed of the equipped sword. Only applies when equipped with a one-handed or two-handed sword.",
+          "bounds": [
+            113.66666666666667,
+            79.33333333333334,
+            316.3333333333333,
+            46.666666666666664
+          ]
+        },
+        {
+          "text": "Required Skill: Atleast Level 5 Sword Mastery",
+          "bounds": [
+            114.0,
+            129.0,
+            247.0,
+            11.0
+          ]
+        },
+        {
+          "text": "[Current Level 6]",
+          "bounds": [
+            35.0,
+            156.0,
+            87.0,
+            11.0
+          ]
+        },
+        {
+          "text": "HP -25, MP -25; Increases Sword Attack Speed by 2 stages for 150 sec",
+          "bounds": [
+            35.0,
+            170.0,
+            397.0,
+            19.0
+          ]
+        },
+        {
+          "text": "[Next Level 7]",
+          "bounds": [
+            35.0,
+            193.0,
+            70.0,
+            11.0
+          ]
+        },
+        {
+          "text": "HP -24, MP -24; Increases Sword Attack Speed by 2 stages for 160 sec",
+          "bounds": [
+            35.0,
+            207.0,
+            397.0,
+            14.0
+          ]
+        }
+      ],
+      "expected": 3,
+      "divider": 113,
+      "sourceName": "8f69a906b8b8dfa69940f2fce68885a3.png",
+      "sourceSha256": "f645fea93bfc0e7eca9237ea18482c98d565523b36b28462a7effef342371631",
+      "crop": [
+        0,
+        0,
+        412,
+        196
+      ],
+      "pixelSha256": "1bc4bbf774e0e579593ffe3b67ef0ca57603d9efe05548030bcabb707cc6f273"
+    },
+    {
+      "case": "19",
+      "name": "Rush",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Rush",
+          "bounds": [
+            43.79710144927536,
+            40.04347826086956,
+            240,
+            13.797101449275365
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            120.66666666666667,
+            65.66666666666666,
+            93.33333333333333,
+            11.333333333333336
+          ]
+        },
+        {
+          "text": "Rushes forward a certain distance in the direction you are facing. If there are monsters within the rush range, you can deal damage to up to 6 of them and knock them back a certain distance. While rushing, you will not be knocked back even if attacked by monsters. Cooldown: 2 sec",
+          "bounds": [
+            120.66666666666667,
+            80.0,
+            324.3333333333333,
+            99.0
+          ]
+        },
+        {
+          "text": "[Current Level 5]",
+          "bounds": [
+            42.0,
+            196.0,
+            87.0,
+            11.0
+          ]
+        },
+        {
+          "text": "MP -31; Rush, with 130 in distance; Damage 64%",
+          "bounds": [
+            42.0,
+            210.0,
+            405.0,
+            19.0
+          ]
+        },
+        {
+          "text": "[Next Level 6]",
+          "bounds": [
+            42.0,
+            233.0,
+            70.0,
+            11.0
+          ]
+        },
+        {
+          "text": "MP -30; Rush, with 130 in distance; Damage 65%",
+          "bounds": [
+            42.0,
+            247.0,
+            405.0,
+            12.0
+          ]
+        }
+      ],
+      "expected": 3,
+      "divider": 153,
+      "sourceName": "8fccae36ef65ca2b6a0c1639a31bec55.png",
+      "sourceSha256": "0487fcf82dd6f7bc77724cef22a87a31d76dd289600d25b137f5e480cd5f1634",
+      "crop": [
+        0,
+        0,
+        427,
+        234
+      ],
+      "pixelSha256": "2c45c3d14e01bcd59b34d85a08be2f8b568c0ab26ad3368165296030e69d6e86"
+    },
+    {
+      "case": "20a",
+      "name": "Crossbow Mastery",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Crossbow Mastery",
+          "bounds": [
+            33.52173913043478,
+            30,
+            240,
+            22.52173913043478
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            159.0,
+            71.5,
+            134.0,
+            18.5
+          ]
+        },
+        {
+          "text": "Increases Crossbow Mastery and Critical Damage. It only applies when a crossbow is equipped.",
+          "bounds": [
+            159.0,
+            93.0,
+            466.0,
+            98.0
+          ]
+        },
+        {
+          "text": "[Current Level 20]",
+          "bounds": [
+            31,
+            215.5,
+            151.5,
+            19.304347826086957
+          ]
+        },
+        {
+          "text": "Crossbow Mastery level 10, Critical Damage +20%",
+          "bounds": [
+            31,
+            237.80434782608697,
+            596,
+            25.195652173913032
+          ]
+        }
+      ],
+      "expected": 2,
+      "divider": 165,
+      "sourceName": "941d43f2b32b6663e1b55b62647d95d0.png",
+      "sourceSha256": "9e9f5e8a380bb08f08c97978b8b16e0e5074107cd5a1409c02869ffb3c7a121e",
+      "crop": [
+        0,
+        0,
+        607,
+        238
+      ],
+      "pixelSha256": "8893cfdf4007cf3e04d55c25f20efc7e412bfe65860fa15ee78cae33cca66ece"
+    },
+    {
+      "case": "20b",
+      "name": "Amazon's Judgement",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Amazon's Judgement",
+          "bounds": [
+            42.76086956521739,
+            32.08695652173913,
+            240,
+            18.26086956521739
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            144.5,
+            66.0,
+            120.5,
+            15.0
+          ]
+        },
+        {
+          "text": "Critical hits sever the enemy's tendons, slowing them down.",
+          "bounds": [
+            144.5,
+            84.0,
+            414.5,
+            20.0
+          ]
+        },
+        {
+          "text": "Required Skill: At least Level 5 Crossbow Mastery",
+          "bounds": [
+            144.5,
+            107.0,
+            351.0,
+            14.5
+          ]
+        },
+        {
+          "text": "[Current Level 1]",
+          "bounds": [
+            43.0,
+            181.0,
+            113.0,
+            15.0
+          ]
+        },
+        {
+          "text": "Critical hits have a 60% chance to reduce Enemy Speed by 15 for 3 sec",
+          "bounds": [
+            43.0,
+            199.0,
+            518.0,
+            25.0
+          ]
+        },
+        {
+          "text": "[Next Level 2]",
+          "bounds": [
+            43.0,
+            228.0,
+            91.0,
+            14.5
+          ]
+        },
+        {
+          "text": "Critical hits have a 62% chance to reduce Enemy Speed by 16 for 3 sec",
+          "bounds": [
+            43.0,
+            245.5,
+            518.0,
+            17.5
+          ]
+        }
+      ],
+      "expected": 3,
+      "divider": 135,
+      "sourceName": "941d43f2b32b6663e1b55b62647d95d0.png",
+      "sourceSha256": "9e9f5e8a380bb08f08c97978b8b16e0e5074107cd5a1409c02869ffb3c7a121e",
+      "crop": [
+        609,
+        0,
+        1150,
+        238
+      ],
+      "pixelSha256": "44227382a280899af5d2e97f6c34540b24365479fcde14670073f8c7d857b7c8"
+    },
+    {
+      "case": "20c",
+      "name": "Final Attack: Crossbow",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Final Attack: Crossbow",
+          "bounds": [
+            63.04347826086956,
+            31.84782608695652,
+            240,
+            17.043478260869566
+          ]
+        },
+        {
+          "text": "[Master Level: 30]",
+          "bounds": [
+            158.0,
+            63.5,
+            135.0,
+            14.0
+          ]
+        },
+        {
+          "text": "Using attack skills has a chance to enable the Final Attack skill for 60 sec. While enabled, the skill can be used, dealing heavy damage to a single enemy in front. Only applies when equipped with a crossbow.",
+          "bounds": [
+            158.0,
+            80.5,
+            467.0,
+            74.0
+          ]
+        },
+        {
+          "text": "Required Skill: Atleast Level 3 Crossbow Mastery",
+          "bounds": [
+            158.0,
+            157.5,
+            390.0,
+            14.0
+          ]
+        },
+        {
+          "text": "[Current Level 1]",
+          "bounds": [
+            43.5,
+            197.5,
+            126.5,
+            13.5
+          ]
+        },
+        {
+          "text": "25% trigger rate; MP -12; Final Attack with damage 270%",
+          "bounds": [
+            43.5,
+            214.0,
+            583.5,
+            23.0
+          ]
+        },
+        {
+          "text": "[Next Level 2]",
+          "bounds": [
+            43.5,
+            241.0,
+            102.0,
+            14.0
+          ]
+        },
+        {
+          "text": "25% trigger rate; MP -13; Final Attack with damage 273%",
+          "bounds": [
+            43.5,
+            258.0,
+            583.5,
+            20.0
+          ]
+        }
+      ],
+      "expected": 3,
+      "divider": 153,
+      "sourceName": "941d43f2b32b6663e1b55b62647d95d0.png",
+      "sourceSha256": "9e9f5e8a380bb08f08c97978b8b16e0e5074107cd5a1409c02869ffb3c7a121e",
+      "crop": [
+        0,
+        261,
+        607,
+        514
+      ],
+      "pixelSha256": "b3be33d8a4d309811ae8d6dc4249a61510221434a8423a0db0f885731db570a2"
+    },
+    {
+      "case": "20d",
+      "name": "Crossbow Booster",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Crossbow Booster",
+          "bounds": [
+            57.32608695652175,
+            37.108695652173914,
+            240,
+            15.826086956521738
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            145.5,
+            66.5,
+            119.5,
+            13.0
+          ]
+        },
+        {
+          "text": "Consumes HP and MP to temporarily increase the Attack Speed of the equipped crossbow. Only applies when equipped with a crossbow.",
+          "bounds": [
+            145.5,
+            82.5,
+            413.5,
+            52.5
+          ]
+        },
+        {
+          "text": "Required Skill: At least Level 5 Crossbow Mastery",
+          "bounds": [
+            145.5,
+            138.0,
+            344.5,
+            13.0
+          ]
+        },
+        {
+          "text": "[Current Level 1]",
+          "bounds": [
+            45.0,
+            168.5,
+            111.5,
+            12.5
+          ]
+        },
+        {
+          "text": "HP -30, MP -30; Increases Crossbow Attack Speed by 2 stages for 100 sec",
+          "bounds": [
+            45.0,
+            184.0,
+            516.0,
+            40.0
+          ]
+        },
+        {
+          "text": "[Next Level 2]",
+          "bounds": [
+            45.0,
+            228.0,
+            89.5,
+            12.5
+          ]
+        },
+        {
+          "text": "HP -29, MP -29; Increases Crossbow Attack Speed by 2 stages for 110 sec",
+          "bounds": [
+            45.0,
+            243.5,
+            516.0,
+            34.5
+          ]
+        }
+      ],
+      "expected": 3,
+      "divider": 124,
+      "sourceName": "941d43f2b32b6663e1b55b62647d95d0.png",
+      "sourceSha256": "9e9f5e8a380bb08f08c97978b8b16e0e5074107cd5a1409c02869ffb3c7a121e",
+      "crop": [
+        609,
+        261,
+        1150,
+        514
+      ],
+      "pixelSha256": "7305de556dbccb0c131c672bf17497417c7dbc119165cc03076a1a6918430074"
+    },
+    {
+      "case": "20e",
+      "name": "Soul Arrow: Crossbow",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Soul Arrow: Crossbow",
+          "bounds": [
+            31,
+            35.04347826086956,
+            240,
+            23.130434782608695
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            159.0,
+            78.0,
+            135.0,
+            19.0
+          ]
+        },
+        {
+          "text": "Temporarily allows the character to fire crossbow arrows without using up arrows. Only works with a crossbow equipped.",
+          "bounds": [
+            159.0,
+            100.0,
+            466.0,
+            79.5
+          ]
+        },
+        {
+          "text": "Required SkillsAtlieast Level 5 Crossbow Booster",
+          "bounds": [
+            159.0,
+            182.5,
+            389.5,
+            18.5
+          ]
+        },
+        {
+          "text": "[Next Level 1]",
+          "bounds": [
+            45.0,
+            226.5,
+            107.3913043478261,
+            19.0
+          ]
+        },
+        {
+          "text": "MP -25; Attack without using up any arrows for 60 sec",
+          "bounds": [
+            45.0,
+            248.5,
+            582.0,
+            26.5
+          ]
+        }
+      ],
+      "expected": 2,
+      "divider": 176,
+      "sourceName": "941d43f2b32b6663e1b55b62647d95d0.png",
+      "sourceSha256": "9e9f5e8a380bb08f08c97978b8b16e0e5074107cd5a1409c02869ffb3c7a121e",
+      "crop": [
+        0,
+        560,
+        607,
+        810
+      ],
+      "pixelSha256": "67f57ba375ed90a3ebe60327fdcbb5758b62d73e3dd0358f92feca26a346d3b0"
+    },
+    {
+      "case": "20f",
+      "name": "Iron Arrow",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Iron Arrow",
+          "bounds": [
+            44.26086956521739,
+            32.08695652173913,
+            240,
+            18.26086956521739
+          ]
+        },
+        {
+          "text": "[Master Level: 30]",
+          "bounds": [
+            146.0,
+            66.0,
+            120.0,
+            15.0
+          ]
+        },
+        {
+          "text": "Attacks up to 6 monsters at once with a powerful arrow, which penetrates through them. Damage decreases as the arrow flies through each monster.",
+          "bounds": [
+            146.0,
+            84.0,
+            413.0,
+            82.0
+          ]
+        },
+        {
+          "text": "[Current Level 17]",
+          "bounds": [
+            44.5,
+            186.5,
+            121.5,
+            15.5
+          ]
+        },
+        {
+          "text": "MP -21; Damage 152%",
+          "bounds": [
+            44.5,
+            205.0,
+            516.5,
+            26.5
+          ]
+        },
+        {
+          "text": "[Next Level 18]",
+          "bounds": [
+            44.5,
+            235.5,
+            99.5,
+            15.5
+          ]
+        },
+        {
+          "text": "MP -22; Damage 154%",
+          "bounds": [
+            44.5,
+            254.0,
+            516.5,
+            21.0
+          ]
+        }
+      ],
+      "expected": 3,
+      "divider": 140,
+      "sourceName": "941d43f2b32b6663e1b55b62647d95d0.png",
+      "sourceSha256": "9e9f5e8a380bb08f08c97978b8b16e0e5074107cd5a1409c02869ffb3c7a121e",
+      "crop": [
+        609,
+        560,
+        1150,
+        810
+      ],
+      "pixelSha256": "c2d67c2bd983f2134671758f76473829ee2a5aea5e68843b741b748e9489c213"
+    },
+    {
+      "case": "21",
+      "name": "Meditation",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Meditation",
+          "bounds": [
+            47.39130434782608,
+            41.130434782608695,
+            240,
+            13.391304347826088
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            122.0,
+            66.0,
+            93.0,
+            11.0
+          ]
+        },
+        {
+          "text": "Meditate for a bit to temporarily increase the Magic Attack of party members around the area.",
+          "bounds": [
+            122.0,
+            80.0,
+            325.0,
+            31.0
+          ]
+        },
+        {
+          "text": "Required Skill: At least Level 3 MP Eater",
+          "bounds": [
+            122.0,
+            114.0,
+            216.0,
+            11.0
+          ]
+        },
+        {
+          "text": "[Current Level 14]",
+          "bounds": [
+            43.0,
+            157.0,
+            94.0,
+            11.0
+          ]
+        },
+        {
+          "text": "MP -21; Party's Magic Attack +18 for 230 sec",
+          "bounds": [
+            43.0,
+            171.0,
+            406.0,
+            19.0
+          ]
+        },
+        {
+          "text": "[Next Level 15]",
+          "bounds": [
+            43.0,
+            194.0,
+            77.0,
+            11.0
+          ]
+        },
+        {
+          "text": "MP -21; Party's Magic Attack +19 for 240 sec",
+          "bounds": [
+            43.0,
+            208.0,
+            406.0,
+            19.0
+          ]
+        }
+      ],
+      "expected": 3,
+      "divider": 114,
+      "sourceName": "9BD4E4A2F0617375B715B7C1D5E02469.png",
+      "sourceSha256": "6784dfc9dce23d0cd74e8a681750eaa4b8be381c7f19e4402d6a018778c1f20e",
+      "crop": [
+        0,
+        0,
+        429,
+        202
+      ],
+      "pixelSha256": "671f3606bbc13fa45d031e434ef215513e801fda10c630b89ee81cd7d1a0a0ac"
+    },
+    {
+      "case": "22",
+      "name": "Dagger Booster",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Dagger Booster",
+          "bounds": [
+            43.53623188405794,
+            55.28985507246375,
+            240,
+            14.202898550724644
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            122.66666666666667,
+            81.66666666666666,
+            93.66666666666667,
+            11.666666666666671
+          ]
+        },
+        {
+          "text": "Consumes HP and MP to temporarily increase the Attack Speed of the equipped dagger. Only applies when equipped with a dagger.",
+          "bounds": [
+            122.66666666666667,
+            96.33333333333334,
+            365.3333333333333,
+            46.33333333333333
+          ]
+        },
+        {
+          "text": "Required Skill:",
+          "bounds": [
+            122.66666666666667,
+            145.66666666666669,
+            78.33333333333333,
+            11.333333333333329
+          ]
+        },
+        {
+          "text": "[Next Level 1]",
+          "bounds": [
+            43.666666666666664,
+            172.66666666666666,
+            70.66666666666666,
+            11.666666666666686
+          ]
+        },
+        {
+          "text": "HP -30, MP -30; Increases Dagger Attack Speed by 2 stages for 100 sec",
+          "bounds": [
+            43.666666666666664,
+            187.33333333333334,
+            446.3333333333333,
+            23.666666666666657
+          ]
+        }
+      ],
+      "expected": 2,
+      "divider": 130,
+      "sourceName": "AAB71E6C26953209EBAF733A2BDDD984.png",
+      "sourceSha256": "47095e89747160f7f719b6ff49f6cc40a6fe117bb8d17dfbe824054c9cdb8966",
+      "crop": [
+        0,
+        0,
+        470,
+        186
+      ],
+      "pixelSha256": "c0b103ba02168de20f6665b727f2598a83e76a972e0d7aef49098f5a1e9c87a7"
+    },
+    {
+      "case": "23",
+      "name": "Final Attack: Axe",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Final Attack: Axe",
+          "bounds": [
+            44.53623188405797,
+            32.289855072463766,
+            240,
+            14.202898550724639
+          ]
+        },
+        {
+          "text": "[Master Level: 30]",
+          "bounds": [
+            123.66666666666667,
+            58.66666666666667,
+            93.33333333333333,
+            11.666666666666668
+          ]
+        },
+        {
+          "text": "Using attack skills has a chance to enable the Final Attack skill for 60 sec. While enabled, the skill can be used, dealing heavy damage to up to 3 enemies in front. Only applies when equipped with a one-handed or two-handed axe.",
+          "bounds": [
+            123.66666666666667,
+            73.33333333333334,
+            325.3333333333333,
+            62.333333333333336
+          ]
+        },
+        {
+          "text": "Required Skill: Atleast Level 3 Axe Mastery",
+          "bounds": [
+            123.66666666666667,
+            138.66666666666669,
+            231.33333333333331,
+            11.333333333333329
+          ]
+        },
+        {
+          "text": "[Next Level 1]",
+          "bounds": [
+            45.0,
+            173.0,
+            70.0,
+            11.0
+          ]
+        },
+        {
+          "text": "25% trigger rate; HP -12; MP -10; Final Attack with damage 140% to up to 3 enemies. Range +130",
+          "bounds": [
+            45.0,
+            187.0,
+            406.0,
+            32.0
+          ]
+        }
+      ],
+      "expected": 2,
+      "divider": 130,
+      "sourceName": "b1d2d2baf06b3f3ca266b74d3d5fa353.png",
+      "sourceSha256": "9d0d3e4709ede49ec3be2ddcc1d6bdf6171b7862f3ba24e2e774a6d471b24719",
+      "crop": [
+        0,
+        0,
+        431,
+        194
+      ],
+      "pixelSha256": "0b92f9e1924edab64245fcd3e82adfee1873e17863dd24eb238602a179e962d1"
+    },
+    {
+      "case": "24",
+      "name": "Claw Mastery",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Claw Mastery",
+          "bounds": [
+            38.53623188405794,
+            36.28985507246375,
+            240,
+            14.202898550724644
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            117.66666666666667,
+            62.666666666666664,
+            93.33333333333333,
+            11.666666666666671
+          ]
+        },
+        {
+          "text": "Increases Claw Mastery and Attack Power, and gives a chance to recover used throwing stars when using throwing star attacks. Only applies when a claw is equipped.",
+          "bounds": [
+            117.66666666666667,
+            77.33333333333334,
+            326.3333333333333,
+            59.666666666666664
+          ]
+        },
+        {
+          "text": "[Current Level 5]",
+          "bounds": [
+            37.52173913043475,
+            153.17391304347825,
+            91.304347826087,
+            12.173913043478267
+          ]
+        },
+        {
+          "text": "Claw Mastery level 2, Attack Power +5, 9% chance to retrieve used throwing stars",
+          "bounds": [
+            37.52173913043475,
+            168.34782608695653,
+            408.47826086956525,
+            34.31884057971013
+          ]
+        },
+        {
+          "text": "[Next Level 6]",
+          "bounds": [
+            38.666666666666664,
+            206.66666666666666,
+            70.66666666666666,
+            11.666666666666686
+          ]
+        },
+        {
+          "text": "Claw Mastery level 3, Attack Power +6, 10% chance to retrieve used throwing stars",
+          "bounds": [
+            38.666666666666664,
+            221.33333333333334,
+            407.3333333333333,
+            31.666666666666657
+          ]
+        }
+      ],
+      "expected": 3,
+      "divider": 111,
+      "sourceName": "C50811DD531894AAC7BDD47E8C1CCAC9.png",
+      "sourceSha256": "228dad9be502285421cd0160852c4d255576c0a65efc2cf205ce50b6288bc1f5",
+      "crop": [
+        0,
+        0,
+        426,
+        228
+      ],
+      "pixelSha256": "dc8ae7f4338a8698c2272e4f621af451764063b873fc3de51f9f4989271686f1"
+    },
+    {
+      "case": "25",
+      "name": "Polearm Booster",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Polearm Booster",
+          "bounds": [
+            35.79710144927536,
+            48.04347826086956,
+            240,
+            13.797101449275365
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            112.66666666666667,
+            73.66666666666666,
+            93.33333333333333,
+            11.333333333333336
+          ]
+        },
+        {
+          "text": "Consumes HP and MP to temporarily increase the Attack Speed of the equipped polearm. Only applies when equipped with a polearm.",
+          "bounds": [
+            112.66666666666667,
+            88.0,
+            361.3333333333333,
+            10
+          ]
+        },
+        {
+          "text": "\n2\t1\t14\t0\t0\t0\t249\t275\t411\t34\t-1\t\n3\t1\t14\t1\t0\t0\t249\t275\t411\t34\t-1\t\n4\t1\t14\t1\t1\t0\t249\t275\t411\t34\t-1\t\n5\t1\t14\t1\t1\t1\t249\t276\t151\t33\t95.692993\tequipped\n5\t1\t14\t1\t1\t2\t411\t275\t64\t28\t96.430435\twith\n5\t1\t14\t1\t1\t3\t488\t282\t16\t21\t92.898445\ta\n5\t1\t14\t1\t1\t4\t519\t276\t141\t33\t90.148285\tpolearm.\n2\t1\t15\t0\t0\t0\t249\t299\t778\t60\t-1\t\n3\t1\t15\t1\t0\t0\t249\t299\t778\t60\t-1\t\n4\t1\t15\t1\t1\t0\t249\t299\t778\t60\t-1\t\n5\t1\t15\t1\t1\t1\t249\t323\t148\t34\t95.240097\tRequired\n5\t1\t15\t1\t1\t2\t410\t323\t74\t28\t96.703110\tSkill:\n5\t1\t15\t1\t1\t3\t495\t324\t120\t27\t95.551651\tAtleast\n5\t1\t15\t1\t1\t4\t627\t324\t81\t27\t96.194458\tLevel\n5\t1\t15\t1\t1\t5\t723\t324\t15\t27\t95.729271\t5\n5\t1\t15\t1\t1\t6\t753\t324\t135\t28\t96.203590\tPolearm\n5\t1\t15\t1\t1\t7\t903\t299\t124\t60\t86.361992\tMastery\n2\t1\t16\t0\t0\t0\t1250\t306\t117\t39\t-1\t\n3\t1\t16\t1\t0\t0\t1250\t306\t118\t39\t-1\t\n4\t1\t16\t1\t1\t0\t1250\t306\t117\t39\t-1\t\n5\t1\t16\t1\t1\t1\t1250\t306\t82\t39\t0.000000\tNeer\n5\t1\t16\t1\t1\t2\t1337\t315\t30\t27\t34.664200\tLa\n2\t1\t17\t0\t0\t0\t12\t405\t261\t33\t-1\t\n3\t1\t17\t1\t0\t0\t12\t405\t261\t33\t-1\t\n4\t1\t17\t1\t1\t0\t12\t405\t261\t33\t-1\t\n5\t1\t17\t1\t1\t1\t12\t405\t129\t33\t87.546379\t[Current\n5\t1\t17\t1\t1\t2\t153\t405\t81\t27\t89.892166\tLevel\n5\t1\t17\t1\t1\t3\t249\t405\t24\t33\t96.806053\t1]\n2\t1\t18\t0\t0\t0\t12\t452\t1185\t34\t-1\t\n3\t1\t18\t1\t0\t0\t12\t452\t1185\t34\t-1\t\n4\t1\t18\t1\t1\t0\t12\t452\t1185\t34\t-1\t\n5\t1\t18\t1\t1\t1\t12\t452\t45\t28\t92.638596\tHP\n5\t1\t18\t1\t1\t2\t84\t453\t36\t27\t90.849365\t-30,\n5\t1\t18\t1\t1\t3\t144\t453\t46\t27\t87.789604\tMP\n5\t1\t18\t1\t1\t4\t216\t453\t36\t27\t85.013657\t-30;\n5\t1\t18\t1\t1\t5\t276\t453\t159\t27\t96.453224\tIncreases\n5\t1\t18\t1\t1\t6\t450\t453\t135\t27\t95.414551\tPolearm\n5\t1\t18\t1\t1\t7\t597\t453\t96\t27\t96.221214\tAttack\n5\t1\t18\t1\t1\t8\t705\t453\t102\t33\t96.394592\tSpeed\n5\t1\t18\t1\t1\t9\t822\t453\t30\t33\t96.306610\tby\n5\t1\t18\t1\t1\t10\t869\t453\t13\t27\t96.109787\t2\n5\t1\t18\t1\t1\t11\t897\t453\t108\t33\t95.814560\tstages\n5\t1\t18\t1\t1\t12\t1017\t453\t42\t27\t15.575104\tfor\n5\t1\t18\t1\t1\t13\t1071\t453\t58\t27\t15.575104\t100\n5\t1\t18\t1\t1\t14\t1143\t459\t54\t21\t96.047676\tsec\n2\t1\t19\t0\t0\t0\t12\t515\t211\t34\t-1\t\n3\t1\t19\t1\t0\t0\t12\t515\t211\t34\t-1\t\n4\t1\t19\t1\t1\t0\t12\t515\t211\t34\t-1\t\n5\t1\t19\t1\t1\t1\t12\t516\t78\t33\t91.690369\t[Next\n5\t1\t19\t1\t1\t2\t102\t516\t81\t27\t95.656700\tLevel\n5\t1\t19\t1\t1\t3\t197\t515\t26\t34\t96.436531\t2]\n2\t1\t20\t0\t0\t0\t12\t564\t1185\t33\t-1\t\n3\t1\t20\t1\t0\t0\t12\t564\t1185\t33\t-1\t\n4\t1\t20\t1\t1\t0\t12\t564\t1185\t33\t-1\t\n5\t1\t20\t1\t1\t1\t12\t564\t45\t27\t86.094231\tHP\n5\t1\t20\t1\t1\t2\t84\t564\t36\t27\t86.094231\t-29,\n5\t1\t20\t1\t1\t3\t144\t564\t45\t27\t90.688103\tMP\n5\t1\t20\t1\t1\t4\t216\t564\t36\t27\t51.793785\t-29:\n5\t1\t20\t1\t1\t5\t276\t564\t159\t27\t96.141342\tIncreases\n5\t1\t20\t1\t1\t6\t450\t564\t135\t27\t96.141342\tPolearm\n5\t1\t20\t1\t1\t7\t597\t564\t96\t27\t95.953560\tAttack\n5\t1\t20\t1\t1\t8\t705\t564\t102\t33\t96.572617\tSpeed\n5\t1\t20\t1\t1\t9\t822\t564\t33\t33\t96.024323\tby\n5\t1\t20\t1\t1\t10\t867\t564\t15\t27\t95.657379\t2\n5\t1\t20\t1\t1\t11\t897\t564\t108\t33\t96.912689\tstages\n5\t1\t20\t1\t1\t12\t1017\t564\t42\t27\t40.923225\tfor\n5\t1\t20\t1\t1\t13\t1092\t564\t36\t27\t40.923225\t110\n5\t1\t20\t1\t1\t14\t1143\t570\t54\t21\t95.909966\tsec\n2\t1\t21\t0\t0\t0\t894\t624\t45\t15\t-1\t\n3\t1\t21\t1\t0\t0\t894\t624\t45\t15\t-1\t\n4\t1\t21\t1\t1\t0\t894\t624\t45\t15\t-1\t\n5\t1\t21\t1\t1\t1\t894\t624\t45\t15\t28.202995\tPe\n5\t1\t21\t1\t1\t2\t939\t620\t4\t19\t8.443184\tI\n",
+          "bounds": [
+            447.0,
+            91.33333333333334,
+            11.0,
+            17.666666666666664
+          ]
+        },
+        {
+          "text": "[Current Level 1]",
+          "bounds": [
+            34.81159420289855,
+            163.82608695652175,
+            88.69565217391306,
+            11.826086956521742
+          ]
+        },
+        {
+          "text": "HP -30, MP -30; Increases Polearm Attack Speed by 2 stages for 100 sec",
+          "bounds": [
+            34.81159420289855,
+            178.6521739130435,
+            441.18840579710144,
+            17.637681159420282
+          ]
+        },
+        {
+          "text": "[Next Level 2]",
+          "bounds": [
+            34.81159420289855,
+            200.28985507246378,
+            73.91304347826087,
+            11.826086956521742
+          ]
+        },
+        {
+          "text": "HP -29, MP -29; Increases Polearm Attack Speed by 2 stages for 110 sec",
+          "bounds": [
+            34.81159420289855,
+            215.11594202898553,
+            441.18840579710144,
+            22.88405797101447
+          ]
+        }
+      ],
+      "expected": 3,
+      "divider": 122,
+      "sourceName": "cd9bd063621eb98b0ff711a4503d5fe4.png",
+      "sourceSha256": "4449398ad75f06abc5e77baac12a66626cbef117b33449d4d3387cea53fc1f76",
+      "crop": [
+        0,
+        0,
+        456,
+        213
+      ],
+      "pixelSha256": "8758e6db4867fad76d3b1e2ef02fd9412e7f7bea06367644cdcc63c9747c9fe0"
+    },
+    {
+      "case": "26",
+      "name": "Slow",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Slow",
+          "bounds": [
+            41.53623188405794,
+            41.28985507246375,
+            240,
+            14.202898550724644
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            120.66666666666667,
+            67.66666666666666,
+            93.66666666666667,
+            11.666666666666671
+          ]
+        },
+        {
+          "text": "Temporarily slows down the movement speed and evasion of up to 6 monsters. Cannot be used on monsters that are already affected.",
+          "bounds": [
+            120.66666666666667,
+            82.33333333333334,
+            323.3333333333333,
+            46.333333333333336
+          ]
+        },
+        {
+          "text": "Required Skill: Atleast Level 5 Teleport",
+          "bounds": [
+            121.0,
+            131.66666666666669,
+            212.0,
+            11.333333333333329
+          ]
+        },
+        {
+          "text": "[Next Level 1]",
+          "bounds": [
+            40.52173913043475,
+            158.17391304347828,
+            76.08695652173917,
+            12.173913043478267
+          ]
+        },
+        {
+          "text": "MP -15; Enemy Speed -10, Evasion -1 for 10 sec",
+          "bounds": [
+            40.52173913043475,
+            173.34782608695656,
+            405.47826086956525,
+            19.65217391304344
+          ]
+        }
+      ],
+      "expected": 2,
+      "divider": 116,
+      "sourceName": "D0468337AE6D1CD74B8FD90CCA6EA7FC.png",
+      "sourceSha256": "6173f7f232f33ce45e61d6f54bc6128e6e620551f2996269cf81e1c6f442980b",
+      "crop": [
+        0,
+        0,
+        426,
+        168
+      ],
+      "pixelSha256": "fb0556c97185ae75b569e27a5cbe527c2cca522155493c2c93c42d3841b7ee92"
+    },
+    {
+      "case": "27",
+      "name": "Soul Arrow: Bow",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Soul Arrow: Bow",
+          "bounds": [
+            41.23913043478262,
+            70.41304347826087,
+            240,
+            23.73913043478261
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            173.5,
+            114.5,
+            147.0,
+            19.5
+          ]
+        },
+        {
+          "text": "Temporarily allows the character to fire bow arrows without using up arrows. Only works with a bow equipped.",
+          "bounds": [
+            173.5,
+            137.0,
+            540.5,
+            50.5
+          ]
+        },
+        {
+          "text": "Required Skill: At least Level 5 Bow Booster",
+          "bounds": [
+            174.0,
+            190.5,
+            371.0,
+            18.0
+          ]
+        },
+        {
+          "text": "[Current Level 10]",
+          "bounds": [
+            50.5,
+            258.0,
+            147.5,
+            17.5
+          ]
+        },
+        {
+          "text": "MP -16; Attack without using up any arrows for 168 sec",
+          "bounds": [
+            50.5,
+            278.5,
+            665.5,
+            33.5
+          ]
+        },
+        {
+          "text": "[Next Level 11]",
+          "bounds": [
+            50.5,
+            316.0,
+            121.0,
+            17.5
+          ]
+        },
+        {
+          "text": "MP -15; Attack without using up any arrows for 180 sec",
+          "bounds": [
+            50.5,
+            336.5,
+            665.5,
+            45.5
+          ]
+        }
+      ],
+      "expected": 3,
+      "divider": 208,
+      "sourceName": "D43314720753CC88D675FDE2A0078AC3.png",
+      "sourceSha256": "d9dba4f72c825961250f977fad5c97e4667d7a34c59d2c85cdaa87843c115eec",
+      "crop": [
+        0,
+        0,
+        696,
+        357
+      ],
+      "pixelSha256": "9935df632222de16af5012e52a7e8a7855702cb9cef6aa1d97fafbca5ce000bd"
+    },
+    {
+      "case": "28",
+      "name": "Final Attack: Polearm",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Final Attack: Polearm",
+          "bounds": [
+            62.53623188405794,
+            49.28985507246375,
+            240,
+            14.202898550724644
+          ]
+        },
+        {
+          "text": "[Master Level: 30]",
+          "bounds": [
+            141.66666666666669,
+            75.66666666666666,
+            93.33333333333333,
+            11.666666666666671
+          ]
+        },
+        {
+          "text": "Using attack skills has a chance to enable the Final Attack skill for 60 sec. While enabled, the skill can be used, dealing heavy damage to a single enemy and absorbing some of the damage dealt as HP. The most one can absorb at once is 25% of the character's Max HP, and can't absorb more than the Max HP of the enemy. Only applies when equipped with a polearm.",
+          "bounds": [
+            141.66666666666669,
+            90.33333333333334,
+            314.3333333333333,
+            110.33333333333331
+          ]
+        },
+        {
+          "text": "Required Skill: Atleast Level 3 Polearttretiastery",
+          "bounds": [
+            142.0,
+            203.66666666666666,
+            259.3333333333333,
+            11.333333333333343
+          ]
+        },
+        {
+          "text": "[Current Level 6]",
+          "bounds": [
+            63.0,
+            238.0,
+            87.0,
+            11.0
+          ]
+        },
+        {
+          "text": "25% trigger rate; MP -10; Final Attack with damage 275%, absorb 6% of damage as HP",
+          "bounds": [
+            63.0,
+            252.0,
+            395.0,
+            35.0
+          ]
+        },
+        {
+          "text": "[Next Level 7]",
+          "bounds": [
+            63.0,
+            291.0,
+            70.0,
+            11.0
+          ]
+        },
+        {
+          "text": "25% trigger rate; MP -10; Final Attack with damage 278%, absorb 6% of damage as HP",
+          "bounds": [
+            63.0,
+            305.0,
+            395.0,
+            30.0
+          ]
+        }
+      ],
+      "expected": 3,
+      "divider": 195,
+      "sourceName": "d49bbae6919ceb2321beea83573bb3cc.png",
+      "sourceSha256": "aa1bf4b62ee29b4305799db572f022909091e596d982d3d5dffc647014ef08e8",
+      "crop": [
+        0,
+        0,
+        438,
+        310
+      ],
+      "pixelSha256": "74dda33933ec901f67e13f1b5547368a7cfade5d4396f9db3bd618b9e729e3e2"
+    },
+    {
+      "case": "29",
+      "name": "Haste",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Haste",
+          "bounds": [
+            49.60869565217392,
+            46.869565217391305,
+            240,
+            14.608695652173912
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            131,
+            74,
+            95,
+            12
+          ]
+        },
+        {
+          "text": "Temporarily increases the speed and jump of all party members around the area.",
+          "bounds": [
+            131,
+            89,
+            344,
+            71
+          ]
+        },
+        {
+          "text": "[Next Level 1]",
+          "bounds": [
+            48.565217391304344,
+            176.52173913043478,
+            78.26086956521739,
+            12.521739130434781
+          ]
+        },
+        {
+          "text": "MP -15; Speed +10, Jump +1 for 100 sec",
+          "bounds": [
+            48.565217391304344,
+            192.04347826086956,
+            428.4347826086956,
+            21.956521739130437
+          ]
+        }
+      ],
+      "expected": 2,
+      "divider": 134,
+      "sourceName": "DC193348B9FA2C1C49F54C65B8232ADB.png",
+      "sourceSha256": "afd8bc0625c690e0e2a3e84c5da96e4341b39aa4890d3ffc83c793c937ea2c52",
+      "crop": [
+        0,
+        0,
+        457,
+        189
+      ],
+      "pixelSha256": "e88f6892661cd75cbbb09da2a2832f845da1bef77724449d7bbcd6345d7b2c7b"
+    },
+    {
+      "case": "30",
+      "name": "Arrow Bomb",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Arrow Bomb",
+          "bounds": [
+            53.41304347826086,
+            73.80434782608695,
+            240,
+            21.91304347826087
+          ]
+        },
+        {
+          "text": "[Master Level: 30]",
+          "bounds": [
+            175.5,
+            114.5,
+            146.0,
+            18.0
+          ]
+        },
+        {
+          "text": "Fires an arrow with a bomb attached to it. If struck cleanly, the bomb explodes on the enemy, stunning some enemies around with a certain trigger rate. Can't attack more than 6 at once, and it only works with a bow equipped.",
+          "bounds": [
+            175.5,
+            135.5,
+            527.5,
+            97.5
+          ]
+        },
+        {
+          "text": "[Current Level 1]",
+          "bounds": [
+            52.0,
+            257.0,
+            136.5,
+            17.5
+          ]
+        },
+        {
+          "text": "MP -14; Stun chance 30% for 2 sec, damage 70%",
+          "bounds": [
+            52.0,
+            277.5,
+            653.0,
+            33.0
+          ]
+        },
+        {
+          "text": "[Next Level 2]",
+          "bounds": [
+            52.0,
+            314.5,
+            110.0,
+            18.0
+          ]
+        },
+        {
+          "text": "MP -14; Stun chance 31% for 2 sec, damage 72%",
+          "bounds": [
+            52.0,
+            335.5,
+            653.0,
+            32.5
+          ]
+        }
+      ],
+      "expected": 3,
+      "divider": 207,
+      "sourceName": "E1785C29A720481FDD3CBAABDBA3DEF9.png",
+      "sourceSha256": "fd43d1283946d8df077405fff01dab5b425f880cee9315abf2fab2d990862f23",
+      "crop": [
+        0,
+        0,
+        685,
+        343
+      ],
+      "pixelSha256": "946918e31df6f9851a3b883ecceaeab23f7b2f3fa14c26084d84afb88dc0de7e"
+    },
+    {
+      "case": "31",
+      "name": "Dagger Mastery",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Dagger Mastery",
+          "bounds": [
+            43.53623188405798,
+            59.289855072463766,
+            240,
+            14.202898550724635
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            122.66666666666667,
+            85.66666666666666,
+            93.66666666666667,
+            11.666666666666664
+          ]
+        },
+        {
+          "text": "Increases Dagger Mastery and Critical Rate, with a chance to ignore knockback effects. It only applies when a dagger is equipped.",
+          "bounds": [
+            122.66666666666667,
+            100.33333333333333,
+            339.3333333333333,
+            59.66666666666667
+          ]
+        },
+        {
+          "text": "[Next Level 1]",
+          "bounds": [
+            31,
+            176.7,
+            84.33333333333333,
+            12.173913043478258
+          ]
+        },
+        {
+          "text": "Dagger Mastery level 1, Critical Rate +1%, 1% chance to ignore knockbacks",
+          "bounds": [
+            31,
+            191.87391304347824,
+            433,
+            65.12608695652176
+          ]
+        }
+      ],
+      "expected": 2,
+      "divider": 134,
+      "sourceName": "E573F53524D46F9DE3509CD5AE88CBA9.png",
+      "sourceSha256": "50eb83d08fdc2724dadc597b2c84702e508389cee78e2b2da54300fd1914df26",
+      "crop": [
+        0,
+        0,
+        444,
+        232
+      ],
+      "pixelSha256": "104f07ab08d822ef37ac06a24f4ca52b96bf592114b36990354932fba5ccd41a"
+    },
+    {
+      "case": "32",
+      "name": "Amazon's Judgement",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Amazon's Judgement",
+          "bounds": [
+            63.52173913043478,
+            71.17391304347825,
+            240,
+            22.52173913043478
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            189.0,
+            113.0,
+            146.0,
+            18.5
+          ]
+        },
+        {
+          "text": "Critical hits sever the enemy's tendons, slowing them down.",
+          "bounds": [
+            189.0,
+            134.5,
+            528.0,
+            25.5
+          ]
+        },
+        {
+          "text": "Required Skill: Atleast Level 5 Bow Mastery",
+          "bounds": [
+            189.0,
+            163.0,
+            374.5,
+            18.5
+          ]
+        },
+        {
+          "text": "[Current Level 1]",
+          "bounds": [
+            65.5,
+            255.5,
+            137.0,
+            18.5
+          ]
+        },
+        {
+          "text": "Critical hits have a 60% chance to reduce Enemy Speed by 15 for 3 sec",
+          "bounds": [
+            65.5,
+            277.0,
+            653.5,
+            32.0
+          ]
+        },
+        {
+          "text": "[Next Level 2]",
+          "bounds": [
+            65.5,
+            313.0,
+            110.5,
+            18.5
+          ]
+        },
+        {
+          "text": "Critical hits have a 62% chance to reduce Enemy Speed by 16 for 3 sec",
+          "bounds": [
+            65.5,
+            334.5,
+            653.5,
+            43.5
+          ]
+        }
+      ],
+      "expected": 3,
+      "divider": 206,
+      "sourceName": "EE8AC55A22371B8C64F3394164FEA5DC.png",
+      "sourceSha256": "31c115ba28ee4db59a58c6903c2bd2486730c813da2eb126404b1370a38fdab8",
+      "crop": [
+        0,
+        0,
+        699,
+        353
+      ],
+      "pixelSha256": "a20d2e3b15566b03812df055890a487dbd4bc715a61ce5af0d8546e282ba2a10"
+    },
+    {
+      "case": "33",
+      "name": "Fire Arrow",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Fire Arrow",
+          "bounds": [
+            44.53623188405794,
+            40.28985507246375,
+            240,
+            14.202898550724644
+          ]
+        },
+        {
+          "text": "[Master Level: 30]",
+          "bounds": [
+            123.66666666666667,
+            66.66666666666666,
+            93.66666666666667,
+            11.666666666666671
+          ]
+        },
+        {
+          "text": "Fires a fire arrow created with magic power at a single enemy, dealing fire-elemental damage and burning them to inflict continuous damage every second for 3 seconds. Deals increased damage to fire-weak enemies, but deals reduced damage to fire-resistant enemies and cannot burn them.",
+          "bounds": [
+            123.66666666666667,
+            81.33333333333334,
+            324.3333333333333,
+            98.66666666666666
+          ]
+        },
+        {
+          "text": "[Current Level 30]",
+          "bounds": [
+            44.666666666666664,
+            196.66666666666666,
+            94.66666666666666,
+            11.666666666666686
+          ]
+        },
+        {
+          "text": "MP -28; Basic Attack 180, Mastery level 10; Deals 50 Basic Attack over 3 sec",
+          "bounds": [
+            44.666666666666664,
+            211.33333333333334,
+            405.3333333333333,
+            31.666666666666657
+          ]
+        }
+      ],
+      "expected": 2,
+      "divider": 154,
+      "sourceName": "F2835140F1CCBC6ECCA6B6DFBA2AC223.png",
+      "sourceSha256": "43d59b497f83c3e2d98096f3fbac8aedf7b2f93e67425312b736512c911fa324",
+      "crop": [
+        0,
+        0,
+        430,
+        218
+      ],
+      "pixelSha256": "51848ee26b25ac0f4c4249b88c8cdd0448ae3fd6a6ced265ab88d67976e20ea8"
+    },
+    {
+      "case": "34",
+      "name": "Axe Mastery",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Axe Mastery",
+          "bounds": [
+            39.53623188405794,
+            40.28985507246375,
+            240,
+            14.202898550724644
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            118.66666666666667,
+            66.66666666666666,
+            93.33333333333333,
+            11.666666666666671
+          ]
+        },
+        {
+          "text": "Increases Axe Mastery, and attacks have a chance to inflict a bleeding effect on the target when attacking. It only applies when a one-handed or two-handed axe is equipped.",
+          "bounds": [
+            118.66666666666667,
+            81.33333333333334,
+            327.3333333333333,
+            59.666666666666664
+          ]
+        },
+        {
+          "text": "[Next Level 1]",
+          "bounds": [
+            39.666666666666664,
+            157.66666666666669,
+            70.66666666666666,
+            11.666666666666671
+          ]
+        },
+        {
+          "text": "Axe Mastery level 1, 5% chance to inflict bleed, dealing 40% total damage over 3 sec",
+          "bounds": [
+            39.666666666666664,
+            172.33333333333334,
+            408.3333333333333,
+            35.66666666666666
+          ]
+        }
+      ],
+      "expected": 2,
+      "divider": 115,
+      "sourceName": "f546ef68f55808671740e72908fb2292.png",
+      "sourceSha256": "61e0220111623ca908dadd92587163638809f39db9fa027d1bae400f02b01f23",
+      "crop": [
+        0,
+        0,
+        428,
+        183
+      ],
+      "pixelSha256": "a3b48896f4851123b47d823cb15be380995202347a94b6e9f4df64aa99fa4525"
+    },
+    {
+      "case": "35",
+      "name": "Critical Throw",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Critical Throw",
+          "bounds": [
+            43.53623188405794,
+            49.28985507246375,
+            240,
+            14.202898550724644
+          ]
+        },
+        {
+          "text": "[Master Level: 30]",
+          "bounds": [
+            122.66666666666667,
+            75.66666666666666,
+            93.33333333333333,
+            11.666666666666671
+          ]
+        },
+        {
+          "text": "Increases Critical Rate and Critical Damage.",
+          "bounds": [
+            122.66666666666667,
+            90.33333333333334,
+            327.3333333333333,
+            14.333333333333336
+          ]
+        },
+        {
+          "text": "Required Skill: At least Level 3 Claw Mastery",
+          "bounds": [
+            122.66666666666667,
+            107.66666666666667,
+            240.66666666666663,
+            11.666666666666657
+          ]
+        },
+        {
+          "text": "[Current Level 24]",
+          "bounds": [
+            43.666666666666664,
+            166.66666666666666,
+            94.66666666666666,
+            11.666666666666686
+          ]
+        },
+        {
+          "text": "Critical Rate +12%, Critical Damage +28%",
+          "bounds": [
+            43.666666666666664,
+            181.33333333333334,
+            408.3333333333333,
+            18.333333333333314
+          ]
+        },
+        {
+          "text": "[Next Level 25]",
+          "bounds": [
+            43.666666666666664,
+            203.66666666666666,
+            77.66666666666666,
+            11.666666666666686
+          ]
+        },
+        {
+          "text": "Critical Rate +12%, Critical Damage +29%",
+          "bounds": [
+            43.666666666666664,
+            218.33333333333334,
+            408.3333333333333,
+            14.666666666666657
+          ]
+        }
+      ],
+      "expected": 3,
+      "divider": 124,
+      "sourceName": "FCD5425DDDF418194B51384360C80BC9.png",
+      "sourceSha256": "b34bfc285e850021571766de0b393140b074a6e4a4b3e285ee5dcfe18050a4f0",
+      "crop": [
+        0,
+        0,
+        432,
+        208
+      ],
+      "pixelSha256": "9dbda1f80b31f91147c51328b3c27d89428b81d91ff4b4327174ff8e0b761e62"
+    },
+    {
+      "case": "36",
+      "name": "Nimble Recovery",
+      "width": 1280,
+      "height": 900,
+      "rows": [
+        {
+          "text": "Nimble Recovery",
+          "bounds": [
+            42.79710144927536,
+            52.37681159420289,
+            240,
+            13.797101449275365
+          ]
+        },
+        {
+          "text": "[Master Level: 20]",
+          "bounds": [
+            119.66666666666667,
+            78.0,
+            70.66666666666667,
+            11.333333333333336
+          ]
+        },
+        {
+          "text": "Recover HP and MP with a certain chance when evading. Cannot recover again within 30 seconds after a recovery.",
+          "bounds": [
+            119.66666666666667,
+            92.33333333333334,
+            354.3333333333333,
+            59.666666666666664
+          ]
+        },
+        {
+          "text": "[Next Level 1]",
+          "bounds": [
+            40.666666666666664,
+            168.66666666666666,
+            70.66666666666666,
+            11.666666666666686
+          ]
+        },
+        {
+          "text": "Recover 1% HP and 1% MP with a 20% chance when evading",
+          "bounds": [
+            40.666666666666664,
+            183.33333333333334,
+            435.3333333333333,
+            31.666666666666657
+          ]
+        }
+      ],
+      "expected": 2,
+      "divider": 126,
+      "sourceName": "FE68CDB0AB58ED1A6A90644D05F92159.png",
+      "sourceSha256": "5f5ef0fb42cf196a12e751935233eeab323940c5b1e2dc1d4db3f91eb71b3bf0",
+      "crop": [
+        0,
+        0,
+        456,
+        190
+      ],
+      "pixelSha256": "79549571c3978f7c31d4aec216272804fed002eb73882ba60be44baabd9bb6c5"
+    }
+  ]
+}

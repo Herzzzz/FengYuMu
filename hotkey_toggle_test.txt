@@ -1,0 +1,2 @@
+﻿失败：System.InvalidOperationException: 第一次F8未用新截图显示翻译
+   在 MapleOverlay.OverlayForm.<RunHotkeyToggleBenchmarkAsync>d__121.MoveNext()

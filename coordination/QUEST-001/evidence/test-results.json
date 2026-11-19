@@ -1,0 +1,134 @@
+{
+  "schema": 2,
+  "annotation": "Final clean-build run on 枫语幕.exe SHA-256 F257E8336D3CD80551780E62D9780434CBF7DF184A2F79911F0E0E4836084A0F (implementation head dd7639f, worktree clean). Two test kinds are kept separate: 164 actual-GDI+ panel checks on the built EXE, and 51 generated-source substitute Font/Graphics checks (not native GDI acceptance). No OCR or AI rounds were added.",
+  "build": {
+    "command": "pwsh -NoProfile -File src/build.ps1",
+    "status": "PASS",
+    "exeSha256": "F257E8336D3CD80551780E62D9780434CBF7DF184A2F79911F0E0E4836084A0F",
+    "buildEvidenceSha256": "9187FA7939E79441A5702F6F80BBE2CE4EBEC9677E035240813012AF82B52C7A",
+    "head": "dd7639fc29fbafbf3ee714eae93ed1b5f5437104",
+    "worktreeCleanAtBuild": true,
+    "inputs": 64
+  },
+  "tests": [
+    {
+      "name": "quest-panel-layout",
+      "command": "pwsh -NoProfile -File tests/logic-quest-panel-layout.ps1",
+      "kind": "actual GDI+ on built EXE",
+      "checks": 164,
+      "exitCode": 0,
+      "detail": "64 previous + 33 R1/R2/R3 checks; actual Font.Size/Pixel/content/page metrics in evidence/layout-metrics.json",
+      "evidence": "evidence/quest-panel-layout.txt"
+    },
+    {
+      "name": "quest-font-layout",
+      "command": "pwsh -NoProfile -File tests/logic-quest-font-layout.ps1",
+      "kind": "generated-source substitute Font/Graphics harness; not native GDI acceptance",
+      "checks": 51,
+      "exitCode": 0,
+      "detail": "33 previous + 18 R2 checks; 8-second watchdog on CJK/emoji/supplementary title/body/full pagination",
+      "evidence": "evidence/quest-font-layout.txt"
+    },
+    {
+      "name": "simple-flow-r11",
+      "command": "pwsh -NoProfile -File tests/logic-simple-flow-r11.ps1",
+      "checks": 33,
+      "exitCode": 0,
+      "evidence": "evidence/simple-flow-r11.txt"
+    },
+    {
+      "name": "journal-and-item-r6",
+      "command": "pwsh -NoProfile -File tests/logic-journal-and-item-r6.ps1 -ExePath .\\枫语幕.exe",
+      "checks": 23,
+      "exitCode": 0,
+      "evidence": "evidence/journal-and-item-r6.txt"
+    },
+    {
+      "name": "quest-text-scope-r12",
+      "command": "pwsh -NoProfile -File tests/logic-quest-text-scope-r12.ps1",
+      "checks": 17,
+      "exitCode": 0,
+      "evidence": "evidence/quest-text-scope-r12.txt"
+    },
+    {
+      "name": "quest-matching-r12",
+      "command": "pwsh -NoProfile -File tests/logic-quest-matching-r12.ps1 -ExePath .\\枫语幕.exe",
+      "checks": 28,
+      "exitCode": 0,
+      "evidence": "evidence/quest-matching-r12.txt"
+    },
+    {
+      "name": "observed-quest-wording",
+      "command": "pwsh -NoProfile -File tests/logic-observed-quest-wording.ps1 -ExePath .\\枫语幕.exe",
+      "checks": 12,
+      "exitCode": 0,
+      "evidence": "evidence/observed-quest-wording.txt"
+    },
+    {
+      "name": "ui-dpi-scaling",
+      "command": "pwsh -NoProfile -File tests/logic-ui-dpi-scaling.ps1",
+      "exitCode": 0,
+      "detail": "100/125/150/175/200%, mixed DPI",
+      "evidence": "evidence/ui-dpi-scaling.txt"
+    },
+    {
+      "name": "chat-category-filtering",
+      "command": "pwsh -NoProfile -File tests/logic-chat-category-filtering.ps1",
+      "exitCode": 0,
+      "evidence": "evidence/chat-category-filtering.txt"
+    },
+    {
+      "name": "chat-megaphone-pixels",
+      "command": "pwsh -NoProfile -File tests/logic-chat-megaphone-pixels.ps1",
+      "checks": 164,
+      "exitCode": 0,
+      "evidence": "evidence/chat-megaphone-pixels.txt"
+    },
+    {
+      "name": "chat-continuity",
+      "command": "pwsh -NoProfile -File tests/logic-chat-continuity.ps1",
+      "checks": 9,
+      "exitCode": 0,
+      "evidence": "evidence/chat-continuity.txt"
+    },
+    {
+      "name": "independent-window",
+      "command": "pwsh -NoProfile -File tests/logic-independent-window.ps1",
+      "exitCode": 0,
+      "evidence": "evidence/independent-window.txt"
+    }
+  ],
+  "reviewFixes": {
+    "QUEST-R1": "Pass: prose 'Please take care of 50' and 'Please collect a total of 20' are not counters; real weak/strong counter structures and target-column slash counts are recognized; the positive integration uses the selected record's fully corresponding English/Chinese rows, with first/last row coverage.",
+    "QUEST-R2": "Pass: actual-GDI+ A😀 and long supplementary plans return; substitute watchdog cases cover CJK/emoji/supplementary title/body/pagination with no character loss and no lone surrogates.",
+    "QUEST-R3": "Pass: conflicting visible quantity 50 and unknown/reordered/negated appended prose reject the whole journal replacement; lastQuestJournalRejection records the reason and original pixels remain. R3a verifies titleless/scrolled first body anchors; R3b verifies ordered source alignment, cross-line reversal and OCR-noise positives; R3c verifies numbers stay associated with their item/prose tokens and short numeric rows are checked."
+  },
+  "syntheticQuestShell": {
+    "command": "pwsh -NoProfile -File tests/logic-quest-shell-resilience.ps1",
+    "exitCode": 1,
+    "classification": "PRE_EXISTING_BASELINE_FAILURE",
+    "detail": "The test's clean synthetic scene still reports an empty 识别场景 on this host; the journal path itself selected and composed in prior runs. This failure reproduces on the untouched baseline.",
+    "evidence": "evidence/quest-shell-synthetic.txt"
+  },
+  "preExistingFailures": [
+    "tests/logic-quest-body-and-summary.ps1",
+    "tests/logic-panel-context-isolation.ps1",
+    "tests/logic-overlay-label-layout.ps1",
+    "tests/logic-overlay-paint-safety.ps1",
+    "tests/logic-overlay-dual-rendering.ps1",
+    "tests/logic-quest-title-groups.ps1",
+    "tests/logic-quest-shell-resilience.ps1"
+  ],
+  "safetyRegressionRun": {
+    "build": "final EXE 1A29EA825DDC7C2DAF157E998C75217DD77E43C201695FE258FE594225FCC2F0, head eea67ce",
+    "result": "All seven pre-existing safety/legacy failures reproduced unchanged; no new R1/R2 failure.",
+    "evidence": "evidence/safety-regressions-pre-existing.txt"
+  },
+  "baselineConfirmation": {
+    "worktree": "detached at dff639b (temporary .bench worktree, removed after confirmation)",
+    "exeSha256": "6E618DF248FBBDB3AC0A25F1B9E4A3E4A5E1BBB02A15CEBF1ADB69A8563C1737",
+    "result": "Every pre-existing failure above reproduced on the untouched baseline worktree."
+  },
+  "realGameVisual": "UNVERIFIED",
+  "extraOcrOrAiRounds": false
+}

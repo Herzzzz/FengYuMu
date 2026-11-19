@@ -1,0 +1,11 @@
+
+An error has occurred that was not properly handled. Additional information is shown below. The PowerShell process will exit.
+Unhandled exception. System.IO.FileLoadException: The given assembly name was invalid.
+File name: 'ﾫg￭ﾋU^,'
+   at System.Reflection.AssemblyNameParser.Parse(ReadOnlySpan`1 name)
+   at System.Reflection.AssemblyName.ParseAsAssemblySpec(Char* pAssemblyName, Void* pAssemblySpec)
+Exception: D:\GPT\文件\枫语幕\work\dsh-chat-001\tests\logic-quest-shell-resilience.ps1:87
+Line |
+  87 |  if ($clean -notmatch '识别场景=任务') { throw '干净任务窗口未被识别为任务场景' }
+     |                                    ~~~~~~~~~~~~~~~~~~~~~~~
+     | 干净任务窗口未被识别为任务场景

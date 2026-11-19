@@ -1,0 +1,371 @@
+using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+
+namespace MapleOverlay
+{
+    internal sealed class EquipmentField
+    {
+        internal int Start,Length,ValueStart,ValueLength;
+        internal string Key,Chinese;
+        // The raw OCR substring is kept byte-for-byte. Painting replaces only the
+        // translated key and leaves this value (and therefore sign, %, parenthesis
+        // correction and coloured pixels) untouched.
+        internal string RawValue;
+        internal bool HasValue,Required,TextValue;
+    }
+
+    internal static class EquipmentFieldGrammar
+    {
+        private sealed class FieldDefinition
+        {
+            internal string Key,Pattern,Chinese;
+            internal bool Explicit,TextValue;
+            internal FieldDefinition(string key,string pattern,string chinese,bool explicitStat,bool textValue)
+            {Key=key;Pattern=pattern;Chinese=chinese;Explicit=explicitStat;TextValue=textValue;}
+        }
+
+        // Key occurrences are collected before any value is read, so the value of
+        // STR+5INT+3 can be bounded by the already-confirmed INT key.
+        private sealed class FieldMatch
+        {
+            internal Match Match;
+            internal FieldDefinition Definition;
+            internal int After;
+            internal bool Required;
+        }
+
+        // Every entry is a generic attribute shape. No item name, item id, class,
+        // player or server value participates in matching.
+        private static readonly FieldDefinition[] Fields={
+            new FieldDefinition("weapon-attack",@"(?:weapon\s*(?:attack|att|atk)|w\s*[.]?\s*(?:att|atk|attack)|(?:attack|att|atk)\s*power|att|atk)","物理攻击力",true,false),
+            new FieldDefinition("magic-attack",@"(?:mag[il1i]c\s*(?:attack|att|atk)|m\s*[.]?\s*(?:att|atk|attack))","魔法攻击力",true,false),
+            new FieldDefinition("weapon-defense",@"(?:weapon\s*def(?:en[cs]e)?|w\s*[.]?\s*def(?:en[cs]e)?|wdef)","物理防御力",true,false),
+            new FieldDefinition("magic-defense",@"(?:mag[il1i]c\s*def(?:en[cs]e)?|m\s*[.]?\s*def(?:en[cs]e)?|mdef)","魔法防御力",true,false),
+            new FieldDefinition("strength",@"(?:str(?:ength)?)","力量",true,false),
+            new FieldDefinition("dexterity",@"(?:dex(?:terity)?|oex|0ex)","敏捷",true,false),
+            new FieldDefinition("intelligence",@"(?:int(?:elligence)?|lnt|1nt)","智力",true,false),
+            new FieldDefinition("luck",@"(?:luk|luck)","运气",true,false),
+            new FieldDefinition("accuracy",@"accuracy","命中率",false,false),
+            // Evasion is the visible tooltip/stat wording for the same generic
+            // avoidability attribute. It is an alias, not a new special case.
+            new FieldDefinition("avoidability",@"(?:avoidability|avoidance|evasion|eva)","回避率",false,false),
+            new FieldDefinition("attack-speed",@"(?:attack|weapon|atk|att)\s*speed","攻击速度",true,true),
+            new FieldDefinition("speed",@"(?:movement\s*speed|move\s*speed|speed)","移动速度",false,false),
+            new FieldDefinition("jump",@"\bjump\b","跳跃力",false,false),
+            new FieldDefinition("hp",@"(?:max(?:imum)?\s*hp|hp)","生命值",false,false),
+            new FieldDefinition("mp",@"(?:max(?:imum)?\s*mp|mp)","魔法值",false,false),
+            new FieldDefinition("level",@"(?:lev(?:el)?|lv)","等级",false,false),
+            new FieldDefinition("fame",@"fam(?:e)?","人气",false,false),
+            new FieldDefinition("upgrades",@"(?:remaining\s*enhancements?|upgrades?\s*available|upgrade\s*slots?|remaining\s*upgrades?|slots?\s*remaining)","剩余强化次数",true,false),
+            new FieldDefinition("critical-rate",@"(?:crit(?:ical)?(?:\s*(?:rate|chance))?)","暴击率",true,false),
+            new FieldDefinition("critical-damage",@"(?:crit(?:ical)?\s*(?:damage|dmg))","暴击伤害",true,false),
+            new FieldDefinition("boss-damage",@"boss\s*(?:damage|dmg)","首领伤害",true,false),
+            new FieldDefinition("damage",@"(?:total\s*)?damage","伤害",true,false),
+            new FieldDefinition("ignore-defense",@"(?:ignore\s*(?:enemy\s*)?def(?:en[cs]e)?)","无视防御",true,false)
+        };
+
+        private const string NumberToken=@"(?=[0-9OoIlSsBbZzGq,]*[0-9])[0-9OoIlSsBbZzGq][0-9OoIlSsBbZzGq,]*";
+        // Windows OCR sometimes returns a required value as letter shapes only ("SO"
+        // for 50, "O" for 0) when the glyphs are small. Such a run is a number only
+        // when it is followed by a separator or the end of the row; a run inside a
+        // word stays prose. One to four characters covers the values these tooltips
+        // actually print (0-999) without swallowing a following key.
+        // Only tokens that look like misread digits are allowed: a multi-character token
+        // must contain an uppercase digit-shaped letter ("SO"->50), because "MP is 0"
+        // otherwise parsed "is" as the MP value.
+        private const string LetterNumberToken=@"(?:(?:[OoIlSsBbZzGq]{0,3}[OISBZG][OoIlSsBbZzGq]{0,3})|[OoIlSsBbZzGq])(?![A-Za-z0-9])";
+        private const string NumericValue=@"(?<value>[+\-\u2212\uFF0B\uFF0D]?\s*(?:"+NumberToken+@"|"+LetterNumberToken+@")(?:\s*\.\s*[0-9]+)?\s*%?(?:\s*\([^()\r\n]*\))*(?:\s*%)?)";
+        private const string TextValue=@"(?<value>(?:very\s+)?fast(?:est)?|(?:very\s+)?slow(?:est)?|normal|average|standard)";
+
+        internal static List<EquipmentField> Parse(string text,bool equipment)
+        {
+            List<EquipmentField> result=new List<EquipmentField>();
+            if(String.IsNullOrWhiteSpace(text))return result;
+            foreach(string key in new string[]{"master level","current level","next level","physical damage","magic damage"})
+                if(text.IndexOf(key,StringComparison.OrdinalIgnoreCase)>=0)return result;
+
+            List<FieldMatch> keyMatches=new List<FieldMatch>();
+            for(int i=0;i<Fields.Length;i++) {
+                FieldDefinition definition=Fields[i];
+                // "REQ" is the printed prefix; Windows OCR returns it as REO, AEQ or RE0
+                // depending on the glyph pair ("REQ LEV AEQ OEX AEQ INT"). Every variant
+                // must be consumed, otherwise the leftover letters between two keys read
+                // as prose and the preceding field is discarded.
+                string expression=@"(?<req>(?:(?:req(?:uired)?)|reo|aeq|re0)\s*[.:]?\s*)?(?<name>"+
+                    definition.Pattern+@")(?![A-Za-z])";
+                foreach(Match match in Regex.Matches(text,expression,RegexOptions.IgnoreCase)) {
+                    int after=match.Index+match.Length;
+                    bool required=match.Groups["req"].Length>0;
+                    // A bare "LEV" outside a tooltip is prose ("level up"); inside a
+                    // confirmed tooltip it is the requirement row with a dropped prefix.
+                    if(definition.Key=="level"&&!required&&!equipment)continue;
+                    keyMatches.Add(new FieldMatch{Match=match,Definition=definition,
+                        After=after,Required=required});
+                }
+            }
+            keyMatches.Sort(delegate(FieldMatch a,FieldMatch b){
+                int start=a.Match.Index.CompareTo(b.Match.Index);
+                return start!=0?start:b.Match.Length.CompareTo(a.Match.Length);});
+            List<FieldMatch> allowedMatches=new List<FieldMatch>();
+            foreach(FieldMatch candidate in keyMatches)
+                if(IsAllowedKeyStart(text,candidate,allowedMatches))allowedMatches.Add(candidate);
+            keyMatches=allowedMatches;
+
+            foreach(FieldMatch keyMatch in keyMatches) {
+                Match match=keyMatch.Match;
+                FieldDefinition definition=keyMatch.Definition;
+                int after=keyMatch.After;
+                bool required=keyMatch.Required;
+                // Never let a numeric/confusable token consume the first characters
+                // of the next confirmed field. This keeps +5I from swallowing INT in
+                // STR+5INT+3, while an unbounded +1O still keeps its OCR tolerance.
+                int nextStart=text.Length;
+                foreach(FieldMatch other in keyMatches)
+                    if(other.Match.Index>=after&&other.Match.Index<nextStart)
+                        nextStart=other.Match.Index;
+                string tail=text.Substring(after,Math.Max(0,nextStart-after));
+                Match value=MatchValue(tail,definition);
+                bool hasValue=value!=null&&value.Success;
+                // Windows OCR routinely drops the printed "REQ" prefix inside a dark
+                // tooltip ("REQ LEV : 35" arrives as "LEV : 35"), which used to discard
+                // every requirement row. Inside a confirmed tooltip an unsigned value on
+                // one of the six requirement keys is a requirement; bonus rows always
+                // print a sign ("LUK +3"), so they keep their bonus wording.
+                if(equipment&&!required&&hasValue&&
+                    (definition.Key=="level"||definition.Key=="strength"||
+                     definition.Key=="dexterity"||definition.Key=="intelligence"||
+                     definition.Key=="luck"||definition.Key=="fame")) {
+                    string rawValue=value.Groups["value"].Value??"";
+                    if(rawValue.IndexOf('+')<0&&rawValue.IndexOf('-')<0&&
+                        rawValue.IndexOf('\u2212')<0&&rawValue.IndexOf('\uFF0B')<0)required=true;
+                }
+                if(!hasValue) {
+                    // A key followed only by punctuation is a partial OCR row and
+                    // still yields a safe key-only field. Letters/digits after the
+                    // key are prose, not an equipment value, so those are skipped.
+                    if(!equipment||Regex.IsMatch(tail,@"[A-Za-z0-9]"))continue;
+                }
+                EquipmentField field=new EquipmentField{
+                    Start=match.Index,Length=match.Length,Key=definition.Key,
+                    Chinese=(required?"需要":"")+definition.Chinese,
+                    Required=required,TextValue=definition.TextValue};
+                if(hasValue) {
+                    int start=after+value.Groups["value"].Index;
+                    int length=value.Groups["value"].Length;
+                    while(length>0&&Char.IsWhiteSpace(text[start+length-1]))length--;
+                    if(length>0) {
+                        field.ValueStart=start;field.ValueLength=length;
+                        field.RawValue=text.Substring(start,length);field.HasValue=true;
+                    }
+                }
+                result.Add(field);
+            }
+
+            // Several aliases can overlap (Critical Damage/Damage, Attack Speed/Speed,
+            // MaxHP/HP). Keep the longest field at a given position, never an inner
+            // duplicate. This is a grammar rule, not an equipment-name exception.
+            result.Sort(delegate(EquipmentField a,EquipmentField b){
+                int start=a.Start.CompareTo(b.Start);
+                if(start!=0)return start;
+                return b.Length.CompareTo(a.Length);});
+            List<EquipmentField> distinct=new List<EquipmentField>();
+            foreach(EquipmentField candidate in result) {
+                bool overlap=false;
+                foreach(EquipmentField kept in distinct)
+                    if(candidate.Start<kept.Start+kept.Length&&kept.Start<candidate.Start+candidate.Length)
+                    {overlap=true;break;}
+                if(!overlap)distinct.Add(candidate);
+            }
+            // Outside a confirmed equipment panel, prose outside the complete field/
+            // value spans normally means this is not a tooltip row. Keep parsed fields
+            // only when the row also carries a strong equipment anchor (type, req,
+            // upgrade, attack/defence); STR:+1POINT:+3 has no anchor and is cleared.
+            if(!equipment&&!AllFieldsConsumed(text,distinct)) {
+                bool anchored=Regex.IsMatch(text,@"(?i)\b(?:type|category)\s*[.:：]");
+                foreach(EquipmentField field in distinct)
+                    if(field.Required||field.Key=="upgrades"||field.Key=="attack-speed"||
+                        field.Key=="weapon-defense"||field.Key=="magic-defense"||
+                        field.Key=="weapon-attack"||field.Key=="magic-attack")anchored=true;
+                if(!anchored)distinct.Clear();
+            }
+            // A field followed by ordinary prose is not a tooltip row. Another field
+            // after a punctuation/space boundary is allowed: combined OCR rows carry
+            // Weapon Def + Magic Def (or REQ LEV + REQ STR + ...) on one line.
+            if(!equipment) {
+                for(int i=distinct.Count-1;i>=0;i--) {
+                    EquipmentField field=distinct[i];
+                    if(!field.HasValue)continue;
+                    string tail=text.Substring(field.ValueStart+field.ValueLength);
+                    if(Regex.IsMatch(tail,@"[A-Za-z]")&&!HasKnownFieldStart(tail))distinct.RemoveAt(i);
+                }
+            }
+            return distinct;
+        }
+
+        private static Match MatchValue(string tail,FieldDefinition definition)
+        {
+            if(definition.TextValue) {
+                Match textValue=Regex.Match(tail,@"^[\s.:：]*"+TextValue,RegexOptions.IgnoreCase);
+                if(textValue.Success)return textValue;
+            }
+            return Regex.Match(tail,@"^[\s.:：]*"+NumericValue,RegexOptions.IgnoreCase);
+        }
+
+        // True only when a complete known field starts immediately after separators.
+        // Prose such as "and Strength +3" therefore cannot make a preceding sentence
+        // look like two adjacent tooltip columns.
+        private static bool HasKnownFieldStart(string text)
+        {
+            if(String.IsNullOrEmpty(text))return false;
+            string trimmed=Regex.Replace(text,@"^[\s,;/|·•]+","");
+            if(trimmed.Length==0)return false;
+            for(int i=0;i<Fields.Length;i++) {
+                string expression=@"^(?<req>(?:req(?:uired)?\s*[.:]?\s*)?)(?<name>"+
+                    Fields[i].Pattern+@")(?![A-Za-z])";
+                if(Regex.IsMatch(trimmed,expression,RegexOptions.IgnoreCase))return true;
+            }
+            return false;
+        }
+
+
+        // The old (?<![A-Za-z]) lookbehind rejected INT when the preceding OCR digit
+        // was O/I/l (STR:+1OINT:+3). A key may start after a letter/digit only when
+        // that run is a numeric value immediately following a previously confirmed
+        // field. This keeps POINT/R2INT prose from becoming equipment fields.
+        private static bool IsAllowedKeyStart(string text,FieldMatch candidate,List<FieldMatch> previousMatches)
+        {
+            int index=candidate.Match.Index;
+            if(index<=0)return true;
+            char previous=text[index-1];
+            if(!Char.IsLetterOrDigit(previous))return true;
+            FieldMatch nearest=null;
+            foreach(FieldMatch other in previousMatches)
+                if(other.Match.Index<index&&other.Match.Index+other.Match.Length<=index&&
+                    (nearest==null||other.Match.Index>nearest.Match.Index))nearest=other;
+            if(nearest==null)return false;
+            int previousEnd=nearest.Match.Index+nearest.Match.Length;
+            if(previousEnd>index)return false;
+            string segment=text.Substring(previousEnd,index-previousEnd);
+            string trimmed=Regex.Replace(segment,@"^[\s,;/|·•.:：]+","");
+            if(trimmed.Length==0)return false;
+            // The whole segment between the previous field and this key must be a
+            // complete numeric value (plus separators). A digit-containing prefix
+            // such as +1PO must not qualify just because it starts with +1.
+            string numericValue=@"^\s*"+NumericValue+@"\s*[.:：]?\s*$";
+            return Regex.IsMatch(trimmed,numericValue,RegexOptions.IgnoreCase);
+        }
+
+        // A single-line fallback for panels that OCR never grouped. It requires a
+        // key/value shape or an explicit equipment anchor, so ordinary prose that
+        // merely contains "intelligence" is not painted as a tooltip field.
+        internal static bool LooksLikeEquipmentRow(string text)
+        {
+            if(String.IsNullOrWhiteSpace(text))return false;
+            List<EquipmentField> fields=Parse(text,true);
+            if(fields.Count==0)return false;
+            bool required=false,upgrade=false,attackSpeed=false,colon=false,combatSigned=false,defense=false;
+            bool leadingSigned=false,trailingProse=false;
+            bool weaponDefense=false,weaponAttack=false,magicDefense=false,magicAttack=false;
+            int leading=text.Length-text.TrimStart().Length;
+            foreach(EquipmentField field in fields) {
+                if(field.Required)required=true;
+                if(field.Key=="upgrades")upgrade=true;
+                if(field.Key=="attack-speed"&&field.HasValue)attackSpeed=true;
+                if(field.Key=="weapon-defense")weaponDefense=true;
+                if(field.Key=="magic-defense")magicDefense=true;
+                if(field.Key=="weapon-attack")weaponAttack=true;
+                if(field.Key=="magic-attack")magicAttack=true;
+                if(field.Key=="weapon-defense"||field.Key=="magic-defense"||
+                    field.Key=="weapon-attack"||field.Key=="magic-attack")defense=true;
+                // A full stop only separates a key from its value when a value was
+                // actually read. Without this, prose that merely ends in a sentence
+                // containing a stat word ("Press the left Alt key to jump.") was
+                // classified as an equipment row and the whole line collapsed to
+                // "跳跃力".
+                string afterName=text.Substring(field.Start+field.Length);
+                if(field.HasValue&&Regex.IsMatch(afterName,@"^\s*[.:：]"))colon=true;
+                bool signed=field.HasValue&&Regex.IsMatch(field.RawValue??"",
+                    @"^[+\-\u2212\uFF0B\uFF0D]");
+                if(signed)combatSigned=true;
+                string tailAfterValue=field.HasValue
+                    ? text.Substring(field.ValueStart+field.ValueLength) : "";
+                bool tailIsKnown=!Regex.IsMatch(tailAfterValue,@"[A-Za-z]")||
+                    HasKnownFieldStart(tailAfterValue);
+                if(!tailIsKnown)trailingProse=true;
+                if(signed&&field.Start==leading&&tailIsKnown)leadingSigned=true;
+            }
+            if(trailingProse)return false;
+            bool type=Regex.IsMatch(text,@"(?i)\b(?:type|category)\s*[.:：]");
+            if(required||upgrade||attackSpeed||(weaponDefense&&magicDefense)||
+                (weaponAttack&&(weaponDefense||magicDefense))||
+                (magicAttack&&(weaponDefense||magicDefense))||(type&&fields.Count>=1)||colon||
+                leadingSigned)return true;
+            if(combatSigned&&defense&&fields.Count==1&&
+                Regex.IsMatch(text.TrimStart(),@"^(?:weapon|magic|w\s*[.]|m\s*[.]|att|atk|evasion|avoidability|speed)",
+                    RegexOptions.IgnoreCase))return true;
+            return false;
+        }
+
+        internal static bool LooksLikeEquipmentStructure(string text)
+        {
+            if(String.IsNullOrWhiteSpace(text))return false;
+            string lower=text.ToLowerInvariant();
+            if(lower.Contains("master level")||lower.Contains("current level")||
+                lower.Contains("next level"))return false;
+            // A translucent navy tooltip on a bright map loses the requirement values
+            // and even the "REQ" glyph shape to Windows OCR ("AEQ LEV", "AEO FAM"),
+            // which used to leave the whole surface unconfirmed and every small row
+            // English. Two requirement-prefix variants are unique enough to prove this
+            // is an equips tooltip; the structured pass then re-reads it at 2.5x.
+            if(RequirementMarkerCount(text)>=2)return true;
+            List<EquipmentField> fields=Parse(text,true);
+            if(fields.Count==0)return false;
+            bool req=false,upgrade=false,attackSpeed=false,weaponDefense=false,magicDefense=false;
+            bool weaponAttack=false,magicAttack=false;
+            foreach(EquipmentField field in fields) {
+                if(field.Required||field.Key=="level")req=req||field.Required;
+                if(field.Key=="upgrades")upgrade=true;
+                if(field.Key=="attack-speed"&&field.HasValue)attackSpeed=true;
+                if(field.Key=="weapon-defense")weaponDefense=true;
+                if(field.Key=="magic-defense")magicDefense=true;
+                if(field.Key=="weapon-attack")weaponAttack=true;
+                if(field.Key=="magic-attack")magicAttack=true;
+            }
+            bool type=Regex.IsMatch(text,@"(?i)\b(?:type|category)\s*[.:：]");
+            // Two grammar-confirmed fields are already strong evidence: a partially occluded
+            // tooltip often loses the REQ block and one defence row, yet still shows two
+            // stat rows. Requiring a specific pair used to drop the whole panel to fallback.
+            if(fields.Count>=2)return true;
+            return req||upgrade||attackSpeed||(weaponDefense&&magicDefense)||
+                (weaponAttack&&(weaponDefense||magicDefense))||
+                (magicAttack&&(weaponDefense||magicDefense))||(type&&fields.Count>=1)||
+                AllFieldsConsumed(text,fields);
+        }
+
+        private static int RequirementMarkerCount(string text)
+        {
+            MatchCollection matches=Regex.Matches(text,@"(?i)(?:req(?:uired)?|reo|aeq|aeo|re0)(?![a-z])");
+            return matches.Count;
+        }
+
+        private static bool AllFieldsConsumed(string text,List<EquipmentField> fields)
+        {
+            if(String.IsNullOrEmpty(text)||fields==null||fields.Count==0)return false;
+            char[] separators=new char[]{' ','\t','\r','\n','.',':','：','/','\\','|',',',';',
+                '·','•','-','_'};
+            int cursor=0;
+            foreach(EquipmentField field in fields) {
+                if(field.Start<cursor)return false;
+                if(field.Start>cursor) {
+                    string gap=text.Substring(cursor,field.Start-cursor);
+                    if(gap.Trim(separators).Length>0)return false;
+                }
+                cursor=field.Start+field.Length;
+                if(field.HasValue&&field.ValueLength>0)
+                    cursor=field.ValueStart+field.ValueLength;
+            }
+            return text.Substring(cursor).Trim(separators).Length==0;
+        }
+    }
+}

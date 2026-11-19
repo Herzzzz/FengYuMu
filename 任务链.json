@@ -1,0 +1,669 @@
+{
+ "stages": {
+  "Sera's Mirror": [
+   "1000",
+   "1001"
+  ],
+  "Nina and Sen's Dinner Menu": [
+   "1003",
+   "1004"
+  ],
+  "Please bring this letter to Lucas": [
+   "1007",
+   "1008"
+  ],
+  "Mai's Training": [
+   "1009",
+   "1010"
+  ],
+  "Rain's Maple Quiz": [
+   "1013",
+   "1014",
+   "1015",
+   "1016",
+   "1017",
+   "1018",
+   "1019"
+  ],
+  "Olaf's Training": [
+   "10000",
+   "10009"
+  ],
+  "Jane the Alchemist": [
+   "10003",
+   "10004",
+   "10005"
+  ],
+  "[Deep Forest of Patience] John's Present": [
+   "10006",
+   "10007",
+   "10008"
+  ],
+  "Teo's Collection": [
+   "10010",
+   "10011"
+  ],
+  "Mrs. Ming Ming's Second Worry": [
+   "10101",
+   "10102",
+   "10103"
+  ],
+  "Maya and the Weird Medicine": [
+   "10106",
+   "10107",
+   "10108",
+   "10109",
+   "10110",
+   "10111",
+   "10112"
+  ],
+  "Collecting For Maya": [
+   "10115",
+   "10116"
+  ],
+  "Another of Maya's Collections": [
+   "10117",
+   "10118"
+  ],
+  "Pia's Present For a Friend": [
+   "10119",
+   "10120",
+   "10121",
+   "10122"
+  ],
+  "I Need to Find My Daughter": [
+   "10124",
+   "10125"
+  ],
+  "Legend of the Snail": [
+   "10126",
+   "10127",
+   "10128",
+   "10129",
+   "10130"
+  ],
+  "Rowen the Fairy and the Cursed Doll": [
+   "10201",
+   "10202",
+   "10203",
+   "10204",
+   "10205"
+  ],
+  "Ronnie & the Fairies Building a New House": [
+   "10206",
+   "10207",
+   "10208",
+   "10209"
+  ],
+  "Father's Mushroom Stew": [
+   "10211",
+   "10212"
+  ],
+  "Caretaker's Ledger": [
+   "10213",
+   "10214",
+   "10215",
+   "10216",
+   "10217",
+   "10218"
+  ],
+  "Alex the Runaway Kid": [
+   "10300",
+   "10301",
+   "10302"
+  ],
+  "Nella & Kerning City Citizen's Request": [
+   "10303",
+   "10304",
+   "10305"
+  ],
+  "Nella & Kerning City Citizen's Other Request": [
+   "10306",
+   "10307",
+   "10308"
+  ],
+  "Mystery of Niora Hospital": [
+   "10309",
+   "10310"
+  ],
+  "[Construction Site B1] What Shumi Lost": [
+   "10312",
+   "10313",
+   "10314"
+  ],
+  "I'm Bored": [
+   "10315",
+   "10316"
+  ],
+  "Icarus's Dream": [
+   "10317",
+   "10318"
+  ],
+  "Icarus and the Flying Medicine": [
+   "10319",
+   "10320",
+   "10321"
+  ],
+  "Manji's Old Gladius": [
+   "10402",
+   "10403",
+   "10404"
+  ],
+  "Winston's Fossil Dig-up": [
+   "10405",
+   "10406"
+  ],
+  "Dr. Betty's Research on Plants": [
+   "10407",
+   "10408",
+   "10409",
+   "10410"
+  ],
+  "The Alligators at the Swamp": [
+   "10412",
+   "10413"
+  ],
+  "The Old Tree": [
+   "10414",
+   "10415",
+   "10416",
+   "10417",
+   "10418",
+   "10419",
+   "10420",
+   "10421"
+  ],
+  "Mr. Wetbottom's Secret Book": [
+   "10500",
+   "10501",
+   "10502",
+   "10503",
+   "10504",
+   "10505",
+   "10506",
+   "10507",
+   "10508"
+  ],
+  "The Road Home": [
+   "10600",
+   "10601"
+  ],
+  "Myra's Wish": [
+   "10603",
+   "10604"
+  ],
+  "Shadow of the World Tree": [
+   "10607",
+   "10608",
+   "10609",
+   "10610",
+   "10611"
+  ],
+  "Echoes of the Abyss": [
+   "10612",
+   "10613",
+   "10614",
+   "10617",
+   "10618"
+  ],
+  "A Fragile Sanctuary": [
+   "10615",
+   "10616",
+   "10619",
+   "10620"
+  ],
+  "The Hearthkeeper": [
+   "10621",
+   "10622",
+   "10623"
+  ],
+  "The Lantern Rite": [
+   "10624",
+   "10625",
+   "10626"
+  ],
+  "Special Taste of Florina Beach": [
+   "10700",
+   "10701",
+   "10702",
+   "10703"
+  ],
+  "Alpha Platoon's Network of Communication": [
+   "12100",
+   "12101",
+   "12102",
+   "12103",
+   "12104",
+   "12105",
+   "12106",
+   "12107",
+   "12108"
+  ],
+  "In Search of the Book of Ancient": [
+   "12109",
+   "12110",
+   "12111",
+   "12112",
+   "12113",
+   "12114",
+   "12115",
+   "12116",
+   "12117",
+   "12118",
+   "12119",
+   "12120",
+   "12121",
+   "12122",
+   "12123",
+   "12124",
+   "12125",
+   "12126",
+   "12127",
+   "12128",
+   "12129",
+   "12130",
+   "12131",
+   "12132",
+   "12133",
+   "12134",
+   "12135",
+   "12136",
+   "12137",
+   "12138",
+   "12139"
+  ],
+  "Nick, the Son of Scadur the Hunter": [
+   "12141",
+   "12142"
+  ],
+  "The Warrior's Next Journey": [
+   "20000",
+   "20001",
+   "20002",
+   "20003"
+  ],
+  "The Magician's Next Journey": [
+   "20100",
+   "20101",
+   "20102",
+   "20103"
+  ],
+  "The Bowman's Next Journey": [
+   "20200",
+   "20201",
+   "20202",
+   "20203"
+  ],
+  "The Thief's Next Journey": [
+   "20300",
+   "20301",
+   "20302",
+   "20303"
+  ],
+  "Maple World's Unique Fun: Omok": [
+   "80002",
+   "80003",
+   "80004",
+   "80005",
+   "80006",
+   "80007"
+  ],
+  "Welcome to the Free Market!": [
+   "80026",
+   "80027",
+   "80028",
+   "80029"
+  ],
+  "A Family Reunited": [
+   "506036",
+   "506037",
+   "506038",
+   "506039",
+   "506040"
+  ],
+  "After the Festival Ends...": [
+   "506041",
+   "506042",
+   "506043",
+   "506044",
+   "506045"
+  ],
+  "A Marble of Friendship": [
+   "506046",
+   "506047",
+   "506048",
+   "506049",
+   "506050"
+  ],
+  "Maya and Her Peculiar Savior": [
+   "506051",
+   "506052",
+   "506053",
+   "506054",
+   "506055"
+  ],
+  "A Gift for a Citizen of Honor": [
+   "506056",
+   "506057",
+   "506058",
+   "506059",
+   "506060"
+  ],
+  "A Home in Henesys": [
+   "506061",
+   "506062"
+  ],
+  "Jake's Trauma": [
+   "506137",
+   "506138",
+   "506139",
+   "506140",
+   "506141"
+  ],
+  "What the City Taught Me": [
+   "506142",
+   "506143",
+   "506144",
+   "506145",
+   "506146"
+  ],
+  "The Doctor Who Never Returned": [
+   "506147",
+   "506148",
+   "506149",
+   "506150",
+   "506151"
+  ],
+  "A Grudge That Won't Rest": [
+   "506152",
+   "506153",
+   "506154",
+   "506155",
+   "506156"
+  ],
+  "A Task for a Citizen of Honor": [
+   "506157",
+   "506158",
+   "506159",
+   "506160",
+   "506161"
+  ],
+  "A Home in Kerning City": [
+   "506162",
+   "506163"
+  ]
+ },
+ "chainOf": {
+  "1000": "Sera's Mirror",
+  "1001": "Sera's Mirror",
+  "1003": "Nina and Sen's Dinner Menu",
+  "1004": "Nina and Sen's Dinner Menu",
+  "1007": "Please bring this letter to Lucas",
+  "1008": "Please bring this letter to Lucas",
+  "1009": "Mai's Training",
+  "1010": "Mai's Training",
+  "1013": "Rain's Maple Quiz",
+  "1014": "Rain's Maple Quiz",
+  "1015": "Rain's Maple Quiz",
+  "1016": "Rain's Maple Quiz",
+  "1017": "Rain's Maple Quiz",
+  "1018": "Rain's Maple Quiz",
+  "1019": "Rain's Maple Quiz",
+  "10000": "Olaf's Training",
+  "10003": "Jane the Alchemist",
+  "10004": "Jane the Alchemist",
+  "10005": "Jane the Alchemist",
+  "10006": "[Deep Forest of Patience] John's Present",
+  "10007": "[Deep Forest of Patience] John's Present",
+  "10008": "[Deep Forest of Patience] John's Present",
+  "10009": "Olaf's Training",
+  "10010": "Teo's Collection",
+  "10011": "Teo's Collection",
+  "10101": "Mrs. Ming Ming's Second Worry",
+  "10102": "Mrs. Ming Ming's Second Worry",
+  "10103": "Mrs. Ming Ming's Second Worry",
+  "10106": "Maya and the Weird Medicine",
+  "10107": "Maya and the Weird Medicine",
+  "10108": "Maya and the Weird Medicine",
+  "10109": "Maya and the Weird Medicine",
+  "10110": "Maya and the Weird Medicine",
+  "10111": "Maya and the Weird Medicine",
+  "10112": "Maya and the Weird Medicine",
+  "10115": "Collecting For Maya",
+  "10116": "Collecting For Maya",
+  "10117": "Another of Maya's Collections",
+  "10118": "Another of Maya's Collections",
+  "10119": "Pia's Present For a Friend",
+  "10120": "Pia's Present For a Friend",
+  "10121": "Pia's Present For a Friend",
+  "10122": "Pia's Present For a Friend",
+  "10123": "The Reason Behind the Mushroom Studies",
+  "10124": "I Need to Find My Daughter",
+  "10125": "I Need to Find My Daughter",
+  "10126": "Legend of the Snail",
+  "10127": "Legend of the Snail",
+  "10128": "Legend of the Snail",
+  "10129": "Legend of the Snail",
+  "10130": "Legend of the Snail",
+  "10201": "Rowen the Fairy and the Cursed Doll",
+  "10202": "Rowen the Fairy and the Cursed Doll",
+  "10203": "Rowen the Fairy and the Cursed Doll",
+  "10204": "Rowen the Fairy and the Cursed Doll",
+  "10205": "Rowen the Fairy and the Cursed Doll",
+  "10206": "Ronnie & the Fairies Building a New House",
+  "10207": "Ronnie & the Fairies Building a New House",
+  "10208": "Ronnie & the Fairies Building a New House",
+  "10209": "Ronnie & the Fairies Building a New House",
+  "10210": "I Need Help on My Homework!",
+  "10211": "Father's Mushroom Stew",
+  "10212": "Father's Mushroom Stew",
+  "10213": "Caretaker's Ledger",
+  "10214": "Caretaker's Ledger",
+  "10215": "Caretaker's Ledger",
+  "10216": "Caretaker's Ledger",
+  "10217": "Caretaker's Ledger",
+  "10218": "Caretaker's Ledger",
+  "10300": "Alex the Runaway Kid",
+  "10301": "Alex the Runaway Kid",
+  "10302": "Alex the Runaway Kid",
+  "10303": "Nella & Kerning City Citizen's Request",
+  "10304": "Nella & Kerning City Citizen's Request",
+  "10305": "Nella & Kerning City Citizen's Request",
+  "10306": "Nella & Kerning City Citizen's Other Request",
+  "10307": "Nella & Kerning City Citizen's Other Request",
+  "10308": "Nella & Kerning City Citizen's Other Request",
+  "10309": "Mystery of Niora Hospital",
+  "10310": "Mystery of Niora Hospital",
+  "10311": "First Time Together",
+  "10312": "[Construction Site B1] What Shumi Lost",
+  "10313": "[Construction Site B1] What Shumi Lost",
+  "10314": "[Construction Site B1] What Shumi Lost",
+  "10315": "I'm Bored",
+  "10316": "I'm Bored",
+  "10317": "Icarus's Dream",
+  "10318": "Icarus's Dream",
+  "10319": "Icarus and the Flying Medicine",
+  "10320": "Icarus and the Flying Medicine",
+  "10321": "Icarus and the Flying Medicine",
+  "10402": "Manji's Old Gladius",
+  "10403": "Manji's Old Gladius",
+  "10404": "Manji's Old Gladius",
+  "10405": "Winston's Fossil Dig-up",
+  "10406": "Winston's Fossil Dig-up",
+  "10407": "Dr. Betty's Research on Plants",
+  "10408": "Dr. Betty's Research on Plants",
+  "10409": "Dr. Betty's Research on Plants",
+  "10410": "Dr. Betty's Research on Plants",
+  "10411": "The Stump Horror Story",
+  "10412": "The Alligators at the Swamp",
+  "10413": "The Alligators at the Swamp",
+  "10414": "The Old Tree",
+  "10415": "The Old Tree",
+  "10416": "The Old Tree",
+  "10417": "The Old Tree",
+  "10418": "The Old Tree",
+  "10419": "The Old Tree",
+  "10420": "The Old Tree",
+  "10421": "The Old Tree",
+  "10500": "Mr. Wetbottom's Secret Book",
+  "10501": "Mr. Wetbottom's Secret Book",
+  "10502": "Mr. Wetbottom's Secret Book",
+  "10503": "Mr. Wetbottom's Secret Book",
+  "10504": "Mr. Wetbottom's Secret Book",
+  "10505": "Mr. Wetbottom's Secret Book",
+  "10506": "Mr. Wetbottom's Secret Book",
+  "10507": "Mr. Wetbottom's Secret Book",
+  "10508": "Mr. Wetbottom's Secret Book",
+  "10600": "The Road Home",
+  "10601": "The Road Home",
+  "10603": "Myra's Wish",
+  "10604": "Myra's Wish",
+  "10607": "Shadow of the World Tree",
+  "10608": "Shadow of the World Tree",
+  "10609": "Shadow of the World Tree",
+  "10610": "Shadow of the World Tree",
+  "10611": "Shadow of the World Tree",
+  "10612": "Echoes of the Abyss",
+  "10613": "Echoes of the Abyss",
+  "10614": "Echoes of the Abyss",
+  "10615": "A Fragile Sanctuary",
+  "10616": "A Fragile Sanctuary",
+  "10617": "Echoes of the Abyss",
+  "10618": "Echoes of the Abyss",
+  "10619": "A Fragile Sanctuary",
+  "10620": "A Fragile Sanctuary",
+  "10621": "The Hearthkeeper",
+  "10622": "The Hearthkeeper",
+  "10623": "The Hearthkeeper",
+  "10624": "The Lantern Rite",
+  "10625": "The Lantern Rite",
+  "10626": "The Lantern Rite",
+  "10700": "Special Taste of Florina Beach",
+  "10701": "Special Taste of Florina Beach",
+  "10702": "Special Taste of Florina Beach",
+  "10703": "Special Taste of Florina Beach",
+  "12100": "Alpha Platoon's Network of Communication",
+  "12101": "Alpha Platoon's Network of Communication",
+  "12102": "Alpha Platoon's Network of Communication",
+  "12103": "Alpha Platoon's Network of Communication",
+  "12104": "Alpha Platoon's Network of Communication",
+  "12105": "Alpha Platoon's Network of Communication",
+  "12106": "Alpha Platoon's Network of Communication",
+  "12107": "Alpha Platoon's Network of Communication",
+  "12108": "Alpha Platoon's Network of Communication",
+  "12109": "In Search of the Book of Ancient",
+  "12110": "In Search of the Book of Ancient",
+  "12111": "In Search of the Book of Ancient",
+  "12112": "In Search of the Book of Ancient",
+  "12113": "In Search of the Book of Ancient",
+  "12114": "In Search of the Book of Ancient",
+  "12115": "In Search of the Book of Ancient",
+  "12116": "In Search of the Book of Ancient",
+  "12117": "In Search of the Book of Ancient",
+  "12118": "In Search of the Book of Ancient",
+  "12119": "In Search of the Book of Ancient",
+  "12120": "In Search of the Book of Ancient",
+  "12121": "In Search of the Book of Ancient",
+  "12122": "In Search of the Book of Ancient",
+  "12123": "In Search of the Book of Ancient",
+  "12124": "In Search of the Book of Ancient",
+  "12125": "In Search of the Book of Ancient",
+  "12126": "In Search of the Book of Ancient",
+  "12127": "In Search of the Book of Ancient",
+  "12128": "In Search of the Book of Ancient",
+  "12129": "In Search of the Book of Ancient",
+  "12130": "In Search of the Book of Ancient",
+  "12131": "In Search of the Book of Ancient",
+  "12132": "In Search of the Book of Ancient",
+  "12133": "In Search of the Book of Ancient",
+  "12134": "In Search of the Book of Ancient",
+  "12135": "In Search of the Book of Ancient",
+  "12136": "In Search of the Book of Ancient",
+  "12137": "In Search of the Book of Ancient",
+  "12138": "In Search of the Book of Ancient",
+  "12139": "In Search of the Book of Ancient",
+  "12141": "Nick, the Son of Scadur the Hunter",
+  "12142": "Nick, the Son of Scadur the Hunter",
+  "20000": "The Warrior's Next Journey",
+  "20001": "The Warrior's Next Journey",
+  "20002": "The Warrior's Next Journey",
+  "20003": "The Warrior's Next Journey",
+  "20100": "The Magician's Next Journey",
+  "20101": "The Magician's Next Journey",
+  "20102": "The Magician's Next Journey",
+  "20103": "The Magician's Next Journey",
+  "20200": "The Bowman's Next Journey",
+  "20201": "The Bowman's Next Journey",
+  "20202": "The Bowman's Next Journey",
+  "20203": "The Bowman's Next Journey",
+  "20300": "The Thief's Next Journey",
+  "20301": "The Thief's Next Journey",
+  "20302": "The Thief's Next Journey",
+  "20303": "The Thief's Next Journey",
+  "80001": "Maple World's Unique Fun: Match Cards",
+  "80002": "Maple World's Unique Fun: Omok",
+  "80003": "Maple World's Unique Fun: Omok",
+  "80004": "Maple World's Unique Fun: Omok",
+  "80005": "Maple World's Unique Fun: Omok",
+  "80006": "Maple World's Unique Fun: Omok",
+  "80007": "Maple World's Unique Fun: Omok",
+  "80026": "Welcome to the Free Market!",
+  "80027": "Welcome to the Free Market!",
+  "80028": "Welcome to the Free Market!",
+  "80029": "Welcome to the Free Market!",
+  "506036": "A Family Reunited",
+  "506037": "A Family Reunited",
+  "506038": "A Family Reunited",
+  "506039": "A Family Reunited",
+  "506040": "A Family Reunited",
+  "506041": "After the Festival Ends...",
+  "506042": "After the Festival Ends...",
+  "506043": "After the Festival Ends...",
+  "506044": "After the Festival Ends...",
+  "506045": "After the Festival Ends...",
+  "506046": "A Marble of Friendship",
+  "506047": "A Marble of Friendship",
+  "506048": "A Marble of Friendship",
+  "506049": "A Marble of Friendship",
+  "506050": "A Marble of Friendship",
+  "506051": "Maya and Her Peculiar Savior",
+  "506052": "Maya and Her Peculiar Savior",
+  "506053": "Maya and Her Peculiar Savior",
+  "506054": "Maya and Her Peculiar Savior",
+  "506055": "Maya and Her Peculiar Savior",
+  "506056": "A Gift for a Citizen of Honor",
+  "506057": "A Gift for a Citizen of Honor",
+  "506058": "A Gift for a Citizen of Honor",
+  "506059": "A Gift for a Citizen of Honor",
+  "506060": "A Gift for a Citizen of Honor",
+  "506061": "A Home in Henesys",
+  "506062": "A Home in Henesys",
+  "506137": "Jake's Trauma",
+  "506138": "Jake's Trauma",
+  "506139": "Jake's Trauma",
+  "506140": "Jake's Trauma",
+  "506141": "Jake's Trauma",
+  "506142": "What the City Taught Me",
+  "506143": "What the City Taught Me",
+  "506144": "What the City Taught Me",
+  "506145": "What the City Taught Me",
+  "506146": "What the City Taught Me",
+  "506147": "The Doctor Who Never Returned",
+  "506148": "The Doctor Who Never Returned",
+  "506149": "The Doctor Who Never Returned",
+  "506150": "The Doctor Who Never Returned",
+  "506151": "The Doctor Who Never Returned",
+  "506152": "A Grudge That Won't Rest",
+  "506153": "A Grudge That Won't Rest",
+  "506154": "A Grudge That Won't Rest",
+  "506155": "A Grudge That Won't Rest",
+  "506156": "A Grudge That Won't Rest",
+  "506157": "A Task for a Citizen of Honor",
+  "506158": "A Task for a Citizen of Honor",
+  "506159": "A Task for a Citizen of Honor",
+  "506160": "A Task for a Citizen of Honor",
+  "506161": "A Task for a Citizen of Honor",
+  "506162": "A Home in Kerning City",
+  "506163": "A Home in Kerning City"
+ }
+}

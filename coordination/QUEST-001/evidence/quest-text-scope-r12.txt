@@ -1,0 +1,25 @@
+
+An error has occurred that was not properly handled. Additional information is shown below. The PowerShell process will exit.
+Unhandled exception. System.IO.FileLoadException: The given assembly name was invalid.
+File name: 'ﾫg￭ﾋU^,'
+   at System.Reflection.AssemblyNameParser.Parse(ReadOnlySpan`1 name)
+   at System.Reflection.AssemblyName.ParseAsAssemblySpec(Char* pAssemblyName, Void* pAssemblySpec)
+PASS: legacy geometry cannot establish context when OCR misses tabs and footer
+PASS: observed panel and summary establish a selected detail scope in the same OCR pass
+PASS: left quest list cannot choose the active task
+PASS: adjacent helper or HUD stays outside the measured window
+PASS: chain heading above summary cannot override selected subtask
+PASS: summary alone cannot invent a panel boundary
+PASS: whole-frame region cannot masquerade as a measured quest panel
+PASS: two distinct summary anchors are ambiguous
+PASS: identical repeated heading evidence remains one anchor
+PASS: OCR joined summary words retain the same context
+PASS: generic quest caption cannot authorize right-pane prose
+PASS: observed footer bounds the prose and stays outside it
+PASS: smallest observed owning panel wins
+PASS: nonfinite OCR scale is refused
+PASS: zero OCR scale is refused
+PASS: nonfinite measured panel is refused
+PASS: unrelated foreground panel cannot lend its boundary
+Quest text scope: 17 checks passed; observed-geometry fixtures, not user OCR/pixels.
+17

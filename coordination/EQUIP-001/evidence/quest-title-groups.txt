@@ -1,0 +1,11 @@
+
+An error has occurred that was not properly handled. Additional information is shown below. The PowerShell process will exit.
+Unhandled exception. System.IO.FileLoadException: The given assembly name was invalid.
+File name: 'ﾫg￭ﾋU^,'
+   at System.Reflection.AssemblyNameParser.Parse(ReadOnlySpan`1 name)
+   at System.Reflection.AssemblyName.ParseAsAssemblySpec(Char* pAssemblyName, Void* pAssemblySpec)
+Exception: D:\GPT\文件\枫语幕\work\dsh-chat-001\tests\logic-quest-title-groups.ps1:80
+Line |
+  80 |          throw "任务组不应进入具体任务标题索引：$($spec.English)"
+     |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | 任务组不应进入具体任务标题索引：Father's Mushroom Stew
